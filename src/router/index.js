@@ -83,6 +83,18 @@ export const constantRoutes = [
         meta: { title: '运行报表', icon: 'dashboard', affix: true }
       }
     ]
+  },
+  {
+    path: '/cloudbeaver',
+    component: Layout,
+    children: [
+      {
+        path: '/cloudbeaver',
+        component: () => import('@/views/cloudbeaver/index'),
+        name: 'cloudbeaver',
+        meta: { title: 'cloudbeaver', icon: 'dashboard', affix: true }
+      }
+    ]
   }
 ]
 
