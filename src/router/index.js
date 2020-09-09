@@ -92,7 +92,7 @@ export const constantRoutes = [
         path: '/cloudbeaver',
         component: () => import('@/views/cloudbeaver/index'),
         name: 'cloudbeaver',
-        meta: { title: 'cloudbeaver', icon: 'dashboard', affix: true }
+        meta: { title: '元数据管理', icon: 'dashboard'}
       }
     ]
   }
