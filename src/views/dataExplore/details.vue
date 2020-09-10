@@ -3,20 +3,19 @@
     <!-- 选项卡及上图 -->
     <div class="top">
       <div class="img">
-        <h2>{{ obj.title }}</h2>
-        <p class="p1">{{ obj.text }}</p>
+        <h2>{{ obj.taskName }}</h2>
+        <p class="p1">{{ obj.content }}</p>
         <div class="user">
           <a>
             <i class="el-icon-user" />
-            {{ obj.title }}
+            {{ obj.name }}
           </a>
-          <a>·{{ obj.id }}</a>
         </div>
       </div>
       <div class="tabs">
         <!-- 导航选项 -->
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="1">Data</el-menu-item>
+          <el-menu-item index="1">数据</el-menu-item>
           <!-- <el-menu-item index="2">Tasks</el-menu-item>
           <el-menu-item index="3">Notebooks</el-menu-item>
           <el-menu-item index="4">Discussion</el-menu-item>
@@ -58,12 +57,15 @@
     <!-- 描述折叠框 -->
     <div class="folding">
       <div class="tit">
-        Description
+        描述
       </div>
       <!-- 折叠内容 -->
       <div class="content">
-        <el-collapse v-model="activeNames" @change="handleChange">
-          <el-collapse-item title="Summary" name="1">
+        <el-collapse v-model="activeNames" accordion>
+          <el-collapse-item title="详细描述" name="1">
+            <div>&nbsp;&nbsp;{{ obj.desc }}</div>
+          </el-collapse-item>
+          <el-collapse-item title="概括 (Summary)" name="2">
             <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
           </el-collapse-item>
         </el-collapse>
@@ -89,23 +91,16 @@
         <div class="choose">
           <div class="ch_top">
             <div class="lt">
-              <i class="el-icon-arrow-left" />
               <span style="fontSize:16px;fontWeight:700;">data.csv</span>
               <span style="fontSize:16px;">64.07 MB</span>
             </div>
             <div class="rg">
               <a><i class="el-icon-download" /></a>
               <a><svg-icon icon-class="link" /></a>
-              <a><i class="el-icon-full-screen" /></a>
             </div>
           </div>
           <el-tabs v-model="activeName">
-            <el-tab-pane label="Detail" name="first">
-              <div class="sort">
-                <h2>About this file</h2>
-                <p><span>Remote source:</span><a>https://www.kaggle.com/imoore/phd-merge-3-csvs-from-queries</a></p>
-                <p>The main file that contains metadata with the assigned quality rating (Y)</p>
-              </div>
+            <el-tab-pane label="数据详情" name="first">
               <!-- 表格 -->
               <template>
                 <el-table
@@ -115,33 +110,66 @@
                   style="width: 100%"
                 >
                   <el-table-column
-                    type="index"
-                    :index="indexMethod"
-                    label="序号"
-                  />
-                  <el-table-column
                     prop="date"
                     width="180"
+                    align="center"
                   >
-                    <template slot="header" slot-scope="row">
-                      <i class="el-icon-key" />
-                      日期
-                      {{ row.date }}
+                    <template slot="header" slot-scope="scope">
+                      <div class="t_header_01">
+                        <i style="float:left;transform:rotate(90deg);" class="el-icon-key" @click="visible = !visible" />
+                        <span style="marginLeft:10px">日期</span>
+                        <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
+                        <el-popover
+                          v-model="visible"
+                          placement="bottom"
+                          width="200"
+                          height="200"
+                          trigger="click"
+                          content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+                        >
+                          <el-button>123</el-button>
+                        </el-popover>
+                      </div>
+                      <div class="t_header_02">
+                        <span>{{ obj.number }}</span>
+                      </div>
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="name"
-                    label="姓名"
                     width="180"
-                  />
+                    align="center"
+                  >
+                    <template slot="header" slot-scope="scope">
+                      <div class="t_header_01">
+                        <i style="float:left;" class="el-icon-s-order" />
+                        <span style="marginLeft:10px">姓名</span>
+                        <i style="float:right;" class="el-icon-s-data" />
+                      </div>
+                      <div class="t_header_02">
+                        <span>{{ obj.number }}</span>
+                      </div>
+                    </template>
+                  </el-table-column>
                   <el-table-column
                     prop="address"
-                    label="地址"
-                  />
+                    align="center"
+                  >
+                    <template slot="header" slot-scope="scope">
+                      <div class="t_header_01">
+                        <i style="float:left;" class="el-icon-s-order" />
+                        <span style="marginLeft:10px">地址</span>
+                        <i style="float:right;" class="el-icon-s-data" />
+                      </div>
+                      <div class="t_header_02">
+                        <span>{{ obj.number }}</span>
+                      </div>
+                    </template>
+                  </el-table-column>
                 </el-table>
               </template>
             </el-tab-pane>
-            <el-tab-pane label="Compact" name="second">
+            <el-tab-pane label="协议" name="second">
               <!-- 表格 -->
               <template>
                 <el-table
@@ -171,7 +199,7 @@
                 </el-table>
               </template>
             </el-tab-pane>
-            <el-tab-pane label="Column" name="third">
+            <el-tab-pane label="字段" name="third">
               <ul>
                 <li>
                   <div class="title">
@@ -291,19 +319,12 @@ export default {
         }
       ],
       activeName: 'first',
+      visible: false,
       defaultProps: {
         children: 'children',
         label: 'label'
       },
       data: [
-        {
-          label: 'file',
-          children: [
-            {
-              label: '.csv'
-            }
-          ]
-        },
         {
           label: 'columns',
           children: [
@@ -320,7 +341,8 @@ export default {
         }
       ],
       isTags: false,
-      ibj: {}
+      ibj: {},
+      activeNames: '1'
     }
   },
   created() {
@@ -339,7 +361,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .details {
   padding: 50px;
   .top {
@@ -420,7 +442,13 @@ export default {
     }
     .content {
       padding-bottom: 10px;
-      text-indent: 20px;
+      .el-collapse {
+        .el-collapse-item {
+          .el-collapse-item__header {
+            text-indent: 20px;
+          }
+        }
+      }
     }
   }
   .charts {
@@ -498,6 +526,39 @@ export default {
             }
             .el-table {
               margin-top: 10px;
+              .el-table__header-wrapper {
+                .cell {
+                  padding: 0px;
+                  .t_header_01 {
+                    width: 100%;
+                    height: 30px;
+                    line-height: 30px;
+                    border-bottom: 1px solid rgb(230, 230, 230);
+                    padding-bottom: 10px;
+                    padding: 0px 10px;
+                    i {
+                      margin-top:5px;
+                      cursor: pointer;
+                    }
+                  }
+                  .t_header_02 {
+                    height: 50px;
+                    line-height: 50px;
+                    padding: 0px 10px;
+                    span {
+                      font-weight: 700px;
+                      color: skyblue;
+                      font-size: 24px;
+                    }
+                    p {
+                      height: 20px;
+                      font-size: 16px;
+                      padding: 0px;
+                      margin: 0px;
+                    }
+                  }
+                }
+              }
             }
             ul {
               padding: 0px;
