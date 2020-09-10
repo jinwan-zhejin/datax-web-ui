@@ -61,11 +61,22 @@
       </div>
       <!-- 折叠内容 -->
       <div class="content">
-        <el-collapse v-model="activeNames" accordion>
+        <el-collapse v-model="activeDesc">
           <el-collapse-item title="详细描述" name="1">
-            <div>&nbsp;&nbsp;{{ obj.desc }}</div>
+            <div style="text-indent:2rem;">&nbsp;&nbsp;{{ obj.desc }}</div>
           </el-collapse-item>
-          <el-collapse-item title="概括 (Summary)" name="2">
+        </el-collapse>
+      </div>
+    </div>
+    <!-- 描述折叠框 -->
+    <div class="folding">
+      <div class="tit">
+        概括
+      </div>
+      <!-- 折叠内容 -->
+      <div class="content">
+        <el-collapse v-model="activeSummary">
+          <el-collapse-item title="Summary" name="1">
             <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
           </el-collapse-item>
         </el-collapse>
@@ -91,12 +102,11 @@
         <div class="choose">
           <div class="ch_top">
             <div class="lt">
-              <span style="fontSize:16px;fontWeight:700;">data.csv</span>
+              <span style="fontSize:16px;fontWeight:700;">{{ obj.tableName }}</span>
               <span style="fontSize:16px;">64.07 MB</span>
             </div>
             <div class="rg">
               <a><i class="el-icon-download" /></a>
-              <a><svg-icon icon-class="link" /></a>
             </div>
           </div>
           <el-tabs v-model="activeName">
@@ -106,7 +116,6 @@
                 <el-table
                   :data="tableData"
                   border
-                  height="200"
                   style="width: 100%"
                 >
                   <el-table-column
@@ -116,14 +125,14 @@
                   >
                     <template slot="header" slot-scope="scope">
                       <div class="t_header_01">
-                        <i style="float:left;transform:rotate(90deg);" class="el-icon-key" @click="visible = !visible" />
+                        <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
                         <span style="marginLeft:10px">日期</span>
                         <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
                         <el-popover
                           v-model="visible"
                           placement="bottom"
                           width="200"
-                          height="200"
+                          height="400"
                           trigger="click"
                           content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
                         >
@@ -166,36 +175,6 @@
                       </div>
                     </template>
                   </el-table-column>
-                </el-table>
-              </template>
-            </el-tab-pane>
-            <el-tab-pane label="协议" name="second">
-              <!-- 表格 -->
-              <template>
-                <el-table
-                  :data="tableData"
-                  border
-                  height="200"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    type="index"
-                    :index="indexMethod"
-                  />
-                  <el-table-column
-                    prop="date"
-                    label="日期"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="name"
-                    label="姓名"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="address"
-                    label="地址"
-                  />
                 </el-table>
               </template>
             </el-tab-pane>
@@ -342,7 +321,8 @@ export default {
       ],
       isTags: false,
       ibj: {},
-      activeNames: '1'
+      activeDesc: '1',
+      activeSummary: '1'
     }
   },
   created() {
@@ -435,6 +415,7 @@ export default {
     width: 100%;
     border: 1px solid #cccccc;
     border-radius: 5px;
+    margin-bottom: 20px;
     .tit {
       height: 60px;
       line-height: 60px;
@@ -453,7 +434,7 @@ export default {
   }
   .charts {
     width: 100%;
-    height: 400px;
+    height: 600px;
     overflow: hidden;
     position: relative;
     margin-top: 20px;
@@ -483,11 +464,12 @@ export default {
     .right {
       width: 100%;
       float: right;
-      height: 400px;
+      height: 100%;
       overflow-y: auto;
       .choose {
         border: 1px solid #cccccc;
         border-radius: 5px;
+        height: 100%;
         padding: 20px;
         .ch_top {
           height: 60px;
@@ -531,19 +513,20 @@ export default {
                   padding: 0px;
                   .t_header_01 {
                     width: 100%;
-                    height: 30px;
-                    line-height: 30px;
+                    height: 100px;
+                    line-height: 100px;
                     border-bottom: 1px solid rgb(230, 230, 230);
                     padding-bottom: 10px;
                     padding: 0px 10px;
                     i {
-                      margin-top:5px;
+                      margin-top:50px;
+                      transform: translateY(-50%);
                       cursor: pointer;
                     }
                   }
                   .t_header_02 {
-                    height: 50px;
-                    line-height: 50px;
+                    height: 100px;
+                    line-height: 100px;
                     padding: 0px 10px;
                     span {
                       font-weight: 700px;

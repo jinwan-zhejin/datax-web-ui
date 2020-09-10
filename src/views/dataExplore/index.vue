@@ -4,7 +4,7 @@
       <!-- 条件查询和操作 -->
       <div class="filter-container">
         <el-input v-model="search" prefix-icon="el-icon-search" style="width:40%;border:none;" placeholder="请输入关键字" @input="Search" />
-        <el-button class="filter-item" style="float:right;backgroundColor: #000;color:#fff;" round type="default" icon="el-icon-plus" @click="AddList">
+        <el-button class="filter-item" style="float:right;" round type="primary" icon="el-icon-plus" @click="AddList">
           添加
         </el-button>
       </div>
@@ -87,16 +87,27 @@
                 <el-input v-model="form.taskName" />
               </el-form-item>
               <el-form-item label="数据源">
-                <el-select v-model="form.sourceName" placeholder="Public">
-                  <el-option label="Public" value="Public" />
-                  <el-option label="Private" value="Private" />
+                <el-select v-model="form.sourceName" placeholder="请选择数据源" @change="schemaChange">
+                  <el-option
+                    v-for="item in sourceList"
+                    :key="item.id"
+                    :label="item.datasourceName"
+                    :value="item.datasourceName"
+                  />
                 </el-select>
               </el-form-item>
               <el-form-item label="数据库表名">
                 <el-select v-model="form.tableName" placeholder="Unknown">
-                  <el-option label="QH_1911" value="QH_1911" />
-                  <el-option label="BJ_1898" value="BJ_1898" />
+                  <el-option
+                    v-for="item in tableList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
                 </el-select>
+              </el-form-item>
+              <el-form-item label="简介">
+                <el-input v-model="form.content" />
               </el-form-item>
               <!-- <el-form-item label="Owner">
                 <el-select v-model="form.option2" placeholder="wh_dev7295">
@@ -180,6 +191,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getList } from '@/api/datax-user'
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import * as dsQueryApi from '@/api/metadata-query'
 
 export default {
   name: 'Explore',
@@ -215,18 +228,18 @@ export default {
       ObjList: [
         {
           id: 124234,
-          taskName: '清华大学',
+          taskName: '60k Stack Overflow Questions with Quality Rating',
           desc: '清华大学（Tsinghua University）简称“清华”，是中华人民共和国教育部直属、中央直管副部级建制的全国重点大学，位列“211工程”、“985工程”、“世界一流大学和一流学科”A类，入选“2011计划”、“珠峰计划”、“111计划”、“强基计划”，为九校联盟、松联盟、中国大学校长联谊会、亚洲大学联盟、环太平洋大学联盟、清华—剑桥—MIT低碳大学联盟成员。是中国著名高等学府、中国高层次人才培养和科学技术研究的重要基地，被誉为“红色工程师的摇篮”。',
           sourceName: 'demo_01',
           tableName: 'QH_1911',
-          content: '老尖子生了',
+          content: 'Questions from 2016-2020 classified in three categories based on their quality',
           number: 2345,
           name: 'admin'
         },
         {
           id: 235345,
-          taskName: '北京大学',
-          content: '北京大学老二次元了',
+          taskName: 'LEGO Minifigures Classification',
+          content: '"Do or do not. There is no try" - Yoda',
           sourceName: 'demo_01',
           tableName: 'BJ_1898',
           desc: '北京大学（Peking University），简称“北大”，由中华人民共和国教育部直属，中央直管副部级建制。位列“双一流”、“211工程”、“985工程”，入选“基础学科拔尖学生培养试验计划”、“高等学校创新能力提升计划”、“高等学校学科创新引智计划”，为九校联盟、松联盟、中国大学校长联谊会、京港大学联盟、亚洲大学联盟、东亚研究型大学协会、国际研究型大学联盟、环太平洋大学联盟、21世纪学术联盟、东亚四大学论坛、国际公立大学论坛、中俄综合性大学联盟成员。',
@@ -250,6 +263,8 @@ export default {
         }
       ],
       form: {},
+      sourceList: [],
+      tableList: [],
       isUpload: true,
       isLink: false,
       isGitHub: false,
@@ -282,6 +297,7 @@ export default {
       })
     },
     AddList() {
+      this.getJdbcDs()
       this.dialogAddVisible = true
     },
     Search() {
@@ -335,7 +351,7 @@ export default {
           id: Date.parse(new Date()),
           taskName: this.form.taskName,
           name: this.form.name,
-          content: '',
+          content: this.form.content,
           desc: this.form.desc,
           sourceName: this.form.sourceName,
           tableName: this.form.tableName,
@@ -346,6 +362,58 @@ export default {
       console.log(JSON.stringify(this.ObjList))
       localStorage.setItem('newData', JSON.stringify(this.ObjList))
       this.dialogAddVisible = false
+    },
+    // 获取数据源
+    getJdbcDs(type) {
+      this.loading = true
+      jdbcDsList(this.jdbcDsQuery).then(response => {
+        const { records } = response
+        console.log(records)
+        this.sourceList = records
+      })
+    },
+    // schema 切换
+    schemaChange(e) {
+      this.form.sourceName = e
+      console.log(e)
+      // 获取可用表
+      this.getTables('rdbmsReader')
+    },
+    // 获取表名
+    getTables(type) {
+      if (type === 'rdbmsReader') {
+        let obj = {}
+        if (this.dataSource === 'postgresql' || this.dataSource === 'greenplum' || this.dataSource === 'oracle' || this.dataSource === 'sqlserver') {
+          obj = {
+            tableSchema: this.form.sourceName
+          }
+          console.log(this.sourceList)
+          for (let i = 0; i < this.sourceList.length; i++) {
+            if (this.form.sourceName === this.sourceList[i].datasourceName) {
+              // obj.append('datasourceId', this.sourceList[i].datasourceId)
+              console.log()
+              obj.datasourceId = this.sourceList[i].id
+            }
+          }
+        } else {
+          obj = {}
+          console.log(this.sourceList)
+          for (let i = 0; i < this.sourceList.length; i++) {
+            if (this.form.sourceName === this.sourceList[i].datasourceName) {
+              // obj.append('datasourceId', this.sourceList[i].datasourceId)
+              obj.datasourceId = this.sourceList[i].id
+            }
+          }
+          console.log(obj)
+        }
+        // 组装
+        dsQueryApi.getTables(obj).then(response => {
+          if (response) {
+            this.tableList = response
+            console.log(response)
+          }
+        })
+      }
     },
     // 只要文件上传成功, 都会调用这个函数
     handleSuccess(response, file, fileList) {
