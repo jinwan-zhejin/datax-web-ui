@@ -27,6 +27,7 @@
 
     .scrollbar-wrapper {
       overflow-x: hidden !important;
+      border-right: 1px solid #cccccc;
     }
 
     .el-scrollbar__bar.is-vertical {
@@ -72,7 +73,7 @@
     }
 
     .is-active>.el-submenu__title {
-      color: $subMenuActiveText !important;
+      color: $menuText !important;
     }
 
     & .nest-menu .el-submenu>.el-submenu__title,
@@ -116,6 +117,10 @@
 
         .svg-icon {
           margin-left: 20px;
+        }
+
+        .sub-el-icon {
+          margin-left: 19px;
         }
 
         .el-submenu__icon-arrow {
@@ -177,6 +182,11 @@
   &>.el-menu {
     .svg-icon {
       margin-right: 16px;
+      color: gray;
+    }
+    .sub-el-icon {
+      margin-right: 12px;
+      margin-left: -2px;
     }
   }
 
