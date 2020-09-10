@@ -9,16 +9,15 @@ $yellow:#FEC171;
 $panGreen: #30B08F;
 
 // sidebar
-$menuText:#bfcbd9;
-$menuActiveText:#409EFF;
+$menuText:#6a727a;
+$menuActiveText:#1b75cf;
 $subMenuActiveText:#f4f4f5; // https://github.com/ElemeFE/element/issues/12951
 
-$menuBg:#304156;
-$menuHover:#263445;
+$menuBg:#ffffff;
+$menuHover:#d3dae0;
 
-$subMenuBg:#1f2d3d;
-$subMenuHover:#001528;
-
+$subMenuBg:#ffffff;
+$subMenuHover:#ffffff;
 $sideBarWidth: 210px;
 
 // the :export directive is the magic sauce for webpack

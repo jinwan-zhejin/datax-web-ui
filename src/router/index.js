@@ -153,13 +153,13 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/jobProject',
     name: 'datasource',
-    meta: { title: '项目管理', icon: 'project' },
+    meta: { title: '项目管理', icon: 'excel' },
     children: [
       {
         path: 'jobProject',
         name: 'jobProject',
         component: () => import('@/views/datax/jobProject/index'),
-        meta: { title: '项目管理', icon: 'project' }
+        meta: { title: '项目管理', icon: 'excel' }
       }
     ]
   },
@@ -168,32 +168,32 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/job',
     name: 'job',
-    meta: { title: '任务管理', icon: 'work' },
+    meta: { title: '任务管理', icon: 'component' },
     children: [
 
       {
         path: 'jobInfo',
         name: 'JobInfo',
         component: () => import('@/views/datax/jobInfo/index'),
-        meta: { title: '任务管理', icon: 'task-cfg' }
+        meta: { title: '任务管理', icon: 'renwu' }
       },
       {
         path: 'jsonBuild',
         name: 'JsonBuild',
         component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '任务构建', icon: 'guide', noCache: false }
+        meta: { title: '任务构建', icon: 'guide' }
       },
       {
         path: 'jsonBuildBatch',
         name: 'JsonBuildBatch',
         component: () => import('@/views/datax/json-build-batch/index'),
-        meta: { title: '任务批量构建', icon: 'batch-create', noCache: false }
+        meta: { title: '任务批量构建', icon: 'clipboard' }
       },
       {
         path: 'jobTemplate',
         name: 'JobTemplate',
         component: () => import('@/views/datax/jobTemplate/index'),
-        meta: { title: 'DataX任务模板', icon: 'task-tmp' }
+        meta: { title: 'DataX任务模板', icon: 'renwu_1' }
       }
     ]
   },
@@ -208,7 +208,7 @@ export const asyncRoutes = [
         path: 'jdbcDatasource',
         name: 'JdbcDatasource',
         component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '数据源管理', icon: 'cfg-datasouce' }
+        meta: { title: '数据源管理', icon: 'table' }
       }
     ]
   },
@@ -223,7 +223,7 @@ export const asyncRoutes = [
         path: 'jobLog',
         name: 'JobLog',
         component: () => import('@/views/datax/jobLog/index'),
-        meta: { title: '日志管理', icon: 'log' }
+        meta: { title: '日志管理', icon: 'documentation' }
       }
     ]
   },
@@ -238,7 +238,7 @@ export const asyncRoutes = [
         path: 'executor',
         name: 'Executor',
         component: () => import('@/views/datax/executor/index'),
-        meta: { title: '执行器管理', icon: 'exe-cfg' }
+        meta: { title: '执行器管理', icon: 'yun' }
       }
     ]
   },
@@ -253,7 +253,7 @@ export const asyncRoutes = [
         path: 'user',
         name: 'User',
         component: () => import('@/views/datax/user/index'),
-        meta: { title: '用户管理', icon: 'table' }
+        meta: { title: '用户管理', icon: 'user' }
       }
     ]
   },
@@ -262,13 +262,32 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/registry',
     name: 'registry',
-    meta: { title: '资源监控', icon: 'work' },
     children: [
       {
         path: 'registry',
         name: 'Registry',
         component: () => import('@/views/datax/registry/index'),
-        meta: { title: '资源监控', icon: 'battery-line' }
+        meta: { title: '资源监控', icon: 'chart' }
+      }
+    ]
+  },
+  {
+    path: '/dataExplore',
+    component: Layout,
+    redirect: '/dataExplore/dataDiscovery',
+    children: [
+      {
+        path: 'dataDiscovery',
+        name: 'DataDiscovery',
+        component: () => import('@/views/dataExplore/index.vue'),
+        meta: { title: '数据探查', icon: 'eye-open' }
+      },
+      {
+        path: 'details',
+        name: 'details',
+        hidden: true,
+        component: () => import('@/views/dataExplore/details.vue'),
+        meta: { title: '探查详情', noCache: true, activeMenu: '/dataExplore/dataDiscovery' }
       }
     ]
   },
