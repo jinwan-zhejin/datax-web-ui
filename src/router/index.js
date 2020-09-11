@@ -163,6 +163,7 @@ export const asyncRoutes = [
       }
     ]
   },
+
   {
     path: '/datax/job',
     component: Layout,
@@ -181,7 +182,31 @@ export const asyncRoutes = [
         path: 'jsonBuild',
         name: 'JsonBuild',
         component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '任务构建', icon: 'guide' }
+        meta: { title: 'DataX任务构建', icon: 'guide' }
+      },
+      {
+        path: 'importJob',
+        name: 'importJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '引入任务构建', icon: 'nested' }
+      },
+      {
+        path: 'exportJob',
+        name: 'exportJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '导出任务构建', icon: 'example' }
+      },
+      {
+        path: 'computeJob',
+        name: 'computeJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '计算任务构建', icon: 'list' }
+      },
+      {
+        path: 'sqlJob',
+        name: 'sqlJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: 'SQL任务构建', icon: 'component' }
       },
       {
         path: 'jsonBuildBatch',
@@ -212,52 +237,86 @@ export const asyncRoutes = [
         path: 'metaModel',
         name: 'metaModel',
         component: () => import('@/views/datax/metaModel/index'),
-        meta: { title: '数据元', icon: 'task-cfg' }
+        meta: { title: '质量规则', icon: 'task-cfg' }
       },
-      {
-        path: 'dataCollect',
-        name: 'dataCollect',
-        component: () => import('@/views/datax/dataCollect/index'),
-        meta: { title: '数据集', icon: 'guide' }
-      },
+      // {
+      //   path: 'dataCollect',
+      //   name: 'dataCollect',
+      //   component: () => import('@/views/datax/dataCollect/index'),
+      //   meta: { title: '数据集', icon: 'guide' }
+      // },
       {
         path: 'BusinessTerms',
         name: 'BusinessTerms',
         component: () => import('@/views/datax/BusinessTerms/index'),
-        meta: { title: '业务术语', icon: 'batch-create' }
+        meta: { title: '业务术语', icon: 'form' }
       },
       {
         path: 'DocumentManage',
         name: 'DocumentManage',
         component: () => import('@/views/datax/DocumentManage/index'),
-        meta: { title: '文档管理', icon: 'task-tmp' }
+        meta: { title: '文档管理', icon: 'documentation' }
       },
       {
         path: 'standardCheck',
         name: 'standardCheck',
         component: () => import('@/views/datax/standardCheck/index'),
-        meta: { title: '标准审核', icon: 'task-tmp' }
+        meta: { title: '标准审核', icon: 'tab' }
       },
-      {
-        path: 'dataQuality',
-        name: 'dataQuality',
-        component: () => import('@/views/datax/dataQuality/index'),
-        meta: { title: '规则设计', icon: 'task-tmp' }
-      },
+      // {
+      //   path: 'dataQuality',
+      //   name: 'dataQuality',
+      //   component: () => import('@/views/datax/dataQuality/index'),
+      //   meta: { title: '规则设计', icon: 'task-tmp' }
+      // },
       {
         path: 'question',
         name: 'question',
         component: () => import('@/views/datax/question/index'),
-        meta: { title: ' 问题数据', icon: 'task-tmp' }
+        meta: { title: ' 问题数据', icon: 'icon' }
       },
     ]
   },
-
+{
+    path: '/model',
+    component: Layout,
+    redirect: '/model',
+    name: 'modeldesign',
+    meta: { title: '数据建模', icon: 'excel' },
+    children: [
+      {
+        path: 'design',
+        name: 'design',
+        component: () => import('@/views/datax/jobProject/index'),
+        meta: { title: '数据建模', icon: 'education' }
+      }
+    ]
+  },
+{
+    path: '/dataExplore',
+    component: Layout,
+    redirect: '/dataExplore/dataDiscovery',
+    children: [
+      {
+        path: 'dataDiscovery',
+        name: 'DataDiscovery',
+        component: () => import('@/views/dataExplore/index.vue'),
+        meta: { title: '数据探查', icon: 'eye-open' }
+      },
+      {
+        path: 'details',
+        name: 'details',
+        hidden: true,
+        component: () => import('@/views/dataExplore/details.vue'),
+        meta: { title: '探查详情', noCache: true, activeMenu: '/dataExplore/dataDiscovery' }
+      }
+    ]
+  },
 
   {
     path: '/datax/datasource',
     component: Layout,
-    redirect: '/datax/jdbc-datasource',
+    redirect: '/datax/datasource',
     name: 'datasource',
     meta: { title: '数据源管理', icon: 'cfg-datasouce' },
     children: [
@@ -265,7 +324,13 @@ export const asyncRoutes = [
         path: 'jdbcDatasource',
         name: 'JdbcDatasource',
         component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '数据源管理', icon: 'table' }
+        meta: { title: '普通数据源', icon: 'table' }
+      },
+      {
+        path: 'jdbcDatasource2',
+        name: 'JdbcDatasource2',
+        component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
+        meta: { title: '计算数据源', icon: 'tree-table' }
       }
     ]
   },
@@ -328,28 +393,9 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/dataExplore',
-    component: Layout,
-    redirect: '/dataExplore/dataDiscovery',
-    children: [
-      {
-        path: 'dataDiscovery',
-        name: 'DataDiscovery',
-        component: () => import('@/views/dataExplore/index.vue'),
-        meta: { title: '数据探查', icon: 'eye-open' }
-      },
-      {
-        path: 'details',
-        name: 'details',
-        hidden: true,
-        component: () => import('@/views/dataExplore/details.vue'),
-        meta: { title: '探查详情', noCache: true, activeMenu: '/dataExplore/dataDiscovery' }
-      }
-    ]
-  },
+
   // 数据质量
-  
+
   toolRouter,
   { path: '*', redirect: '/404', hidden: true }
 ]
