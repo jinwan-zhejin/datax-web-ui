@@ -197,6 +197,63 @@ export const asyncRoutes = [
       }
     ]
   },
+
+  // 数据质量
+
+  {
+    path: '/datax/quality',
+    component: Layout,
+    redirect: '/datax/quality',
+    name: 'quality',
+    meta: { title: '数据质量', icon: 'work' },
+    children: [
+
+      {
+        path: 'metaModel',
+        name: 'metaModel',
+        component: () => import('@/views/datax/metaModel/index'),
+        meta: { title: '数据元', icon: 'task-cfg' }
+      },
+      {
+        path: 'dataCollect',
+        name: 'dataCollect',
+        component: () => import('@/views/datax/dataCollect/index'),
+        meta: { title: '数据集', icon: 'guide' }
+      },
+      {
+        path: 'BusinessTerms',
+        name: 'BusinessTerms',
+        component: () => import('@/views/datax/BusinessTerms/index'),
+        meta: { title: '业务术语', icon: 'batch-create' }
+      },
+      {
+        path: 'DocumentManage',
+        name: 'DocumentManage',
+        component: () => import('@/views/datax/DocumentManage/index'),
+        meta: { title: '文档管理', icon: 'task-tmp' }
+      },
+      {
+        path: 'standardCheck',
+        name: 'standardCheck',
+        component: () => import('@/views/datax/standardCheck/index'),
+        meta: { title: '标准审核', icon: 'task-tmp' }
+      },
+      {
+        path: 'dataQuality',
+        name: 'dataQuality',
+        component: () => import('@/views/datax/dataQuality/index'),
+        meta: { title: '规则设计', icon: 'task-tmp' }
+      },
+      {
+        path: 'question',
+        name: 'question',
+        component: () => import('@/views/datax/question/index'),
+        meta: { title: ' 问题数据', icon: 'task-tmp' }
+      },
+    ]
+  },
+
+
   {
     path: '/datax/datasource',
     component: Layout,
@@ -291,6 +348,8 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 数据质量
+  
   toolRouter,
   { path: '*', redirect: '/404', hidden: true }
 ]
