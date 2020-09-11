@@ -209,6 +209,68 @@ export const asyncRoutes = [
       }
     ]
   },
+
+  // 数据质量
+
+  {
+    path: '/datax/quality',
+    component: Layout,
+    redirect: '/datax/quality',
+    name: 'quality',
+    meta: { title: '数据质量', icon: 'shujuzhiliang' },
+    children: [
+
+      {
+        path: 'metaModel',
+        name: 'metaModel',
+        component: () => import('@/views/datax/metaModel/index'),
+        meta: { title: '数据元', icon: 'biaozhunhuazhanxian' }
+      },
+      {
+        path: 'dataCollect',
+        name: 'dataCollect',
+        component: () => import('@/views/datax/dataCollect/index'),
+        meta: { title: '数据集', icon: 'shujujiguanli' }
+      },
+      {
+        path: 'BusinessTerms',
+        name: 'BusinessTerms',
+        component: () => import('@/views/datax/BusinessTerms/index'),
+        meta: { title: '业务术语', icon: 'business' }
+      },
+      {
+        path: 'DocumentManage',
+        name: 'DocumentManage',
+        component: () => import('@/views/datax/DocumentManage/index'),
+        meta: { title: '文档管理', icon: 'documentation' }
+      },
+      {
+        path: 'standardCheck',
+        name: 'standardCheck',
+        component: () => import('@/views/datax/standardCheck/index'),
+        meta: { title: '标准审核', icon: 'shenhe' }
+      },
+      {
+        path: 'dataQuality',
+        name: 'dataQuality',
+        component: () => import('@/views/datax/dataQuality/index'),
+        meta: { title: '规则设计', icon: 'shuju' }
+      },
+      {
+        path: 'general',
+        name: 'general',
+        component: () => import('@/views/datax/general/index'),
+        meta: { title: ' 通用规则', icon: 'guize' }
+      },
+      {
+        path: 'individuation',
+        name: 'individuation',
+        component: () => import('@/views/datax/individuation/index'),
+        meta: { title: ' 个性化规则', icon: 'guize_1' }
+      }
+    ]
+  },
+
   {
     path: '/datax/datasource',
     component: Layout,
@@ -303,6 +365,8 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 数据质量
+
   toolRouter,
   { path: '*', redirect: '/404', hidden: true }
 ]
