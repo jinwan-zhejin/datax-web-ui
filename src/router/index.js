@@ -95,6 +95,18 @@ export const constantRoutes = [
         meta: { title: '元数据管理', icon: 'dashboard', keepAlive: true }
       }
     ]
+  },
+  {
+    path: '/dataDev',
+    component: Layout,
+    children: [
+      {
+        path: '/dataDev',
+        component: () => import('@/views/dataDev/dataDev'),
+        name: 'dataDev',
+        meta: { title: '数据开发', icon: 'dashboard', keepAlive: true }
+      }
+    ]
   }
 ]
 
