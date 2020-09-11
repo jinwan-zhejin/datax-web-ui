@@ -125,20 +125,30 @@
                   >
                     <template slot="header" slot-scope="scope">
                       <div class="t_header_01">
-                        <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
-                        <span style="marginLeft:10px">日期</span>
-                        <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
+                        <el-popover
+                          placement="bottom"
+                          width="200"
+                          height="250"
+                          trigger="click"
+                        >
+                          <p><i class="el-icon-top" /><span>升序</span></p>
+                          <p><i class="el-icon-bottom" /><span>降序</span></p>
+                          <div class="block" style="padding:20px">
+                            <el-slider
+                              v-model="range"
+                              range
+                              :marks="marks"
+                            />
+                          </div>
+                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                          <el-button type="primary">应用</el-button>
+                          <span slot="reference">
+                            <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
+                            <span style="marginLeft:10px">日期</span>
+                            <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
+                          </span>
+                        </el-popover>
                       </div>
-                      <el-popover
-                        v-model="visible"
-                        placement="bottom"
-                        width="200"
-                        height="400"
-                        trigger="click"
-                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-                      >
-                        <el-button>123</el-button>
-                      </el-popover>
                       <div class="t_header_02">
                         <span>{{ obj.number }}</span>
                       </div>
@@ -151,9 +161,29 @@
                   >
                     <template slot="header" slot-scope="scope">
                       <div class="t_header_01">
-                        <i style="float:left;" class="el-icon-s-order" />
-                        <span style="marginLeft:10px">姓名</span>
-                        <i style="float:right;" class="el-icon-s-data" />
+                        <el-popover
+                          placement="bottom"
+                          width="200"
+                          height="250"
+                          trigger="click"
+                        >
+                          <p><i class="el-icon-top" /><span>升序</span></p>
+                          <p><i class="el-icon-bottom" /><span>降序</span></p>
+                          <div class="block" style="padding:20px">
+                            <el-slider
+                              v-model="range"
+                              range
+                              :marks="marks"
+                            />
+                          </div>
+                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                          <el-button type="primary">应用</el-button>
+                          <span slot="reference">
+                            <i style="float:left;" class="el-icon-s-order" />
+                            <span style="marginLeft:10px">姓名</span>
+                            <i style="float:right;" class="el-icon-s-data" />
+                          </span>
+                        </el-popover>
                       </div>
                       <div class="t_header_02">
                         <span>{{ obj.number }}</span>
@@ -166,9 +196,29 @@
                   >
                     <template slot="header" slot-scope="scope">
                       <div class="t_header_01">
-                        <i style="float:left;" class="el-icon-s-order" />
-                        <span style="marginLeft:10px">地址</span>
-                        <i style="float:right;" class="el-icon-s-data" />
+                        <el-popover
+                          placement="bottom"
+                          width="200"
+                          height="250"
+                          trigger="click"
+                        >
+                          <p><i class="el-icon-top" /><span>升序</span></p>
+                          <p><i class="el-icon-bottom" /><span>降序</span></p>
+                          <div class="block" style="padding:20px">
+                            <el-slider
+                              v-model="range"
+                              range
+                              :marks="marks"
+                            />
+                          </div>
+                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                          <el-button type="primary">应用</el-button>
+                          <span slot="reference">
+                            <i style="float:left;" class="el-icon-s-order" />
+                            <span style="marginLeft:10px">地址</span>
+                            <i style="float:right;" class="el-icon-s-data" />
+                          </span>
+                        </el-popover>
                       </div>
                       <div class="t_header_02">
                         <span>{{ obj.number }}</span>
@@ -322,7 +372,12 @@ export default {
       isTags: false,
       ibj: {},
       activeDesc: '1',
-      activeSummary: '1'
+      activeSummary: '1',
+      range: [0, 100],
+      marks: {
+        0: '34.6m',
+        100: '60.5m'
+      }
     }
   },
   created() {
@@ -518,6 +573,14 @@ export default {
                     border-bottom: 1px solid rgb(230, 230, 230);
                     padding-bottom: 10px;
                     padding: 0px 10px;
+                    cursor: pointer;
+                    .el-popover {
+                      p {
+                        i {
+                          margin-right: 20px;
+                        }
+                      }
+                    }
                     i {
                       margin-top:50px;
                       transform: translateY(-50%);
@@ -596,6 +659,15 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+  .el-popover {
+    padding: 20px;
+    .block {
+      padding: 20px;
+      .el-slider__marks-text {
+        width: 40px;
       }
     }
   }
