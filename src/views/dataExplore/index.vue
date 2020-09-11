@@ -43,20 +43,20 @@
         :visible.sync="dialogAddVisible"
         width="50%"
       >
-        <div class="dia_lt">
+        <!-- <div class="dia_lt">
           <i class="el-icon-upload" @click="showUpload" />
           <i class="el-icon-link" @click="showLink" />
-          <!-- <svg-icon icon-class="github" @click="showGitHub" />
+          <svg-icon icon-class="github" @click="showGitHub" />
           <i class="el-icon-s-help" @click="showList" />
-          <svg-icon style="marginTop:150px;" icon-class="shezhi" @click="showSet" /> -->
-        </div>
+          <svg-icon style="marginTop:150px;" icon-class="shezhi" @click="showSet" />
+        </div> -->
         <div class="dia_rg">
           <i class="el-icon-close" @click="closeDialog" />
           <div class="top">
             <!-- <el-input v-model="dia_search" /> -->
           </div>
           <!-- 文件上传 -->
-          <div v-if="isUpload" class="action">
+          <!-- <div v-if="isUpload" class="action">
             <p class="help">Drop your files and folders here</p>
             <div class="box">
               <svg-icon icon-class="clipboard" />
@@ -75,7 +75,7 @@
             >
               <el-button size="small" type="primary" round>点击上传</el-button>
             </el-upload>
-          </div>
+          </div> -->
           <!-- link链接 -->
           <div v-if="isLink" class="Link">
             <!-- <h2>Remote Files</h2>
@@ -97,7 +97,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="数据库表名">
-                <el-select v-model="form.tableName" placeholder="Unknown">
+                <el-select v-model="form.tableName" placeholder="请选择数据库表名">
                   <el-option
                     v-for="item in tableList"
                     :key="item"
@@ -120,6 +120,21 @@
               </el-form-item>
               <el-form-item label="描述">
                 <el-input v-model="form.desc" type="textarea" autosize />
+              </el-form-item>
+              <el-form-item label="图片上传">
+                <el-upload
+                  ref="uploaddemo"
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :limit="1"
+                  :on-success="handleSuccess"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :http-request="uploadFile"
+                  :file-list="fileList"
+                >
+                  <el-button size="small" type="primary" round>点击上传</el-button>
+                </el-upload>
               </el-form-item>
             </el-form>
           </div>
@@ -265,8 +280,8 @@ export default {
       form: {},
       sourceList: [],
       tableList: [],
-      isUpload: true,
-      isLink: false,
+      isUpload: false,
+      isLink: true,
       isGitHub: false,
       isList: false,
       isSet: false
@@ -284,7 +299,8 @@ export default {
     fetchData() {
       this.listLoading = true
       getList().then(response => {
-        this.list = response.data.items
+        console.log(response)
+        this.list = response.content.data
         this.listLoading = false
       })
     },
@@ -298,6 +314,7 @@ export default {
     },
     AddList() {
       this.getJdbcDs()
+      this.form.name = localStorage.getItem('roles').split('_')[1].split('"')[0]
       this.dialogAddVisible = true
     },
     Search() {
@@ -324,7 +341,6 @@ export default {
       this.isUpload = false
       this.isLink = true
       this.isGitHub = false
-      this.form.name = localStorage.getItem('roles').split('_')[1].split('"')[0]
     },
     showGitHub() {
       this.isUpload = false
@@ -556,7 +572,7 @@ export default {
         }
         .dia_rg {
           float: right;
-          width: 90%;
+          width: 100%;
           height: 100%;
           position: relative;
           padding-bottom: 60px;
@@ -634,6 +650,11 @@ export default {
                 margin-top: 10px;
                 span {
                   width: 20%;
+                }
+              }
+              .el-form-item {
+                .explore-container ul {
+                  border: none;
                 }
               }
             }

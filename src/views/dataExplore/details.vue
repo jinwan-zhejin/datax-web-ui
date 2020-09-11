@@ -128,17 +128,17 @@
                         <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
                         <span style="marginLeft:10px">日期</span>
                         <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
-                        <el-popover
-                          v-model="visible"
-                          placement="bottom"
-                          width="200"
-                          height="400"
-                          trigger="click"
-                          content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-                        >
-                          <el-button>123</el-button>
-                        </el-popover>
                       </div>
+                      <el-popover
+                        v-model="visible"
+                        placement="bottom"
+                        width="200"
+                        height="400"
+                        trigger="click"
+                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+                      >
+                        <el-button>123</el-button>
+                      </el-popover>
                       <div class="t_header_02">
                         <span>{{ obj.number }}</span>
                       </div>
