@@ -1,7 +1,7 @@
 <template>
   <div class="individuation">
     <el-radio-group v-model="radio1">
-      <el-radio-button type="primary" label="代码入参集" />
+      <!-- <el-radio-button type="primary" label="代码入参集" /> -->
       <el-radio-button type="primary" label="其他入参集" />
     </el-radio-group>
     <div class="top">
@@ -22,6 +22,7 @@
     <!-- 表格 -->
     <el-table
       :data="tableData"
+      border
       style="width: 100%"
     >
       <el-table-column
@@ -52,7 +53,7 @@
         label="入参表达式"
       >
         <template v-slot:default="row">
-          <a @click="view(row)">查看</a>
+          <el-tag size="medium" style="cursor: pointer;" effect="dark" @click="view(row)">查看</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -60,8 +61,8 @@
         label="操作栏"
       >
         <template v-slot:default="row">
-          <a style="marginRight: 100px;" @click="showEdit(row)">编辑</a>
-          <a @click="open(row)">删除</a>
+          <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
+          <el-tag style="cursor: pointer;" size="medium" effect="dark" @click="open(row)">删除</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -97,9 +98,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="入参编码" prop="code">
-          <el-input v-model="addForm.code1" placeholder="GS" style="width:30%;marginRight: 2px" />
+          <el-input v-model="addForm.code1" disabled style="width:30%;marginRight: 2px" />
           <el-input v-model="addForm.code2" placeholder="示例:XBWA" style="width:30%;marginRight: 2px" />
-          <el-input v-model="addForm.code3" placeholder="示例:01" style="width:30%;" /><i class="el-icon-info" />
+          <el-input v-model="addForm.code3" placeholder="示例:01" style="width:30%;" />
+          <el-tooltip class="item" effect="dark" content="前半部分为4个字母内指标名称缩写(大写字母),后半部分为2个阿拉伯数字区分" placement="top">
+            <i class="el-icon-info" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="入参表达式" prop="expression">
           <el-input v-model="addForm.expression" placeholder="请输入入参表达式" type="textarea" />
@@ -267,6 +271,48 @@ export default {
       currentPage4: 4
     }
   },
+  watch: {
+    'addForm.type': {
+      handler(newName, oldName) {
+        console.log(newName, oldName)
+        if (newName === '格式入参集') {
+          this.addForm.code1 = 'GS'
+        } else if (newName === '长度入参集') {
+          this.addForm.code1 = 'CD'
+        } else if (newName === '特殊字符入参集') {
+          this.addForm.code1 = 'ZF'
+        } else if (newName === '数据范围入参集') {
+          this.addForm.code1 = 'DR'
+        } else if (newName === '编码入参集') {
+          this.addForm.code1 = 'BM'
+        } else {
+          this.addForm.code1 = ''
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    'editForm.type': {
+      handler(newName, oldName) {
+        console.log(newName, oldName)
+        if (newName === '格式入参集') {
+          this.editForm.code1 = 'GS'
+        } else if (newName === '长度入参集') {
+          this.editForm.code1 = 'CD'
+        } else if (newName === '特殊字符入参集') {
+          this.editForm.code1 = 'ZF'
+        } else if (newName === '数据范围入参集') {
+          this.editForm.code1 = 'DR'
+        } else if (newName === '编码入参集') {
+          this.editForm.code1 = 'BM'
+        } else {
+          this.editForm.code1 = ''
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   methods: {
     showAdd() {
       this.AddVisible = true
@@ -370,8 +416,8 @@ export default {
     }
     .el-table {
       .el-table-column {
-        a {
-          color: slateblue;
+        .el-tag {
+          cursor: pointer;
         }
       }
     }
