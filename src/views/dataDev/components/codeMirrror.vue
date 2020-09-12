@@ -1,10 +1,10 @@
 <template>
   <div>
     <div :style="{height:`${sqlHeight}px !important`}" class="sqlArea">
-      <textarea ref="mycode" class="codesql" v-model="code"></textarea>
+      <textarea @click.native="chooseSql" ref="mycode" class="codesql" v-model="code"></textarea>
     </div>
     <div class="btnContent">
-      <el-button size="mini" type="success">
+      <el-button size="mini" type="success" @click="$emit('querysql')">
         <i class="el-icon-refresh"></i> 运行查询
       </el-button>
       <el-button size="mini">
@@ -29,16 +29,22 @@ require("codemirror/addon/hint/show-hint");
 require("codemirror/addon/hint/sql-hint");
 export default {
   name: "CodeMirror",
-  props: ['sqlHeight'],
+  props: ["sqlHeight"],
   data() {
     return {
       code:
-        "-- 注意: 除非您保存了查询，否则如果您清空了cookie或者更换了浏览器，这些查询不会保留.",
+        "",
     };
+  },
+  methods: {
+    chooseSql() {
+      console.log(window.getSelection());
+    },
   },
   mounted() {
     let mime = "text/x-sql";
     let theme = "ambiance"; //设置主题，不设置的会使用默认主题
+    const _this = this;
     let editor = CodeMirror.fromTextArea(this.$refs.mycode, {
       mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
       indentWithTabs: true,
@@ -47,18 +53,27 @@ export default {
       matchBrackets: true,
       // theme: theme,
       // autofocus: true,
-      // extraKeys: { Ctrl: 'autocomplete' }, // 自定义快捷键
+      // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
       hintOptions: {
-        // 自定义提示选项
+        // 自定义提示选项,
+        completeSingle: false,
         tables: {
           //   users: ['name', 'score', 'birthDate'],
           //   countries: ['name', 'population', 'size']
         },
       },
+      configureMouse(){
+        console.log(window.getSelection());
+        return {
+          unit: 'word'
+        } 
+      },
     });
     // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
-    editor.on("cursorActivity", function () {
+    editor.on("cursorActivity", function (ins) {
       editor.showHint();
+      _this.code = editor.getValue();
+      _this.$store.dispatch('graphQL/changeMirror', _this.code)
     });
   },
   watch: {

@@ -2,12 +2,14 @@
   <el-tabs type="border-card">
     <el-tab-pane label="结果">
       <el-table :data="tableData" style="width: 100%" max-height="350">
-        <el-table-column fixed prop="date" label="日期" width="150"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="120"></el-table-column>
-        <el-table-column prop="province" label="省份" width="120"></el-table-column>
-        <el-table-column prop="city" label="市区" width="120"></el-table-column>
-        <el-table-column prop="address" label="地址" width="300"></el-table-column>
-        <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+        <el-table-column
+          v-for="item in columns"
+          :key="item.label"
+          :prop="item.label"
+          :label="item.label"
+          width="120"
+        >
+        </el-table-column>
       </el-table>
     </el-tab-pane>
     <el-tab-pane label="历史查询">历史查询</el-tab-pane>
@@ -15,9 +17,23 @@
 </template>
 
 <script>
-import { createConnection } from '@/graghQL/demo';
+import {
+  createConnection,
+  initConnection,
+  sqlContextCreate,
+  asyncSqlExecuteQuery,
+  getAsyncTaskInfo,
+  getSqlExecuteTaskResults,
+} from "@/graphQL/graphQL";
 export default {
   name: "TableDetail",
+  data() {
+    return {
+      columns: [],
+      tableData: [],
+      connectionId: "",
+    };
+  },
   methods: {
     deleteRow(index, rows) {
       rows.splice(index, 1);
@@ -39,54 +55,84 @@ export default {
       };
       createConnection(params)
         .then((res) => {
-          console.log("request success");
-          console.log(res.data);
+          this.connectionId = res.data.createConnection.id;
+          return res.data.createConnection.id;
         })
-        .catch((err) => {
-          console.log(err);
+        .then((res) => {
+          let params = {
+            id: res,
+            credentials: {
+              userName: "root",
+              userPassword: "1QAZ@wsx",
+            },
+          };
+          initConnection(params)
+            .then((res) => {
+              // console.log(res);
+              return res.data.connection.id;
+            })
+            .then((res) => {
+              let params = { connectionId: res };
+              sqlContextCreate(params)
+                .then((res) => {
+                  return res.data.context.id;
+                })
+                .then((res) => {
+                  let params = {
+                    connectionId: this.connectionId,
+                    contextId: res,
+                    query: this.$store.state.graphQL.codeMirrorVal, //sql语句
+                    filter: { offset: 0, limit: 200, constraints: [] },
+                  };
+                  asyncSqlExecuteQuery(params)
+                    .then((res) => {
+                      return res.data.taskInfo.id;
+                    })
+                    .then((res) => {
+                      let params = { taskId: res, removeOnFinish: false };
+                      setTimeout(() => {
+                        getAsyncTaskInfo(params)
+                          .then((res) => {
+                            if (res.data.taskInfo.status === "Finished") {
+                              return res.data.taskInfo.id;
+                            }
+                          })
+                          .then((res) => {
+                            let params = {
+                              taskId: res,
+                            };
+                            getSqlExecuteTaskResults(params).then((res) => {
+                              console.log(res, "----");
+                              if (!res.data.result.results[0].resultSet) return;
+                              let columns =
+                                res.data.result.results[0].resultSet.columns;
+                              let rows =
+                                res.data.result.results[0].resultSet.rows;
+                              this.columns = columns;
+                              // let rows = my_query_result.rows;
+                              this.tableData = rows.map((ele) => {
+                                let obj = {};
+                                ele.forEach((fieldVal, index) => {
+                                  obj[columns[index].name] = fieldVal;
+                                });
+                                return obj;
+                              });
+                            });
+                          });
+                      }, 3000);
+                    });
+                });
+            });
         });
     },
   },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-      ],
-    };
+  computed: {
+    // codeMirrorVal() {
+    //   return this.$store.state.graphQL.codeMirrorVal;
+    // },
   },
-  mounted(){
-      this.initData()
-  }
+  mounted() {
+    this.initData();
+  },
 };
 </script>
