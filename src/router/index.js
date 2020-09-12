@@ -92,7 +92,7 @@ export const constantRoutes = [
         path: '/cloudbeaver',
         component: () => import('@/views/cloudbeaver/index'),
         name: 'cloudbeaver',
-        meta: { title: '元数据管理', icon: 'dashboard', keepAlive: true }
+        meta: { title: '元数据管理', icon: 'form', keepAlive: true }
       }
     ]
   },
@@ -175,6 +175,7 @@ export const asyncRoutes = [
       }
     ]
   },
+
   {
     path: '/datax/job',
     component: Layout,
@@ -193,7 +194,31 @@ export const asyncRoutes = [
         path: 'jsonBuild',
         name: 'JsonBuild',
         component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '任务构建', icon: 'guide' }
+        meta: { title: 'DataX任务构建', icon: 'guide' }
+      },
+      {
+        path: 'importJob',
+        name: 'importJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '引入任务构建', icon: 'nested' }
+      },
+      {
+        path: 'exportJob',
+        name: 'exportJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '导出任务构建', icon: 'example' }
+      },
+      {
+        path: 'computeJob',
+        name: 'computeJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '计算任务构建', icon: 'list' }
+      },
+      {
+        path: 'sqlJob',
+        name: 'sqlJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: 'SQL任务构建', icon: 'component' }
       },
       {
         path: 'jsonBuildBatch',
@@ -220,17 +245,55 @@ export const asyncRoutes = [
     meta: { title: '数据质量', icon: 'shujuzhiliang' },
     children: [
 
+      // {
+      //   path: 'metaModel',
+      //   name: 'metaModel',
+      //   component: () => import('@/views/datax/metaModel/index'),
+      //   meta: { title: '数据元', icon: 'biaozhunhuazhanxian' }
+      // },
+      // {
+      //   path: 'dataCollect',
+      //   name: 'dataCollect',
+      //   component: () => import('@/views/datax/dataCollect/index'),
+      //   meta: { title: '数据集', icon: 'shujujiguanli' }
+      // },
+      // {
+      //   path: 'dataCollect',
+      //   name: 'dataCollect',
+      //   component: () => import('@/views/datax/dataCollect/index'),
+      //   meta: { title: '数据集', icon: 'guide' }
+      // },
+
+
+      // {
+      //   path: 'dataQuality',
+      //   name: 'dataQuality',
+      //   component: () => import('@/views/datax/dataQuality/index'),
+      //   meta: { title: '规则设计', icon: 'shuju' }
+      // },
+      // {
+      //   path: 'dataQuality',
+      //   name: 'dataQuality',
+      //   component: () => import('@/views/datax/dataQuality/index'),
+      //   meta: { title: '规则设计', icon: 'task-tmp' }
+      // },
       {
-        path: 'metaModel',
-        name: 'metaModel',
-        component: () => import('@/views/datax/metaModel/index'),
-        meta: { title: '数据元', icon: 'biaozhunhuazhanxian' }
+        path: 'general',
+        name: 'general',
+        component: () => import('@/views/datax/general/index'),
+        meta: { title: ' 通用规则', icon: 'guize' }
       },
       {
-        path: 'dataCollect',
-        name: 'dataCollect',
-        component: () => import('@/views/datax/dataCollect/index'),
-        meta: { title: '数据集', icon: 'shujujiguanli' }
+        path: 'individuation',
+        name: 'individuation',
+        component: () => import('@/views/datax/individuation/index'),
+        meta: { title: ' 个性化规则', icon: 'guize_1' }
+      },
+      {
+        path: 'standardCheck',
+        name: 'standardCheck',
+        component: () => import('@/views/datax/standardCheck/index'),
+        meta: { title: '规则审核', icon: 'shenhe' }
       },
       {
         path: 'BusinessTerms',
@@ -244,29 +307,40 @@ export const asyncRoutes = [
         component: () => import('@/views/datax/DocumentManage/index'),
         meta: { title: '文档管理', icon: 'documentation' }
       },
+    ]
+  },
+{
+    path: '/model',
+    component: Layout,
+    redirect: '/model',
+    name: 'modeldesign',
+    meta: { title: '数据建模', icon: 'excel' },
+    children: [
       {
-        path: 'standardCheck',
-        name: 'standardCheck',
-        component: () => import('@/views/datax/standardCheck/index'),
-        meta: { title: '标准审核', icon: 'shenhe' }
+        path: 'design',
+        name: 'design',
+        component: () => import('@/views/datax/jobProject/index'),
+        meta: { title: '数据建模', icon: 'education' }
+      }
+    ]
+  },
+{
+    path: '/dataExplore',
+    component: Layout,
+    redirect: '/dataExplore/dataDiscovery',
+    children: [
+      {
+        path: 'dataDiscovery',
+        name: 'DataDiscovery',
+        component: () => import('@/views/dataExplore/index.vue'),
+        meta: { title: '数据探查', icon: 'eye-open' }
       },
       {
-        path: 'dataQuality',
-        name: 'dataQuality',
-        component: () => import('@/views/datax/dataQuality/index'),
-        meta: { title: '规则设计', icon: 'shuju' }
-      },
-      {
-        path: 'general',
-        name: 'general',
-        component: () => import('@/views/datax/general/index'),
-        meta: { title: ' 通用规则', icon: 'guize' }
-      },
-      {
-        path: 'individuation',
-        name: 'individuation',
-        component: () => import('@/views/datax/individuation/index'),
-        meta: { title: ' 个性化规则', icon: 'guize_1' }
+        path: 'details',
+        name: 'details',
+        hidden: true,
+        component: () => import('@/views/dataExplore/details.vue'),
+        meta: { title: '探查详情', noCache: true, activeMenu: '/dataExplore/dataDiscovery' }
       }
     ]
   },
@@ -274,7 +348,7 @@ export const asyncRoutes = [
   {
     path: '/datax/datasource',
     component: Layout,
-    redirect: '/datax/jdbc-datasource',
+    redirect: '/datax/datasource',
     name: 'datasource',
     meta: { title: '数据源管理', icon: 'cfg-datasouce' },
     children: [
@@ -282,7 +356,13 @@ export const asyncRoutes = [
         path: 'jdbcDatasource',
         name: 'JdbcDatasource',
         component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '数据源管理', icon: 'table' }
+        meta: { title: '普通数据源', icon: 'table' }
+      },
+      {
+        path: 'jdbcDatasource2',
+        name: 'JdbcDatasource2',
+        component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
+        meta: { title: '计算数据源', icon: 'tree-table' }
       }
     ]
   },
@@ -345,26 +425,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/dataExplore',
-    component: Layout,
-    redirect: '/dataExplore/dataDiscovery',
-    children: [
-      {
-        path: 'dataDiscovery',
-        name: 'DataDiscovery',
-        component: () => import('@/views/dataExplore/index.vue'),
-        meta: { title: '数据探查', icon: 'eye-open' }
-      },
-      {
-        path: 'details',
-        name: 'details',
-        hidden: true,
-        component: () => import('@/views/dataExplore/details.vue'),
-        meta: { title: '探查详情', noCache: true, activeMenu: '/dataExplore/dataDiscovery' }
-      }
-    ]
-  },
+
   // 数据质量
 
   toolRouter,
