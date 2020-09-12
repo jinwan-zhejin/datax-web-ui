@@ -39,7 +39,21 @@
         prop="inRule"
         wdith="120"
         label="个性化规则"
-      />
+      >
+        <template v-slot:default="row">
+          <a style="color: skyblue;" @click="goIndividuation(row)">{{ row.row.inRule }}</a>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        wdith="120"
+        label="操作"
+      >
+        <template v-slot:default="row">
+          <el-button type="primary" @click="showEdit(row)">编辑</el-button>
+          <el-button type="primary" @click="open(row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 新增对话框 -->
     <el-dialog
@@ -71,6 +85,38 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="add">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑对话框 -->
+    <el-dialog
+      title="编辑通用规则"
+      :visible.sync="EditVisible"
+      width="40%"
+    >
+      <el-form ref="addForm" :model="editForm" label-position="left" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="规则名称" prop="name">
+          <el-input v-model="editForm.name" placeholder="请输入入参名称" />
+        </el-form-item>
+        <el-form-item label="规则大类" prop="type">
+          <el-select v-model="editForm.type" style="width:100%" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="规则编码" prop="code">
+          <el-input v-model="editForm.code" />
+        </el-form-item>
+        <el-form-item label="规则描述" prop="desc">
+          <el-input v-model="editForm.desc" placeholder="请输入规则描述" type="textarea" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="edit">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 关联个性化规则对话框 -->
@@ -174,6 +220,7 @@ export default {
       currentPage4: 4,
       AddVisible: false,
       RelateVisible: false,
+      EditVisible: false,
       options: [
         {
           label: '完整性',
@@ -201,6 +248,12 @@ export default {
         }
       ],
       addForm: {
+        name: '',
+        code: '',
+        type: '',
+        desc: ''
+      },
+      editForm: {
         name: '',
         code: '',
         type: '',
@@ -330,12 +383,21 @@ export default {
     showAdd() {
       this.AddVisible = true
     },
+    showEdit(row) {
+      console.log(row)
+      this.editForm.name = row.row.ruleName
+      this.editForm.type = row.row.class
+      this.editForm.code = row.row.ruleCode
+      this.editForm.desc = row.row.ruleDesc
+      this.EditVisible = true
+    },
     showRelate() {
       this.RelateVisible = true
     },
     cancel() {
       this.AddVisible = false
       this.RelateVisible = false
+      this.EditVisible = false
       this.form = {}
       this.addForm = {}
     },
@@ -357,6 +419,35 @@ export default {
       }
       this.RelateVisible = false
       this.form = {}
+    },
+    goIndividuation(row) {
+      this.$router.push('/datax/quality/individuation')
+    },
+    open(row) {
+      this.$confirm('确认删除该条数据吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          methods: this.del(row),
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    del(row) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].ruleName === row.row.ruleName) {
+          this.tableData.splice(i, 1)
+        }
+      }
+      console.log(this.tableData)
     }
   }
 }
