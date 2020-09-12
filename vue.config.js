@@ -54,7 +54,19 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
+      },
+      '/dbeaver/gql': {
+        target: 'http://192.168.3.74:8978',
+        changeOrigin: true,
+        // headers: {
+        //   host: "http://192.168.3.74:8978",
+        //   origin: "http://192.168.3.74:8978"
+        // }
+        pathRewrite: {
+          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+        }
       }
+
     },
     after: require('./mock/mock-server.js')
   },
@@ -113,7 +125,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
