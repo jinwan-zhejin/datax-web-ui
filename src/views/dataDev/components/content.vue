@@ -40,7 +40,7 @@
             <template slot="title">
               <p class="tableName">{{tableName}}</p>
             </template>
-            <div style="max-height:300px;overflow:scroll;">
+            <div style="max-height:360px;overflow:scroll;">
               <div v-for="(item) in columnList" :key="item">{{item}}</div>
             </div>
           </el-collapse-item>
@@ -48,7 +48,7 @@
       </div>
     </el-aside>
     <el-main style="padding:0 10px;height:100%;">
-      <CodeMirror :sqlHeight='sqlHeight' @querysql='runQuery' />
+      <CodeMirror :sqlHeight='sqlHeight' :tableList='tableList' :columnList='columnList' @querysql='runQuery' />
       <div class="dragBar">
         <span
           @mousedown="dragging = true"
