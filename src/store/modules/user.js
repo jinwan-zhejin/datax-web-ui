@@ -37,6 +37,7 @@ const actions = {
         const { data } = response.content
         const { roles } = response.content
         commit('SET_TOKEN', data)
+        localStorage.setItem('token', JSON.stringify(data))
         localStorage.setItem('roles', JSON.stringify(roles))
         setToken(data)
         resolve()

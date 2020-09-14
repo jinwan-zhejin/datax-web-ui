@@ -19,24 +19,24 @@
         width="50"
       />
       <el-table-column
-        prop="ruleName"
+        prop="name"
         align="center"
         label="规则名称"
       />
       <el-table-column
-        prop="ruleCode"
+        prop="code"
         align="center"
         label="规则编码"
         width="120"
       />
       <el-table-column
-        prop="ruleDesc"
+        prop="description"
         align="center"
         label="规则描述"
       />
       <el-table-column
         align="center"
-        prop="inRule"
+        prop="personaliseType"
         wdith="120"
         label="个性化规则"
       >
@@ -165,11 +165,11 @@
     <!-- 分页 -->
     <el-pagination
       background
-      :current-page="currentPage4"
+      :current-page="pageNum"
       :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -177,74 +177,41 @@
 </template>
 
 <script>
+import { login } from '@/api/user'
+import { getList, addList, delList } from '@/api/data-general'
 export default {
   data() {
     return {
-      tableData: [
-        {
-          ruleName: '检验字段记录的统一性',
-          ruleCode: 'A001',
-          ruleDesc: '检验字段记录的统一性，若为空则不规范',
-          class: '一致性',
-          inRule: ''
-        },
-        {
-          ruleName: '检验主要字段是否为空',
-          class: '完整性',
-          ruleCode: 'A002',
-          ruleDesc: '检验每张表的必要属性是否为空，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验字段首部是否含有空格',
-          ruleCode: 'A003',
-          class: '准确性',
-          ruleDesc: '检验字段首部是否含有空格，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验个人用户关联字段',
-          ruleCode: 'A004',
-          class: '完整性',
-          ruleDesc: '检验个人用户关联字段，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验数据含有TAB/ENTER键',
-          ruleCode: 'A005',
-          class: '准确性',
-          ruleDesc: '检验数据含有TAB/ENTER键，若为空则不规范',
-          inRule: ''
-        }
-      ],
+      tableData: [],
       currentPage4: 4,
       AddVisible: false,
       RelateVisible: false,
       EditVisible: false,
+      obj: {},
       options: [
         {
           label: '完整性',
-          value: '完整性'
+          value: '0'
         },
         {
           label: '准确性',
-          value: '准确性'
+          value: '1'
         },
         {
           label: '规范性',
-          value: '规范性'
+          value: '2'
         },
         {
           label: '唯一性',
-          value: '唯一性'
+          value: '3'
         },
         {
           label: '一致性',
-          value: '一致性'
+          value: '4'
         },
         {
           label: '关联性',
-          value: '关联性'
+          value: '5'
         }
       ],
       addForm: {
@@ -300,7 +267,12 @@ export default {
         subclass: '',
         classify: ''
       },
-      search: ''
+      search: '',
+      labelCD: '吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱',
+      editIndex: '',
+      pageSize: 50, //  分页条数
+      pageNum: 1, //  当前页
+      total: 0 //  总条数
     }
   },
   watch: {
@@ -371,25 +343,64 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    'editForm.type': {
+      handler(newName, oldName) {
+        console.log(newName, oldName)
+        if (newName === 1) {
+          this.editForm.type = '准确性'
+        } else if (newName === 2) {
+          this.editForm.type = '规范性'
+        } else if (newName === 3) {
+          this.editForm.type = '唯一性'
+        } else if (newName === 4) {
+          this.editForm.type = '一致性'
+        } else if (newName === 5) {
+          this.editForm.type = '关联性'
+        } else if (newName === 0) {
+          this.editForm.type = '完整性'
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
+  created() {
+    this.getAllList()
+  },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    // 获取全部列表
+    getAllList() {
+      getList().then(res => {
+        if (res.code === 200) {
+          console.log(res)
+          this.tableData = res.content.data
+          console.log(this.tableData)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     showAdd() {
       this.AddVisible = true
     },
     showEdit(row) {
       console.log(row)
-      this.editForm.name = row.row.ruleName
-      this.editForm.type = row.row.class
-      this.editForm.code = row.row.ruleCode
-      this.editForm.desc = row.row.ruleDesc
+      this.editForm.name = row.row.name
+      this.editForm.type = row.row.type
+      this.editForm.desc = row.row.description
+      this.editForm.code = row.row.code
       this.EditVisible = true
+    },
+    edit() {
+      console.log(this.editIndex)
+      console.log('123')
+      this.tableData[this.editIndex].ruleName = this.editForm.name
+      this.tableData[this.editIndex].class = this.editForm.type
+      this.tableData[this.editIndex].ruleDesc = this.editForm.desc
+      this.tableData[this.editIndex].ruleCode = this.editForm.code
+      this.EditVisible = false
+      this.editIndex = ''
     },
     showRelate() {
       this.RelateVisible = true
@@ -402,12 +413,34 @@ export default {
       this.addForm = {}
     },
     add() {
-      this.tableData.push({
-        ruleName: this.addForm.name,
-        ruleCode: this.addForm.code,
-        ruleDesc: this.addForm.desc,
-        class: this.addForm.type,
-        inRule: ''
+      if (this.addForm.type === '准确性') {
+        this.editForm.type = 1
+      } else if (this.addForm.type === '规范性') {
+        this.editForm.type = 2
+      } else if (this.addForm.type === '唯一性') {
+        this.editForm.type = 3
+      } else if (this.addForm.type === '一致性') {
+        this.editForm.type = 4
+      } else if (this.addForm.type === '关联性') {
+        this.editForm.type = 5
+      } else if (this.addForm.type === '完整性') {
+        this.editForm.type = 0
+      }
+      this.obj = {
+        name: this.addForm.name,
+        code: this.addForm.code,
+        description: this.addForm.desc,
+        type: this.addForm.type
+      }
+      console.log(JSON.stringify(this.obj))
+      addList(JSON.stringify(this.obj)).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.EditVisible = false
+          this.getAllList()
+        }
+      }).catch(err => {
+        console.log(err)
       })
       this.AddVisible = false
     },
@@ -441,13 +474,33 @@ export default {
         })
       })
     },
+    // 删除
     del(row) {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].ruleName === row.row.ruleName) {
-          this.tableData.splice(i, 1)
+      console.log(row.row)
+      delList(row.row.id).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.getAllList()
         }
-      }
-      console.log(this.tableData)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    styleMethod({ column, rowIndex, columnIndex }) {
+      console.log(123)
+      console.log(column)
+      console.log(rowIndex)
+      console.log(columnIndex)
+    },
+    // 分页方法
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.pageNum = 1
+      this.getAllList()
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+      this.getAllList()
     }
   }
 }

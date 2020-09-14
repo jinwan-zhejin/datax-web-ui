@@ -207,6 +207,8 @@
 import { mapGetters } from 'vuex'
 import { getList } from '@/api/datax-user'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { addList } from '@/api/data-explore'
+// import { list } from '@/api/datax-jdbcDatasource'
 import * as dsQueryApi from '@/api/metadata-query'
 
 export default {
@@ -230,6 +232,7 @@ export default {
     return {
       list: null,
       listLoading: true,
+      sourceId: '', // 选中数据源ID
       listQuery: {
         page: 1,
         limit: 20,
@@ -314,6 +317,7 @@ export default {
     },
     AddList() {
       this.getJdbcDs()
+      console.log(123441)
       this.form.name = localStorage.getItem('roles').split('_')[1].split('"')[0]
       this.dialogAddVisible = true
     },
@@ -362,31 +366,47 @@ export default {
     },
     // 创建
     create() {
-      this.ObjList.push(
-        {
-          id: Date.parse(new Date()),
-          taskName: this.form.taskName,
-          name: this.form.name,
-          content: this.form.content,
-          desc: this.form.desc,
-          sourceName: this.form.sourceName,
-          tableName: this.form.tableName,
-          number: Date.parse(new Date()) % 99999
-        }
-      )
-      console.log(this.ObjList)
-      console.log(JSON.stringify(this.ObjList))
-      localStorage.setItem('newData', JSON.stringify(this.ObjList))
-      this.dialogAddVisible = false
+      // this.ObjList.push(
+      //   {
+      //     id: Date.parse(new Date()),
+      //     taskName: this.form.taskName,
+      //     name: this.form.name,
+      //     content: this.form.content,
+      //     desc: this.form.desc,
+      //     sourceName: this.form.sourceName,
+      //     tableName: this.form.tableName,
+      //     number: Date.parse(new Date()) % 99999
+      //   }
+      // )
+      // console.log(this.ObjList)
+      // console.log(JSON.stringify(this.ObjList))
+      // localStorage.setItem('newData', JSON.stringify(this.ObjList))
+      // this.dialogAddVisible = false
+      const params = new FormData()
+      params.append('taskName', this.form.taskName)
+      params.append('tableName', this.form.tableName)
+      params.append('description', this.form.desc || '')
+      params.append('jdbcDatasourceId', this.sourceId)
+      params.append('intro', this.form.content)
+      console.log(params)
+      addList(params).then(res => {
+        console.log(res)
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 获取数据源
-    getJdbcDs(type) {
-      this.loading = true
+    async getJdbcDs() {
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         console.log(records)
         this.sourceList = records
       })
+      // list().then(res => {
+      //   console.log(res)
+      // }).catch(err => {
+      //   console.log(err)
+      // })
     },
     // schema 切换
     schemaChange(e) {
@@ -421,6 +441,7 @@ export default {
             }
           }
           console.log(obj)
+          this.sourceId = obj.datasourceId
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
