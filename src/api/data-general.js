@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
 // 获取列表
-export function getList() {
+export function getList(val1, val2, val3) {
   return request({
-    url: '/api/universal/pageUniversal',
+    url: `/api/universal/pageUniversal?current=${val1}&size=${val2}&name=${val3}`,
     method: 'get'
   })
 }
@@ -16,6 +16,15 @@ export function addList(data) {
     headers: {
       'Content-Type': 'application/json'
     },
+    data
+  })
+}
+
+// 编辑
+export function editList(data) {
+  return request({
+    url: '/api/universal/update',
+    method: 'post',
     data
   })
 }
@@ -37,18 +46,10 @@ export function relateRule(params) {
   })
 }
 
-// 通用规则详情
-export function detailsRule(query) {
-  return request({
-    url: `/api/universal/delete/?id=${query}`,
-    method: 'post'
-  })
-}
-
 // 根据规则大类查询规则小类
 export function cascade(query) {
   return request({
-    url: `/api/universal/delete/?id=${query}`,
-    method: 'post'
+    url: `/api/universal/universalName/${query}`,
+    method: 'get'
   })
 }

@@ -16,8 +16,8 @@
         />
       </el-select>
       <el-input v-model="search" style="width:30%;margin: 0px 20px" prefix-icon="el-icon-search" palceholder="请输入入参名称或入参编码进行搜索" />
-      <el-button class="search" type="primary" size="small">查询</el-button>
-      <el-button class="reset" size="small" plain>重置</el-button>
+      <el-button class="search" type="primary" size="small" @click="Search">查询</el-button>
+      <el-button class="reset" size="small" plain @click="reSet">重置</el-button>
     </div>
     <!-- 表格 -->
     <el-table
@@ -43,10 +43,14 @@
         width="180"
       />
       <el-table-column
-        prop="type"
+        prop="joinType"
         align="center"
         label="入参类型"
-      />
+      >
+        <template v-slot:default="row">
+          {{ showType(row.row) }}
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         wdith="100"
@@ -69,11 +73,11 @@
     <!-- 分页 -->
     <el-pagination
       background
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pageNum"
+      :page-sizes="[50, 100, 150, 200]"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -160,78 +164,60 @@
 </template>
 
 <script>
+import { getList, addPerson, editPerson, delPerson } from '@/api/data-personalise'
 export default {
   data() {
     return {
       radio1: '其他入参集',
       search: '',
       selectValue: '',
-      tableData: [
-        {
-          name: 'query_01',
-          code: 'CD_CD_01',
-          type: '格式入参集',
-          expression: '[0-9]{4}[0-9]{2}[0-9]{2}|长期|0-5年'
-        },
-        {
-          name: 'query_02',
-          code: 'CD_CD_02',
-          type: '长度入参集',
-          expression: '[0-9]{4}[0-9]{2}[0-9]{2}|长期|永久'
-        },
-        {
-          name: 'query_03',
-          code: 'CD_CD_03',
-          type: '编码入参集',
-          expression: '[0-9]{4}[0-9]{2}[0-9]{2}|长期|无处罚期限'
-        }
-      ],
+      tableData: [],
       options: [
         {
           label: '全部',
           value: ''
         },
         {
+          label: '编码入参集',
+          value: 4
+        },
+        {
           label: '格式入参集',
-          value: '格式入参集'
+          value: 1
         },
         {
           label: '长度入参集',
-          value: '长度入参集'
+          value: 2
         },
         {
           label: '特殊字符入参集',
-          value: '特殊字符入参集'
-        },
-        {
-          label: '编码入参集',
-          value: '编码入参集'
+          value: 3
         },
         {
           label: '数据范围入参集',
-          value: '数据范围入参集'
+          value: 5
         }
       ],
       formOptions: [
         {
+          label: '编码入参集',
+          value: 4
+        },
+        {
           label: '格式入参集',
-          value: '格式入参集'
+          value: 1
         },
         {
           label: '长度入参集',
-          value: '长度入参集'
+          value: 2
         },
         {
           label: '特殊字符入参集',
-          value: '特殊字符入参集'
-        },
-        {
-          label: '编码入参集',
-          value: '编码入参集'
+          value: 3
         },
         {
           label: '数据范围入参集',
-          value: '数据范围入参集'
+          value: 5
         }
       ],
       addForm: {
@@ -268,22 +254,43 @@ export default {
         ]
       },
       viewExpression: '',
-      currentPage4: 4
+      pageSize: 50, //  分页条数
+      pageNum: 1, //  当前页
+      total: 0, //  总条数
+      editId: ''
+    }
+  },
+  // 计算属性
+  computed: {
+    showType() {
+      return function(row) {
+        if (row.joinType === 1) {
+          return '格式入参集'
+        } else if (row.joinType === 2) {
+          return '长度入参集'
+        } else if (row.joinType === 3) {
+          return '特殊字符入参集'
+        } else if (row.joinType === 4) {
+          return '编码入参集'
+        } else if (row.joinType === 5) {
+          return '数据范围入参集'
+        }
+      }
     }
   },
   watch: {
     'addForm.type': {
       handler(newName, oldName) {
         console.log(newName, oldName)
-        if (newName === '格式入参集') {
+        if (newName === 1) {
           this.addForm.code1 = 'GS'
-        } else if (newName === '长度入参集') {
+        } else if (newName === 2) {
           this.addForm.code1 = 'CD'
-        } else if (newName === '特殊字符入参集') {
+        } else if (newName === 3) {
           this.addForm.code1 = 'ZF'
-        } else if (newName === '数据范围入参集') {
+        } else if (newName === 5) {
           this.addForm.code1 = 'DR'
-        } else if (newName === '编码入参集') {
+        } else if (newName === 4) {
           this.addForm.code1 = 'BM'
         } else {
           this.addForm.code1 = ''
@@ -295,15 +302,15 @@ export default {
     'editForm.type': {
       handler(newName, oldName) {
         console.log(newName, oldName)
-        if (newName === '格式入参集') {
+        if (newName === 1) {
           this.editForm.code1 = 'GS'
-        } else if (newName === '长度入参集') {
+        } else if (newName === 2) {
           this.editForm.code1 = 'CD'
-        } else if (newName === '特殊字符入参集') {
+        } else if (newName === 3) {
           this.editForm.code1 = 'ZF'
-        } else if (newName === '数据范围入参集') {
+        } else if (newName === 5) {
           this.editForm.code1 = 'DR'
-        } else if (newName === '编码入参集') {
+        } else if (newName === 4) {
           this.editForm.code1 = 'BM'
         } else {
           this.editForm.code1 = ''
@@ -313,18 +320,45 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.Search()
+  },
   methods: {
     showAdd() {
       this.AddVisible = true
     },
+    // 多条件查询
+    Search() {
+      getList(this.pageNum, this.pageSize, this.search, this.selectValue)
+        .then((res) => {
+          console.log(res)
+          if (res.code === 200) {
+            this.tableData = res.content.data
+            this.total = res.content.count
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+    // 个性化规则添加
     add() {
-      this.tableData.push({
+      const obj = {
         name: this.addForm.name,
         code: this.addForm.code1 + '_' + this.addForm.code2 + '_' + this.addForm.code3,
-        type: this.addForm.type,
-        expression: this.addForm.expression
+        joinType: this.addForm.type,
+        type: 2,
+        regular: this.addForm.expression
+      }
+      addPerson(obj).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.Search()
+          this.AddVisible = false
+          this.addForm = {}
+        }
+      }).catch((err) => {
+        console.log(err)
       })
-      this.AddVisible = false
     },
     cancel() {
       this.AddVisible = false
@@ -336,35 +370,42 @@ export default {
       this.editForm.code2 = row.row.code.split('_')[1]
       this.editForm.code3 = row.row.code.split('_')[2]
       this.editForm.type = row.row.type
-      this.editForm.expression = row.row.expression
+      this.editForm.expression = row.row.regular
+      this.editId = row.row.id
       this.EditVisible = true
     },
     view(row) {
-      this.viewExpression = row.row.expression
+      this.viewExpression = row.row.regular
       this.ViewVisible = true
       console.log(row.row)
     },
+    // 编辑
     edit() {
-      console.log(this.tableData)
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].name === this.editForm.name) {
-          this.tableData[i].name = this.editForm.name
-          this.tableData[i].code = this.editForm.code1 + '_' + this.editForm.code2 + '_' + this.editForm.code3,
-          this.tableData[i].type = this.editForm.type
-          this.tableData[i].expression = this.editForm.expression
+      editPerson({
+        id: this.editId,
+        name: this.editForm.name,
+        code: this.editForm.code1 + '_' + this.editForm.code2 + '_' + this.editForm.code3,
+        regular: this.editForm.expression
+      }).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.Search()
+          this.EditVisible = false
+          this.$message.success('编辑成功')
         }
-      }
-      console.log(this.editForm)
-      console.log(this.tableData)
-      this.EditVisible = false
+      }).catch((err) => {
+        console.log(err)
+      })
     },
+    // 删除
     del(row) {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].name === row.row.name) {
-          this.tableData.splice(i, 1)
+      delPerson(row.row.id).then((res) => {
+        if (res.code === 200) {
+          this.Search()
         }
-      }
-      console.log(this.tableData)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     open(row) {
       this.$confirm('确认删除该条数据吗, 是否继续?', '提示', {
@@ -384,11 +425,20 @@ export default {
         })
       })
     },
+    // 分页方法
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageSize = val
+      this.pageNum = 1
+      this.Search()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.pageNum = val
+      this.Search()
+    },
+    // 重置
+    reSet() {
+      this.search = ''
+      this.selectValue = ''
     }
   }
 }
