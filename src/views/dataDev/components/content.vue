@@ -11,7 +11,7 @@
           ></el-option>
         </el-select>
         <el-select
-          style="margin-top:10px;width:100%"
+          style="margin-top:10px;width:100%;"
           v-model="tableId"
           clearable
           placeholder="请选择表"
@@ -36,17 +36,19 @@
       </div>
       <div>
         <el-collapse v-model="activeNames">
-          <el-collapse-item name="1">
+          <el-collapse-item name="1" >
             <template slot="title">
               <p class="tableName">{{tableName}}</p>
             </template>
-            <div v-for="(item) in columnList" :key="item">{{item}}</div>
+            <div style="max-height:360px;overflow:scroll;">
+              <div v-for="(item) in columnList" :key="item">{{item}}</div>
+            </div>
           </el-collapse-item>
         </el-collapse>
       </div>
     </el-aside>
     <el-main style="padding:0 10px;height:100%;">
-      <CodeMirror :sqlHeight='sqlHeight' />
+      <CodeMirror :sqlHeight='sqlHeight' :tableList='tableList' :columnList='columnList' @querysql='runQuery' />
       <div class="dragBar">
         <span
           @mousedown="dragging = true"
@@ -54,7 +56,7 @@
           @mousemove="setTableHeight"
         >==</span>
       </div>
-      <TableDetail :tableHeight='tableHeight' />
+      <TableDetail ref="table" :tableHeight='tableHeight' />
     </el-main>
   </el-container>
 </template>
@@ -126,6 +128,10 @@ export default {
         // this.tableHeight = tableHeightRate * height;
       }
     },
+    //执行sql
+    runQuery() {
+      this.$refs.table.initData()
+    }
   },
   created() {
     this.getDataBaseList();

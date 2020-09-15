@@ -58,7 +58,7 @@ module.exports = {
         }
       },
       '/dbeaver/gql': {
-        target: 'http://192.168.3.74:8978',
+        target: 'http://192.168.3.74:8979',
         changeOrigin: true,
         // headers: {
         //   host: "http://192.168.3.74:8978",
