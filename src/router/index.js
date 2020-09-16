@@ -83,8 +83,7 @@ export const constantRoutes = [
         meta: { title: '运行报表', icon: 'dashboard', affix: true }
       }
     ]
-  },
-
+  }
 
 ]
 
@@ -154,25 +153,25 @@ export const asyncRoutes = [
     ]
   },
   {
-      path: '/datax/datasource',
-      component: Layout,
-      redirect: '/datax/datasource',
-      name: 'datasource',
-      meta: { title: '数据源管理', icon: 'cfg-datasouce' },
-      children: [
-        {
-          path: 'jdbcDatasource',
-          name: 'JdbcDatasource',
-          component: () => import('@/views/datax/jdbc-datasource/index'),
-          meta: { title: '普通数据源', icon: 'table' }
-        },
-        {
-          path: 'compute',
-          name: 'compute',
-          component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
-          meta: { title: '计算数据源', icon: 'tree-table' }
-        }
-      ]
+    path: '/datax/datasource',
+    component: Layout,
+    redirect: '/datax/datasource',
+    name: 'datasource',
+    meta: { title: '数据源管理', icon: 'cfg-datasouce' },
+    children: [
+      {
+        path: 'jdbcDatasource',
+        name: 'JdbcDatasource',
+        component: () => import('@/views/datax/jdbc-datasource/index'),
+        meta: { title: '普通数据源', icon: 'table' }
+      },
+      {
+        path: 'compute',
+        name: 'compute',
+        component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
+        meta: { title: '计算数据源', icon: 'tree-table' }
+      }
+    ]
   },
   {
     path: '/cloudbeaver',
@@ -233,7 +232,7 @@ export const asyncRoutes = [
       {
         path: 'dqcJob',
         name: 'dqcJob',
-        component: () => import('@/views/datax/json-build/index'),
+        component: () => import('@/views/datax/jsonQuality/index'),
         meta: { title: '质量任务构建', icon: 'component' }
       },
       {
