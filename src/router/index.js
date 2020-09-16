@@ -84,30 +84,8 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/cloudbeaver',
-    component: Layout,
-    children: [
-      {
-        path: '/cloudbeaver',
-        component: () => import('@/views/cloudbeaver/index'),
-        name: 'cloudbeaver',
-        meta: { title: '元数据管理', icon: 'form', keepAlive: true }
-      }
-    ]
-  },
-  {
-    path: '/dataDev',
-    component: Layout,
-    children: [
-      {
-        path: '/dataDev',
-        component: () => import('@/views/dataDev/dataDev'),
-        name: 'dataDev',
-        meta: { title: '数据开发', icon: 'dashboard', keepAlive: true }
-      }
-    ]
-  }
+
+
 ]
 
 /**
@@ -175,7 +153,39 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+      path: '/datax/datasource',
+      component: Layout,
+      redirect: '/datax/datasource',
+      name: 'datasource',
+      meta: { title: '数据源管理', icon: 'cfg-datasouce' },
+      children: [
+        {
+          path: 'jdbcDatasource',
+          name: 'JdbcDatasource',
+          component: () => import('@/views/datax/jdbc-datasource/index'),
+          meta: { title: '普通数据源', icon: 'table' }
+        },
+        {
+          path: 'compute',
+          name: 'compute',
+          component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
+          meta: { title: '计算数据源', icon: 'tree-table' }
+        }
+      ]
+  },
+  {
+    path: '/cloudbeaver',
+    component: Layout,
+    children: [
+      {
+        path: '/cloudbeaver',
+        component: () => import('@/views/cloudbeaver/index'),
+        name: 'cloudbeaver',
+        meta: { title: '元数据管理', icon: 'form', keepAlive: true }
+      }
+    ]
+  },
   {
     path: '/datax/job',
     component: Layout,
@@ -194,7 +204,7 @@ export const asyncRoutes = [
         path: 'jsonBuild',
         name: 'JsonBuild',
         component: () => import('@/views/datax/json-build/index'),
-        meta: { title: 'DataX任务构建', icon: 'guide' }
+        meta: { title: '普通任务构建', icon: 'guide' }
       },
       {
         path: 'importJob',
@@ -217,8 +227,14 @@ export const asyncRoutes = [
       {
         path: 'sqlJob',
         name: 'sqlJob',
-        component: () => import('@/views/datax/json-build/index'),
+        component: () => import('@/views/dataDev/dataDev'),
         meta: { title: 'SQL任务构建', icon: 'component' }
+      },
+      {
+        path: 'dqcJob',
+        name: 'dqcJob',
+        component: () => import('@/views/datax/json-build/index'),
+        meta: { title: '质量任务构建', icon: 'component' }
       },
       {
         path: 'jsonBuildBatch',
@@ -230,11 +246,23 @@ export const asyncRoutes = [
         path: 'jobTemplate',
         name: 'JobTemplate',
         component: () => import('@/views/datax/jobTemplate/index'),
-        meta: { title: 'DataX任务模板', icon: 'renwu_1' }
+        meta: { title: '普通任务模板', icon: 'renwu_1' }
       }
     ]
   },
 
+  {
+    path: '/dataDev',
+    component: Layout,
+    children: [
+      {
+        path: '/dataDev',
+        component: () => import('@/views/dataDev/dataDev'),
+        name: 'dataDev',
+        meta: { title: '数据开发', icon: 'dashboard', keepAlive: true }
+      }
+    ]
+  },
   // 数据质量
 
   {
@@ -313,7 +341,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/model',
     name: 'modeldesign',
-    meta: { title: '数据建模', icon: 'excel' },
+    meta: { title: '数据模型', icon: 'excel' },
     children: [
       {
         path: 'design',
@@ -343,28 +371,22 @@ export const asyncRoutes = [
       }
     ]
   },
-
   {
-    path: '/datax/datasource',
+    path: '/data',
     component: Layout,
-    redirect: '/datax/datasource',
-    name: 'datasource',
-    meta: { title: '数据源管理', icon: 'cfg-datasouce' },
+    redirect: '/data',
+    name: 'dataShare',
+    meta: { title: '数据共享', icon: 'work' },
     children: [
       {
-        path: 'jdbcDatasource',
-        name: 'JdbcDatasource',
-        component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '普通数据源', icon: 'table' }
-      },
-      {
-        path: 'jdbcDatasource2',
-        name: 'JdbcDatasource2',
-        component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
-        meta: { title: '计算数据源', icon: 'tree-table' }
+        path: 'share',
+        name: 'share',
+        component: () => import('@/views/datax/jobLog/index'),
+        meta: { title: '数据共享', icon: 'documentation' }
       }
     ]
   },
+
   {
     path: '/datax/log',
     component: Layout,
