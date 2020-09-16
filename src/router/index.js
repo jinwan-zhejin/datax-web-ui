@@ -264,7 +264,6 @@ export const asyncRoutes = [
       //   meta: { title: '数据集', icon: 'guide' }
       // },
 
-
       // {
       //   path: 'dataQuality',
       //   name: 'dataQuality',
@@ -306,10 +305,10 @@ export const asyncRoutes = [
         name: 'DocumentManage',
         component: () => import('@/views/datax/DocumentManage/index'),
         meta: { title: '文档管理', icon: 'documentation' }
-      },
+      }
     ]
   },
-{
+  {
     path: '/model',
     component: Layout,
     redirect: '/model',
@@ -324,7 +323,7 @@ export const asyncRoutes = [
       }
     ]
   },
-{
+  {
     path: '/dataExplore',
     component: Layout,
     redirect: '/dataExplore/dataDiscovery',
@@ -378,6 +377,20 @@ export const asyncRoutes = [
         name: 'JobLog',
         component: () => import('@/views/datax/jobLog/index'),
         meta: { title: '日志管理', icon: 'documentation' }
+      }
+    ]
+  },
+  {
+    path: '/data-analysis',
+    component: Layout,
+    redirect: '/data-analysis/analysis',
+    meta: { title: '数据分析', icon: 'work' },
+    children: [
+      {
+        path: 'analysis',
+        name: 'analysis',
+        component: () => import('@/views/data-analysis/index'),
+        meta: { title: '数据分析', icon: 'documentation' }
       }
     ]
   },
