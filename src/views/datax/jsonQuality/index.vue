@@ -536,6 +536,7 @@ export default {
             this.fetchData()
             this.dialogFormVisible = false
             this.temp = {}
+            this.temp.childJobId = []
             this.$refs['dataForm'].resetFields()
             this.$notify({
               title: 'Success',

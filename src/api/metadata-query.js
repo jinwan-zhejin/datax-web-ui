@@ -54,3 +54,11 @@ export function updateColumnsValue(query) {
     data: query
   })
 }
+
+// 获取全部规则名称
+export function getAllName() {
+  return request({
+    url: '/api/universal/univerToPerson',
+    method: 'get'
+  })
+}
