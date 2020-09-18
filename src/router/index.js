@@ -80,7 +80,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/admin/index'),
         name: 'Dashboard',
-        meta: { title: '运行报表', icon: 'dashboard', affix: true }
+        meta: { title: '运行报表', icon: 'fenxi_1', affix: true }
       }
     ]
   }
@@ -190,7 +190,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/job',
     name: 'job',
-    meta: { title: '任务管理', icon: 'component' },
+    meta: { title: '任务管理', icon: 'chuangjianyingyong' },
     children: [
 
       {
@@ -233,7 +233,7 @@ export const asyncRoutes = [
         path: 'dqcJob',
         name: 'dqcJob',
         component: () => import('@/views/datax/jsonQuality/index'),
-        meta: { title: '质量任务构建', icon: 'component' }
+        meta: { title: '质量任务构建', icon: 'chuangjiangongdan' }
       },
       {
         path: 'jsonBuildBatch',
@@ -245,7 +245,7 @@ export const asyncRoutes = [
         path: 'jobTemplate',
         name: 'JobTemplate',
         component: () => import('@/views/datax/jobTemplate/index'),
-        meta: { title: '普通任务模板', icon: 'renwu_1' }
+        meta: { title: '普通任务模板', icon: 'chuangjianmoban' }
       }
     ]
   },
@@ -258,7 +258,7 @@ export const asyncRoutes = [
         path: '/dataDev',
         component: () => import('@/views/dataDev/dataDev'),
         name: 'dataDev',
-        meta: { title: '数据开发', icon: 'dashboard', keepAlive: true }
+        meta: { title: '数据开发', icon: 'kaifajindu', keepAlive: true }
       }
     ]
   },
@@ -381,7 +381,7 @@ export const asyncRoutes = [
         path: 'share',
         name: 'share',
         component: () => import('@/views/datax/jobLog/index'),
-        meta: { title: '数据共享', icon: 'documentation' }
+        meta: { title: '数据共享', icon: 'gongxiangbeifen' }
       }
     ]
   },
@@ -411,7 +411,7 @@ export const asyncRoutes = [
         path: 'analysis',
         name: 'analysis',
         component: () => import('@/views/data-analysis/index'),
-        meta: { title: '数据分析', icon: 'documentation' }
+        meta: { title: '数据分析', icon: 'fenxi' }
       }
     ]
   },

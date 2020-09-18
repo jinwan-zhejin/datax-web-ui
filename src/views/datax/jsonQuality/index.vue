@@ -319,7 +319,7 @@
 
       <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
       <el-button v-show="showNext" type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">下一步</el-button>
-      <el-button v-show="showSubmit" type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">提  交</el-button>
+      <el-button v-show="showSubmit" :disabled="isBan" type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">提  交</el-button>
     </div>
   </div>
 </template>
@@ -359,6 +359,7 @@ export default {
     }
     return {
       configJson: '',
+      isBan: false,
       active: 1,
       jobTemplate: '',
       radio: '使用模板',
@@ -495,9 +496,12 @@ export default {
       console.log(newValue)
       if (newValue === '使用模板') {
         this.isUse = true
+        this.isBan = false
+        this.handleJobTemplateSelectDrawer()
         this.dialogFormVisible = false
       } else {
         this.isUse = false
+        this.isBan = true
         this.dialogFormVisible = true
       }
     }
@@ -710,12 +714,14 @@ export default {
         rdbmsWriter: rdbmsWriter,
         hbaseReader: hbaseReader,
         hbaseWriter: hbaseWriter,
+        rule: this.$refs.reader.getData().rule,
         mongoDBReader: mongoDBReader,
         mongoDBWriter: mongoDBWriter
       }
       // 调api
-      dataxJsonApi.buildJobJson(obj).then(response => {
+      dataxJsonApi.buildJson(obj).then(response => {
         this.configJson = JSON.parse(response)
+        console.log(123)
       })
     },
     handleCopy(text, event) {

@@ -50,10 +50,10 @@
             label="规则名称"
           >
             <template v-slot:default="row">
-              <el-select v-if="row.row.status" v-model="readerForm.rules" clearable filterable multiple label="请选择规则名称">
+              <el-select v-if="row.row.status" v-model="readerForm.rule" clearable filterable multiple label="请选择规则名称">
                 <el-option v-for="item in nameList" :key="item.code" :label="item.name" :value="item.code" />
               </el-select>
-              <p v-for="my in row.row.rules" v-else>{{ my.name }}</p>
+              <p v-for="my in row.row.ruleId" v-else>{{ my.name }}</p>
             </template>
           </el-table-column>
           <el-table-column
@@ -135,7 +135,7 @@ export default {
         isIndeterminate: true,
         splitPk: '',
         tableSchema: '',
-        rules: []
+        rule: []
       },
       rules: {
         datasourceId: [{ required: true, message: 'this is required', trigger: 'change' }],
@@ -150,6 +150,9 @@ export default {
         this.getSchema()
       }
       this.getTables('rdbmsReader')
+    },
+    'readerForm.rule': function(oldVal, newVal) {
+      console.log(newVal)
     }
   },
   created() {
@@ -162,28 +165,25 @@ export default {
         if (item.status) {
           console.log(this.readerForm)
           item.columnName = this.readerForm.columnName
-          // for (let i = 0; i < this.readerForm.rules.length; i++) {
-          //   item.rules.codes.push(this.readerForm.rules[i])
-          // }
           for (let i = 0; i < this.nameList.length; i++) {
-            for (let j = 0; j < this.readerForm.rules.length; j++) {
-              if (this.nameList[i].code === this.readerForm.rules[j]) {
+            for (let j = 0; j < this.readerForm.rule.length; j++) {
+              if (this.nameList[i].code === this.readerForm.rule[j]) {
                 const obj = {}
                 obj.name = this.nameList[i].name
                 obj.code = this.nameList[i].code
-                item.rules.push(obj)
+                item.ruleId.push(obj)
               }
             }
           }
-          console.log(item.rules)
+          this.readerForm.columnName = ''
+          console.log(item.ruleId)
           item.status = 0
         }
         return item
       })
       this.tableData1.push({
-        id: Date.parse(new Date()),
         columnName: '',
-        rules: [],
+        ruleId: [],
         status: 1
       })
       console.log(this.tableData1)
@@ -195,8 +195,8 @@ export default {
           item.status = 0
         }
         if (item === row.row) {
-          item.columnName = this.readerForm.columnName
-          item.rules = this.readerForm.rules
+          this.readerForm.columnName = item.columnName
+          this.readerForm.rule = item.ruleId
           item.status = 1
         }
         return item
@@ -209,6 +209,8 @@ export default {
       const index = this.tableData1.indexOf(row.row)
       this.tableData1.splice(index, 1)
       console.log(this.tableData1)
+      console.log(this.readerForm)
+      this.readerForm.rule = this.tableData1
     },
     // 获取可用数据源
     getJdbcDs(type) {
@@ -284,6 +286,7 @@ export default {
     getNameList() {
       dsQueryApi.getAllName().then((res) => {
         console.log(res)
+        this.nameList = []
         if (res.code === 200) {
           for (let i = 0; i < res.content.data.length; i++) {
             const obj = {}
