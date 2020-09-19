@@ -5,7 +5,7 @@
       <el-radio-button type="primary" label="其他入参集" />
     </el-radio-group>
     <div class="top">
-      <el-button type="primary" size="small"@click="showAdd">新增</el-button>
+      <el-button type="primary" size="small" @click="showAdd">新增</el-button>
       <span class="tit_help">类型</span>
       <el-select v-model="selectValue" placeholder="请选择">
         <el-option
@@ -104,7 +104,7 @@
         <el-form-item label="入参编码" prop="code">
           <el-input v-model="addForm.code1" disabled style="width:30%;marginRight: 2px" />
           <el-input v-model="addForm.code2" placeholder="示例:XBWA" style="width:30%;marginRight: 2px" />
-          <el-input v-model="addForm.code3" placeholder="示例:01" style="width:30%;" />
+          <el-input v-model="addForm.code3" placeholder="示例:01" style="width:30%;" @input="checkRepeat" />
           <el-tooltip class="item" effect="dark" content="前半部分为4个字母内指标名称缩写(大写字母),后半部分为2个阿拉伯数字区分" placement="top">
             <i class="el-icon-info" />
           </el-tooltip>
@@ -141,7 +141,7 @@
         <el-form-item label="入参编码" prop="code">
           <el-input v-model="editForm.code1" disabled style="width:30%;marginRight: 2px" />
           <el-input v-model="editForm.code2" style="width:30%;marginRight: 2px" />
-          <el-input v-model="editForm.code3" style="width:30%;" /><i class="el-icon-info" />
+          <el-input v-model="editForm.code3" style="width:30%;" @input="checkRepeat_edit" /><i class="el-icon-info" />
         </el-form-item>
         <el-form-item label="入参表达式" prop="expression">
           <el-input v-model="editForm.expression" type="textarea" />
@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { getList, addPerson, editPerson, delPerson } from '@/api/data-personalise'
+import { getList, addPerson, editPerson, delPerson, check } from '@/api/data-personalise'
 export default {
   data() {
     return {
@@ -339,6 +339,26 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
+    },
+    // 新增检测编码是否重复
+    checkRepeat() {
+      const code = this.addForm.code1 + '_' + this.addForm.code2 + '_' + this.addForm.code3
+      console.log(code)
+      check(code).then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 编辑检测编码是否重复
+    checkRepeat_edit() {
+      const code = this.editForm.code1 + '_' + this.editForm.code2 + '_' + this.editForm.code3
+      console.log(code)
+      check(code).then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 个性化规则添加
     add() {

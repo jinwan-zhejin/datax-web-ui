@@ -4,11 +4,11 @@
     <div class="top">
       <div class="img">
         <h2>{{ obj.taskName }}</h2>
-        <p class="p1">{{ obj.content }}</p>
+        <p class="p1">{{ obj.intro }}</p>
         <div class="user">
           <a>
             <i class="el-icon-user" />
-            {{ obj.name }}
+            {{ userName }}
           </a>
         </div>
       </div>
@@ -63,7 +63,7 @@
       <div class="content">
         <el-collapse v-model="activeDesc">
           <el-collapse-item title="详细描述" name="1">
-            <div style="text-indent:2rem;">&nbsp;&nbsp;{{ obj.desc }}</div>
+            <div style="text-indent:2rem;">&nbsp;&nbsp;{{ obj.description }}</div>
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -103,7 +103,7 @@
           <div class="ch_top">
             <div class="lt">
               <span style="fontSize:16px;fontWeight:700;">{{ obj.tableName }}</span>
-              <span style="fontSize:16px;">64.07 MB</span>
+              <span style="fontSize:16px;">{{ obj.size }}</span>
             </div>
             <div class="rg">
               <a><i class="el-icon-download" /></a>
@@ -150,7 +150,7 @@
                         </el-popover>
                       </div>
                       <div class="t_header_02">
-                        <span>{{ obj.number }}</span>
+                        <span>{{ obj.rows }}</span>
                       </div>
                     </template>
                   </el-table-column>
@@ -377,11 +377,13 @@ export default {
       marks: {
         0: '34.6m',
         100: '60.5m'
-      }
+      },
+      userName: ''
     }
   },
   created() {
     console.log(this.$route)
+    this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
     if (this.$route.query !== {}) {
       this.obj = this.$route.query
       console.log(this.obj)

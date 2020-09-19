@@ -33,3 +33,11 @@ export function delPerson(query) {
     method: 'post'
   })
 }
+
+// 检测编码是否重复
+export function check(query) {
+  return request({
+    url: `/api/personalise/check?code=${query}`,
+    method: 'get'
+  })
+}

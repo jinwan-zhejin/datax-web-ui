@@ -76,7 +76,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="规则编码" prop="code">
-          <el-input v-model="addForm.code" />
+          <el-input v-model="addForm.code" @input="checkRepeat" />
         </el-form-item>
         <el-form-item label="规则描述" prop="desc">
           <el-input v-model="addForm.desc" placeholder="请输入规则描述" type="textarea" />
@@ -108,7 +108,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="规则编码" prop="code">
-          <el-input v-model="editForm.code" />
+          <el-input v-model="editForm.code" @input="checkRepeat" />
         </el-form-item>
         <el-form-item label="规则描述" prop="desc">
           <el-input v-model="editForm.desc" placeholder="请输入规则描述" type="textarea" />
@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import { getList, addList, delList, editList, cascade } from '@/api/data-general'
+import { getList, addList, delList, editList, cascade, check } from '@/api/data-general'
 export default {
   data() {
     return {
@@ -336,7 +336,19 @@ export default {
         console.log(err)
       })
     },
+    // 检测编码是否重复
+    checkRepeat(e) {
+      check(e).then((res) => {
+        console.log(res)
+        // if (res.code === 200) {
+        //   this.$message.success('编码可以使用')
+        // }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     showAdd() {
+      this.addForm = {}
       this.AddVisible = true
     },
     // 根据大类查询规则名称

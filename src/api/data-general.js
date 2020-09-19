@@ -53,3 +53,11 @@ export function cascade(query) {
     method: 'get'
   })
 }
+
+// 检测编码是否重复
+export function check(query) {
+  return request({
+    url: `/api/universal/check?code=${query}`,
+    method: 'get'
+  })
+}
