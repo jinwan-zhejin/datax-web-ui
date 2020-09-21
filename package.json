@@ -54,6 +54,7 @@
     "element-ui": "^2.13.0",
     "file-saver": "2.0.1",
     "fuse.js": "3.4.4",
+    "gojs": "^2.1.25",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
     "js-cookie": "2.2.0",
