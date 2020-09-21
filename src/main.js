@@ -12,6 +12,8 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import axios from 'axios'
+import gojs from 'gojs'
 
 import './icons' // icon
 import './permission' // permission control
@@ -20,6 +22,7 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
+Vue.prototype.go = gojs
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -33,6 +36,9 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
+Vue.prototype.$axios = axios
+axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
@@ -40,6 +46,15 @@ Vue.use(Element, {
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
+})
+
+// 添加请求拦截器
+axios.interceptors.request.use(function(config) {
+  // 在发送请求之前做些什么
+  return config
+}, function(error) {
+  // 对请求错误做些什么
+  return Promise.reject(error);
 })
 
 Vue.config.productionTip = false

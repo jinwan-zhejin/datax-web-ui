@@ -4,7 +4,7 @@
       <el-button type="primary" @click="showRelate">关联个性化规则</el-button>
       <el-button type="primary" @click="showAdd">新增</el-button>
       <el-input v-model="search" style="marginLeft: 20%;width: 40%;marginRight: 20px" placeholder="请输入关键字" />
-      <el-button type="primary">查询</el-button>
+      <el-button type="primary" @click="getAllList">查询</el-button>
     </div>
     <!-- 表格 -->
     <el-table
@@ -19,29 +19,29 @@
         width="50"
       />
       <el-table-column
-        prop="ruleName"
+        prop="name"
         align="center"
         label="规则名称"
       />
       <el-table-column
-        prop="ruleCode"
+        prop="code"
         align="center"
         label="规则编码"
         width="120"
       />
       <el-table-column
-        prop="ruleDesc"
+        prop="description"
         align="center"
         label="规则描述"
       />
       <el-table-column
         align="center"
-        prop="inRule"
+        prop="personaliseType"
         wdith="120"
         label="个性化规则"
       >
         <template v-slot:default="row">
-          <a style="color: skyblue;" @click="goIndividuation(row)">{{ row.row.inRule }}</a>
+          <a style="color: skyblue;" @click="goIndividuation(row)">{{ showType(row.row) }}</a>
         </template>
       </el-table-column>
       <el-table-column
@@ -76,7 +76,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="规则编码" prop="code">
-          <el-input v-model="addForm.code" />
+          <el-input v-model="addForm.code" @input="checkRepeat" />
         </el-form-item>
         <el-form-item label="规则描述" prop="desc">
           <el-input v-model="addForm.desc" placeholder="请输入规则描述" type="textarea" />
@@ -108,7 +108,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="规则编码" prop="code">
-          <el-input v-model="editForm.code" />
+          <el-input v-model="editForm.code" @input="checkRepeat" />
         </el-form-item>
         <el-form-item label="规则描述" prop="desc">
           <el-input v-model="editForm.desc" placeholder="请输入规则描述" type="textarea" />
@@ -127,7 +127,7 @@
     >
       <el-form ref="form" :model="form" label-position="left" label-width="120px" class="demo-ruleForm">
         <el-form-item label="规则大类">
-          <el-select v-model="form.class" style="width:100%" placeholder="请选择">
+          <el-select v-model="form.class" style="width:100%" placeholder="请选择" @change="searchSubclass">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -136,13 +136,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="规则小类">
+        <el-form-item label="规则名称">
           <el-select v-model="form.subclass" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in Subclass"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -165,11 +165,11 @@
     <!-- 分页 -->
     <el-pagination
       background
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pageNum"
+      :page-sizes="[50, 100, 150, 200]"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -177,74 +177,39 @@
 </template>
 
 <script>
+import { getList, addList, delList, editList, cascade, check } from '@/api/data-general'
 export default {
   data() {
     return {
-      tableData: [
-        {
-          ruleName: '检验字段记录的统一性',
-          ruleCode: 'A001',
-          ruleDesc: '检验字段记录的统一性，若为空则不规范',
-          class: '一致性',
-          inRule: ''
-        },
-        {
-          ruleName: '检验主要字段是否为空',
-          class: '完整性',
-          ruleCode: 'A002',
-          ruleDesc: '检验每张表的必要属性是否为空，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验字段首部是否含有空格',
-          ruleCode: 'A003',
-          class: '准确性',
-          ruleDesc: '检验字段首部是否含有空格，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验个人用户关联字段',
-          ruleCode: 'A004',
-          class: '完整性',
-          ruleDesc: '检验个人用户关联字段，若为空则不规范',
-          inRule: ''
-        },
-        {
-          ruleName: '检验数据含有TAB/ENTER键',
-          ruleCode: 'A005',
-          class: '准确性',
-          ruleDesc: '检验数据含有TAB/ENTER键，若为空则不规范',
-          inRule: ''
-        }
-      ],
-      currentPage4: 4,
+      tableData: [],
       AddVisible: false,
       RelateVisible: false,
       EditVisible: false,
+      obj: {},
       options: [
         {
           label: '完整性',
-          value: '完整性'
+          value: '0'
         },
         {
           label: '准确性',
-          value: '准确性'
+          value: '1'
         },
         {
           label: '规范性',
-          value: '规范性'
+          value: '2'
         },
         {
           label: '唯一性',
-          value: '唯一性'
+          value: '3'
         },
         {
           label: '一致性',
-          value: '一致性'
+          value: '4'
         },
         {
           label: '关联性',
-          value: '关联性'
+          value: '5'
         }
       ],
       addForm: {
@@ -259,40 +224,27 @@ export default {
         type: '',
         desc: ''
       },
-      Subclass: [
-        {
-          label: '检验主要字段是否为空',
-          value: '检验主要字段是否为空'
-        },
-        {
-          label: '检验个人用户关联字段',
-          value: '检验个人用户关联字段'
-        },
-        {
-          label: '检验企业用户关联字段',
-          value: '检验企业用户关联字段'
-        }
-      ],
+      Subclass: [],
       Classify: [
         {
           label: '编码入参集',
-          value: '编码入参集'
+          value: 4
         },
         {
           label: '格式入参集',
-          value: '格式入参集'
+          value: 1
         },
         {
           label: '长度入参集',
-          value: '长度入参集'
+          value: 2
         },
         {
           label: '特殊字符入参集',
-          value: '特殊字符入参集'
+          value: 3
         },
         {
           label: '数据范围入参集',
-          value: '数据范围入参集'
+          value: 5
         }
       ],
       form: {
@@ -300,96 +252,163 @@ export default {
         subclass: '',
         classify: ''
       },
-      search: ''
+      search: '',
+      labelCD: '吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱吱',
+      pageSize: 50, //  分页条数
+      pageNum: 1, //  当前页
+      total: 0 //  总条数
+    }
+  },
+  // 计算属性
+  computed: {
+    showType() {
+      return function(row) {
+        if (row.personaliseType === 1) {
+          return '格式入参集'
+        } else if (row.personaliseType === 2) {
+          return '长度入参集'
+        } else if (row.personaliseType === 3) {
+          return '特殊字符入参集'
+        } else if (row.personaliseType === 4) {
+          return '编码入参集'
+        } else if (row.personaliseType === 5) {
+          return '数据范围入参集'
+        }
+      }
     }
   },
   watch: {
-    'form.class': {
+    'form.subclass': {
+      handler(newName, oldName) {
+        console.log(newName)
+        console.log(this.form.subclass)
+        const newObj = this.tableData.find((obj) => obj.id === newName)
+        console.log(newObj)
+        if (newObj.personaliseType) {
+          this.form.classify = newObj.personaliseType
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    'form.classify': {
+      handler(newName, oldName) {
+        console.log(newName)
+      },
+      deep: true,
+      immediate: true
+    },
+    'editForm.type': {
       handler(newName, oldName) {
         console.log(newName, oldName)
-        if (newName === '准确性') {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
-        } else if (newName === '规范性') {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
-        } else if (newName === '唯一性') {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
-        } else if (newName === '一致性') {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
-        } else if (newName === '关联性') {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
-        } else {
-          this.Subclass = []
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].class === newName) {
-              this.Subclass.push({
-                label: this.tableData[i].ruleName,
-                value: this.tableData[i].ruleName
-              })
-            }
-          }
+        if (newName === 1) {
+          this.editForm.type = '准确性'
+        } else if (newName === 2) {
+          this.editForm.type = '规范性'
+        } else if (newName === 3) {
+          this.editForm.type = '唯一性'
+        } else if (newName === 4) {
+          this.editForm.type = '一致性'
+        } else if (newName === 5) {
+          this.editForm.type = '关联性'
+        } else if (newName === 0) {
+          this.editForm.type = '完整性'
         }
       },
       deep: true,
       immediate: true
     }
   },
+  created() {
+    this.getAllList()
+  },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    // 获取全部列表
+    getAllList() {
+      getList(this.pageNum, this.pageSize, this.search).then(res => {
+        if (res.code === 200) {
+          console.log(res)
+          this.tableData = res.content.data
+          this.total = res.content.count
+          console.log(this.tableData)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    // 检测编码是否重复
+    checkRepeat(e) {
+      check(e).then((res) => {
+        console.log(res)
+        // if (res.code === 200) {
+        //   this.$message.success('编码可以使用')
+        // }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     showAdd() {
+      this.addForm = {}
       this.AddVisible = true
+    },
+    // 根据大类查询规则名称
+    searchSubclass() {
+      cascade(this.form.class).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.Subclass = res.content.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     showEdit(row) {
       console.log(row)
-      this.editForm.name = row.row.ruleName
-      this.editForm.type = row.row.class
-      this.editForm.code = row.row.ruleCode
-      this.editForm.desc = row.row.ruleDesc
+      if (localStorage.getItem('editData')) {
+        localStorage.removeItem('editData')
+        localStorage.setItem('editData', JSON.stringify(row.row))
+      } else {
+        localStorage.setItem('editData', JSON.stringify(row.row))
+      }
+      this.editForm.name = row.row.name
+      this.editForm.type = row.row.type
+      this.editForm.desc = row.row.description
+      this.editForm.code = row.row.code
       this.EditVisible = true
+    },
+    // 编辑
+    edit() {
+      console.log(this.editIndex)
+      console.log('123')
+      if (this.editForm.type === '准确性') {
+        this.editForm.type = 1
+      } else if (this.editForm.type === '规范性') {
+        this.editForm.type = 2
+      } else if (this.editForm.type === '唯一性') {
+        this.editForm.type = 3
+      } else if (this.editForm.type === '一致性') {
+        this.editForm.type = 4
+      } else if (this.editForm.type === '关联性') {
+        this.editForm.type = 5
+      } else if (this.editForm.type === '完整性') {
+        this.editForm.type = 0
+      }
+      const editParams = {
+        id: JSON.parse(localStorage.getItem('editData')).id,
+        name: this.editForm.name,
+        code: this.editForm.code,
+        description: this.editForm.desc,
+        type: this.editForm.type
+      }
+      editList(editParams).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.EditVisible = false
+          this.getAllList()
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     showRelate() {
       this.RelateVisible = true
@@ -401,24 +420,53 @@ export default {
       this.form = {}
       this.addForm = {}
     },
+    // 添加列表
     add() {
-      this.tableData.push({
-        ruleName: this.addForm.name,
-        ruleCode: this.addForm.code,
-        ruleDesc: this.addForm.desc,
-        class: this.addForm.type,
-        inRule: ''
+      if (this.addForm.type === '准确性') {
+        this.addForm.type = 1
+      } else if (this.addForm.type === '规范性') {
+        this.addForm.type = 2
+      } else if (this.addForm.type === '唯一性') {
+        this.addForm.type = 3
+      } else if (this.addForm.type === '一致性') {
+        this.addForm.type = 4
+      } else if (this.addForm.type === '关联性') {
+        this.addForm.type = 5
+      } else if (this.addForm.type === '完整性') {
+        this.addForm.type = 0
+      }
+      this.obj = {
+        name: this.addForm.name,
+        code: this.addForm.code,
+        description: this.addForm.desc,
+        type: this.addForm.type
+      }
+      console.log(JSON.stringify(this.obj))
+      addList(JSON.stringify(this.obj)).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.EditVisible = false
+          this.getAllList()
+        }
+      }).catch(err => {
+        console.log(err)
       })
       this.AddVisible = false
     },
+    // 关联个性化规则
     relate() {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].ruleName === this.form.subclass) {
-          this.tableData[i].inRule = this.form.classify
+      editList({
+        id: this.form.subclass,
+        personaliseType: this.form.classify
+      }).then((res) => {
+        if (res.code === 200) {
+          this.RelateVisible = false
+          this.getAllList()
+          this.form = {}
         }
-      }
-      this.RelateVisible = false
-      this.form = {}
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     goIndividuation(row) {
       this.$router.push('/datax/quality/individuation')
@@ -441,13 +489,33 @@ export default {
         })
       })
     },
+    // 删除
     del(row) {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].ruleName === row.row.ruleName) {
-          this.tableData.splice(i, 1)
+      console.log(row.row)
+      delList(row.row.id).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.getAllList()
         }
-      }
-      console.log(this.tableData)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    styleMethod({ column, rowIndex, columnIndex }) {
+      console.log(123)
+      console.log(column)
+      console.log(rowIndex)
+      console.log(columnIndex)
+    },
+    // 分页方法
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.pageNum = 1
+      this.getAllList()
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+      this.getAllList()
     }
   }
 }

@@ -8,3 +8,12 @@ export function buildJobJson(data) {
     data
   })
 }
+
+// 构建
+export function buildJson(data) {
+  return request({
+    url: '/api/qualityJson/buildJson',
+    method: 'post',
+    data
+  })
+}

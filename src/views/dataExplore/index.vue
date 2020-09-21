@@ -14,18 +14,19 @@
           <a @click="gotoDetail(item)">
             <div class="img">
               <img src="../../assets/dataset-cover.png" alt="">
+              <!-- <img :src="item.imageUrl" alt=""> -->
             </div>
             <div class="main">
               <div class="main_tit">
                 <h5>{{ item.taskName }}</h5>
                 <p>
-                  <span><i class="el-icon-user-solid" />{{ item.name }}</span>
+                  <span><i class="el-icon-user-solid" />{{ userName }}</span>
                   <!-- <span><i class="el-icon-link" />Link</span> -->
                 </p>
                 <p>
                   <span><i class="el-icon-present" />{{ item.tableName }}</span>
                   <!-- <span><i class="el-icon-coin" />item</span> -->
-                  <span><i class="el-icon-suitcase" />{{ item.number }}</span>
+                  <span><i class="el-icon-suitcase" />{{ item.rows }}</span>
                   <!-- <span><i class="el-icon-tickets" />task</span> -->
                 </p>
               </div>
@@ -207,6 +208,8 @@
 import { mapGetters } from 'vuex'
 import { getList } from '@/api/datax-user'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { addList, getAllList } from '@/api/data-explore'
+// import { list } from '@/api/datax-jdbcDatasource'
 import * as dsQueryApi from '@/api/metadata-query'
 
 export default {
@@ -230,6 +233,8 @@ export default {
     return {
       list: null,
       listLoading: true,
+      sourceId: '', // 选中数据源ID
+      userName: '',
       listQuery: {
         page: 1,
         limit: 20,
@@ -289,6 +294,8 @@ export default {
   },
   created() {
     this.fetchData()
+    this.getAllData()
+    this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
     if (localStorage.getItem('newData')) {
       if (JSON.parse(localStorage.getItem('newData')) !== this.ObjList) {
         this.ObjList = JSON.parse(localStorage.getItem('newData'))
@@ -302,6 +309,17 @@ export default {
         console.log(response)
         this.list = response.content.data
         this.listLoading = false
+      })
+    },
+    // 获取全部数据
+    getAllData() {
+      getAllList().then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.ObjList = res.content
+        }
+      }).catch((err) => {
+        console.log(err)
       })
     },
     gotoDetail(item) {
@@ -362,31 +380,43 @@ export default {
     },
     // 创建
     create() {
-      this.ObjList.push(
-        {
-          id: Date.parse(new Date()),
-          taskName: this.form.taskName,
-          name: this.form.name,
-          content: this.form.content,
-          desc: this.form.desc,
-          sourceName: this.form.sourceName,
-          tableName: this.form.tableName,
-          number: Date.parse(new Date()) % 99999
+      // const params = new FormData()
+      // params.append('taskName', this.form.taskName)
+      // params.append('tableName', this.form.tableName)
+      // params.append('description', this.form.desc || '')
+      // params.append('jdbcDatasourceId', this.sourceId)
+      // params.append('intro', this.form.content)
+      const params = {
+        taskName: this.form.taskName,
+        tableName: this.form.tableName,
+        description: this.form.desc || '',
+        jdbcDatasourceId: this.sourceId,
+        intro: this.form.content
+      }
+      console.log(params)
+      addList(params).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.dialogAddVisible = false
+          this.form = {}
+          this.getAllData()
         }
-      )
-      console.log(this.ObjList)
-      console.log(JSON.stringify(this.ObjList))
-      localStorage.setItem('newData', JSON.stringify(this.ObjList))
-      this.dialogAddVisible = false
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 获取数据源
-    getJdbcDs(type) {
-      this.loading = true
+    async getJdbcDs() {
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         console.log(records)
         this.sourceList = records
       })
+      // list().then(res => {
+      //   console.log(res)
+      // }).catch(err => {
+      //   console.log(err)
+      // })
     },
     // schema 切换
     schemaChange(e) {
@@ -421,6 +451,7 @@ export default {
             }
           }
           console.log(obj)
+          this.sourceId = obj.datasourceId
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
