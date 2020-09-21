@@ -271,10 +271,13 @@ export default {
     fetchData() {
       this.listLoading = true
       datasourceApi.list(this.listQuery).then(response => {
+        console.log(response)
         const { records } = response
         const { total } = response
         this.total = total
-        this.list = records
+        // let computeds = ['mysql', 'hive', 'impala', 'spark', 'flink']
+        // this.list = records.filter(e => e.datasource in computeds)
+        this.list = records.filter(e => (e.datasource === 'hive' || e.datasource === 'impala' || e.datasource === 'spark' || e.datasource === 'flink'))
         console.log(this.list)
         this.listLoading = false
       })
