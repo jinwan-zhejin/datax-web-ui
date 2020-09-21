@@ -319,7 +319,7 @@ export const asyncRoutes = [
       {
         path: 'design',
         name: 'design',
-        component: () => import('@/views/datax/jobProject/index'),
+        component: () => import('@/views/dataModel/dataModel.vue'),
         meta: { title: '数据建模', icon: 'education' }
       }
     ]
