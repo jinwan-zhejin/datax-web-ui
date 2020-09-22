@@ -7,6 +7,20 @@
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; background-color: #282c34;" />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 750px; background-color: #282c34;" />
     </div>
+    <el-dialog title="选择任务" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="任务名称" label-width="120">
+          <el-select v-model="form.name" placeholder="请选择任务名称">
+            <el-option label="task_01" value="task_01" />
+            <el-option label="task_02" value="task_02" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sure">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- <p>
       The FlowChart sample demonstrates several key features of GoJS,
       namely <a href="../intro/palette.html">Palette</a>s,
@@ -71,7 +85,9 @@ export default {
       myDiagram: '',
       myId: '',
       SaveName: '',
-      SaveData: ''
+      SaveData: '',
+      dialogFormVisible: false,
+      form: {}
     }
   },
   watch: {
@@ -121,47 +137,51 @@ export default {
       //   }
       // })
 
+      this.myDiagram.addDiagramListener('Modified', function(e) {
+        console.log(e)
+      })
+      // console.log(this.myDiagram)
+
       // 节点模板的帮助器定义
 
       function nodeStyle() {
         return [
-          // The Node.location comes from the "loc" property of the node data,
-          // converted by the Point.parse static method.
-          // If the Node.location is changed, it updates the "loc" property of the node data,
-          // converting back using the Point.stringify static method.
+          // 这个节点位置来自节点数据的“loc”属性,
+          // 由点解析静态方法.
+          // 如果节点位置如果更改，则更新节点数据的“loc”属性,
+          // 使用点解析stringify静态法.
           new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
           {
-            // the Node.location is at the center of each node
+            // 这个节点位置位于每个节点的中心
             locationSpot: go.Spot.Center
           }
         ]
       }
 
-      // Define a function for creating a "port" that is normally transparent.
-      // The "name" is used as the GraphObject.portId,
-      // the "align" is used to determine where to position the port relative to the body of the node,
-      // the "spot" is used to control how links connect with the port and whether the port
-      // stretches along the side of the node,
-      // and the boolean "output" and "input" arguments control whether the user can draw links from or to the port.
+      // 定义用于创建通常透明的“端口”的函数.
+      // 所选对象“名称”用作图形对象的端口ID,
+      // align”用于确定端口相对于节点主体的位置,
+      // 点”用于控制链路如何与端口连接以及端口是否连接
+      // 沿着节点的侧面拉伸,
+      // 布尔“output”和“input”参数控制用户是否可以从端口或到端口绘制链接.
       function makePort(name, align, spot, output, input) {
         var horizontal = align.equals(go.Spot.Top) || align.equals(go.Spot.Bottom)
-        // the port is basically just a transparent rectangle that stretches along the side of the node,
-        // and becomes colored when the mouse passes over it
+        // 端口基本上只是一个透明的矩形，它沿着节点的侧面延伸，当鼠标经过它时，它就会变成彩色的
         return $(go.Shape,
           {
-            fill: 'transparent', // changed to a color in the mouseEnter event handler
-            strokeWidth: 0, // no stroke
-            width: horizontal ? NaN : 8, // if not stretching horizontally, just 8 wide
-            height: !horizontal ? NaN : 8, // if not stretching vertically, just 8 tall
-            alignment: align, // align the port on the main Shape
+            fill: 'transparent', // 在回车键事件触发时更改颜色
+            strokeWidth: 0, // 不轻触
+            width: horizontal ? NaN : 8, // 如果不是水平拉伸，只有8宽
+            height: !horizontal ? NaN : 8, // 如果不是垂直伸展，只有8高
+            alignment: align, // 在主要形状上对齐端口
             stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
-            portId: name, // declare this object to be a "port"
-            fromSpot: spot, // declare where links may connect at this port
-            fromLinkable: output, // declare whether the user may draw links from here
-            toSpot: spot, // declare where links may connect at this port
-            toLinkable: input, // declare whether the user may draw links to here
-            cursor: 'pointer', // show a different cursor to indicate potential link point
-            mouseEnter: function(e, port) { // the PORT argument will be this Shape
+            portId: name, // 将此对象声明为一个“端口”
+            fromSpot: spot, // 声明链接可以在此端口连接的位置
+            fromLinkable: output, // 声明用户是否可以从这里绘制链接
+            toSpot: spot, // 声明链接可以在此端口连接的位置
+            toLinkable: input, // 声明用户是否可以绘制到这里的链接
+            cursor: 'pointer', // 显示不同的光标以指示潜在的链接点
+            mouseEnter: function(e, port) { // 端口参数将是这个形状
               if (!e.diagram.isReadOnly) port.fill = 'rgba(255,0,255,0.5)'
             },
             mouseLeave: function(e, port) {
@@ -177,34 +197,46 @@ export default {
         }
       }
 
-      // define the Node templates for regular nodes
+      // 为常规节点定义节点模板
+      this.myDiagram.addDiagramListener('ObjectDoubleClicked', (e) => {
+        console.log(e)
+        this.dialogFormVisible = true
+        console.log(this.myDiagram.nodeTemplateMap)
+        // const arr = JSON.parse(this.myDiagram.model.toJson()).nodeDataArray
+        // for (let i = 0; i < arr.length; i++) {
+        //   if (!arr[i].category) {
+        //     console.log(arr[i])
+        //     arr[i].text = this.form.name
+        //   }
+        // }
+      })
 
-      this.myDiagram.nodeTemplateMap.add('', // the default category
+      // 步骤节点图表
+      this.myDiagram.nodeTemplateMap.add('', // 默认类别
         $(go.Node, 'Table', nodeStyle(),
-          // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+          // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'Rectangle',
-              { fill: '#282c34', stroke: '#00A9C9', strokeWidth: 3.5 },
+              { fill: '#282c34', stroke: '#00A9C9', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
                 margin: 8,
                 maxSize: new go.Size(160, NaN),
-                wrap: go.TextBlock.WrapFit,
-                editable: true
+                wrap: go.TextBlock.WrapFit
               },
-              new go.Binding('text').makeTwoWay())
+              new go.Binding('text', this.form.name).makeTwoWay())
           ),
-          // four named ports, one on each side:
+          // 四个指定的端口，每边一个:
           makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
           makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
           makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
           makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
         ))
-
+      // 判断节点图表
       this.myDiagram.nodeTemplateMap.add('Conditional',
         $(go.Node, 'Table', nodeStyle(),
-          // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+          // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'Diamond',
               { fill: '#282c34', stroke: '#00A9C9', strokeWidth: 3.5 },
@@ -218,13 +250,13 @@ export default {
               },
               new go.Binding('text').makeTwoWay())
           ),
-          // four named ports, one on each side:
+          // 四个指定的端口，每边一个:
           makePort('T', go.Spot.Top, go.Spot.Top, false, true),
           makePort('L', go.Spot.Left, go.Spot.Left, true, true),
           makePort('R', go.Spot.Right, go.Spot.Right, true, true),
           makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
         ))
-
+      // 开始节点图表
       this.myDiagram.nodeTemplateMap.add('Start',
         $(go.Node, 'Table', nodeStyle(),
           $(go.Panel, 'Spot',
@@ -233,12 +265,12 @@ export default {
             $(go.TextBlock, 'Start', textStyle(),
               new go.Binding('text'))
           ),
-          // three named ports, one on each side except the top, all output only:
+          // 三个指定端口(除顶部外，每一边都有一个端口)都是输出端口:
           makePort('L', go.Spot.Left, go.Spot.Left, true, false),
           makePort('R', go.Spot.Right, go.Spot.Right, true, false),
           makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
         ))
-
+      // 结束节点图表
       this.myDiagram.nodeTemplateMap.add('End',
         $(go.Node, 'Table', nodeStyle(),
           $(go.Panel, 'Spot',
@@ -247,7 +279,7 @@ export default {
             $(go.TextBlock, 'End', textStyle(),
               new go.Binding('text'))
           ),
-          // three named ports, one on each side except the bottom, all input only:
+          // 三个指定的端口，除底部外，每一边都有一个端口，都是输入端口:
           makePort('T', go.Spot.Top, go.Spot.Top, false, true),
           makePort('L', go.Spot.Left, go.Spot.Left, false, true),
           makePort('R', go.Spot.Right, go.Spot.Right, false, true)
@@ -256,7 +288,7 @@ export default {
       // taken from ../extensions/Figures.js:
       go.Shape.defineFigureGenerator('File', function(shape, w, h) {
         var geo = new go.Geometry()
-        var fig = new go.PathFigure(0, 0, true) // starting point
+        var fig = new go.PathFigure(0, 0, true) // 起点
         geo.add(fig)
         fig.add(new go.PathSegment(go.PathSegment.Line, 0.75 * w, 0))
         fig.add(new go.PathSegment(go.PathSegment.Line, w, 0.25 * h))
@@ -264,14 +296,14 @@ export default {
         fig.add(new go.PathSegment(go.PathSegment.Line, 0, h).close())
         var fig2 = new go.PathFigure(0.75 * w, 0, false)
         geo.add(fig2)
-        // The Fold
+        // 折叠
         fig2.add(new go.PathSegment(go.PathSegment.Line, 0.75 * w, 0.25 * h))
         fig2.add(new go.PathSegment(go.PathSegment.Line, w, 0.25 * h))
         geo.spot1 = new go.Spot(0, 0.25)
         geo.spot2 = go.Spot.BottomRight
         return geo
       })
-
+      // 文本节点图表
       this.myDiagram.nodeTemplateMap.add('Comment',
         $(go.Node, 'Auto', nodeStyle(),
           $(go.Shape, 'File',
@@ -285,12 +317,12 @@ export default {
               editable: true
             },
             new go.Binding('text').makeTwoWay())
-          // no ports, because no links are allowed to connect with a comment
+          // 没有端口，因为没有链接被允许与注释连接
         ))
 
-      // replace the default Link template in the linkTemplateMap
+      // 替换linkTemplateMap中的默认链接样板
       this.myDiagram.linkTemplate =
-        $(go.Link, // the whole link panel
+        $(go.Link, // 整个连接面板
           {
             routing: go.Link.AvoidsNodes,
             curve: go.Link.JumpOver,
@@ -299,25 +331,25 @@ export default {
             relinkableTo: true,
             reshapable: true,
             resegmentable: true,
-            // mouse-overs subtly highlight links:
+            // 鼠标悬停巧妙地突出显示链接:
             mouseEnter: function(e, link) { link.findObject('HIGHLIGHT').stroke = 'rgba(30,144,255,0.2)' },
             mouseLeave: function(e, link) { link.findObject('HIGHLIGHT').stroke = 'transparent' },
             selectionAdorned: false
           },
           new go.Binding('points').makeTwoWay(),
-          $(go.Shape, // the highlight shape, normally transparent
+          $(go.Shape, // 高光形状，通常是透明的
             { isPanelMain: true, strokeWidth: 8, stroke: 'transparent', name: 'HIGHLIGHT' }),
-          $(go.Shape, // the link path shape
+          $(go.Shape, // 链接路径形状
             { isPanelMain: true, stroke: 'gray', strokeWidth: 2 },
             new go.Binding('stroke', 'isSelected', function(sel) { return sel ? 'dodgerblue' : 'gray' }).ofObject()),
-          $(go.Shape, // the arrowhead
+          $(go.Shape, // 箭头
             { toArrow: 'standard', strokeWidth: 0, fill: 'gray' }),
-          $(go.Panel, 'Auto', // the link label, normally not visible
+          $(go.Panel, 'Auto', // 链接标签，通常不可见
             { visible: false, name: 'LABEL', segmentIndex: 2, segmentFraction: 0.5 },
             new go.Binding('visible', 'visible').makeTwoWay(),
-            $(go.Shape, 'RoundedRectangle', // the label shape
+            $(go.Shape, 'RoundedRectangle', // 标签形状
               { fill: '#F8F8F8', strokeWidth: 0 }),
-            $(go.TextBlock, 'Yes', // the label
+            $(go.TextBlock, 'Yes', // 标签
               {
                 textAlign: 'center',
                 font: '10pt helvetica, arial, sans-serif',
@@ -328,50 +360,50 @@ export default {
           )
         )
 
-      // Make link labels visible if coming out of a "conditional" node.
+      // 使链接标签在从“条件”节点出来时可见。
       // This listener is called by the "LinkDrawn" and "LinkRelinked" DiagramEvents.
+      // 这个侦听器由LinkDrawn和LinkRelinked图表事件调用
       function showLinkLabel(e) {
         var label = e.subject.findObject('LABEL')
         if (label !== null) label.visible = (e.subject.fromNode.data.category === 'Conditional')
       }
 
-      // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
+      // 链接工具和重连工具使用的临时链接也是正交的:
       this.myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal
       this.myDiagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal
 
-      this.load() // load an initial diagram from some JSON text
-
-      // initialize the Palette that is on the left side of the page
+      this.load() // 从一些JSON文本加载一个初始图
+      // 初始化页面左侧的面板
       // myPalette =
-      $(go.Palette, 'myPaletteDiv' + this.myId, // must name or refer to the DIV HTML element
+      $(go.Palette, 'myPaletteDiv' + this.myId, // 必须命名或引用DIV HTML元素
         {
-          // Instead of the default animation, use a custom fade-down
+          // 使用自定义渐变代替默认的动画
           'animationManager.initialAnimationStyle': go.AnimationManager.None,
-          'InitialAnimationStarting': animateFadeDown, // Instead, animate with this function
+          'InitialAnimationStarting': animateFadeDown, // 相反，动画使用此函数
 
-          nodeTemplateMap: this.myDiagram.nodeTemplateMap, // share the templates used by myDiagram
-          model: new go.GraphLinksModel([ // specify the contents of the Palette
-            { category: 'Start', text: 'Start' },
-            { text: 'Step' },
-            { category: 'Conditional', text: '???' },
-            { category: 'End', text: 'End' },
-            { category: 'Comment', text: 'Comment' }
+          nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
+          model: new go.GraphLinksModel([ // 指定调色板的内容
+            { category: 'Start', text: '开始' },
+            { text: '步骤' },
+            { category: 'Conditional', text: '判断' },
+            { category: 'End', text: '结束' },
+            { category: 'Comment', text: '注释' }
           ])
         })
 
-      // This is a re-implementation of the default animation, except it fades in from downwards, instead of upwards.
+      // 这是默认动画的重新实现，只是它从下而不是向上淡入。
       function animateFadeDown(e) {
         var diagram = e.diagram
         var animation = new go.Animation()
-        animation.isViewportUnconstrained = true // So Diagram positioning rules let the animation start off-screen
+        animation.isViewportUnconstrained = true // 所以图表定位规则让动画从屏幕开始
         animation.easing = go.Animation.EaseOutExpo
         animation.duration = 900
-        // Fade "down", in other words, fade in from above
+        // 淡出“向下”，换句话说，从上面淡入
         animation.add(diagram, 'position', diagram.position.copy().offset(0, 200), diagram.position)
         animation.add(diagram, 'opacity', 0, 1)
         animation.start()
       }
-    }, // end init
+    }, // 结束初始化
     DataSave() {
       console.log('________________')
       console.log(this.isSave)
@@ -383,17 +415,40 @@ export default {
         this.toParent()
       }
     },
+    sure() {
+      console.log(this.myDiagram.model)
+      const arr = JSON.parse(this.myDiagram.model.toJson()).nodeDataArray
+      for (let i = 0; i < arr.length; i++) {
+        if (!arr[i].category) {
+          console.log(arr[i])
+          console.log(this.form.name)
+          arr[i].text = this.form.name
+          console.log(arr[i])
+        }
+      }
+      this.dialogFormVisible = false
+    },
     // 命名传到父级
     toParent() {
-      const obj = {
-        name: this.SaveName,
-        index: this.isSave.name,
-        data: this.SaveData
+      if (this.SaveName) {
+        const obj = {
+          name: this.SaveName,
+          index: this.isSave.name,
+          data: this.SaveData
+        }
+        console.log(obj)
+        this.$emit('fromChild', obj)
+      } else {
+        const obj1 = {
+          name: this.isSave.title,
+          index: this.isSave.name,
+          data: this.SaveData
+        }
+        console.log(obj1)
+        this.$emit('fromChild', obj1)
       }
-      console.log(obj)
-      this.$emit('fromChild', obj)
     },
-    // Show the diagram's model in JSON format that the user may edit
+    // 无法打开用户可以编辑的JSON格式的图表模型
     save() {
       // document.getElementById('mySavedModel').value = this.myDiagram.model.toJson() // 流程图中的值
       this.myDiagram.isModified = false
@@ -406,6 +461,7 @@ export default {
     load() {
       this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
     },
+    // 新建文件保存前输入文件名
     open() {
       this.$prompt('请为当前任务命名', '提示', {
         confirmButtonText: '确定',
@@ -425,10 +481,10 @@ export default {
         })
       })
     },
-    // print the diagram by opening a new window holding SVG images of the diagram contents for each page
+    // 通过打开一个新窗口来打印图表，其中包含每个页面的图表内容的SVG图像
     printDiagram() {
       var svgWindow = window.open()
-      if (!svgWindow) return // failure to open a new Window
+      if (!svgWindow) return // 未能打开新窗口
       var printSize = new go.Size(700, 960)
       var bnds = this.myDiagram.documentBounds
       var x = bnds.x
