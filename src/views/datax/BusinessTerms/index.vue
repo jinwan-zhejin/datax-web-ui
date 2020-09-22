@@ -13,8 +13,15 @@
             <i slot="prefix" class="el-input__icon el-icon-search" />
           </el-input>
           <div class="tree-c mb10">
-            <el-tooltip class="item" effect="dark" content="新建目录" placement="top">
-              <span class="tree-t-set" @click="addNewLayer(-1)"><svg-icon icon-class="文件" /></span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="新建目录"
+              placement="top"
+            >
+              <span class="tree-t-set" @click="addNewLayer(-1)"
+                ><svg-icon iconClass="文件"
+              /></span>
             </el-tooltip>
           </div>
           <div class="tree-b">
@@ -40,7 +47,11 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="代码集名称：">
-                  <el-input v-model="codeSetName" style="float: left" :disabled="true" />
+                  <el-input
+                    v-model="codeSetName"
+                    style="float: left"
+                    :disabled="true"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -51,9 +62,7 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item
-                  label="状态："
-                >
+                <el-form-item label="状态：">
                   <el-select
                     v-model="status"
                     placeholder="请选择数据状态"
@@ -72,9 +81,27 @@
             </el-row>
           </el-form>
           <el-row>
-            <el-button size="mini" :disabled="currNodeId===''" class="grey-btn" @click="addNewMeta({status:-1})">新建</el-button>
-            <el-button size="mini" class="grey-btn" :disabled="this.deleteSelection.length<=0" @click="sendAudit">送审</el-button>
-            <el-button size="mini" :disabled="this.deleteSelection.length<=0" class="red-btn" @click="deleteList">删除</el-button>
+            <el-button
+              size="mini"
+              class="grey-btn"
+              :disabled="currNodeId === ''"
+              @click="addNewMeta({ status: -1 })"
+              >新建</el-button
+            >
+            <el-button
+              size="mini"
+              class="grey-btn"
+              :disabled="this.deleteSelection.length <= 0"
+              @click="sendAudit"
+              >送审</el-button
+            >
+            <el-button
+              size="mini"
+              class="red-btn"
+              :disabled="this.deleteSelection.length <= 0"
+              @click="deleteList"
+              >删除</el-button
+            >
           </el-row>
           <el-row class="box-operate-b">
             <el-table
@@ -84,60 +111,93 @@
               style="width: 100%;"
               @selection-change="changeFun"
             >
-              <el-table-column
-                type="selection"
-                width="55"
-              />
-              <el-table-column
-                prop="code"
-                label="代码"
-                show-overflow-tooltip
-              />
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="code" label="代码" align="center" show-overflow-tooltip/>
               <el-table-column
                 prop="name"
                 label="代码名称"
+                align="center"
                 show-overflow-tooltip
               />
-              <el-table-column
-                label="状态"
-                show-overflow-tooltip
-              >
+              <el-table-column label="状态" align="center" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-tag v-if="scope.row.status==0" class="new-tag">草稿</el-tag>
-                  <el-tag v-if="scope.row.status==1" class="going-tag">待审核</el-tag>
-                  <el-tag v-if="scope.row.status==2" class="success-tag">已审核</el-tag>
-                  <el-tag v-if="scope.row.status==3" class="error-tag">变更中</el-tag>
-                  <el-tag v-if="scope.row.status==4" class="quit-tag">已退回</el-tag>
+                  <el-tag v-if="scope.row.status == 0" class="new-tag"
+                    >草稿</el-tag
+                  >
+                  <el-tag v-if="scope.row.status == 1" class="going-tag"
+                    >待审核</el-tag
+                  >
+                  <el-tag v-if="scope.row.status == 2" class="success-tag"
+                    >已审核</el-tag
+                  >
+                  <el-tag v-if="scope.row.status == 3" class="error-tag"
+                    >变更中</el-tag
+                  >
+                  <el-tag v-if="scope.row.status == 4" class="quit-tag"
+                    >已退回</el-tag
+                  >
                 </template>
               </el-table-column>
-              <el-table-column
-                label="操作"
-                width="220"
-              >
+              <el-table-column label="操作" align="center" width="220">
                 <template slot-scope="scope">
-                  <el-tooltip v-if="scope.row.status==0 || scope.row.status==3 || scope.row.status==4" class="item" effect="dark" content="编辑" placement="top">
-                    <i class="table-icon-menu" @click="addNewMeta(scope.row)"><svg-icon icon-class="编辑1" /></i>
+                  <el-tooltip
+                    v-if="
+                      scope.row.status == 0 ||
+                        scope.row.status == 3 ||
+                        scope.row.status == 4
+                    "
+                    class="item"
+                    effect="dark"
+                    content="编辑"
+                    placement="top"
+                  >
+                    <i class="table-icon-menu" @click="addNewMeta(scope.row)"
+                      ><svg-icon icon-class="编辑1"
+                    /></i>
                   </el-tooltip>
-                  <el-tooltip v-if="scope.row.status==0 || scope.row.status==3 || scope.row.status==4 " class="item" effect="dark" content="删除" placement="top">
-                    <i class="table-icon-menu" @click="deleteList(scope.row.id,0)"><svg-icon icon-class="删除" /></i>
+                  <el-tooltip
+                    v-if="
+                      scope.row.status == 0 ||
+                        scope.row.status == 3 ||
+                        scope.row.status == 4
+                    "
+                    class="item"
+                    effect="dark"
+                    content="删除"
+                    placement="top"
+                  >
+                    <i
+                      class="table-icon-menu"
+                      @click="deleteList(scope.row.id, 0)"
+                      ><svg-icon icon-class="删除"
+                    /></i>
                   </el-tooltip>
-                  <el-tooltip v-if="scope.row.status==2" class="item" effect="dark" content="变更" placement="top">
-                    <i class="table-icon-menu" @click="changeStatus(scope.row.id)"><svg-icon icon-class="g-更新" /></i>
+                  <el-tooltip
+                    v-if="scope.row.status == 2"
+                    class="item"
+                    effect="dark"
+                    content="变更"
+                    placement="top"
+                  >
+                    <i
+                      class="table-icon-menu"
+                      @click="changeStatus(scope.row.id)"
+                      ><svg-icon icon-class="g-更新"
+                    /></i>
                   </el-tooltip>
                 </template>
               </el-table-column>
             </el-table>
             <el-pagination
-              class="ar mt15"
+              class="ar mt15 floatRight"
               :current-page="currentPage"
-              :page-sizes="[10,20,30]"
+              :page-sizes="[10, 20, 30]"
               :page-size="100"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
             />
-
           </el-row>
         </div>
       </el-col>
@@ -149,7 +209,14 @@
       :before-close="closeChangeModal"
       append-to-body
     >
-      <el-form ref="addLayerForm" :model="changeForm" :rules="rules" size="small" label-width="80px" label-position="right">
+      <el-form
+        ref="addLayerForm"
+        :model="changeForm"
+        :rules="rules"
+        size="small"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item label="变更原因" prop="changeInfo">
           <el-input
             v-model="changeForm.changeInfo"
@@ -160,13 +227,33 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="info" size="small" @click="closeChangeModal">取 消</el-button>
-        <el-button type="danger" size="small" @click="submitChange('addLayerForm')">确 定</el-button>
+        <el-button type="info" size="small" @click="closeChangeModal"
+          >取 消</el-button
+        >
+        <el-button
+          type="danger"
+          size="small"
+          @click="submitChange('addLayerForm')"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
-    <add-edit-code :curr-node-id="currNodeId" :add-edit-code-list-visible="AddEditCodeListVisible" :is-edit-code-list="isEditCodeList" @editCodeListBack="editCodeListBack" />
-    <add-catalog :add-catalog-visible="addCatalogVisible" :is-edit-catalog="isEditCatalog" @addCatalogBack="addCatalogBack" />
-    <add-code-set :add-code-set-visible="addCodeSetVisible" :is-edit-code-set="isEditCodeSet" @addCodeSetBack="addCodeSetBack" />
+    <add-edit-code
+      :curr-node-id="currNodeId"
+      :add-edit-code-list-visible="AddEditCodeListVisible"
+      :is-edit-code-list="isEditCodeList"
+      @editCodeListBack="editCodeListBack"
+    />
+    <add-catalog
+      :add-catalog-visible="addCatalogVisible"
+      :is-edit-catalog="isEditCatalog"
+      @addCatalogBack="addCatalogBack"
+    />
+    <add-code-set
+      :add-code-set-visible="addCodeSetVisible"
+      :is-edit-code-set="isEditCodeSet"
+      @addCodeSetBack="addCodeSetBack"
+    />
   </section>
 </template>
 
@@ -174,6 +261,7 @@
 import AddCatalog from './business/AddCatalog.vue'
 import AddCodeSet from './business/AddCodeSet.vue'
 import AddEditCode from './business/AddEditCode.vue'
+import * as businessTermsApi from '@/api/datax-business-terms'
 export default {
   name: 'BusinessGlossary',
   components: {
@@ -187,56 +275,60 @@ export default {
           { min: 1, max: 255, message: '长度在 1 到 255 个字符', trigger: 'blur' }
         ]
       },
+      // 变更
       changeForm: {
         id: '',
         changeInfo: ''
       },
-      status: '',
-      treeName: '',
-      currNodeId: '',
-      codeSetName: '',
-      codeSetRule: '',
-      addCatalogVisible: false,
-      addCodeSetVisible: false,
-      AddEditCodeListVisible: false,
-      addChangeVisible: false, // 变更
+      status: '', // 状态
+      treeName: '', // 搜索关键字
+      currNodeId: '', // 当前节点id
+      codeSetName: '', // 代码集名称
+      codeSetRule: '', // 编码规则
+      addCatalogVisible: false, // 新建/编辑分层[dialog]
+      addCodeSetVisible: false, // 新建代码集[dialog]
+      AddEditCodeListVisible: false, // 新增/编辑代码[dialog]
+      addChangeVisible: false, // 变更[dialog]
+      // 新增编辑代码[object]
       isEditCodeList: {
         currTime: new Date().getTime(),
-        id: '',
+        id: '', // (id!==null && !isEditCodeList.isHistory)?编辑:新增
         codesetId: ''
       },
+      // 新增编辑分层[object]
       isEditCatalog: {
         currTime: new Date().getTime(),
         id: '',
         pid: '',
         isCodeset: '1',
-        isEdit: false,
+        isEdit: false, // 编辑?true:false
         name: '',
         code: '',
         explanation: ''
       },
+      // 新建编辑代码集[object]
       isEditCodeSet: {
         currTime: new Date().getTime(),
         id: '',
         pid: '',
         isCodeset: '0',
-        isEdit: false,
+        isEdit: false, // 编辑?true:false
         name: '',
         code: ''
       },
-      total: 0,
-      currentPage: 1,
-      pageLength: 10,
-
-      deleteSelection: [],
-      tableData: [],
-      nodeList: [],
+      total: 0, // 总项数
+      currentPage: 1, // 当前页码
+      pageLength: 10, // 每页N项
+      deleteSelection: [], // 删除项数组
+      tableData: [], // table展示数据
+      nodeList: [], // 节点
       defaultProps: {
         id: 'id',
         label: 'name',
         children: 'children',
         parent: 'parentId'
       },
+      // 代码集状态
       statusList: [
         {
           value: '',
@@ -272,6 +364,25 @@ export default {
   },
   mounted: function() {
     this.getLayerMenu()
+    // // 测试代码列表
+    // for (var i = 0; i < 10; i++) {
+    //   this.tableData.push({ code: '00'.concat(i), name: '代码'.concat(i), status: Math.floor(Math.random() * 4) })
+    // }
+    // // 测试节点树
+    // this.nodeList.push({
+    //   id: 0,
+    //   name: '根节点',
+    //   children: [
+    //     { id: 1, name: '节点11', parentId: 0 },
+    //     { id: 2, name: '节点12', parentId: 0 },
+    //     { id: 3, name: '节点13', parentId: 0, children: [
+    //       { id: 4, name: '节点131', parentId: 3, children: [
+    //         { id: 5, name: '节点1311', parentId: 4 },
+    //       ] },
+    //     ] }
+    //   ],
+    //   parentId: -1
+    // })
   },
   methods: {
     closeChangeModal() {
@@ -285,7 +396,16 @@ export default {
     submitChange(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$urlApi.dataStandard.changeCode(this.changeForm).then((res) => {
+          // this.$urlApi.dataStandard.changeCode(this.changeForm).then((res) => {
+          //   this.addChangeVisible = false;
+          //   this.closeChangeModal();
+          //   this.$message({
+          //     message: '操作成功',
+          //     type: 'success'
+          //   });
+          //   this.getData();
+          // })
+          businessTermsApi.changeCode(this.changeForm).then((res) => {
             this.addChangeVisible = false;
             this.closeChangeModal();
             this.$message({
@@ -306,25 +426,37 @@ export default {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },
+    // 获取节点目录
     getLayerMenu() {
-      this.$urlApi.dataStandard.getCodeSet().then((res) => {
+      // this.$urlApi.dataStandard.getCodeSet().then((res) => {
+      //   this.nodeList = res.data
+      // })
+      businessTermsApi.getCodeSet().then((res) => {
         this.nodeList = res.data
       })
     },
     getData() {
       const param = {
-        id: this.currNodeId,
-        status: this.status,
-        start: (this.currentPage - 1) * 10,
-        length: this.pageLength
+        id: this.currNodeId, // 当前节点id
+        status: this.status, // 节点状态码
+        start: (this.currentPage - 1) * 10, // 当前页码
+        length: this.pageLength // 当前页面显示树
       };
-      this.$urlApi.dataStandard.getCodesFromSet(param).then((res) => {
+      // this.$urlApi.dataStandard.getCodesFromSet(param).then((res) => {
+      //   this.tableData = res.data;
+      //   this.total = res.recordsFiltered;
+      // })
+      businessTermsApi.getCodesFromSet(param).then((res) => {
         this.tableData = res.data;
         this.total = res.recordsFiltered;
       })
     },
     getCodeSetData() {
-      this.$urlApi.dataStandard.getCodeSetById({ 'id': this.currNodeId }).then((res) => {
+      // this.$urlApi.dataStandard.getCodeSetById({ 'id': this.currNodeId }).then((res) => {
+      //   this.codeSetName = res.data.name;
+      //   this.codeSetRule = res.data.codeRule;
+      // })
+      businessTermsApi.getCodeSetById({ 'id': this.currNodeId }).then((res) => {
         this.codeSetName = res.data.name;
         this.codeSetRule = res.data.codeRule;
       })
@@ -341,13 +473,13 @@ export default {
       this.getData()
     },
     addNewMeta(row) {
-      if (row.status == '0' || row.status == '3' || row.status == '4') {
+      if (row.status === 0 || row.status === 3 || row.status === 4) {
         this.isEditCodeList.id = row.id;
         this.isEditCodeList.name = row.name;
         this.isEditCodeList.code = row.code;
         this.isEditCodeList.currTime = new Date().getTime();
         this.AddEditCodeListVisible = true;
-      } else if (row.status == -1) {
+      } else if (row.status === -1) {
         this.AddEditCodeListVisible = true;
         this.isEditCodeList.id = null;
       } else {
@@ -375,7 +507,14 @@ export default {
         cancelButtonClass: 'cancelButton',
         confirmButtonClass: 'confirmButton'
       }).then(() => {
-        this.$urlApi.dataStandard.codeSetsendAudit({ ids: ids }).then((res) => {
+        // this.$urlApi.dataStandard.codeSetsendAudit({ ids: ids }).then((res) => {
+        //   this.getData()
+        //   this.$message({
+        //     type: 'success',
+        //     message: '送审成功'
+        //   });
+        // });
+        businessTermsApi.codeSetsendAudit({ ids: ids }).then((res) => {
           this.getData()
           this.$message({
             type: 'success',
@@ -406,7 +545,14 @@ export default {
         cancelButtonClass: 'cancelButton',
         confirmButtonClass: 'confirmButton'
       }).then(() => {
-        this.$urlApi.dataStandard.deleteCodes({ ids: ids }).then((res) => {
+        // this.$urlApi.dataStandard.deleteCodes({ ids: ids }).then((res) => {
+        //   this.getData()
+        //   this.$message({
+        //     type: 'success',
+        //     message: '删除成功'
+        //   });
+        // });
+        businessTermsApi.deleteCodes({ ids: ids }).then((res) => {
           this.getData()
           this.$message({
             type: 'success',
@@ -516,7 +662,14 @@ export default {
         cancelButtonClass: 'cancelButton',
         confirmButtonClass: 'confirmButton'
       }).then(() => {
-        this.$urlApi.dataStandard.deleteCodeSets({ id: data.id }).then((res) => {
+        // this.$urlApi.dataStandard.deleteCodeSets({ id: data.id }).then((res) => {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '删除成功'
+        //   });
+        //   this.getLayerMenu()
+        // });
+        businessTermsApi.deleteCodeSets({ id: data.id }).then((res) => {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -542,110 +695,126 @@ export default {
 </script>
 
 <style lang="scss">
-    .business-glossary-section {
-        padding: 20px;
-        .main-inner-allSize{
-            display: flex;
-            min-width: 0;
-            .care-technical-left{
-                width: 215px;
-                padding-right: 15px;
-                height: 100%;
-                .tree-menu{
-                    height: 100%;
-                    background: rgba(245,247,250,1);
-                    padding: 15px 17px;
-                    box-sizing: border-box;
-                    .tree-c{
-                        display: flex;
-                        justify-content: flex-start;
-                        .tree-t-set{
-                            width: 28px;
-                            height: 26px;
-                            display: block;
-                            border-radius:2px;
-                            border:1px solid #E1E5EC;
-                            margin-right: 7px;
-                            cursor: pointer;
-                            background:rgba(240,241,244,1);
-                            font-size: 14px;
-                            line-height: 26px;
-                            text-align: center;
-                        }
-                    }
-                    .tree-b{
-                        height:-moz-calc(100% - 72px);
-                        height:-webkit-calc(100% - 72px);
-                        height: calc(100% - 72px);
-                        overflow: auto;
-                        .el-tree{
-                            .el-tree-node__content{
-                                position: relative;
-                                .nodeItem {
-                                    width: 80%;
-                               /*     position: relative;*/
-                                    .node-label {
-                                        display: inline-block;
-                                        width: 100%;
-                                        overflow: hidden;
-                                        white-space: nowrap;
-                                        text-overflow: ellipsis;
-                                        .node-icon{
-                                            margin-right: 5px;
-                                            font-size: 14px;
-                                        }
-                                    }
-                                    .node-label:hover {
-                                        display: inline-block;
-                                    }
-                                    .nodeOpt {
-                                        display: none!important;
-                                        float: right;
-                                        position: relative;
-                                        top: -2px;
-                                        font-size: 14px;
-                                        font-weight: bold;
-                                    }
-                                    .nodeOptDetail {
-                                        display: none;
-                                        position: absolute;
-                                        right: 0;
-                                        top: 0px;
-                                        height: 26px;
-                                        line-height: 26px;
-                                        font-size: 14px;
-                                        background:rgba(51,55,67,.7);
-                                        border-radius: 2px;
-                                        cursor: default;
-                                        padding: 0 8px;
-                                        .el-button{
-                                            color: #ffffff;
-                                        }
-                                    }
-                                }
-                                .nodeItem:hover .nodeOptDetail {
-                                    display: inline-block!important;
-                                    text-align: right;
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-            }
-            .care-technical-right{
-                flex: 1;
-                min-width: 0;
-                .box-operate{
-                    height: 100%;
-                    .box-operate-b{
-                        height:-moz-calc(100% - 180px);
-                        height:-webkit-calc(100% - 180px);
-                        height: calc(100% - 180px);
-                    }
-                }
-            }
+.business-glossary-section {
+  padding: 20px;
+  .main-inner-allSize {
+    display: flex;
+    min-width: 0;
+    .care-technical-left {
+      min-width: 215px;
+      width: 25%;
+      padding-right: 15px;
+      height: 100%;
+      .tree-menu {
+        height: 100%;
+        background: rgba(245, 247, 250, 1);
+        padding: 15px 17px;
+        box-sizing: border-box;
+        .tree-c {
+          display: flex;
+          justify-content: flex-start;
+          .tree-t-set {
+            width: 28px;
+            height: 26px;
+            display: block;
+            border-radius: 2px;
+            border: 1px solid #e1e5ec;
+            margin: 7px 7px 7px 0;
+            cursor: pointer;
+            background: rgba(240, 241, 244, 1);
+            font-size: 14px;
+            line-height: 26px;
+            text-align: center;
+          }
         }
+        .tree-b {
+          height: -moz-calc(100% - 72px);
+          height: -webkit-calc(100% - 72px);
+          height: calc(100% - 72px);
+          // min-height: 178px;
+          overflow: auto;
+          .el-tree {
+            background: transparent;
+            .el-tree-node__content {
+              position: relative;
+              .nodeItem {
+                width: 80%;
+                /*     position: relative;*/
+                .node-label {
+                  display: inline-block;
+                  width: 100%;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  .node-icon {
+                    margin-right: 5px;
+                    font-size: 14px;
+                  }
+                }
+                .node-label:hover {
+                  display: inline-block;
+                }
+                .nodeOpt {
+                  display: none !important;
+                  float: right;
+                  position: relative;
+                  top: -2px;
+                  font-size: 14px;
+                  font-weight: bold;
+                }
+                .nodeOptDetail {
+                  display: none;
+                  position: absolute;
+                  right: 0;
+                  top: 0px;
+                  height: 26px;
+                  line-height: 26px;
+                  font-size: 14px;
+                  background: rgba(51, 55, 67, 0.7);
+                  border-radius: 2px;
+                  cursor: default;
+                  padding: 0 8px;
+                  .el-button {
+                    color: #ffffff;
+                  }
+                }
+              }
+              .nodeItem:hover .nodeOptDetail {
+                display: inline-block !important;
+                text-align: right;
+              }
+            }
+            .el-tree__empty-block {
+              background:transparent;
+              // min-height: 178px;
+            }
+          }
+        }
+      }
     }
+    .care-technical-right {
+      flex: 1;
+      min-width: 0;
+      width: 75%;
+      .box-operate {
+        height: 100%;
+        .box-operate-b {
+          // height: -moz-calc(100% - 180px);
+          // height: -webkit-calc(100% - 180px);
+          // height: calc(100% - 180px);
+        }
+      }
+    }
+  }
+}
+.floatRight {
+  position: absolute;
+  // right: 15px;
+  margin-top: 15px;
+}
+.table-icon-menu {
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 3px 0 3px;
+}
 </style>
