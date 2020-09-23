@@ -31,7 +31,7 @@
         <div style="position: absolute; width: 1px; height: 1px;"></div>
       </div>
     </div>
-    <el-dialog title="编辑字段" :visible.sync="dialogTableVisible">
+    <el-dialog width='80%' title="编辑字段" :visible.sync="dialogTableVisible">
       <EditField :tableData='fieldsData' 
       @createFields='createFields()' 
       @deleteFidlds='deleteFidlds()'
