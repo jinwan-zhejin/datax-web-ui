@@ -1,7 +1,7 @@
 <template>
   <div class="board">
     <div
-      id="myPaletteDiv"
+      :id="'myPaletteDiv' + timestamp"
       style="width: 100px;height:660px; margin-right: 2px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;"
     >
       <canvas
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div
-      id="myDiagramDiv"
+      :id="'myDiagramDiv' + timestamp"
       style="border: 1px solid black; width: 100%; height: 660px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;"
     >
       <canvas
@@ -32,43 +32,60 @@
       </div>
     </div>
     <el-dialog title="编辑字段" :visible.sync="dialogTableVisible">
-      <el-table :data="gridData">
-        <el-table-column property="name" label="字段名" width="150"></el-table-column>
-        <el-table-column property="info" label="字段值" width="200"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="120">
-          <template slot-scope="scope">
-            <el-button
-              @click.native.prevent="deleteRow(scope.$index, gridData)"
-              type="text"
-              size="small"
-            >移除</el-button>
-            <el-button type="text" size="small">编辑</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <EditField :tableData='fieldsData' 
+      @createFields='createFields()' 
+      @deleteFidlds='deleteFidlds()'
+      />
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button @click="updateFields()" type="primary" >确 定</el-button>
+         <el-button type="primary" >应 用</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import init from "./initBoard";
+import EditField from "./editField";
 export default {
   name: "Modeling",
+  components: {
+    EditField,
+  },
   data() {
     return {
       dialogTableVisible: false,
       gridData: [],
+      timestamp: "",
+      fieldsData:[],
+      myDiagram:null,
+      node:null
     };
+  },
+  created() {
+    this.timestamp = new Date().getTime();
   },
   mounted() {
     let _this = this;
-    this.init(_this);
+    this.myDiagram = this.init(_this, this.timestamp);
   },
   methods: {
     init,
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
+    createFields(){
+      this.fieldsData.push({})
+    },
+    deleteFidlds(index){
+      this.fieldsData.splice(index, 1)
+    },
+    updateFields(){
+      this.myDiagram.model.updateTargetBindings(this.node);
+      this.dialogTableVisible = false;
+      this.$message.success('更新成功')
+    }
   },
 };
 </script>
