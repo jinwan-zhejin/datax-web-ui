@@ -1,9 +1,9 @@
 import go from "gojs";
 import ColumnResizingTool from "./ColumnResizingTool";
 import RowResizingTool from "./RowResizingTool";
-function init(_this) {
+function init(_this, timestamp) {
   const $ = go.GraphObject.make; // for conciseness in defining templates
-  var myDiagram = $(go.Diagram, "myDiagramDiv", {
+  var myDiagram = $(go.Diagram, "myDiagramDiv" + timestamp, {
     validCycle: go.Diagram.CycleNotDirected, // don't allow loops
     "undoManager.isEnabled": true
   });
@@ -50,7 +50,7 @@ function init(_this) {
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "name")
+      new go.Binding("text", "name"),
     ),
     $(
       go.TextBlock,
@@ -64,7 +64,37 @@ function init(_this) {
         editable: true
       },
       new go.Binding("text", "info").makeTwoWay()
-    )
+    ),
+    $(
+      go.TextBlock,
+      {
+        column: 3,
+        margin: new go.Margin(0, 2),
+        stretch: go.GraphObject.Horizontal,
+        font: "bold 13px sans-serif",
+        wrap: go.TextBlock.None,
+        overflow: go.TextBlock.OverflowEllipsis,
+        // and disallow drawing links from or to this text:
+        fromLinkable: false,
+        toLinkable: false
+      },
+      new go.Binding("text", "type"),
+    ),
+    $(
+      go.TextBlock,
+      {
+        column: 4,
+        margin: new go.Margin(0, 2),
+        stretch: go.GraphObject.Horizontal,
+        font: "bold 13px sans-serif",
+        wrap: go.TextBlock.None,
+        overflow: go.TextBlock.OverflowEllipsis,
+        // and disallow drawing links from or to this text:
+        fromLinkable: false,
+        toLinkable: false
+      },
+      new go.Binding("text", "isPrimarykey"),
+    ),
   );
   // Return initialization for a RowColumnDefinition, specifying a particular column
   // and adding a Binding of RowColumnDefinition.width to the IDX'th number in the data.widths Array
@@ -249,13 +279,17 @@ function init(_this) {
             name: "field1",
             info: "first field",
             color: "#F7B84B",
-            figure: "Ellipse"
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: 'true'
           },
           {
             name: "field2",
             info: "the second one",
             color: "#F25022",
-            figure: "Ellipse"
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: 'true'
           },
           { name: "fieldThree", info: "3rd", color: "#00BCF2" }
         ],
@@ -268,16 +302,19 @@ function init(_this) {
           { name: "fieldA", info: "", color: "#FFB900", figure: "Diamond" },
           {
             name: "fieldB",
-            info: "",
+            info: "字段b",
             color: "#F25022",
-            figure: "Rectangle"
+            figure: "Rectangle",
+            type: "int",
+            isPrimarykey: 'true'
           },
           { name: "fieldC", info: "", color: "#7FBA00", figure: "Diamond" },
           {
             name: "fieldD",
             info: "fourth",
             color: "#00BCF2",
-            figure: "Rectangle"
+            figure: "Rectangle",
+            isPrimarykey: 'true'
           }
         ],
         loc: "250 0"
@@ -293,7 +330,7 @@ function init(_this) {
     ]
   });
   
-  var myPalette =$(go.Palette, "myPaletteDiv");
+  var myPalette =$(go.Palette, "myPaletteDiv" + timestamp);
   myPalette.nodeTemplate =
   $(go.Node, "Horizontal",
     $(go.Shape,
@@ -342,6 +379,16 @@ myPalette.model.nodeDataArray = [
     }, "changed color");
     
   }
+
+  //双击事件
+  myDiagram.addDiagramListener("ObjectDoubleClicked", function(e) {
+    console.log(e.subject.part.data);
+    _this.dialogTableVisible = true;
+    _this.fieldsData = e.subject.part.data.fields;
+    _this.node = e.subject.part.data;
+ })
+
+ return myDiagram;
 }
 
 

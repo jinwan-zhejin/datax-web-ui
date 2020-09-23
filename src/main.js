@@ -6,6 +6,10 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
+import "element-ui/lib/theme-chalk/index.css" 
+
+//
+ 
 
 import '@/styles/index.scss' // global css
 
@@ -42,6 +46,8 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
+
+
 
 // register global utility filters
 Object.keys(filters).forEach(key => {
