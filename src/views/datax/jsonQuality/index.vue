@@ -601,6 +601,7 @@ export default {
         if (this.active === 3) {
           this.showNext = false
           this.showSubmit = true
+          this.jobTemplateSelectDrawer = true
           const readerColumns = this.$refs.mapper.getLColumns()
           const writerColumns = this.$refs.mapper.getRColumns()
           var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
@@ -736,6 +737,7 @@ export default {
       if (this.jobTemplateSelectDrawer) {
         this.fetchData()
       }
+      console.log(123)
     },
     getReaderData() {
       return this.$refs.reader.getData()
