@@ -33,13 +33,15 @@
     </div>
     <el-dialog width='80%' title="编辑字段" :visible.sync="dialogTableVisible">
       <EditField :tableData='fieldsData' 
+      :node='node'
       @createFields='createFields()' 
       @deleteFidlds='deleteFidlds()'
+      @canUpdateFields='canUpdateFields'
       />
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTableVisible = false">取 消</el-button>
-        <el-button @click="updateFields()" type="primary" >确 定</el-button>
-         <el-button type="primary" >应 用</el-button>
+        <el-button :disabled='updateFieldsOK' @click="updateFields('确定')" type="primary" >确 定</el-button>
+         <el-button type="primary" @click="updateFields('应用')">应 用</el-button>
       </div>
     </el-dialog>
   </div>
@@ -60,7 +62,8 @@ export default {
       timestamp: "",
       fieldsData:[],
       myDiagram:null,
-      node:null
+      node:null,
+      updateFieldsOK:false,
     };
   },
   created() {
@@ -81,10 +84,14 @@ export default {
     deleteFidlds(index){
       this.fieldsData.splice(index, 1)
     },
-    updateFields(){
+    updateFields(type){
       this.myDiagram.model.updateTargetBindings(this.node);
+      if(type === '应用') return;
       this.dialogTableVisible = false;
-      this.$message.success('更新成功')
+      this.$message.success('更新成功');
+    },
+    canUpdateFields(val){
+      this.updateFieldsOK = val
     }
   },
 };

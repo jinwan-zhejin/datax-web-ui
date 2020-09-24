@@ -50,7 +50,7 @@ function init(_this, timestamp) {
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "name"),
+      new go.Binding("text", "name")
     ),
     $(
       go.TextBlock,
@@ -78,7 +78,7 @@ function init(_this, timestamp) {
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "type"),
+      new go.Binding("text", "type")
     ),
     $(
       go.TextBlock,
@@ -93,8 +93,8 @@ function init(_this, timestamp) {
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "isPrimarykey"),
-    ),
+      new go.Binding("text", "isPrimarykey")
+    )
   );
   // Return initialization for a RowColumnDefinition, specifying a particular column
   // and adding a Binding of RowColumnDefinition.width to the IDX'th number in the data.widths Array
@@ -152,7 +152,7 @@ function init(_this, timestamp) {
             textAlign: "center",
             font: "bold 12pt sans-serif"
           },
-          new go.Binding("text", "key")
+          new go.Binding("text", "tableName")
         )
       ),
       // this Panel holds a Panel for each item object in the itemArray;
@@ -177,16 +177,15 @@ function init(_this, timestamp) {
       ) // end Table Panel of items
     ), // end Vertical Panel
     {
-      contextMenu:     // define a context menu for each node
-        $("ContextMenu",  // that has one button
-          $("ContextMenuButton",
-            $(go.TextBlock, "编辑"),
-            { click: editFields }),
-          // more ContextMenuButtons would go here
-        )  // end Adornment
-    },
+      // define a context menu for each node
+      contextMenu: $(
+        "ContextMenu", // that has one button
+        $("ContextMenuButton", $(go.TextBlock, "编辑"), { click: editFields })
+        // more ContextMenuButtons would go here
+      ) // end Adornment
+    }
   ); // end Node
- 
+
   //连线样式
   myDiagram.linkTemplate = $(
     go.Link, // the whole link panel
@@ -271,86 +270,63 @@ function init(_this, timestamp) {
     // automatically update the model that is shown on this page
     Changed: function(e) {},
     nodeDataArray: [
-      {
-        key: "Record1",
-        widths: [NaN, NaN, 60],
-        fields: [
-          {
-            name: "field1",
-            info: "first field",
-            color: "#F7B84B",
-            figure: "Ellipse",
-            type: "int",
-            isPrimarykey: 'true'
-          },
-          {
-            name: "field2",
-            info: "the second one",
-            color: "#F25022",
-            figure: "Ellipse",
-            type: "int",
-            isPrimarykey: 'true'
-          },
-          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
-        ],
-        loc: "0 0"
-      },
-      {
-        key: "Record2",
-        widths: [NaN, NaN, NaN],
-        fields: [
-          { name: "fieldA", info: "", color: "#FFB900", figure: "Diamond" },
-          {
-            name: "fieldB",
-            info: "字段b",
-            color: "#F25022",
-            figure: "Rectangle",
-            type: "int",
-            isPrimarykey: 'true'
-          },
-          { name: "fieldC", info: "", color: "#7FBA00", figure: "Diamond" },
-          {
-            name: "fieldD",
-            info: "fourth",
-            color: "#00BCF2",
-            figure: "Rectangle",
-            isPrimarykey: 'true'
-          }
-        ],
-        loc: "250 0"
-      }
+      // {
+      //   key: "Record1",
+      //   widths: [NaN, NaN, 60],
+      //   fields: [
+      //     {
+      //       name: "field1",
+      //       info: "first field",
+      //       color: "#F7B84B",
+      //       figure: "Ellipse",
+      //       type: "int",
+      //       isPrimarykey: "true"
+      //     },
+      //     {
+      //       name: "field2",
+      //       info: "the second one",
+      //       color: "#F25022",
+      //       figure: "Ellipse",
+      //       type: "int",
+      //       isPrimarykey: "true"
+      //     },
+      //     { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+      //   ],
+      //   loc: "0 0"
+      // }
     ],
     linkDataArray: [
-      {
-        from: "Record1",
-        fromPort: "field1",
-        to: "Record2",
-        toPort: "fieldA"
-      }
+      // {
+      //   from: "Record1",
+      //   fromPort: "field1",
+      //   to: "Record2",
+      //   toPort: "fieldA"
+      // }
     ]
   });
-  
-  var myPalette =$(go.Palette, "myPaletteDiv" + timestamp);
-  myPalette.nodeTemplate =
-  $(go.Node, "Horizontal",
-    $(go.Shape,
+
+  var myPalette = $(go.Palette, "myPaletteDiv" + timestamp);
+  myPalette.nodeTemplate = $(
+    go.Node,
+    "Horizontal",
+    $(
+      go.Shape,
       { width: 14, height: 14, fill: "white" },
-      new go.Binding("fill", "color")),
-    $(go.TextBlock,
-      new go.Binding("text", "color"))
+      new go.Binding("fill", "color")
+    ),
+    $(go.TextBlock, new go.Binding("text", "color"))
   );
 
-// the list of data to show in the Palette
-myPalette.model.nodeDataArray = [
-  { key: "C", color: "cyan" },
-  { key: "LC", color: "lightcyan" },
-  { key: "A", color: "aquamarine" },
-  { key: "T", color: "turquoise" },
-  { key: "PB", color: "powderblue" },
-  { key: "LB", color: "lightblue" },
-  { key: "LSB", color: "lightskyblue" },
-  { key: "DSB", color: "deepskyblue" }
-];
+  // the list of data to show in the Palette
+  myPalette.model.nodeDataArray = [
+    {
+      key: "id",
+      tableName: 'tablename',
+      color: "table",
+      widths: [NaN, NaN, 60],
+      fields: []
+    }
+  ];
 
   //编辑字段
   function editFields(e, obj) {
@@ -359,7 +335,7 @@ myPalette.model.nodeDataArray = [
       var contextmenu = obj.part;
       // get the node data to which the Node is data bound
       var nodedata = contextmenu.data;
-      
+
       // compute the next color for the node
       console.log(nodedata);
       _this.gridData = nodedata.fields;
@@ -368,16 +344,23 @@ myPalette.model.nodeDataArray = [
       // d.model.updateTargetBindings(nodeData);
       var newcolor = "lightblue";
       switch (nodedata.color) {
-        case "lightblue": newcolor = "lightgreen"; break;
-        case "lightgreen": newcolor = "lightyellow"; break;
-        case "lightyellow": newcolor = "orange"; break;
-        case "orange": newcolor = "lightblue"; break;
+        case "lightblue":
+          newcolor = "lightgreen";
+          break;
+        case "lightgreen":
+          newcolor = "lightyellow";
+          break;
+        case "lightyellow":
+          newcolor = "orange";
+          break;
+        case "orange":
+          newcolor = "lightblue";
+          break;
       }
       // modify the node data
       // this evaluates data Bindings and records changes in the UndoManager
       d.model.set(nodedata, "color", newcolor);
     }, "changed color");
-    
   }
 
   //双击事件
@@ -386,11 +369,9 @@ myPalette.model.nodeDataArray = [
     _this.dialogTableVisible = true;
     _this.fieldsData = e.subject.part.data.fields;
     _this.node = e.subject.part.data;
- })
+  });
 
- return myDiagram;
+  return myDiagram;
 }
-
-
 
 export default init;
