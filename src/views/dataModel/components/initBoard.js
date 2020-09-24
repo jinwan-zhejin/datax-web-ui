@@ -322,6 +322,7 @@ function init(_this, timestamp) {
     {
       key: "id",
       tableName: 'tablename',
+      tableNameCN: '',
       color: "table",
       widths: [NaN, NaN, 60],
       fields: []
