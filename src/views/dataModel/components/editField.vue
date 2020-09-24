@@ -315,8 +315,7 @@ export default {
 
       this.sqlVal = `
     CREATE TABLE ${this.node.tableName} (
-    ${fieldStr}
-    \t ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
+    ${fieldStr}\t ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
     ) COMMENT '${this.node.tableNameCN}';
     
     `;
