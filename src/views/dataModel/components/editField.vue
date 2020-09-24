@@ -3,10 +3,10 @@
     <el-tab-pane label="基本信息">
       <el-form label-position="left" label-width="80px" :model="GeneralFrom">
         <el-form-item label="表英文名">
-          <el-input v-model="node.tableName"></el-input>
+          <el-input v-model="node.tableName" @blur="testField(node.tableName, '表英文名')"></el-input>
         </el-form-item>
         <el-form-item label="表中文名">
-          <el-input v-model="GeneralFrom.code"></el-input>
+          <el-input v-model="node.tableNameCN"></el-input>
         </el-form-item>
         <!-- <el-form-item label="Commord">
           <el-input v-model="GeneralFrom.commord"></el-input>
@@ -29,7 +29,7 @@
               v-model="scope.row.name"
               placeholder="请输入字段名"
               @change="handleEdit(scope.$index, scope.row)"
-              @blur="testField(scope.row.name)"
+              @blur="testField(scope.row.name, '字段名')"
             ></el-input>
             <span>{{scope.row.name}}</span>
           </template>
@@ -285,11 +285,11 @@ export default {
       this.$emit("createFields");
     },
 
-    testField(str) {
+    testField(str, type) {
       const res = testTableName(str);
       console.log(res);
       if (!res) {
-        this.$message.error("字段名只能由字母、数字、_组成");
+        this.$message.error(`${type}只能由字母、数字、_组成`);
       }
       return res;
     },
@@ -309,15 +309,16 @@ export default {
         } COMMENT '${field.info || ""}', \n`;
 
         if (field.isPrimarykey) {
-          primarykeyStr += field.name + ",";
+          primarykeyStr += field.name + " ";
         }
       }
 
       this.sqlVal = `
     CREATE TABLE ${this.node.tableName} (
     ${fieldStr}
-    ) COMMENT '${"表注释"}';
-    ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
+    \t ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
+    ) COMMENT '${this.node.tableNameCN}';
+    
     `;
     },
 
@@ -330,6 +331,9 @@ export default {
     tableName() {
       return this.node.tableName;
     },
+    tableNameCN() {
+      return this.node.tableNameCN;
+    }
   },
   watch: {
     tableData: {
@@ -350,6 +354,10 @@ export default {
     tableName(val) {
       this.sqlPreview();
     },
+
+    tableNameCN(val){
+      this.sqlPreview();
+    }
   },
 };
 </script>
