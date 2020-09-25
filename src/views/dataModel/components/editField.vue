@@ -280,6 +280,7 @@ export default {
     },
     handleDelete(index, row) {
       this.$emit("deleteFidlds", index);
+
     },
     createFields() {
       this.$emit("createFields");
@@ -306,7 +307,7 @@ export default {
 
         fieldStr += `\t ${field.name || ""} ${field.type || ""}${
           field.length ? "(" + field.length + ")" : ""
-        } COMMENT '${field.info || ""}', \n`;
+        } COMMENT '${field.info || ""}'${index === this.tableData.length - 1 ? '' : ','} \n`;
 
         if (field.isPrimarykey) {
           primarykeyStr += field.name + " ";
