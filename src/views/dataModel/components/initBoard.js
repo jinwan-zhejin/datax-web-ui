@@ -270,38 +270,95 @@ function init(_this, timestamp) {
     // automatically update the model that is shown on this page
     Changed: function(e) {},
     nodeDataArray: [
-      // {
-      //   key: "Record1",
-      //   widths: [NaN, NaN, 60],
-      //   fields: [
-      //     {
-      //       name: "field1",
-      //       info: "first field",
-      //       color: "#F7B84B",
-      //       figure: "Ellipse",
-      //       type: "int",
-      //       isPrimarykey: "true"
-      //     },
-      //     {
-      //       name: "field2",
-      //       info: "the second one",
-      //       color: "#F25022",
-      //       figure: "Ellipse",
-      //       type: "int",
-      //       isPrimarykey: "true"
-      //     },
-      //     { name: "fieldThree", info: "3rd", color: "#00BCF2" }
-      //   ],
-      //   loc: "0 0"
-      // }
+      {
+        key: "Record1",
+        tableName: "tablename1",
+        widths: [NaN, NaN, 60],
+        fields: [
+          {
+            name: "field1",
+            info: "first field",
+            color: "#F7B84B",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          {
+            name: "field2",
+            info: "the second one",
+            color: "#F25022",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+        ],
+        loc: "0 0"
+      },
+      {
+        key: "Record2",
+        tableName: "tablename2",
+        widths: [NaN, NaN, 60],
+        fields: [
+          {
+            name: "field1",
+            info: "first field",
+            color: "#F7B84B",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          {
+            name: "field2",
+            info: "the second one",
+            color: "#F25022",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+        ],
+        loc: "300 0"
+      },
+      {
+        key: "Record3",
+        tableName: "tablename3",
+        widths: [NaN, NaN, 60],
+        fields: [
+          {
+            name: "field1",
+            info: "first field",
+            color: "#F7B84B",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          {
+            name: "field2",
+            info: "the second one",
+            color: "#F25022",
+            figure: "Ellipse",
+            type: "int",
+            isPrimarykey: "true"
+          },
+          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+        ],
+        loc: "300 300"
+      }
     ],
     linkDataArray: [
-      // {
-      //   from: "Record1",
-      //   fromPort: "field1",
-      //   to: "Record2",
-      //   toPort: "fieldA"
-      // }
+      {
+        from: "Record1",
+        fromPort: "field1",
+        to: "Record2",
+        toPort: "fieldA"
+      },
+      {
+        from: "Record3",
+        fromPort: "field2",
+        to: "Record2",
+        toPort: "field2"
+      }
     ]
   });
 
@@ -321,8 +378,8 @@ function init(_this, timestamp) {
   myPalette.model.nodeDataArray = [
     {
       key: "id",
-      tableName: 'tablename',
-      tableNameCN: '',
+      tableName: "tablename",
+      tableNameCN: "",
       color: "table",
       widths: [NaN, NaN, 60],
       fields: []
@@ -366,10 +423,16 @@ function init(_this, timestamp) {
 
   //双击事件
   myDiagram.addDiagramListener("ObjectDoubleClicked", function(e) {
-    console.log(e.subject.part.data);
+    // console.log(e.subject.part.data);
     _this.dialogTableVisible = true;
     _this.fieldsData = e.subject.part.data.fields;
     _this.node = e.subject.part.data;
+    const { pb: { j: pNode } } = e.subject.part.findLinksInto();
+    let dataSourceList = pNode.map(node => myDiagram.model.findNodeDataForKey(node.data.from));
+
+    console.log(dataSourceList, '所有父节点');
+    _this.$store.commit('SET_pNode_Data', dataSourceList);
+    
   });
 
   return myDiagram;
