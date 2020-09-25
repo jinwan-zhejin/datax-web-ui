@@ -56,7 +56,9 @@ export default {
         DBMS: "",
       },
       editableTabsValue: "0",
-      editableTabs: [],
+      editableTabs: [{
+        title:'tablename'
+      }],
     };
   },
   components: {
