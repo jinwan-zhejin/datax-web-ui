@@ -378,11 +378,30 @@ export const asyncRoutes = [
     meta: { title: '数据共享', icon: 'work' },
     children: [
       {
-        path: 'share',
-        name: 'share',
-        component: () => import('@/views/datax/jobLog/index'),
-        meta: { title: '数据共享', icon: 'gongxiangbeifen' }
-      }
+        path: 'list',
+        name: 'list',
+        component: () => import('@/views/dataShare/interfaceList.vue'),
+        meta: { title: '接口列表', icon: 'business' }
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: () => import('@/views/dataShare/register.vue'),
+        meta: { title: '接口注册', icon: 'chuangjiangongdan' }
+      },
+      {
+        path: 'registerAudit',
+        name: 'registerAudit',
+        component: () => import('@/views/dataShare/registerAudit.vue'),
+        meta: { title: '注册审批', icon: 'chuangjiangongdan' }
+      },
+      {
+        path: 'debug',
+        name: 'debug',
+        component: () => import('@/views/dataShare/debug.vue'),
+        meta: { title: '接口调试', icon: 'business' }
+      },
+
     ]
   },
 
