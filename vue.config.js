@@ -48,28 +48,28 @@ module.exports = {
         }
       },
 
-      '/dbeaver/gql': {
-        target: 'http://192.168.3.74:8979',
-        changeOrigin: true,
-        // headers: {
-        //   host: "http://192.168.3.74:8978",
-        //   origin: "http://192.168.3.74:8978"
-        // }
-        pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-        }
-      },
-      '/datains': {
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        // headers: {
-        //   host: "http://192.168.3.74:8978",
-        //   origin: "http://192.168.3.74:8978"
-        // }
-        pathRewrite: {
-          ['^' + '/datains']: ''
-        }
-      },
+      // '/dbeaver/gql': {
+      //   target: 'http://:8979',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+      //   }
+      // },
+      // '/datains': {
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/datains']: ''
+      //   }
+      // },
       // change xxx-api/login => mock/login
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://localhost:${port}/mock`,

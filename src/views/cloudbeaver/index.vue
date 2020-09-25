@@ -16,7 +16,7 @@
       </el-container>
     </el-container>
     <CreateNewLink :openWin="openWin" @close="openWin = false"></CreateNewLink> -->
-    <iframe src="http://www.baidu.com" style="width: 100%; height: 100%"></iframe>
+    <!-- <iframe src="http://www.baidu.com" style="width: 100%; height: 100%"></iframe> -->
     <!-- <iframe src="http://123.56.96.151:8079/n/index.html#!/search" style="width: 100%; height: 100%"></iframe> -->
   </div>
 </template>
