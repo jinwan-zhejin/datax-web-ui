@@ -11,6 +11,7 @@ const name = defaultSettings.title || 'DATAX-ADMIN' // page title
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 const port = 8082 // dev port
+// eslint-disable-next-line no-unused-vars
 const apiPort = 9527
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
@@ -55,6 +56,35 @@ module.exports = {
           ['^' + '/login']: '/login'
         }
       },
+      '/test': {
+        target: 'http://192.168.3.60:9000',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/login']: '/login'
+        }
+      },
+      '/welcome': {
+        target: 'http://47.103.79.104:8080',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/welcome']: '/datains/welcome'
+        }
+      },
+      // // Atlas登录
+      // '/j_spring_security_check': {
+      //   target: 'http://123.56.96.151:8079',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/j_spring_security_check']: '/j_spring_security_check'
+      //   }
+      // },
+      // '/session': {
+      //   target: 'http://123.56.96.151:8079',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/session']: '/api/atlas/admin/session'
+      //   }
+      // },
       // mock 的代理
       // change xxx-api/login => mock/login
       [process.env.VUE_APP_BASE_API]: {
