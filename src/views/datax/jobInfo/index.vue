@@ -39,13 +39,12 @@
       </div>
     </div>
     <div class="rg">
-      <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="changeTab">
+      <el-tabs v-model="editableTabsValue" type="card" addable :closable="isDel" @tab-remove="handleRemove" @edit="handleTabsEdit" @tab-click="changeTab">
         <el-tab-pane
           v-for="(item) in editableTabs"
           :key="item.name"
           :label="item.title"
           :name="item.name"
-          :closable="editableTabsValue !== '1'"
         >
           <Flow :is-save="item" @fromChild="getChild" />
         </el-tab-pane>
@@ -66,7 +65,7 @@ export default {
   data() {
     return {
       editableTabsValue: '1',
-      editableTabsName: '123',
+      isDel: false,
       editableTabs: [{
         title: 'Untitled',
         name: '1'
@@ -96,16 +95,21 @@ export default {
       ],
       selectValue: '',
       search: '',
-      List: [
-        {
-          name: 'demo01',
-          data: 'Json'
-        }
-      ],
+      List: [],
       listQuery: {
         pageNo: 1,
         pageSize: 100,
         searchVal: ''
+      }
+    }
+  },
+  watch: {
+    'editableTabs'(val) {
+      console.log(val)
+      if (val.length === 1) {
+        this.isDel = false
+      } else {
+        this.isDel = true
       }
     }
   },
@@ -117,12 +121,12 @@ export default {
   methods: {
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
-        const newTabName = ++this.tabIndex + ''
+        const newTabName = (new Date()).valueOf().toString()
         this.editableTabs.push({
           title: 'Untitled',
           name: newTabName,
           content: 'New Tab content'
-        });
+        })
         this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
@@ -143,7 +147,11 @@ export default {
       }
     },
     changeTab(e) {
-      this.editableTabsName = e.label
+      for (let i = 0; i < this.editableTabs.length; i++) {
+        if (this.editableTabs[i].title === e.label) {
+          this.editableTabsValue = this.editableTabs[i].name
+        }
+      }
       console.log(this.editableTabsValue)
     },
     getChild(v) {
@@ -156,22 +164,62 @@ export default {
       }
     },
     pushList(val) {
-      this.List.push({
-        name: val.name,
-        data: val.data
-      })
+      if (this.List.length < 1) {
+        this.List.push({
+          name: val.name,
+          data: val.data
+        })
+      } else {
+        for (let i = 0; i < this.List.length; i++) {
+          if (this.List[i].name === val.name) {
+            this.editableTabsValue = val.index
+          } else {
+            this.List.push({
+              name: val.name,
+              data: val.data
+            })
+          }
+        }
+      }
+    },
+    handleRemove(name) {
+      console.log(name)
+      if (this.editableTabs.length === 1) {
+        this.isDel = false
+        this.editableTabsValue = this.editableTabs[0].name
+      } else {
+        for (let i = 0; i < this.editableTabs.length; i++) {
+          if (this.editableTabs[i].name === name) {
+            this.editableTabs.splice(i, 1)
+          }
+          if (this.editableTabsValue === name) {
+            this.editableTabsValue = this.editableTabs[this.editableTabs.length].name
+          }
+        }
+      }
     },
     getList(data) {
       console.log(data)
-      for (let i = 0; i < this.editableTabs.length; i++) {
-        if (this.editableTabs[i].title === data.name) {
-          this.editableTabsValue = this.editableTabs[i].name
-        } else {
-          this.editableTabs.push({
-            title: data.name,
-            name: toString(this.editableTabs.length + 1)
-          })
+      console.log(this.editableTabs)
+      if (this.editableTabs.length > 0) {
+        for (let i = 0; i < this.editableTabs.length; i++) {
+          if (this.editableTabs[i].title === data.name) {
+            this.editableTabsValue = this.editableTabs[i].name
+            console.log(this.editableTabsValue)
+            break;
+          } else {
+            this.editableTabs.push({
+              title: data.name,
+              name: (this.editableTabs.length + 1).toString()
+            })
+            this.editableTabsValue = this.editableTabs[this.editableTabs.length - 1].name
+          }
         }
+      } else {
+        this.editableTabs.push({
+          title: data.name,
+          name: (this.editableTabs.length + 1).toString()
+        })
       }
     },
     getItem() {

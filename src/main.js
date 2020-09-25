@@ -6,6 +6,13 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
+import "element-ui/lib/theme-chalk/index.css" 
+
+//
+import VueClipboard from 'vue-clipboard2'
+ 
+
+ 
 
 import '@/styles/index.scss' // global css
 
@@ -21,8 +28,11 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 import echarts from 'echarts'
+
 Vue.prototype.$echarts = echarts
 Vue.prototype.go = gojs
+
+Vue.use(VueClipboard)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -42,6 +52,8 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
+
+
 
 // register global utility filters
 Object.keys(filters).forEach(key => {
