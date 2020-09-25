@@ -3,7 +3,10 @@
     <el-tab-pane label="基本信息">
       <el-form label-position="left" label-width="80px" :model="GeneralFrom">
         <el-form-item label="表英文名">
-          <el-input v-model="node.tableName" @blur="testField(node.tableName, '表英文名')"></el-input>
+          <el-input
+            v-model="node.tableName"
+            @blur="testField(node.tableName, '表英文名')"
+          ></el-input>
         </el-form-item>
         <el-form-item label="表中文名">
           <el-input v-model="node.tableNameCN"></el-input>
@@ -31,7 +34,7 @@
               @change="handleEdit(scope.$index, scope.row)"
               @blur="testField(scope.row.name, '字段名')"
             ></el-input>
-            <span>{{scope.row.name}}</span>
+            <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
 
@@ -43,7 +46,7 @@
               placeholder="请输入字段中文名"
               @change="handleEdit(scope.$index, scope.row)"
             ></el-input>
-            <span>{{scope.row.info}}</span>
+            <span>{{ scope.row.info }}</span>
           </template>
         </el-table-column>
 
@@ -68,7 +71,7 @@
               placeholder="请输入长度"
               @change="handleEdit(scope.$index, scope.row)"
             ></el-input>
-            <span>{{scope.row.length}}</span>
+            <span>{{ scope.row.length }}</span>
           </template>
         </el-table-column>
 
@@ -80,7 +83,7 @@
               placeholder="请输入"
               @change="handleEdit(scope.$index, scope.row)"
             ></el-input>
-            <span>{{scope.row.precison}}</span>
+            <span>{{ scope.row.precison }}</span>
           </template>
         </el-table-column>
 
@@ -117,7 +120,12 @@
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <!--<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -135,21 +143,32 @@
           ></el-button>
         </el-tooltip>
         <el-tooltip class="item" effect="dark" content="执行" placement="top">
-          <el-button @click="innerVisible = true" type="info" icon="el-icon-video-play" circle></el-button>\
+          <el-button
+            @click="innerVisible = true"
+            type="info"
+            icon="el-icon-video-play"
+            circle
+          ></el-button
+          >\
         </el-tooltip>
       </div>
       <el-input
         type="textarea"
-        :autosize="{ minRows: 2, maxRows: 8}"
+        :autosize="{ minRows: 2, maxRows: 8 }"
         placeholder="请输入内容"
         v-model="sqlVal"
         :disabled="true"
         ref="sqlArea"
       ></el-input>
 
-      <el-dialog width="40%" title="执行sql" :visible.sync="innerVisible" append-to-body>
+      <el-dialog
+        width="40%"
+        title="执行sql"
+        :visible.sync="innerVisible"
+        append-to-body
+      >
         <el-form :model="GeneralFrom">
-          <el-form-item label="数据源" >
+          <el-form-item label="数据源">
             <el-select v-model="GeneralFrom.region" placeholder="请选择数据源">
               <el-option label="数据源一" value="shanghai"></el-option>
               <el-option label="数据源二" value="beijing"></el-option>
@@ -158,19 +177,177 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="innerVisible = false">取 消</el-button>
-          <el-button type="primary" @click="innerVisible = false">确 定</el-button>
+          <el-button type="primary" @click="innerVisible = false"
+            >确 定</el-button
+          >
         </div>
       </el-dialog>
+    </el-tab-pane>
+
+    <el-tab-pane label="计算逻辑">
+      <el-collapse>
+        <el-collapse-item>
+          <template slot="title">
+            数据源<i class="header-icon el-icon-info"></i>
+          </template>
+          <div
+            class="data-source"
+            v-for="(item, index) in dataSourceList"
+            :key="index"
+          >
+            <el-popover placement="bottom" width="200" trigger="click">
+              <ul>
+                <li>
+                  <el-link type="primary">修改数据源</el-link>
+                </li>
+                <li>
+                  <el-link type="primary">在SQL Lab里查看</el-link>
+                </li>
+                <li>
+                  <el-link type="primary">编辑数据源</el-link>
+                </li>
+              </ul>
+              <el-button slot="reference">{{ item.tableName }}</el-button>
+            </el-popover>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="打开/折叠数据源配置"
+              placement="top"
+            >
+              <el-button
+                type="info"
+                icon="el-icon-circle-plus-outline"
+                circle
+                size="mini"
+              ></el-button>
+            </el-tooltip>
+            <div class="tableSource">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>{{ item.tableName }}</span>
+                </div>
+                <el-table :data="item.fields" style="width: 100%">
+                  <el-table-column prop="name" label="列" width="180">
+                  </el-table-column>
+                  <el-table-column prop="type" label="指标" width="180">
+                  </el-table-column>
+                </el-table>
+              </el-card>
+            </div>
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="时间">
+          <el-form :inline="true" class="demo-form-inline">
+            <el-form-item label="时间字段">
+              <el-select v-model="timeField" placeholder="请选择时间字段">
+                <el-option label="ds" value="ds"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="时间粒度">
+              <el-select v-model="timeGranularity" placeholder="请选择粒度">
+                <el-option label="second" value="second"></el-option>
+                <el-option label="minute" value="minute"></el-option>
+                <el-option label="hour" value="hour"></el-option>
+                <el-option label="day" value="day"></el-option>
+                <el-option label="week" value="week"></el-option>
+                <el-option label="month" value="month"></el-option>
+                <el-option label="year" value="year"></el-option>
+                <el-option
+                  label="week_ending_saturday"
+                  value="week_ending_saturday"
+                ></el-option>
+                <el-option
+                  label="week_start_sunday"
+                  value="week_start_sunday"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <br />
+            <el-form-item label="时间范围">
+              <TimeRange />
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+        <el-collapse-item title="查询">
+          <p>指标</p>
+          <MySelect />
+          <p>过滤</p>
+          <MySelect />
+          <p>分组</p>
+          <el-select v-model="group" multiple placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <div class="array-bottom">
+            <el-form
+              :inline="true"
+              :model="array"
+              class="demo-form-inline"
+            >
+              <el-form-item label="序列限制">
+                <el-select v-model="array.limit" placeholder="7选项">
+                  <el-option label="0" value="0"></el-option>
+                  <el-option label="5" value="5"></el-option>
+                  <el-option label="10" value="10"></el-option>
+                  <el-option label="25" value="25"></el-option>
+                  <el-option label="50" value="50"></el-option>
+                  <el-option label="100" value="100"></el-option>
+                  <el-option label="500" value="500"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="排序">
+                <el-select v-model="array.area" placeholder="排序">
+                  <el-option label="DAY_OF_WEEK" value="DAY_OF_WEEK"></el-option>
+                  <el-option label="AIRLINE" value="AIRLINE"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="">
+                <el-checkbox v-model="array.descending">降序</el-checkbox>
+              </el-form-item>
+              <el-form-item label="">
+                <el-checkbox v-model="array.contri">贡献</el-checkbox>
+              </el-form-item>
+
+              <el-form-item label="行限制">
+                <el-select v-model="array.rows" placeholder="9选项">
+                  <el-option label="10" value="10"></el-option>
+                  <el-option label="50" value="50"></el-option>
+                  <el-option label="100" value="100"></el-option>
+                  <el-option label="250" value="250"></el-option>
+                  <el-option label="500" value="500"></el-option>
+                  <el-option label="1000" value="1000"></el-option>
+                  <el-option label="5000" value="5000"></el-option>
+                  <el-option label="10000" value="10000"></el-option>
+                  <el-option label="50000" value="50000"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
-import fieldMapperVue from "../../datax/json-build/components/fieldMapper.vue";
+// import fieldMapperVue from "../../datax/json-build/components/fieldMapper.vue";
 import { testTableName } from "@/utils/regExp";
+import TimeRange from "./timeRange";
+import MySelect from "./mySelect/mySelect";
 export default {
   name: "EditField",
   props: ["node", "tableData"],
+  components: {
+    TimeRange,
+    MySelect,
+  },
   data() {
     return {
       GeneralFrom: {
@@ -266,6 +443,38 @@ export default {
       ],
       sqlVal: ``,
       innerVisible: false,
+      user: "",
+      timeField: "ds",
+      timeGranularity: "second",
+      options: [
+        {
+          value: "选项1",
+          label: "黄金糕",
+        },
+        {
+          value: "选项2",
+          label: "双皮奶",
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎",
+        },
+        {
+          value: "选项4",
+          label: "龙须面",
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭",
+        },
+      ],
+      group: "",
+      array:{
+        area:'',
+        limit:'',
+        descending: false,
+        contrib: false
+      }
     };
   },
   created() {
@@ -306,7 +515,9 @@ export default {
 
         fieldStr += `\t ${field.name || ""} ${field.type || ""}${
           field.length ? "(" + field.length + ")" : ""
-        } COMMENT '${field.info || ""}', \n`;
+        } COMMENT '${field.info || ""}'${
+          index === this.tableData.length - 1 ? "" : ","
+        } \n`;
 
         if (field.isPrimarykey) {
           primarykeyStr += field.name + " ";
@@ -330,9 +541,14 @@ export default {
     tableName() {
       return this.node.tableName;
     },
+
     tableNameCN() {
       return this.node.tableNameCN;
-    }
+    },
+
+    dataSourceList() {
+      return this.$store.state.dataModel.pNodeData;
+    },
   },
   watch: {
     tableData: {
@@ -354,9 +570,9 @@ export default {
       this.sqlPreview();
     },
 
-    tableNameCN(val){
+    tableNameCN(val) {
       this.sqlPreview();
-    }
+    },
   },
 };
 </script>
@@ -374,5 +590,16 @@ export default {
 }
 .sql-content {
   margin-bottom: 10px;
+}
+
+.data-source {
+  margin-bottom: 20px;
+}
+.tableSource {
+  margin-top: 20px;
+}
+
+.array-bottom {
+  margin-top: 20px;
 }
 </style>

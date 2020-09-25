@@ -11,6 +11,7 @@ const name = defaultSettings.title || 'DATAX-ADMIN' // page title
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 const port = 8082 // dev port
+// eslint-disable-next-line no-unused-vars
 const apiPort = 9527
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/

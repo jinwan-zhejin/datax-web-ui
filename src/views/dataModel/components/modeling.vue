@@ -35,7 +35,7 @@
       <EditField :tableData='fieldsData' 
       :node='node'
       @createFields='createFields()' 
-      @deleteFidlds='deleteFidlds()'
+      @deleteFidlds='deleteFidlds'
       @canUpdateFields='canUpdateFields'
       />
       <div slot="footer" class="dialog-footer">

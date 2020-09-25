@@ -186,6 +186,18 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/cloudbeaveratlas',
+    component: Layout,
+    children: [
+      {
+        path: '/cloudbeaveratlas',
+        component: () => import('@/views/cloudbeaveratlas/index'),
+        name: 'cloudbeaveratlas',
+        meta: { title: '元数据管理From Atlas', icon: 'form', keepAlive: true }
+      }
+    ]
+  },
+  {
     path: '/datax/job',
     component: Layout,
     redirect: '/datax/job',
