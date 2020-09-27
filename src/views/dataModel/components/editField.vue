@@ -220,9 +220,10 @@
                 icon="el-icon-circle-plus-outline"
                 circle
                 size="mini"
+                @click="showTableDetail(index)"
               ></el-button>
             </el-tooltip>
-            <div class="tableSource">
+            <div class="tableSource" v-show="currentIndex === index">
               <el-card class="box-card">
                 <div slot="header" class="clearfix">
                   <span>{{ item.tableName }}</span>
@@ -474,7 +475,8 @@ export default {
         limit:'',
         descending: false,
         contrib: false
-      }
+      },
+      currentIndex: -1,
     };
   },
   created() {
@@ -536,6 +538,15 @@ export default {
     onCopy() {
       this.$message.success("已复制到剪切板");
     },
+
+    //打开折叠数据源配置
+    showTableDetail(index) {
+      if (this.currentIndex === index) {
+        this.currentIndex = -1;
+        return
+      }
+      this.currentIndex = index;
+    }
   },
   computed: {
     tableName() {
