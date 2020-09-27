@@ -309,7 +309,7 @@ function init(_this, timestamp) {
             isPrimarykey: "true"
           },
           {
-            name: "field2",
+            name: "yuwenjie",
             info: "the second one",
             color: "#F25022",
             figure: "Ellipse",
@@ -334,7 +334,7 @@ function init(_this, timestamp) {
             isPrimarykey: "true"
           },
           {
-            name: "field2",
+            name: "yuwenjie",
             info: "the second one",
             color: "#F25022",
             figure: "Ellipse",
@@ -355,9 +355,9 @@ function init(_this, timestamp) {
       },
       {
         from: "Record3",
-        fromPort: "field2",
+        fromPort: "yuwenjie",
         to: "Record2",
-        toPort: "field2"
+        toPort: "yuwenjie"
       }
     ]
   });
@@ -432,7 +432,6 @@ function init(_this, timestamp) {
 
     console.log(dataSourceList, '所有父节点');
     _this.$store.commit('SET_pNode_Data', dataSourceList);
-    
   });
 
   return myDiagram;

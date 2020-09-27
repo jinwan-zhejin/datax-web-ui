@@ -237,6 +237,8 @@
               </el-card>
             </div>
           </div>
+          <h4>设置关联关系</h4>
+          <Association />
         </el-collapse-item>
         <el-collapse-item title="时间">
           <el-form :inline="true" class="demo-form-inline">
@@ -275,7 +277,7 @@
           <p>指标</p>
           <MySelect />
           <p>过滤</p>
-          <MySelect />
+          <MyFilter />
           <p>分组</p>
           <el-select v-model="group" multiple placeholder="请选择">
             <el-option
@@ -287,11 +289,7 @@
             </el-option>
           </el-select>
           <div class="array-bottom">
-            <el-form
-              :inline="true"
-              :model="array"
-              class="demo-form-inline"
-            >
+            <el-form :inline="true" :model="array" class="demo-form-inline">
               <el-form-item label="序列限制">
                 <el-select v-model="array.limit" placeholder="7选项">
                   <el-option label="0" value="0"></el-option>
@@ -305,7 +303,10 @@
               </el-form-item>
               <el-form-item label="排序">
                 <el-select v-model="array.area" placeholder="排序">
-                  <el-option label="DAY_OF_WEEK" value="DAY_OF_WEEK"></el-option>
+                  <el-option
+                    label="DAY_OF_WEEK"
+                    value="DAY_OF_WEEK"
+                  ></el-option>
                   <el-option label="AIRLINE" value="AIRLINE"></el-option>
                 </el-select>
               </el-form-item>
@@ -342,12 +343,16 @@
 import { testTableName } from "@/utils/regExp";
 import TimeRange from "./timeRange";
 import MySelect from "./mySelect/mySelect";
+import MyFilter from "./mySelect/myFilter"
+import Association from "./association";
 export default {
   name: "EditField",
   props: ["node", "tableData"],
   components: {
     TimeRange,
     MySelect,
+    Association,
+    MyFilter,
   },
   data() {
     return {
@@ -470,13 +475,15 @@ export default {
         },
       ],
       group: "",
-      array:{
-        area:'',
-        limit:'',
+      array: {
+        area: "",
+        limit: "",
         descending: false,
-        contrib: false
+        contrib: false,
       },
       currentIndex: -1,
+      
+      
     };
   },
   created() {
@@ -543,10 +550,10 @@ export default {
     showTableDetail(index) {
       if (this.currentIndex === index) {
         this.currentIndex = -1;
-        return
+        return;
       }
       this.currentIndex = index;
-    }
+    },
   },
   computed: {
     tableName() {

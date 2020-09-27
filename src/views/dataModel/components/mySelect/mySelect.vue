@@ -4,49 +4,49 @@
       <div class="tag" v-for="(item, index) in btnList" :key="index">
         <el-popover placement="right" width="400" trigger="click">
           <el-tabs type="border-card">
-            <el-tab-pane label="简单">
-              <el-form
-                :inline="true"
-                :model="formInline"
-                class="demo-form-inline"
-              >
-                <h4>列</h4>
-                <el-form-item label="" class="customize">
-                  <el-select v-model="formInline.cloumn" placeholder="">
-                    <el-option label="FLIGHT" value="FLIGHT"></el-option>
-                    <el-option label="AIRLINE" value="AIRLINE"></el-option>
-                  </el-select>
-                </el-form-item>
-                <h4>聚合方法</h4>
-                <el-form-item label="" class="customize">
-                  <el-select v-model="formInline.method" placeholder="">
-                    <el-option label="AVG" value="AVG"></el-option>
-                    <el-option label="COUNT" value="COUNT"></el-option>
-                    <el-option
-                      label="COUNT_DISTINCT"
-                      value="COUNT_DISTINCT"
-                    ></el-option>
-                    <el-option label="MAX" value="MAX"></el-option>
-                    <el-option label="MIN" value="MIN"></el-option>
-                    <el-option label="SUM" value="SUM"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-form>
-            </el-tab-pane>
+              <el-tab-pane label="简单">
+                <el-form
+                  :inline="true"
+                  :model="formInline"
+                  class="demo-form-inline"
+                >
+                  <h4>列</h4>
+                  <el-form-item label="" class="customize">
+                    <el-select v-model="formInline.cloumn" placeholder="">
+                      <el-option label="FLIGHT" value="FLIGHT"></el-option>
+                      <el-option label="AIRLINE" value="AIRLINE"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <h4>聚合方法</h4>
+                  <el-form-item label="" class="customize">
+                    <el-select v-model="formInline.method" placeholder="">
+                      <el-option label="AVG" value="AVG"></el-option>
+                      <el-option label="COUNT" value="COUNT"></el-option>
+                      <el-option
+                        label="COUNT_DISTINCT"
+                        value="COUNT_DISTINCT"
+                      ></el-option>
+                      <el-option label="MAX" value="MAX"></el-option>
+                      <el-option label="MIN" value="MIN"></el-option>
+                      <el-option label="SUM" value="SUM"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
 
-            <el-tab-pane label="自定义sql">
-              <el-input
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                placeholder="请输入sql"
-                v-model="sql"
-              >
-              </el-input>
-            </el-tab-pane>
-          </el-tabs>
-          <div class="save">
-            <el-button type="primary">保存</el-button>
-          </div>
+              <el-tab-pane label="自定义sql">
+                <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  placeholder="请输入sql"
+                  v-model="sql"
+                >
+                </el-input>
+              </el-tab-pane>
+            </el-tabs>
+            <div class="save">
+              <el-button type="primary">保存</el-button>
+            </div>
           <el-tag type="info" slot="reference"
             ><i @click.stop="popTag(index)" class="el-icon-delete"></i>
             {{ item }}
@@ -73,22 +73,23 @@ export default {
   name: "Myselect",
   data() {
     return {
-      dataList: [
-        "测试测试1",
-        "测试测试2",
-        "测试测试3",
-        "测试测试4",
-        "测试测试5",
-      ],
+      // dataList: [
+      //   "测试测试1",
+      //   "测试测试2",
+      //   "测试测试3",
+      //   "测试测试4",
+      //   "测试测试5",
+      // ],
       isShowList: false,
       btnList: [],
       formInline: {
         cloumn: "AIRLINE",
         method: "SUM",
       },
-      sql:''
+      sql: "",
     };
   },
+
   methods: {
     listShow() {
       this.isShowList = true;
@@ -103,6 +104,12 @@ export default {
       this.btnList.splice(index, 1);
     },
   },
+
+  computed: {
+      dataList(){
+          return this.$store.getters.allNodeFields
+      }
+  }
 };
 </script>
 
