@@ -1,22 +1,39 @@
 <template>
   <div class="Management">
     <div class="lt">
-      <div class="top">
+     <div class="top">
         <el-row>
           <el-col :span="12">
-            <el-select v-model="selectValue" placeholder="请选择">
+            <el-select v-model="selectValue" placeholder="请选择" @change="fetchJobs">
               <el-option
                 v-for="item in options"
                 :key="item.id"
                 :label="item.name"
-                :value="item.name"
+                :value="item.id"
               />
             </el-select>
           </el-col>
           <el-col :span="12">
-            <i class="el-icon-location-outline" />
+          <i class="el-icon-location-outline" />
             <i class="el-icon-coin" />
-            <i class="el-icon-folder-add" />
+            <!-- <i class="el-icon-folder-add" /> -->
+          <el-dropdown @command="createNewJob">
+              <i class="el-icon-folder-add"></i>
+            <el-dropdown-menu >
+              <el-dropdown-item command="NORMAL">普通任务</el-dropdown-item>
+              <el-dropdown-item command="IMPORT">引入任务</el-dropdown-item>
+              <el-dropdown-item command="EXPORT">导出任务</el-dropdown-item>
+              <el-dropdown-item command="COMPUTE" disabled>计算任务</el-dropdown-item>
+              <el-dropdown-item command="SQLJOB" disabled>SQL任务</el-dropdown-item>
+              <el-dropdown-item command="DQCJOB">质量任务</el-dropdown-item>
+              <el-dropdown-item command="SHELL" divided>SHELL任务</el-dropdown-item>
+              <el-dropdown-item command="POWERSHELL">POWERSHELL任务</el-dropdown-item>
+              <el-dropdown-item command="PYTHON">PYTHON任务</el-dropdown-item>
+              <el-dropdown-item command="VJOB" divided>虚任务</el-dropdown-item>
+              <el-dropdown-item command="BATCH" divided disabled>任务批量构建</el-dropdown-item>
+              <el-dropdown-item command="TEMPLATE" disabled>普通任务模板</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           </el-col>
         </el-row>
       </div>
@@ -26,19 +43,40 @@
         </div>
         <div class="body">
           <el-input v-model="search" prefix-icon="el-icon-search" placeholder="请输入内容">
-            <template slot="append">我的</template>
+            <!-- <template slot="append">我的</template> -->
           </el-input>
           <div class="list">
             <ul>
-              <li v-for="item in List" :key="item.name" @click="getList(item)">
-                <a>{{ item.name }}</a>
+              <li v-for="item in List" :key="item.jobDesc" @click="getJobDetail(item)">
+                <a>{{ item.jobDesc }} - {{ item.glueType }}</a>
               </li>
             </ul>
           </div>
         </div>
+<!--        <el-table
+              :data="List"
+              >
+              <el-table-column
+                prop="date"
+                label="日期"
+                width="180">
+              </el-table-column>
+            </el-table> -->
       </div>
     </div>
-    <div class="rg">
+    <div v-if="jobType === 'SHOWDETAIL'" class="rg">
+      <el-tabs v-model="jobDetailIdx" type="card" editable @edit="handleTabsEdit">
+          <el-tab-pane
+            :key="item.name"
+            v-for="(item, index) in jobDetailTabs"
+            :label="item.title"
+            :name="item.name"
+            >
+            <JobDetail :jobInfo="item.content"></JobDetail>
+          </el-tab-pane>
+      </el-tabs>
+    </div>
+    <div v-if="jobType === 'VJOB'" class="rg">
       <el-tabs v-model="editableTabsValue" type="card" addable :closable="isDel" @tab-remove="handleRemove" @edit="handleTabsEdit" @tab-click="changeTab">
         <el-tab-pane
           v-for="(item) in editableTabs"
@@ -50,49 +88,61 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <div v-if="jobType === 'NORMAL'" class="rg">
+      <JsonBuild></JsonBuild>
+    </div>
+    <div v-if="jobType === 'IMPORT'" class="rg">
+      <JsonBuild></JsonBuild>
+    </div>
+    <div v-if="jobType === 'EXPORT'" class="rg">
+      <JsonBuild></JsonBuild>
+    </div>
+    <div v-if="jobType === 'DQCJOB'" class="rg">
+      <JsonQuality></JsonQuality>
+    </div>
+    <div v-if="jobType === 'SHELL'" class="rg">
+      <SimpleJob jobType="GLUE_SHELL" jobTypeLabel="SHELL任务"></SimpleJob>
+    </div>
+    <div v-if="jobType === 'POWERSHELL'" class="rg">
+      <SimpleJob jobType="GLUE_POWERSHELL" jobTypeLabel="POWERSHELL任务"></SimpleJob>
+    </div>
+    <div v-if="jobType === 'PYTHON'" class="rg">
+      <SimpleJob jobType="GLUE_PYTHON" jobTypeLabel="PYTHON任务" ></SimpleJob>
+    </div>
+
   </div>
 </template>
 
 <script>
 import Flow from './components/flow.vue'
+import SimpleJob from './components/simpleJob.vue'
+import JobDetail from './components/jobDetail.vue'
 import * as jobProjectApi from '@/api/datax-job-project'
+import * as job from '@/api/datax-job-info'
+import JsonBuild from '@/views/datax/json-build/index'
+import JsonQuality from '@/views/datax/jsonQuality/index'
 export default {
   name: '',
   components: {
     // HelloWorld,
-    Flow
+    Flow,
+    JsonBuild,
+    JsonQuality,
+    SimpleJob,
+    JobDetail
   },
   data() {
     return {
       editableTabsValue: '1',
+      jobDetailTabs: '',
       isDel: false,
       editableTabs: [{
         title: 'Untitled',
         name: '1'
       }],
+      jobDetailTabs: [],
       tabIndex: 1,
-      options: [
-        {
-          value: '开水白菜',
-          label: '开水白菜'
-        },
-        {
-          value: '广式早茶',
-          label: '广式早茶'
-        },
-        {
-          value: '煲仔饭',
-          label: '煲仔饭'
-        },
-        {
-          value: '胡辣汤',
-          label: '胡辣汤'
-        },
-        {
-          value: '三不沾',
-          label: '三不沾'
-        }
-      ],
+      options: '',
       selectValue: '',
       search: '',
       List: [],
@@ -100,7 +150,9 @@ export default {
         pageNo: 1,
         pageSize: 100,
         searchVal: ''
-      }
+      },
+      jobType: 'SHOWDETAIL',
+      jobDetailIdx: ''
     }
   },
   watch: {
@@ -198,9 +250,26 @@ export default {
         }
       }
     },
+    getJobDetail(data) {
+      console.log(data)
+      let a = {}
+      a.title = data.jobDesc
+      a.name = data.jobDesc
+      a.content = data
+      console.log(this.jobDetailTabs)
+      console.log(a)
+      if (JSON.stringify(this.jobDetailTabs).indexOf(JSON.stringify(a)) == -1) {
+        // this.$message.info("tab not found, open a new one  ")
+        this.jobDetailTabs.push(a)
+        this.jobDetailIdx = a.name
+      }
+      this.jobType = 'SHOWDETAIL'
+    },
+
     getList(data) {
       console.log(data)
       console.log(this.editableTabs)
+
       if (this.editableTabs.length > 0) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].title === data.name) {
@@ -229,7 +298,42 @@ export default {
         this.total = total
         this.options = records
         this.selectValue = this.options[0].name
+        let listQuery = {
+          current: 1,
+          size: 10,
+          jobGroup: 0,
+          // projectIds: '',
+          triggerStatus: -1,
+          jobDesc: '',
+          glueType: ''
+        }
+        listQuery.projectIds = this.options[0].id
+        job.getList(listQuery).then(response => {
+          const { content } = response
+          this.List = content.data
+        })
       })
+    },
+    fetchJobs(event) {
+      console.log(event)
+      let listQuery = {
+          current: 1,
+          size: 10,
+          jobGroup: 0,
+          // projectIds: '',
+          triggerStatus: -1,
+          jobDesc: '',
+          glueType: ''
+      }
+      listQuery.projectIds = event
+      job.getList(listQuery).then(response => {
+        const { content } = response
+        this.List = content.data
+      })
+    },
+    createNewJob(command) {
+      console.log(command)
+      this.jobType = command
     }
   }
 }
@@ -269,17 +373,17 @@ export default {
       }
       .body {
         border-top: 1px solid #f8f8f8;
-        padding: 20px;
+        padding: 10px;
         .list {
           ul {
-            padding: 0px;
+            padding: 2px;
             li {
-              height: 40px;
-              line-height: 40px;
-              background-color: rgb(218, 243, 253);
+              height: 20px;
+              line-height: 20px;
+              // background-color: rgb(218, 243, 253);
               text-align: left;
               list-style: none;
-              text-indent: 2rem;
+              text-indent: 0.5rem;
               margin: 5px 0px;
               cursor: pointer;
               a {

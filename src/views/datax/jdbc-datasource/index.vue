@@ -271,7 +271,12 @@ export default {
         const { records } = response
         const { total } = response
         this.total = total
-        this.list = records
+        let bdsource = ['hive', 'impala', 'spark', 'flink']
+        this.list = records.filter(function(e) {
+            if (!bdsource.includes(e.datasource)) {
+              return true
+            }
+        })
         this.listLoading = false
       })
     },

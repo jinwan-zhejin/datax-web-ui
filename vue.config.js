@@ -11,6 +11,7 @@ const name = defaultSettings.title || 'DATAX-ADMIN' // page title
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 const port = 8082 // dev port
+// eslint-disable-next-line no-unused-vars
 const apiPort = 9527
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
@@ -39,23 +40,37 @@ module.exports = {
       // 代理 /dev-api/api 到 http://localhost:8066/api
       [process.env.VUE_APP_API]: {
         // target: `http://localhost:${apiPort}/api`,
-        ws: false,
-        // target: 'http://47.103.79.104:9527',
-        target: 'http://192.168.3.83:8080', // 曹海生
+        target: 'http://47.103.79.104:9527',
+        // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
-      '/login': {
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/login']: '/login'
-        }
-      },
-      // mock 的代理
+
+      // '/dbeaver/gql': {
+      //   target: 'http://:8979',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+      //   }
+      // },
+      // '/datains': {
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/datains']: ''
+      //   }
+      // },
       // change xxx-api/login => mock/login
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://localhost:${port}/mock`,
@@ -65,17 +80,6 @@ module.exports = {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       },
-      '/dbeaver/gql': {
-        target: 'http://192.168.3.74:8979',
-        changeOrigin: true,
-        // headers: {
-        //   host: "http://192.168.3.74:8978",
-        //   origin: "http://192.168.3.74:8978"
-        // }
-        pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-        }
-      }
 
     },
     after: require('./mock/mock-server.js')

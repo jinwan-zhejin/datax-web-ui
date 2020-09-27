@@ -44,6 +44,12 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+
+    // get获取到的html string
+    if (typeof res === 'string' && res.code === undefined) {
+      return res
+    }
+
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000 && res.code !== 0 && res.code !== 200) {
       Message({
