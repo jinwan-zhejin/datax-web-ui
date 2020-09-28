@@ -2,7 +2,7 @@
   <div class="container" @mouseleave="leaveList">
     <div class="inputContent" @click="listShow">
       <div class="tag" v-for="(item, index) in btnList" :key="index">
-        <el-popover placement="right" width="400" trigger="click">
+        <el-popover  placement="right" width="400" trigger="click">
           <el-tabs type="border-card">
             <el-tab-pane label="简单">
               <el-form
@@ -12,16 +12,15 @@
               >
                 <el-form-item label="" class="customize">
                   <el-select v-model="formFilter.field" placeholder="">
-                    <el-option label="FLIGHT" value="FLIGHT"></el-option>
-                    <el-option label="AIRLINE" value="AIRLINE"></el-option>
+                    <el-option v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="" class="customize">
                   <el-select v-model="formFilter.type" placeholder="">
-                    <el-option label="equals" value="equals"></el-option>
+                    <el-option label="=" value="="></el-option>
                     <el-option
-                      label="not equal to"
-                      value="not equal to"
+                      label="!="
+                      value="!="
                     ></el-option>
                     <el-option label=">" value=">"></el-option>
                     <el-option label="<" value="<"></el-option>
@@ -63,7 +62,7 @@
             </el-tab-pane>
           </el-tabs>
           <div class="save">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="saveChange">保存</el-button>
           </div>
           <el-tag type="info" slot="reference"
             ><i @click.stop="popTag(index)" class="el-icon-delete"></i>
@@ -116,6 +115,10 @@ export default {
     popTag(index) {
       this.btnList.splice(index, 1);
     },
+
+    saveChange(){
+      this.$message.success('已保存')
+    }
   },
 
   computed: {

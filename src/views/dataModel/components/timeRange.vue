@@ -61,7 +61,7 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
-    <el-button slot="reference">{{ timeRange }}</el-button>
+    <el-button slot="reference">{{ radio }}</el-button>
   </el-popover>
 </template>
 
@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       timeRange: "No filter",
-      radio: "No filter",
+      radio: "不过滤",
       formInline: {
         type: "Next",
         num: 7,

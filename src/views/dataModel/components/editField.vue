@@ -292,10 +292,7 @@
           <p>分组</p>
           <el-select v-model="group" multiple placeholder="请选择">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
             >
             </el-option>
           </el-select>
@@ -304,10 +301,8 @@
               <el-form-item label="排序">
                 <el-select v-model="array.area" placeholder="排序">
                   <el-option
-                    label="DAY_OF_WEEK"
-                    value="DAY_OF_WEEK"
+                    v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
                   ></el-option>
-                  <el-option label="AIRLINE" value="AIRLINE"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="">
@@ -449,28 +444,6 @@ export default {
       user: "",
       timeField: "ds",
       timeGranularity: "second",
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎",
-        },
-        {
-          value: "选项4",
-          label: "龙须面",
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭",
-        },
-      ],
       group: "",
       array: {
         area: "",
@@ -616,7 +589,7 @@ export default {
   margin-top: 20px;
 }
 .title {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bolder;
 }
 </style>

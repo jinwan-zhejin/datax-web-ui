@@ -13,8 +13,7 @@
                   <h4>列</h4>
                   <el-form-item label="" class="customize">
                     <el-select v-model="formInline.cloumn" placeholder="">
-                      <el-option label="FLIGHT" value="FLIGHT"></el-option>
-                      <el-option label="AIRLINE" value="AIRLINE"></el-option>
+                      <el-option v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"></el-option>
                     </el-select>
                   </el-form-item>
                   <h4>聚合方法</h4>
