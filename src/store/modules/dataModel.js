@@ -32,10 +32,11 @@ const getters = {
   allNodeFields(state){
     let arr = []
     state.pNodeData.forEach(ele => {
-      // arr.push(...ele.fields);
-      ele.fields.forEach(field =>{
-        arr.push(ele.tableName + ' / ' + field.name);
-      })
+      if(ele.fields){
+        ele.fields.forEach(field =>{
+          arr.push(ele.tableName + ' / ' + field.name);
+        })
+      }
     });
     return arr
   }

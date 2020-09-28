@@ -188,7 +188,7 @@
       <el-collapse>
         <el-collapse-item>
           <template slot="title">
-            数据源<i class="header-icon el-icon-info"></i>
+            <span class="title">数据源</span>
           </template>
           <div
             class="data-source"
@@ -231,7 +231,7 @@
                 <el-table :data="item.fields" style="width: 100%">
                   <el-table-column prop="name" label="列" width="180">
                   </el-table-column>
-                  <el-table-column prop="type" label="指标" width="180">
+                  <el-table-column prop="type" label="类型" width="180">
                   </el-table-column>
                 </el-table>
               </el-card>
@@ -240,11 +240,19 @@
           <h4>设置关联关系</h4>
           <Association />
         </el-collapse-item>
-        <el-collapse-item title="时间">
+        <el-collapse-item>
+          <template slot="title">
+            <span class="title">时间</span>
+          </template>
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="时间字段">
               <el-select v-model="timeField" placeholder="请选择时间字段">
-                <el-option label="ds" value="ds"></el-option>
+                <el-option
+                  v-for="(item, index) in $store.getters.allNodeFields"
+                  :key="index"
+                  :label="item"
+                  :value="item"
+                ></el-option>
               </el-select>
             </el-form-item>
 
@@ -273,7 +281,10 @@
             </el-form-item>
           </el-form>
         </el-collapse-item>
-        <el-collapse-item title="查询">
+        <el-collapse-item>
+          <template slot="title">
+            <span class="title">查询</span>
+          </template>
           <p>指标</p>
           <MySelect />
           <p>过滤</p>
@@ -290,17 +301,6 @@
           </el-select>
           <div class="array-bottom">
             <el-form :inline="true" :model="array" class="demo-form-inline">
-              <el-form-item label="序列限制">
-                <el-select v-model="array.limit" placeholder="7选项">
-                  <el-option label="0" value="0"></el-option>
-                  <el-option label="5" value="5"></el-option>
-                  <el-option label="10" value="10"></el-option>
-                  <el-option label="25" value="25"></el-option>
-                  <el-option label="50" value="50"></el-option>
-                  <el-option label="100" value="100"></el-option>
-                  <el-option label="500" value="500"></el-option>
-                </el-select>
-              </el-form-item>
               <el-form-item label="排序">
                 <el-select v-model="array.area" placeholder="排序">
                   <el-option
@@ -312,9 +312,6 @@
               </el-form-item>
               <el-form-item label="">
                 <el-checkbox v-model="array.descending">降序</el-checkbox>
-              </el-form-item>
-              <el-form-item label="">
-                <el-checkbox v-model="array.contri">贡献</el-checkbox>
               </el-form-item>
 
               <el-form-item label="行限制">
@@ -343,7 +340,7 @@
 import { testTableName } from "@/utils/regExp";
 import TimeRange from "./timeRange";
 import MySelect from "./mySelect/mySelect";
-import MyFilter from "./mySelect/myFilter"
+import MyFilter from "./mySelect/myFilter";
 import Association from "./association";
 export default {
   name: "EditField",
@@ -477,13 +474,9 @@ export default {
       group: "",
       array: {
         area: "",
-        limit: "",
         descending: false,
-        contrib: false,
       },
       currentIndex: -1,
-      
-      
     };
   },
   created() {
@@ -525,8 +518,8 @@ export default {
         fieldStr += `\t ${field.name || ""} ${field.type || ""}${
           field.length ? "(" + field.length + ")" : ""
         } COMMENT '${field.info || ""}'${
-          index === this.tableData.length - 1 ? "" : ","
-        } \n`;
+          index === this.tableData.length - 1 ? "" : ",\n"
+        } `;
 
         if (field.isPrimarykey) {
           primarykeyStr += field.name + " ";
@@ -535,7 +528,9 @@ export default {
 
       this.sqlVal = `
     CREATE TABLE ${this.node.tableName} (
-    ${fieldStr}\t ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
+    ${fieldStr} ${
+        primarykeyStr ? "\n\t PRIMARY KEY(" + primarykeyStr + ")" : ""
+      }
     ) COMMENT '${this.node.tableNameCN}';
     
     `;
@@ -619,5 +614,9 @@ export default {
 
 .array-bottom {
   margin-top: 20px;
+}
+.title {
+  font-size: 20px;
+  font-weight: bolder;
 }
 </style>
