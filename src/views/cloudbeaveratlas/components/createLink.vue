@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:33:23
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-25 17:08:50
+ * @LastEditTime: 2020-09-28 10:56:10
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\createLink.vue
  * @Description: 子组件
 -->
