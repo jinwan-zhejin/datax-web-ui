@@ -326,8 +326,20 @@
           </div>
         </el-collapse-item>
         <div class="active_sql_btn">
-           <el-button @click="activeSelect">运行查询</el-button>
+           <el-button @click="activeSelect">查看sql</el-button>
+           <el-button 
+            v-clipboard:copy="associaTionSql"
+            v-clipboard:success="onCopy"
+            >复制sql</el-button>
         </div>
+        <el-input
+          v-show="associaTionSql"
+          type="textarea"
+          disabled
+          autosize
+          placeholder="请输入内容"
+          v-model="associaTionSql">
+        </el-input>
       </el-collapse>
     </el-tab-pane>
   </el-tabs>
@@ -446,6 +458,7 @@ export default {
       innerVisible: false,
       user: "",
       currentIndex: -1,
+      associaTionSql: ''
     };
   },
   created() {
@@ -522,6 +535,7 @@ export default {
     //
     activeSelect(){
       console.log(this.$store.getters.associaTionSql);
+      this.associaTionSql = this.$store.getters.associaTionSql;
     }
   },
   computed: {
@@ -594,6 +608,6 @@ export default {
   font-weight: bolder;
 }
 .active_sql_btn {
-  margin-top: 20px;
+  margin: 20px 0;
 }
 </style>
