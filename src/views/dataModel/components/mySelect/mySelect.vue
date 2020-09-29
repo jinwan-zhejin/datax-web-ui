@@ -72,20 +72,13 @@ export default {
   name: "Myselect",
   data() {
     return {
-      // dataList: [
-      //   "测试测试1",
-      //   "测试测试2",
-      //   "测试测试3",
-      //   "测试测试4",
-      //   "测试测试5",
-      // ],
       isShowList: false,
       btnList: [],
       formInline: {
-        cloumn: "AIRLINE",
+        cloumn: "",
         method: "SUM",
       },
-      sql: "",
+      sql:''
     };
   },
 
@@ -106,8 +99,31 @@ export default {
 
   computed: {
       dataList(){
-          return this.$store.getters.allNodeFields
+          return this.$store.getters.allNodeFields;
+      },
+
+      cloumn() {
+        return this.formInline.cloumn;
+      },
+
+      method(){
+        return this.formInline.method;
       }
+  },
+
+  watch: {
+    cloumn(val){
+      this.sql = `${this.method}(${val})`;
+    },
+
+    method(val){
+      this.sql = `${val}(${this.cloumn})`;
+    },
+
+    sql(val){
+      const method = val.split('(')[0];
+      this.formInline.method = method;
+    }
   }
 };
 </script>
