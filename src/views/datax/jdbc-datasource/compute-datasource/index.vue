@@ -52,13 +52,16 @@
       <el-table-column label="备注" width="150" align="center">
         <template slot-scope="scope">{{ scope.row.comments }}</template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             删除
+          </el-button>
+          <el-button type="primary" size="small" @click="gatherMetadata(row)">
+            元数据采集
           </el-button>
         </template>
       </el-table-column>
@@ -246,6 +249,9 @@ export default {
     this.fetchData()
   },
   methods: {
+    gatherMetadata() {
+
+    },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
         this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'

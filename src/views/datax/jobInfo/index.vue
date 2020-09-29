@@ -20,18 +20,19 @@
           <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add"></i>
             <el-dropdown-menu >
-              <el-dropdown-item command="NORMAL">普通任务</el-dropdown-item>
-              <el-dropdown-item command="IMPORT">引入任务</el-dropdown-item>
-              <el-dropdown-item command="EXPORT">导出任务</el-dropdown-item>
-              <el-dropdown-item command="COMPUTE" disabled>计算任务</el-dropdown-item>
-              <el-dropdown-item command="SQLJOB" disabled>SQL任务</el-dropdown-item>
-              <el-dropdown-item command="DQCJOB">质量任务</el-dropdown-item>
-              <el-dropdown-item command="SHELL" divided>SHELL任务</el-dropdown-item>
-              <el-dropdown-item command="POWERSHELL">POWERSHELL任务</el-dropdown-item>
-              <el-dropdown-item command="PYTHON">PYTHON任务</el-dropdown-item>
-              <el-dropdown-item command="VJOB" divided>虚任务</el-dropdown-item>
-              <el-dropdown-item command="BATCH" divided disabled>任务批量构建</el-dropdown-item>
-              <el-dropdown-item command="TEMPLATE" disabled>普通任务模板</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-receiving" command="NORMAL">普通任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-collection" command="IMPORT">引入任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-files" command="EXPORT">导出任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-notebook-1" command="COMPUTE" disabled>计算任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-present" command="SQLJOB">SQL任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-s-goods" command="SPARK">SPARK任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-sell" command="DQCJOB">质量任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided>SHELL任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL">POWERSHELL任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-box" command="PYTHON">PYTHON任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-bank-card" command="VJOB" divided>虚任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-copy-document" command="BATCH" divided>任务批量构建</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-brush" command="TEMPLATE">普通任务模板</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           </el-col>
@@ -48,20 +49,12 @@
           <div class="list">
             <ul>
               <li v-for="item in List" :key="item.jobDesc" @click="getJobDetail(item)">
-                <a>{{ item.jobDesc }} - {{ item.glueType }}</a>
+                <!--  -->
+                <a>{{ item.jobDesc }} <span style="color: #ff5500;">{{item.glueType.replace('GLUE_', '').toLowerCase()}}</span></a>
               </li>
             </ul>
           </div>
         </div>
-<!--        <el-table
-              :data="List"
-              >
-              <el-table-column
-                prop="date"
-                label="日期"
-                width="180">
-              </el-table-column>
-            </el-table> -->
       </div>
     </div>
     <div v-if="jobType === 'SHOWDETAIL'" class="rg">
@@ -84,7 +77,7 @@
           :label="item.title"
           :name="item.name"
         >
-          <Flow :is-save="item" @fromChild="getChild" />
+          <Workflow :is-save="item" @fromChild="getChild" :taskList="List"/>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -100,6 +93,12 @@
     <div v-if="jobType === 'DQCJOB'" class="rg">
       <JsonQuality></JsonQuality>
     </div>
+    <div v-if="jobType === 'BATCH'" class="rg">
+      <BatchBuild></BatchBuild>
+    </div>
+    <div v-if="jobType === 'TEMPLATE'" class="rg">
+      <JobTemplate></JobTemplate>
+    </div>
     <div v-if="jobType === 'SHELL'" class="rg">
       <SimpleJob jobType="GLUE_SHELL" jobTypeLabel="SHELL任务"></SimpleJob>
     </div>
@@ -109,27 +108,36 @@
     <div v-if="jobType === 'PYTHON'" class="rg">
       <SimpleJob jobType="GLUE_PYTHON" jobTypeLabel="PYTHON任务" ></SimpleJob>
     </div>
+    <div v-if="jobType === 'SPARK'" class="rg">
+      <SparkJob jobType="GLUE_SPARK" jobTypeLabel="SPARK任务" ></SparkJob>
+    </div>
 
   </div>
 </template>
 
 <script>
-import Flow from './components/flow.vue'
+import Workflow from './components/workflow.vue'
 import SimpleJob from './components/simpleJob.vue'
+import SparkJob from './components/sparkJob.vue'
 import JobDetail from './components/jobDetail.vue'
 import * as jobProjectApi from '@/api/datax-job-project'
 import * as job from '@/api/datax-job-info'
 import JsonBuild from '@/views/datax/json-build/index'
 import JsonQuality from '@/views/datax/jsonQuality/index'
+import BatchBuild from '@/views/datax/json-build-batch/index'
+import JobTemplate from '@/views/datax/jobTemplate/index'
 export default {
   name: '',
   components: {
     // HelloWorld,
-    Flow,
+    Workflow,
     JsonBuild,
     JsonQuality,
     SimpleJob,
-    JobDetail
+    JobDetail,
+    BatchBuild,
+    JobTemplate,
+    SparkJob
   },
   data() {
     return {
@@ -152,7 +160,9 @@ export default {
         searchVal: ''
       },
       jobType: 'SHOWDETAIL',
-      jobDetailIdx: ''
+      jobDetailIdx: '',
+      jobTypeMap:'',
+      jobDetailLoading: true,
     }
   },
   watch: {
@@ -262,8 +272,11 @@ export default {
         // this.$message.info("tab not found, open a new one  ")
         this.jobDetailTabs.push(a)
         this.jobDetailIdx = a.name
+      } else {
+        this.jobDetailIdx = a.name
       }
       this.jobType = 'SHOWDETAIL'
+      // this.jobListLoading = false
     },
 
     getList(data) {
@@ -311,6 +324,14 @@ export default {
         job.getList(listQuery).then(response => {
           const { content } = response
           this.List = content.data
+          let firstElement = content.data[0]
+          let a = {}
+          a.title = firstElement.jobDesc
+          a.name = firstElement.jobDesc
+          a.content = firstElement
+          this.jobDetailTabs.push(a)
+          this.jobDetailIdx = a.name
+          this.jobDetailLoading = false
         })
       })
     },
@@ -387,7 +408,7 @@ export default {
               margin: 5px 0px;
               cursor: pointer;
               a {
-                color: rgb(199, 199, 199);
+                color: rgb(0, 0, 0);
               }
             }
           }
@@ -398,6 +419,8 @@ export default {
   .rg {
     width: 100%;
     height: 100%;
+    margin-top: 20px;
+    border: solid 1px lightgray;
     flex: 1;
     .el-tabs {
       .el-tab-pane {

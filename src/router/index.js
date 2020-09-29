@@ -173,18 +173,18 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/cloudbeaver',
-    component: Layout,
-    children: [
-      {
-        path: '/cloudbeaver',
-        component: () => import('@/views/cloudbeaver/index'),
-        name: 'cloudbeaver',
-        meta: { title: '元数据管理', icon: 'form', keepAlive: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/cloudbeaver',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/cloudbeaver',
+  //       component: () => import('@/views/cloudbeaver/index'),
+  //       name: 'cloudbeaver',
+  //       meta: { title: '元数据管理', icon: 'form', keepAlive: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/cloudbeaveratlas',
     component: Layout,
@@ -287,21 +287,20 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/quality',
     name: 'quality',
-    meta: { title: '数据质量', icon: 'shujuzhiliang' },
+    meta: { title: '数据标准', icon: 'shujuzhiliang' },
     children: [
-
-      // {
-      //   path: 'metaModel',
-      //   name: 'metaModel',
-      //   component: () => import('@/views/datax/metaModel/index'),
-      //   meta: { title: '数据元', icon: 'biaozhunhuazhanxian' }
-      // },
-      // {
-      //   path: 'dataCollect',
-      //   name: 'dataCollect',
-      //   component: () => import('@/views/datax/dataCollect/index'),
-      //   meta: { title: '数据集', icon: 'shujujiguanli' }
-      // },
+      {
+        path: 'techStandard',
+        name: 'techStandard',
+        component: () => import('@/views/datax/metaModel/index'),
+        meta: { title: '技术标准', icon: 'biaozhunhuazhanxian' }
+      },
+      {
+        path: 'bizStandard',
+        name: 'bizStandard',
+        component: () => import('@/views/datax/dataCollect/index'),
+        meta: { title: '业务标准', icon: 'shujujiguanli' }
+      },
       // {
       //   path: 'dataCollect',
       //   name: 'dataCollect',
@@ -339,12 +338,12 @@ export const asyncRoutes = [
         component: () => import('@/views/datax/standardCheck/index'),
         meta: { title: '规则审核', icon: 'shenhe' }
       },
-      {
-        path: 'BusinessTerms',
-        name: 'BusinessTerms',
-        component: () => import('@/views/datax/BusinessTerms/index'),
-        meta: { title: '业务术语', icon: 'business' }
-      },
+      // {
+      //   path: 'BusinessTerms',
+      //   name: 'BusinessTerms',
+      //   component: () => import('@/views/datax/BusinessTerms/index'),
+      //   meta: { title: '业务术语', icon: 'business' }
+      // },
       {
         path: 'DocumentManage',
         name: 'DocumentManage',
