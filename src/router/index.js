@@ -212,53 +212,59 @@ export const asyncRoutes = [
         meta: { title: '任务管理', icon: 'renwu' }
       },
       {
-        path: 'jsonBuild',
-        name: 'JsonBuild',
-        component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '普通任务构建', icon: 'guide' }
+        path: 'jobInfo2',
+        name: 'JobInfo2',
+        component: () => import('@/views/datax/jobInfo/index1'),
+        meta: { title: '任务管理2', icon: 'renwu' }
       },
-      {
-        path: 'importJob',
-        name: 'importJob',
-        component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '引入任务构建', icon: 'nested' }
-      },
-      {
-        path: 'exportJob',
-        name: 'exportJob',
-        component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '导出任务构建', icon: 'example' }
-      },
-      {
-        path: 'computeJob',
-        name: 'computeJob',
-        component: () => import('@/views/datax/json-build/index'),
-        meta: { title: '计算任务构建', icon: 'list' }
-      },
-      {
-        path: 'sqlJob',
-        name: 'sqlJob',
-        component: () => import('@/views/dataDev/dataDev'),
-        meta: { title: 'SQL任务构建', icon: 'component' }
-      },
-      {
-        path: 'dqcJob',
-        name: 'dqcJob',
-        component: () => import('@/views/datax/jsonQuality/index'),
-        meta: { title: '质量任务构建', icon: 'chuangjiangongdan' }
-      },
-      {
-        path: 'jsonBuildBatch',
-        name: 'JsonBuildBatch',
-        component: () => import('@/views/datax/json-build-batch/index'),
-        meta: { title: '任务批量构建', icon: 'clipboard' }
-      },
-      {
-        path: 'jobTemplate',
-        name: 'JobTemplate',
-        component: () => import('@/views/datax/jobTemplate/index'),
-        meta: { title: '普通任务模板', icon: 'chuangjianmoban' }
-      }
+      // {
+      //   path: 'jsonBuild',
+      //   name: 'JsonBuild',
+      //   component: () => import('@/views/datax/json-build/index'),
+      //   meta: { title: '普通任务构建', icon: 'guide' }
+      // },
+      // {
+      //   path: 'importJob',
+      //   name: 'importJob',
+      //   component: () => import('@/views/datax/json-build/index'),
+      //   meta: { title: '引入任务构建', icon: 'nested' }
+      // },
+      // {
+      //   path: 'exportJob',
+      //   name: 'exportJob',
+      //   component: () => import('@/views/datax/json-build/index'),
+      //   meta: { title: '导出任务构建', icon: 'example' }
+      // },
+      // {
+      //   path: 'computeJob',
+      //   name: 'computeJob',
+      //   component: () => import('@/views/datax/json-build/index'),
+      //   meta: { title: '计算任务构建', icon: 'list' }
+      // },
+      // {
+      //   path: 'sqlJob',
+      //   name: 'sqlJob',
+      //   component: () => import('@/views/dataDev/dataDev'),
+      //   meta: { title: 'SQL任务构建', icon: 'component' }
+      // },
+      // {
+      //   path: 'dqcJob',
+      //   name: 'dqcJob',
+      //   component: () => import('@/views/datax/jsonQuality/index'),
+      //   meta: { title: '质量任务构建', icon: 'chuangjiangongdan' }
+      // },
+      // {
+      //   path: 'jsonBuildBatch',
+      //   name: 'JsonBuildBatch',
+      //   component: () => import('@/views/datax/json-build-batch/index'),
+      //   meta: { title: '任务批量构建', icon: 'clipboard' }
+      // },
+      // {
+      //   path: 'jobTemplate',
+      //   name: 'JobTemplate',
+      //   component: () => import('@/views/datax/jobTemplate/index'),
+      //   meta: { title: '普通任务模板', icon: 'chuangjianmoban' }
+      // }
     ]
   },
 
@@ -390,11 +396,30 @@ export const asyncRoutes = [
     meta: { title: '数据共享', icon: 'work' },
     children: [
       {
-        path: 'share',
-        name: 'share',
-        component: () => import('@/views/datax/jobLog/index'),
-        meta: { title: '数据共享', icon: 'gongxiangbeifen' }
-      }
+        path: 'list',
+        name: 'list',
+        component: () => import('@/views/dataShare/interfaceList.vue'),
+        meta: { title: '接口列表', icon: 'business' }
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: () => import('@/views/dataShare/register.vue'),
+        meta: { title: '接口注册', icon: 'chuangjiangongdan' }
+      },
+      {
+        path: 'registerAudit',
+        name: 'registerAudit',
+        component: () => import('@/views/dataShare/registerAudit.vue'),
+        meta: { title: '注册审批', icon: 'chuangjiangongdan' }
+      },
+      {
+        path: 'debug',
+        name: 'debug',
+        component: () => import('@/views/dataShare/debug.vue'),
+        meta: { title: '接口调试', icon: 'business' }
+      },
+
     ]
   },
 

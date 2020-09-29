@@ -281,7 +281,7 @@ function init(_this, timestamp) {
             color: "#F7B84B",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
+            isPrimarykey: false
           },
           {
             name: "field2",
@@ -289,7 +289,7 @@ function init(_this, timestamp) {
             color: "#F25022",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
+            isPrimarykey: false
           },
           { name: "fieldThree", info: "3rd", color: "#00BCF2" }
         ],
@@ -306,17 +306,16 @@ function init(_this, timestamp) {
             color: "#F7B84B",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
+            isPrimarykey: false
           },
           {
-            name: "field2",
+            name: "yuwenjie",
             info: "the second one",
             color: "#F25022",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
-          },
-          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+            isPrimarykey: false
+          }
         ],
         loc: "300 0"
       },
@@ -331,15 +330,15 @@ function init(_this, timestamp) {
             color: "#F7B84B",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
+            isPrimarykey: false
           },
           {
-            name: "field2",
+            name: "yuwenjie",
             info: "the second one",
             color: "#F25022",
             figure: "Ellipse",
             type: "int",
-            isPrimarykey: "true"
+            isPrimarykey: false
           },
           { name: "fieldThree", info: "3rd", color: "#00BCF2" }
         ],
@@ -355,9 +354,9 @@ function init(_this, timestamp) {
       },
       {
         from: "Record3",
-        fromPort: "field2",
+        fromPort: "yuwenjie",
         to: "Record2",
-        toPort: "field2"
+        toPort: "yuwenjie"
       }
     ]
   });
@@ -432,7 +431,7 @@ function init(_this, timestamp) {
 
     console.log(dataSourceList, '所有父节点');
     _this.$store.commit('SET_pNode_Data', dataSourceList);
-    
+    console.log(_this.$store);
   });
 
   return myDiagram;

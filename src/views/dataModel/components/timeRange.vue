@@ -4,24 +4,24 @@
       <el-tab-pane label="默认">
         <ul>
           <li class="radio">
-            <el-radio v-model="radio" label="Last day">Last day</el-radio>
+            <el-radio v-model="radio" label="昨天">昨天</el-radio>
           </li>
           <li class="radio">
-            <el-radio v-model="radio" label="Last week">Last week</el-radio>
+            <el-radio v-model="radio" label="上周">上周</el-radio>
           </li>
           <li class="radio">
-            <el-radio v-model="radio" label="Last month">Last month</el-radio>
+            <el-radio v-model="radio" label="上个月">上个月</el-radio>
           </li>
           <li class="radio">
-            <el-radio v-model="radio" label="Last quarter"
-              >Last quarter</el-radio
+            <el-radio v-model="radio" label="上个季度"
+              >上个季度</el-radio
             >
           </li>
           <li class="radio">
-            <el-radio v-model="radio" label="Last year">Last year</el-radio>
+            <el-radio v-model="radio" label="去年">去年</el-radio>
           </li>
           <li class="radio">
-            <el-radio v-model="radio" label="No filter">No filter</el-radio>
+            <el-radio v-model="radio" label="不过滤">不过滤</el-radio>
           </li>
         </ul>
       </el-tab-pane>
@@ -61,7 +61,7 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
-    <el-button slot="reference">{{ timeRange }}</el-button>
+    <el-button slot="reference">{{ radio }}</el-button>
   </el-popover>
 </template>
 
@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       timeRange: "No filter",
-      radio: "No filter",
+      radio: "不过滤",
       formInline: {
         type: "Next",
         num: 7,

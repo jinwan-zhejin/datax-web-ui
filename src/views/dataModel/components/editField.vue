@@ -188,7 +188,7 @@
       <el-collapse>
         <el-collapse-item>
           <template slot="title">
-            数据源<i class="header-icon el-icon-info"></i>
+            <span class="title">数据源</span>
           </template>
           <div
             class="data-source"
@@ -220,9 +220,10 @@
                 icon="el-icon-circle-plus-outline"
                 circle
                 size="mini"
+                @click="showTableDetail(index)"
               ></el-button>
             </el-tooltip>
-            <div class="tableSource">
+            <div class="tableSource" v-show="currentIndex === index">
               <el-card class="box-card">
                 <div slot="header" class="clearfix">
                   <span>{{ item.tableName }}</span>
@@ -230,23 +231,33 @@
                 <el-table :data="item.fields" style="width: 100%">
                   <el-table-column prop="name" label="列" width="180">
                   </el-table-column>
-                  <el-table-column prop="type" label="指标" width="180">
+                  <el-table-column prop="type" label="类型" width="180">
                   </el-table-column>
                 </el-table>
               </el-card>
             </div>
           </div>
+          <h4>设置关联关系</h4>
+          <Association />
         </el-collapse-item>
-        <el-collapse-item title="时间">
+        <el-collapse-item>
+          <template slot="title">
+            <span class="title">时间</span>
+          </template>
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="时间字段">
-              <el-select v-model="timeField" placeholder="请选择时间字段">
-                <el-option label="ds" value="ds"></el-option>
+              <el-select v-model="$store.state.dataModel.timeField" placeholder="请选择时间字段">
+                <el-option
+                  v-for="(item, index) in $store.getters.allNodeFields"
+                  :key="index"
+                  :label="item"
+                  :value="item"
+                ></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="时间粒度">
-              <el-select v-model="timeGranularity" placeholder="请选择粒度">
+              <el-select v-model="$store.state.dataModel.timeGranularity" placeholder="请选择粒度">
                 <el-option label="second" value="second"></el-option>
                 <el-option label="minute" value="minute"></el-option>
                 <el-option label="hour" value="hour"></el-option>
@@ -270,53 +281,36 @@
             </el-form-item>
           </el-form>
         </el-collapse-item>
-        <el-collapse-item title="查询">
+        <el-collapse-item>
+          <template slot="title">
+            <span class="title">查询</span>
+          </template>
           <p>指标</p>
           <MySelect />
           <p>过滤</p>
-          <MySelect />
+          <MyFilter />
           <p>分组</p>
-          <el-select v-model="group" multiple placeholder="请选择">
+          <el-select  v-model="$store.state.dataModel.group" multiple placeholder="请选择">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
             >
             </el-option>
           </el-select>
           <div class="array-bottom">
-            <el-form
-              :inline="true"
-              :model="array"
-              class="demo-form-inline"
-            >
-              <el-form-item label="序列限制">
-                <el-select v-model="array.limit" placeholder="7选项">
-                  <el-option label="0" value="0"></el-option>
-                  <el-option label="5" value="5"></el-option>
-                  <el-option label="10" value="10"></el-option>
-                  <el-option label="25" value="25"></el-option>
-                  <el-option label="50" value="50"></el-option>
-                  <el-option label="100" value="100"></el-option>
-                  <el-option label="500" value="500"></el-option>
-                </el-select>
-              </el-form-item>
+            <el-form :inline="true"  class="demo-form-inline">
               <el-form-item label="排序">
-                <el-select v-model="array.area" placeholder="排序">
-                  <el-option label="DAY_OF_WEEK" value="DAY_OF_WEEK"></el-option>
-                  <el-option label="AIRLINE" value="AIRLINE"></el-option>
+                <el-select v-model="$store.state.dataModel.sortField" placeholder="排序">
+                  <el-option
+                    v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="">
-                <el-checkbox v-model="array.descending">降序</el-checkbox>
-              </el-form-item>
-              <el-form-item label="">
-                <el-checkbox v-model="array.contri">贡献</el-checkbox>
+                <el-checkbox v-model="$store.state.dataModel.desc">降序</el-checkbox>
               </el-form-item>
 
               <el-form-item label="行限制">
-                <el-select v-model="array.rows" placeholder="9选项">
+                <el-select v-model="$store.state.dataModel.limit" placeholder="9选项">
                   <el-option label="10" value="10"></el-option>
                   <el-option label="50" value="50"></el-option>
                   <el-option label="100" value="100"></el-option>
@@ -331,6 +325,21 @@
             </el-form>
           </div>
         </el-collapse-item>
+        <div class="active_sql_btn">
+           <el-button @click="activeSelect">查看sql</el-button>
+           <el-button 
+            v-clipboard:copy="associaTionSql"
+            v-clipboard:success="onCopy"
+            >复制sql</el-button>
+        </div>
+        <el-input
+          v-show="associaTionSql"
+          type="textarea"
+          disabled
+          autosize
+          placeholder="请输入内容"
+          v-model="associaTionSql">
+        </el-input>
       </el-collapse>
     </el-tab-pane>
   </el-tabs>
@@ -341,12 +350,16 @@
 import { testTableName } from "@/utils/regExp";
 import TimeRange from "./timeRange";
 import MySelect from "./mySelect/mySelect";
+import MyFilter from "./mySelect/myFilter";
+import Association from "./association";
 export default {
   name: "EditField",
   props: ["node", "tableData"],
   components: {
     TimeRange,
     MySelect,
+    Association,
+    MyFilter,
   },
   data() {
     return {
@@ -444,37 +457,8 @@ export default {
       sqlVal: ``,
       innerVisible: false,
       user: "",
-      timeField: "ds",
-      timeGranularity: "second",
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎",
-        },
-        {
-          value: "选项4",
-          label: "龙须面",
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭",
-        },
-      ],
-      group: "",
-      array:{
-        area:'',
-        limit:'',
-        descending: false,
-        contrib: false
-      }
+      currentIndex: -1,
+      associaTionSql: ''
     };
   },
   created() {
@@ -516,8 +500,8 @@ export default {
         fieldStr += `\t ${field.name || ""} ${field.type || ""}${
           field.length ? "(" + field.length + ")" : ""
         } COMMENT '${field.info || ""}'${
-          index === this.tableData.length - 1 ? "" : ","
-        } \n`;
+          index === this.tableData.length - 1 ? "" : ",\n"
+        } `;
 
         if (field.isPrimarykey) {
           primarykeyStr += field.name + " ";
@@ -526,7 +510,9 @@ export default {
 
       this.sqlVal = `
     CREATE TABLE ${this.node.tableName} (
-    ${fieldStr}\t ${primarykeyStr ? "PRIMARY KEY(" + primarykeyStr + ")" : ""}
+    ${fieldStr} ${
+        primarykeyStr ? "\n\t PRIMARY KEY(" + primarykeyStr + ")" : ""
+      }
     ) COMMENT '${this.node.tableNameCN}';
     
     `;
@@ -536,6 +522,21 @@ export default {
     onCopy() {
       this.$message.success("已复制到剪切板");
     },
+
+    //打开折叠数据源配置
+    showTableDetail(index) {
+      if (this.currentIndex === index) {
+        this.currentIndex = -1;
+        return;
+      }
+      this.currentIndex = index;
+    },
+
+    //
+    activeSelect(){
+      console.log(this.$store.getters.associaTionSql);
+      this.associaTionSql = this.$store.getters.associaTionSql;
+    }
   },
   computed: {
     tableName() {
@@ -601,5 +602,12 @@ export default {
 
 .array-bottom {
   margin-top: 20px;
+}
+.title {
+  font-size: 16px;
+  font-weight: bolder;
+}
+.active_sql_btn {
+  margin: 20px 0;
 }
 </style>

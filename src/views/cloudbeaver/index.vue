@@ -1,20 +1,23 @@
 <template>
   <div class="container" ref="container">
-    <el-container :style="`height:${containerHeight}px`">
+    <!-- <el-container :style="`height:${containerHeight}px`">
       <el-aside width="30%" class="left-container">
         <div class="leftBtn">
-          <el-button type="warning" icon="el-icon-plus" circle size="mini" @click="openWin = true"></el-button>
+          <el-button type="warning" icon="el-icon-plus" circle size="mini" @click="gometa">aa</el-button>
           <el-button type="warning" icon="el-icon-folder" circle size="mini"></el-button>
         </div>
         <el-input style="padding:0 5px;" placeholder="输入表格名称的一部分" clearable></el-input>
         <el-tree :props="props" :load="loadNode" lazy :render-content="renderContent"></el-tree>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+		</el-header>
         <el-main>Main</el-main>
       </el-container>
     </el-container>
-    <CreateNewLink :openWin="openWin" @close="openWin = false"></CreateNewLink>
+    <CreateNewLink :openWin="openWin" @close="openWin = false"></CreateNewLink> -->
+    <!-- <iframe src="http://www.baidu.com" style="width: 100%; height: 100%"></iframe> -->
+    <!-- <iframe src="http://123.56.96.151:8079/n/index.html#!/search" style="width: 100%; height: 100%"></iframe> -->
   </div>
 </template>
 <script>
@@ -79,6 +82,9 @@ export default {
           return resolve(result || []);
         });
       }
+    },
+    gometa() {
+      window.location.href = 'http://123.56.96.151:8079/n/index.html#!/search'
     },
     renderContent(h, { node, data, store }) {
       if (node.level === 1 || node.level === 2) {

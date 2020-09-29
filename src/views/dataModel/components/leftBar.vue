@@ -4,7 +4,7 @@
       <div class="drop">
         <el-dropdown size="mini">
           <span class="el-dropdown-link">
-            下拉菜单
+            项目
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -30,14 +30,7 @@
           'color':currentTab === '模型' ? '#409eff': ''
         }"
       >模型</div>
-      <div 
-      @click="currentTab = '任务'"
-      class="tab-item" 
-      :style="{
-          'border-bottom':currentTab === '任务' ? '1px solid #E5E7EC': '1px solid white',
-          'color':currentTab === '任务' ? '#409eff': ''
-        }"
-      >任务</div>
+
     </div>
     <el-input
     placeholder="请输入内容"
@@ -83,7 +76,7 @@ export default {
   margin: 10px 0;
 }
 .tab-item {
-  width: 50%;
+  width: 100%;
   border: 1px solid #e5e7ec;
   text-align: center;
   padding: 10px;

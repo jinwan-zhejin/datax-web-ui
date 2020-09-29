@@ -85,7 +85,7 @@ export default {
       this.fieldsData.splice(index, 1)
     },
     updateFields(type){
-      this.myDiagram.model.updateTargetBindings(this.node);
+      this.myDiagram.model.updateTargetBindings(this.node); 
       if(type === '应用') return;
       this.dialogTableVisible = false;
       this.$message.success('更新成功');

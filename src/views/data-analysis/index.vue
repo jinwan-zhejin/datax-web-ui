@@ -3,9 +3,8 @@
     <!-- <keep-alive>
       {{ analysis }}
     </keep-alive> -->
-    <el-button @click="getAnalysis">链接</el-button>
-    <!-- <el-button @click="getAnalysisPage">链接（POST）</el-button> -->
-    <!-- <a href="http://47.103.79.104:8080/datains/welcome">welcome页面</a> -->
+    <!-- <el-button @click="getAnalysis">链接</el-button> -->
+    <!-- <iframe src="47.103.79.104:8080"></iframe> -->
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Datax Web',
+  title: 'Data Elit',
 
   /**
    * @type {boolean} true | false
