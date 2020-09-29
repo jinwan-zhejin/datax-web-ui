@@ -62,11 +62,11 @@
             </el-tab-pane>
           </el-tabs>
           <div class="save">
-            <el-button type="primary" @click="saveChange">保存</el-button>
+            <el-button type="primary" @click="saveChange(item, index)">保存</el-button>
           </div>
           <el-tag type="info" slot="reference"
             ><i @click.stop="popTag(index)" class="el-icon-delete"></i>
-            {{ item }}
+            <span @click="tagClick(item)">{{ item.field + item.type + item.filterVal }}</span>
             <i class="el-icon-caret-right"></i>
           </el-tag>
         </el-popover>
@@ -94,7 +94,7 @@ export default {
       btnList: [],
       formFilter: {
         field: "",
-        type: "equals",
+        type: "=",
         filterVal: "",
       },
       sql: "",
@@ -106,17 +106,34 @@ export default {
     listShow() {
       this.isShowList = true;
     },
+
     leaveList() {
       this.isShowList = false;
     },
+
     listItemClick(item) {
-      this.btnList.push(item);
+      this.btnList.push({
+        field:item,
+        type:'=',
+        filterVal:''
+      });
     },
+
     popTag(index) {
       this.btnList.splice(index, 1);
     },
 
-    saveChange(){
+    tagClick(item){
+      this.formFilter.field = item.field;
+      this.formFilter.type = item.type;
+      this.formFilter.filterVal = item.filterVal;
+    },
+
+    saveChange(item, index){
+      item.field = this.formFilter.field;
+      item.type = this.formFilter.type;
+      item.filterVal = this.formFilter.filterVal;
+      this.btnList.splice(index, 1, item);
       this.$message.success('已保存')
     }
   },
@@ -124,7 +141,17 @@ export default {
   computed: {
       dataList(){
           return this.$store.getters.allNodeFields
-      }
+      },
+      
+  },
+
+  watch: {
+    btnList: {
+      handler: function(val){
+        this.$store.commit('SET_filterList', val)
+      },
+      deep: true
+    }
   }
 };
 </script>

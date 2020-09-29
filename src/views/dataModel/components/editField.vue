@@ -246,7 +246,7 @@
           </template>
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="时间字段">
-              <el-select v-model="timeField" placeholder="请选择时间字段">
+              <el-select v-model="$store.state.dataModel.timeField" placeholder="请选择时间字段">
                 <el-option
                   v-for="(item, index) in $store.getters.allNodeFields"
                   :key="index"
@@ -257,7 +257,7 @@
             </el-form-item>
 
             <el-form-item label="时间粒度">
-              <el-select v-model="timeGranularity" placeholder="请选择粒度">
+              <el-select v-model="$store.state.dataModel.timeGranularity" placeholder="请选择粒度">
                 <el-option label="second" value="second"></el-option>
                 <el-option label="minute" value="minute"></el-option>
                 <el-option label="hour" value="hour"></el-option>
@@ -290,27 +290,27 @@
           <p>过滤</p>
           <MyFilter />
           <p>分组</p>
-          <el-select v-model="group" multiple placeholder="请选择">
+          <el-select  v-model="$store.state.dataModel.group" multiple placeholder="请选择">
             <el-option
               v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
             >
             </el-option>
           </el-select>
           <div class="array-bottom">
-            <el-form :inline="true" :model="array" class="demo-form-inline">
+            <el-form :inline="true"  class="demo-form-inline">
               <el-form-item label="排序">
-                <el-select v-model="array.area" placeholder="排序">
+                <el-select v-model="$store.state.dataModel.sortField" placeholder="排序">
                   <el-option
                     v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
                   ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="">
-                <el-checkbox v-model="array.descending">降序</el-checkbox>
+                <el-checkbox v-model="$store.state.dataModel.desc">降序</el-checkbox>
               </el-form-item>
 
               <el-form-item label="行限制">
-                <el-select v-model="array.rows" placeholder="9选项">
+                <el-select v-model="$store.state.dataModel.limit" placeholder="9选项">
                   <el-option label="10" value="10"></el-option>
                   <el-option label="50" value="50"></el-option>
                   <el-option label="100" value="100"></el-option>
@@ -325,6 +325,9 @@
             </el-form>
           </div>
         </el-collapse-item>
+        <div class="active_sql_btn">
+           <el-button @click="activeSelect">运行查询</el-button>
+        </div>
       </el-collapse>
     </el-tab-pane>
   </el-tabs>
@@ -442,13 +445,6 @@ export default {
       sqlVal: ``,
       innerVisible: false,
       user: "",
-      timeField: "ds",
-      timeGranularity: "second",
-      group: "",
-      array: {
-        area: "",
-        descending: false,
-      },
       currentIndex: -1,
     };
   },
@@ -522,6 +518,11 @@ export default {
       }
       this.currentIndex = index;
     },
+
+    //
+    activeSelect(){
+      console.log(this.$store.getters.associaTionSql);
+    }
   },
   computed: {
     tableName() {
@@ -591,5 +592,8 @@ export default {
 .title {
   font-size: 16px;
   font-weight: bolder;
+}
+.active_sql_btn {
+  margin-top: 20px;
 }
 </style>

@@ -431,6 +431,7 @@ function init(_this, timestamp) {
 
     console.log(dataSourceList, '所有父节点');
     _this.$store.commit('SET_pNode_Data', dataSourceList);
+    console.log(_this.$store);
   });
 
   return myDiagram;

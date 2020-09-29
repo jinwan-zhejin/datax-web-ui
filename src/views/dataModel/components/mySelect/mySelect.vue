@@ -3,6 +3,11 @@
     <div class="inputContent" @click="listShow">
       <div class="tag" v-for="(item, index) in btnList" :key="index">
         <el-popover placement="right" width="400" trigger="click">
+           <el-input
+              placeholder="我的指标"
+              suffix-icon="el-icon-edit"
+              v-model="inputVal">
+            </el-input>
           <el-tabs type="border-card">
               <el-tab-pane label="简单">
                 <el-form
@@ -12,13 +17,13 @@
                 >
                   <h4>列</h4>
                   <el-form-item label="" class="customize">
-                    <el-select v-model="formInline.cloumn" placeholder="">
-                      <el-option v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"></el-option>
+                    <el-select  v-model="formInline.cloumn" placeholder="">
+                      <el-option v-for="(ele, index) in $store.getters.allNodeFields" :key="index" :label="ele" :value="ele"></el-option>
                     </el-select>
                   </el-form-item>
                   <h4>聚合方法</h4>
                   <el-form-item label="" class="customize">
-                    <el-select v-model="formInline.method" placeholder="">
+                    <el-select  v-model="formInline.method" placeholder="">
                       <el-option label="AVG" value="AVG"></el-option>
                       <el-option label="COUNT" value="COUNT"></el-option>
                       <el-option
@@ -44,11 +49,11 @@
               </el-tab-pane>
             </el-tabs>
             <div class="save">
-              <el-button type="primary">保存</el-button>
+              <el-button type="primary" @click="saveField(item,index)">保存</el-button>
             </div>
           <el-tag type="info" slot="reference"
             ><i @click.stop="popTag(index)" class="el-icon-delete"></i>
-            {{ item }}
+            <span @click="tagClick(item)">{{ item.alias }}</span>
             <i class="el-icon-caret-right"></i>
           </el-tag>
         </el-popover>
@@ -78,7 +83,8 @@ export default {
         cloumn: "",
         method: "SUM",
       },
-      sql:''
+      sql:'',
+      inputVal: ''
     };
   },
 
@@ -90,10 +96,25 @@ export default {
       this.isShowList = false;
     },
     listItemClick(item) {
-      this.btnList.push(item);
+      this.btnList.push({
+        name: `${this.formInline.method}(${item})`,
+        alias: `${this.formInline.method}(${item})`
+      });
     },
     popTag(index) {
       this.btnList.splice(index, 1);
+    },
+
+    tagClick(item){
+      this.formInline.cloumn = item.name.split('(')[1].split(')')[0];
+      this.inputVal = item.alias;
+    },
+
+    saveField(item, index){
+      if(!this.inputVal) item.alias = item.name;
+      item.name = `${this.formInline.method}(${this.formInline.cloumn})`
+      item.alias = this.inputVal;
+      this.btnList.splice(index, 1, item);
     },
   },
 
@@ -123,7 +144,16 @@ export default {
     sql(val){
       const method = val.split('(')[0];
       this.formInline.method = method;
-    }
+    },
+
+    btnList: {
+      handler: function(val){
+        this.$store.commit('SET_targetList', val);
+      },
+      deep: true
+    },
+
+
   }
 };
 </script>
