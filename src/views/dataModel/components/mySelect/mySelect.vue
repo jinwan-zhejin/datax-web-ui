@@ -2,7 +2,7 @@
   <div class="container" @mouseleave="leaveList">
     <div class="inputContent" @click="listShow">
       <div class="tag" v-for="(item, index) in btnList" :key="index">
-        <el-popover placement="right" width="400" trigger="click">
+        <el-popover v-model="visible" placement="right" width="400" trigger="click">
            <el-input
               placeholder="我的指标"
               suffix-icon="el-icon-edit"
@@ -84,7 +84,8 @@ export default {
         method: "SUM",
       },
       sql:'',
-      inputVal: ''
+      inputVal: '',
+      visible: false
     };
   },
 
@@ -115,6 +116,8 @@ export default {
       item.name = `${this.formInline.method}(${this.formInline.cloumn})`
       item.alias = this.inputVal;
       this.btnList.splice(index, 1, item);
+      this.$message.success('已保存')
+      this.visible = false;
     },
   },
 
