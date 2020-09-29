@@ -184,7 +184,7 @@
       </el-dialog>
     </el-tab-pane>
 
-    <el-tab-pane label="计算逻辑">
+    <el-tab-pane v-if='$store.state.dataModel.pNodeData.length' label="计算逻辑">
       <el-collapse>
         <el-collapse-item>
           <template slot="title">
@@ -534,7 +534,6 @@ export default {
 
     //
     activeSelect(){
-      console.log(this.$store.getters.associaTionSql);
       this.associaTionSql = this.$store.getters.associaTionSql;
     }
   },
