@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-29 18:17:10
+ * @LastEditTime: 2020-09-30 18:41:23
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -12,6 +12,7 @@
     <el-container style="height: 100%;">
       <el-aside style="width: 30%; min-width: 252px;" class="left-container">
         <div class="topSearch">
+          <el-button @click="changePage('atlasDetails')">test</el-button>
           <label class="searchLabel">搜索</label>
           <el-input v-model="searchTreeList" style="padding: 5px 0;" prefix-icon="el-icon-search" placeholder="搜索实体、分类、词汇表" clearable />
         </div>
@@ -54,7 +55,7 @@
                 </div>
               </div>
               <div style="overflow-y:auto;">
-                <el-tree ref="lefttree" :data="item.collapseDataToShow" default-expand-all highlight-current :props="index===3?glossariesProps:defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClick" />
+                <el-tree ref="lefttree" :data="item.toShow" default-expand-all highlight-current :props="index===3?glossariesProps:defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClick" />
               </div>
             </el-collapse-item>
           </div>
@@ -62,8 +63,8 @@
       </el-aside>
       <el-container>
         <el-main class="right-container">
-          <!-- <RightPanelSearch /> -->
-          <RightPanelTable :search-request="searchByListItem" />
+          <!-- <RightPanelTable :search-request="searchByListItem" /> -->
+          <router-view name="atlas" :search-request="searchByListItem" :details-request="searchByName" @changepage="changePage" />
         </el-main>
       </el-container>
     </el-container>
@@ -72,15 +73,39 @@
 <script>
 import RightPanelSearch from './components/rightPanelSearch'
 import RightPanelTable from './components/rightPanelTable'
+import RightPanelDetails from './components/rightPanelDetails'
 import * as apiatlas from '@/api/datax-metadata-atlas'
+import Router from 'vue-router'
+
+const router = new Router({
+  routes: [
+    {
+      path: '/datax/metadata/cloudbeaveratlas/atlasSearch',
+      name: 'atlasSearch',
+      components: { atlas: RightPanelSearch }
+    },
+    // 路由传参√ props传参×
+    {
+      path: '/datax/metadata/cloudbeaveratlas/atlasSearch/searchResult',
+      name: 'atlasResult',
+      components: { atlas: RightPanelTable }
+    },
+    {
+      path: '/datax/metadata/cloudbeaveratlas/atlasDetails',
+      name: 'atlasDetails',
+      components: { atlas: RightPanelDetails }
+    },
+    {
+      path: '*',
+      name: 'default',
+      components: { atlas: RightPanelSearch }
+    }
+  ]
+})
 
 export default {
   name: 'DbeaverAltas',
-  components: {
-    // CreateNewLink
-    RightPanelSearch,
-    RightPanelTable
-  },
+  router, // 私有路由
   data() {
     return {
       searchTreeList: '', // 搜索树
@@ -107,39 +132,40 @@ export default {
           classification: null,
           termName: null
         },
+        searchByName: {},
         businessMetadata: null
       },
       /* 折叠面板
        * collapseName 面板名（EN）
        * collapseNameCN 面板名（CN）
-       * collapseData 面板数据 - 所有数据
+       * data 面板数据 - 所有数据
        *  - label 面板数据显示
        *  - value 面板数据值
-       * collapseDataToShow 面板数据 - 有值
-       * collapseDataToShow 面板数据 - 用于显示
+       * hasVal 面板数据 - 有值
+       * toShow 面板数据 - 用于显示
        * showFlat show flat tree / show group tree
        * refreshFun 刷新按钮事件
        */
       collapseList: [
         { collapseName: 'Entities', collapseNameCN: '实体',
-          collapseData: [], collapseDataHasVal: [], collapseDataToShow: [],
+          data: [], hasVal: [], toShow: [],
           showFlat: true, refreshFun: this.loadListEntities },
         { collapseName: 'Classifications', collapseNameCN: '分类',
-          collapseData: [], collapseDataHasVal: [], collapseDataToShow: [],
+          data: [], hasVal: [], toShow: [],
           showFlat: true, refreshFun: this.loadListClassifications },
         { collapseName: 'Business Metadata', collapseNameCN: '业务元数据',
-          collapseData: [], collapseDataHasVal: [], collapseDataToShow: [],
+          data: [], hasVal: [], toShow: [],
           showFlat: true, refreshFun: this.loadListBusinessMetadata },
         { collapseName: 'Glossaries', collapseNameCN: '词汇表',
-          collapseData: [], collapseDataHasVal: [], collapseDataToShow: [],
+          data: [], hasVal: [], toShow: [],
           showFlat: true, refreshFun: this.loadListGlossaries },
         { collapseName: 'Custom Filters', collapseNameCN: '自定义过滤器',
-          collapseData: [{ name: '高级搜索', children: [] }, { name: '普通搜索', children: [] }],
-          collapseDataHasVal: [],
-          collapseDataToShow: [{ name: '高级搜索', children: [] }, { name: '普通搜索', children: [] }],
+          data: [{ name: '高级搜索', children: [] }, { name: '普通搜索', children: [] }],
+          hasVal: [],
+          toShow: [{ name: '高级搜索', children: [] }, { name: '普通搜索', children: [] }],
           showFlat: true, refreshFun: this.loadListCustomFilters }
       ],
-      leftListNotEmptyNameList: {},
+      notEmptyList: {}, // 有值的列表项
       defaultProps: {
         children: 'children',
         label: 'name'
@@ -191,6 +217,7 @@ export default {
      * @description: el-tree节点点击事件
      */
     handleNodeClick(data) {
+      this.$router.push({ name: 'atlasResult' })
       if (data.hasOwnProperty('category')) {
         switch (data.category) {
           case 'ENTITY': // 实体
@@ -246,31 +273,56 @@ export default {
     async loadListEntities() {
       const res = await apiatlas.getList('entity')
       if (res.status === 200 && res.statusText === 'OK') {
-        this.collapseList[0].collapseData = res.data.entityDefs
+        this.collapseList[0].data = res.data.entityDefs
         // 筛选有效项
         var tempObject = {}
-        for (var item in this.leftListNotEmptyNameList.entity.entityActive) {
-          if (this.leftListNotEmptyNameList.entity.entityActive.hasOwnProperty(item) === true) {
-            tempObject[item] = this.leftListNotEmptyNameList.entity.entityActive[item]
+        for (var item in this.notEmptyList.entity.entityActive) {
+          if (this.notEmptyList.entity.entityActive.hasOwnProperty(item) === true) {
+            tempObject[item] = this.notEmptyList.entity.entityActive[item]
           }
         }
-        for (var item2 in this.leftListNotEmptyNameList.entity.entityDeleted) {
-          if (this.leftListNotEmptyNameList.entity.entityDeleted.hasOwnProperty(item2) === true) {
+        for (var item2 in this.notEmptyList.entity.entityDeleted) {
+          if (this.notEmptyList.entity.entityDeleted.hasOwnProperty(item2) === true) {
             // 已有相同项，相加
             if (tempObject.hasOwnProperty(item2) === true) {
-              tempObject[item2] += this.leftListNotEmptyNameList.entity.entityDeleted[item2]
+              tempObject[item2] += this.notEmptyList.entity.entityDeleted[item2]
             } else {
-              tempObject[item2] = this.leftListNotEmptyNameList.entity.entityDeleted[item2]
+              tempObject[item2] = this.notEmptyList.entity.entityDeleted[item2]
             }
           }
         }
         // 在原列表中筛选有值的项
-        this.collapseList[0].collapseDataHasVal = this.collapseList[0].collapseData.filter(
+        this.collapseList[0].hasVal = this.collapseList[0].data.filter(
           item => tempObject.hasOwnProperty(item.name) === true)
-        this.collapseList[0].collapseDataToShow = this.collapseList[0].collapseDataHasVal
-        for (var i in this.collapseList[0].collapseDataToShow) {
-          this.collapseList[0].collapseDataToShow[i].name = this.collapseList[0].collapseDataToShow[i].name + ' (' + tempObject[this.collapseList[0].collapseDataToShow[i].name].toString() + ')'
+        this.collapseList[0].toShow = this.collapseList[0].hasVal
+        for (var i in this.collapseList[0].toShow) {
+          this.collapseList[0].toShow[i].name = this.collapseList[0].toShow[i].name + ' (' + tempObject[this.collapseList[0].toShow[i].name].toString() + ')'
         }
+        // console.log(this.collapseList[0].hasVal)
+        // const res2 = await apiatlas.getListType()
+        // console.log(res2.data)
+        // tempObject = []
+        // // 分类
+        // for (var t = 0; t < this.collapseList[0].toShow.length; t++) {
+        //   for (var k = 0; k < res2.data.length; k++) {
+        //     if (res2.data[k].hasOwnProperty('serviceType')) {
+        //       if (res2.data[k].name === this.collapseList[0].toShow[t].name.split(' (')[0]) {
+        //         tempObject.push({
+        //           name: res2.data[k].name,
+        //           serviceType: res2.data[k].serviceType
+        //         })
+        //       }
+        //     }
+        //   }
+        // }
+        // var classifiy = []
+        // for (var j = 0; j < tempObject.length; j++) {
+        //   if (classifiy.indexOf(tempObject[j]) > -1) {
+        //     continue
+        //   } else {
+        //
+        //   }
+        // }
       } else {
         this.$message({
           message: '获取实体列表失败',
@@ -286,19 +338,13 @@ export default {
     async loadListClassifications() {
       const res = await apiatlas.getList('classification')
       if (res.status === 200 && res.statusText === 'OK') {
-        this.collapseList[1].collapseData = res.data.classificationDefs
-        // 资源没被释放
-        // try {
-        //   console.log(this.leftListNotEmptyNameList.tag.tagEntities)
-        // } catch (error) {
-        //   console.log()
-        // }
-        this.collapseList[1].collapseDataHasVal = this.collapseList[1].collapseData.filter(
-          item => this.leftListNotEmptyNameList.tag.tagEntities.hasOwnProperty(item.name) === true
+        this.collapseList[1].data = res.data.classificationDefs
+        this.collapseList[1].hasVal = this.collapseList[1].data.filter(
+          item => this.notEmptyList.tag.tagEntities.hasOwnProperty(item.name) === true
         )
-        this.collapseList[1].collapseDataToShow = this.collapseList[1].collapseDataHasVal
-        for (var i in this.collapseList[1].collapseDataToShow) {
-          this.collapseList[1].collapseDataToShow[i].name = this.collapseList[1].collapseDataToShow[i].name + ' (' + this.leftListNotEmptyNameList.tag.tagEntities[this.collapseList[1].collapseDataToShow[i].name].toString() + ')'
+        this.collapseList[1].toShow = this.collapseList[1].hasVal
+        for (var i in this.collapseList[1].toShow) {
+          this.collapseList[1].toShow[i].name = this.collapseList[1].toShow[i].name + ' (' + this.notEmptyList.tag.tagEntities[this.collapseList[1].toShow[i].name].toString() + ')'
         }
       } else {
         this.$message({
@@ -315,8 +361,8 @@ export default {
     async loadListBusinessMetadata() {
       const res = await apiatlas.getList('business_metadata')
       if (res.status === 200 && res.statusText === 'OK') {
-        this.collapseList[2].collapseData = res.data.businessMetadataDefs
-        this.collapseList[2].collapseDataToShow = this.collapseList[2].collapseData
+        this.collapseList[2].data = res.data.businessMetadataDefs
+        this.collapseList[2].toShow = this.collapseList[2].data
       } else {
         this.$message({
           message: '获取业务元数据列表失败',
@@ -332,13 +378,13 @@ export default {
     async loadListGlossaries() {
       const res = await apiatlas.getGlossaries()
       if (res.status === 200 && res.statusText === 'OK') {
-        this.collapseList[3].collapseData = res.data
-        this.collapseList[3].collapseDataToShow = this.collapseList[3].collapseData
+        this.collapseList[3].data = res.data
+        this.collapseList[3].toShow = this.collapseList[3].data
         // 处理显示tree的list
-        for (var i in this.collapseList[3].collapseDataToShow) {
-          for (var k in this.collapseList[3].collapseDataToShow[i].terms) {
-            this.collapseList[3].collapseDataToShow[i].terms[k].name = this.collapseList[3].collapseDataToShow[i].terms[k].displayText
-            this.collapseList[3].collapseDataToShow[i].terms[k].fathername = this.collapseList[3].collapseDataToShow[i].name
+        for (var i in this.collapseList[3].toShow) {
+          for (var k in this.collapseList[3].toShow[i].terms) {
+            this.collapseList[3].toShow[i].terms[k].name = this.collapseList[3].toShow[i].terms[k].displayText
+            this.collapseList[3].toShow[i].terms[k].fathername = this.collapseList[3].toShow[i].name
           }
         }
       } else {
@@ -354,15 +400,14 @@ export default {
      * @description: 加载左边列表 自定义过滤器
      */
     async loadListCustomFilters() {
-      console.log('加载左边列表 - 自定义过滤器')
       const res = await apiatlas.getCustomFilters()
       // console.log(res)
       if (res !== '' || res !== undefined) {
         for (var i = 0; i < res.data.length; i++) {
-          this.collapseList[4].collapseData[1].children.push(res.data[i])
+          this.collapseList[4].data[1].children.push(res.data[i])
         }
-        this.collapseList[4].collapseDataToShow = this.collapseList[4].collapseData
-        // console.log(this.collapseList[4].collapseDataToShow)
+        this.collapseList[4].toShow = this.collapseList[4].data
+        // console.log(this.collapseList[4].toShow)
       } else {
         this.$message({
           message: '获取自定义过滤器列表失败',
@@ -389,7 +434,7 @@ export default {
       const res = await apiatlas.getItemsNotEmpty()
       // console.log(res)
       if (res.status === 200 && res.statusText === 'OK') {
-        this.leftListNotEmptyNameList = res.data.data
+        this.notEmptyList = res.data.data
       } else {
         this.$message({
           message: '获取列表项数失败',
@@ -398,6 +443,36 @@ export default {
           duration: 4000
         })
       }
+    },
+    /**
+     * @description: 切换子组件组件
+     * @param {String} routerName 路由Name
+     */
+    changePage(routerName) {
+      if (routerName.split('?').length === 1) {
+        this.$router.push({ name: routerName })
+      } else {
+        this.searchByName = JSON.parse(routerName.split('?')[1])
+        console.log(this.searchByName)
+        this.$router.push({ name: routerName.split('?')[0] })
+      }
+      // this.searchByListItem = {
+      //   params: {
+      //     excludeDeletedEntities: true,
+      //     includeSubClassifications: true,
+      //     includeSubTypes: true,
+      //     includeClassificationAttributes: true,
+      //     entityFilters: null,
+      //     tagFilters: null,
+      //     attributes: [],
+      //     limit: 25,
+      //     offset: 0,
+      //     typeName: null,
+      //     classification: null,
+      //     termName: null
+      //   },
+      //   businessMetadata: null
+      // }
     }
   }
 };
@@ -425,7 +500,7 @@ export default {
   }
   .el-collapse {
     height: calc(100vh - 219px);
-    overflow-y: scroll;
+    overflow-y: auto;
     ::v-deep .el-collapse-item__header {
       color: #409EFF;
       font-size: 15px;

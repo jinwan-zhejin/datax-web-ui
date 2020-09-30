@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-29 18:41:18
+ * @LastEditTime: 2020-09-30 18:32:04
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -44,12 +44,28 @@
     <el-row>
       <el-col :span="24">
         <el-table class="tableStyle" :data="tableData">
-          <el-table-column :key="tableColumnsName[0]" prop="attributes.name" :label="tableColumnsName[0]" />
-          <el-table-column :key="tableColumnsName[1]" prop="attributes.owner" :label="tableColumnsName[1]" />
-          <el-table-column :key="tableColumnsName[2]" prop="attributes.description" :label="tableColumnsName[2]" />
-          <el-table-column :key="tableColumnsName[3]" prop="typeName" :label="tableColumnsName[3]" />
-          <el-table-column :key="tableColumnsName[4]" prop="classificationNames" :label="tableColumnsName[4]" />
-          <el-table-column :key="tableColumnsName[5]" prop="" :label="tableColumnsName[5]" />
+          <el-table-column key="名称" label="名称" prop="attributes.name" min-width="180" :show-overflow-tooltip="true">
+            <template v-slot:default="{row}">
+              <a class="tableItemLink" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column key="所有者" label="所有者" prop="attributes.owner" />
+          <el-table-column key="描述" label="描述" min-width="120" prop="attributes.description" />
+          <el-table-column key="类型" label="类型" min-width="89" prop="typeName">
+            <template v-slot:default="{row}">
+              <a class="tableItemLink" @click="refreshList">{{ row.typeName }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column key="分类" label="分类" prop="classificationNames">
+            <template v-slot:default="{ row }">
+              <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+            </template>
+          </el-table-column>
+          <el-table-column key="术语" label="术语" prop="">
+            <template v-slot:default="{ row }">
+              <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -69,12 +85,12 @@ export default {
   data() {
     return {
       tableColumns: [
-        '名称', '所有者', '描述', '类型', '分类', '术语', '联系方式', '显示名称',
+        '联系方式', '显示名称',
         '输入到进程', '实例', '意义', '模型', '进程输出', '管道', '产品或其他', '合格名称',
         '复制自', '复制到', '架构图', '桌子', '用户说明', '创建时间', '修改时间', '最后修改者',
         '由用户创建', '状态', '引导', '类型名称', '不完整', '标签', '用户定义的属性'
       ],
-      tableColumnsName: ['名称', '所有者', '描述', '类型', '分类', '术语'],
+      tableColumnsPlus: [], // 除固定显示的列，额外显示的列项
       tableData: [], // 表数据
       tableTotal: 0 // 总数
     }
@@ -88,6 +104,11 @@ export default {
       deep: true
     }
   },
+  mounted() {
+    this.$nextTick(function() {
+      this.refreshList()
+    })
+  },
   methods: {
     test(info) {
       console.log(info)
@@ -96,29 +117,37 @@ export default {
      * @description: 初始化页面并返回到Search界面
      */
     backToSearch() {
-      console.log('通知父组件切页面')
+      // console.log('通知父组件切页面')
+      this.$emit('changepage', 'atlasSearch')
+    },
+    /**
+     * @description: 通知父组件跳转到details界面
+     */
+    goToDetails(row) {
+      this.$emit('changepage', 'atlasDetails'.concat('?').concat(JSON.stringify(row)))
     },
     /**
      * @description: 重新获取表信息
      */
     async refreshList() {
-      console.log('父组件传值改变重新获取数据')
+      // console.log('父组件传值改变重新获取数据')
       if (this.searchRequest.params.typeName === null && this.searchRequest.params.termName === null && this.searchRequest.params.classification === null) {
         if (this.searchRequest.businessMetadata === null) {
           // 全空报错
-          this.$message({
-            message: '未选择实体、分类、业务元数据、词汇表、自定义过滤器',
-            showClose: true,
-            type: 'error',
-            duration: 4000
-          })
+          // this.$message({
+          //   message: '未选择实体、分类、业务元数据、词汇表、自定义过滤器',
+          //   showClose: true,
+          //   type: 'error',
+          //   duration: 4000
+          // })
+          this.backToSearch()
         } else {
           // 执行渲染businessmetadata
           console.log('渲染businessmetadata')
         }
       } else {
         const res = await getTableByItems(this.searchRequest.params)
-        console.log(res)
+        // console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
           this.tableData = res.data.entities
           this.tableTotal = res.data.approximateCount
@@ -181,5 +210,14 @@ export default {
 }
 .tableStyle {
   width: 100%;
+}
+.tableItemLink {
+  color: #006ad4;
+  i {
+    font-weight: bold;
+  }
+}
+.tableItemLink:hover {
+  text-decoration:underline;
 }
 </style>
