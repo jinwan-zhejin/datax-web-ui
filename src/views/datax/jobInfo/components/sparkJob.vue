@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose"> -->
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="140px">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="任务类型" prop="glueType">
@@ -12,6 +12,15 @@
             </el-form-item>
           </el-col>
 
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="所属项目" prop="projectId">
+              <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
+                <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
@@ -32,15 +41,15 @@
                 <el-button type="primary" @click="showCronBox = false">确 定</el-button>
               </span>
             </el-dialog>
-            <el-form-item label="Cron" prop="jobCron">
+            <!-- <el-form-item label="Cron" prop="jobCron">
               <el-input v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
                 <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
                 <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
               </el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <!-- <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="阻塞处理" prop="executorBlockStrategy">
               <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
@@ -53,8 +62,8 @@
               <el-input v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
+        </el-row> -->
+        <!-- <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="执行器" prop="jobGroup">
               <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
@@ -68,29 +77,64 @@
               <el-input-number v-model="temp.executorFailRetryCount" :min="0" :max="20" />
             </el-form-item>
           </el-col>
+        </el-row> -->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="程序名称" prop="appName" placeholder="请输入程序名称">
+             <el-input v-model="temp.appName" />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="所属项目" prop="projectId">
-              <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
-                <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
+            <el-form-item label="SPARK MASTER" prop="sparkMaster">
+              <el-select v-model="temp.sparkMaster" placeholder="请选择SPARK MASTER">
+                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="超时时间(分钟)">
-              <el-input-number v-model="temp.executorTimeout" :min="0" :max="120" />
+            <el-form-item label="运行模式">
+              <el-select v-model="temp.sparkMaster" placeholder="请选择运行模式">
+                <el-option value="LOCALN">LOCAL[N]</el-option>
+                <el-option value="STANDALONE">Standalone</el-option>
+                <el-option value="MESOS">Mesos</el-option>
+                <el-option value="YCLUSTER">YARN cluster</el-option>
+                <el-option value="YCLIENT">YARN client</el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
+            <el-form-item label="Jar包/py文件">
+               <el-upload
+                 class="upload-demo"
+                 action="https://jsonplaceholder.typicode.com/posts/"
+                 :file-list="fileList">
+                 <el-button size="small" type="primary">点击上传</el-button>
+               </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="主类名称" prop="mainclass" placeholder="请输入主类名称">
+              <el-input></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+<!--          <el-col :span="12">
             <el-form-item label="路由策略" prop="executorRouteStrategy">
               <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
                 <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="子任务">
               <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
@@ -221,7 +265,7 @@ import * as jobProjectApi from '@/api/datax-job-project'
 import { isJSON } from '@/utils/validate'
 
 export default {
-  name: 'SimpleJob',
+  name: 'SparkJob',
   props:['jobType', 'jobTypeLabel'],
   components: { Pagination, JsonEditor, ShellEditor, PythonEditor, PowershellEditor, Cron },
   directives: { waves },
@@ -249,6 +293,7 @@ export default {
       callback()
     }
     return {
+      fileList: [],
       projectIds: '',
       list: null,
       listLoading: true,

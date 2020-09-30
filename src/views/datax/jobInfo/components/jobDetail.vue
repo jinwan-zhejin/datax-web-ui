@@ -4,7 +4,17 @@
     <el-button>执行一次</el-button>
     <el-button>查询日志</el-button>
     <el-button>编辑</el-button>
+    <el-button>注册节点</el-button>
+    <el-button>下次触发时间</el-button>
     <el-button>删除</el-button>
+    <el-switch
+      active-color="#00A854"
+      active-text="启动"
+      :active-value="1"
+      inactive-color="#F04134"
+      inactive-text="停止"
+      :inactive-value="0"
+    ></el-switch>
     <el-divider></el-divider>
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px" disabled="">
         <el-row :gutter="20">
