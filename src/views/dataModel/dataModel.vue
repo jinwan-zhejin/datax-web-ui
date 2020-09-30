@@ -11,7 +11,24 @@
           :label="item.title"
           :name="index + ''"
         >
-          <el-button type="info">保存</el-button>
+        <div class="btn_container">
+          <div class="btn-item">
+            <span><i class="el-icon-tickets"></i>&nbsp;&nbsp;保存</span>
+          </div>
+          <div class="btn-item">
+            <span><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
+          </div>
+          <div class="btn-item">
+            <span><i class="el-icon-view"></i>&nbsp;&nbsp;查看SQL</span>
+          </div>
+          <div class="btn-item">
+            <span><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行</span>
+          </div>
+          <div class="btn-item">
+            <span><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
+          </div>
+        </div>
+          
           <Modeling />
         </el-tab-pane>
       </el-tabs>
@@ -101,5 +118,19 @@ export default {
   width: calc(100% - 300px);
   min-height: 660px;
   border-left: 1px solid grey;
+}
+.btn_container {
+  height: 50px;
+  line-height: 50px;
+  display: flex;
+  margin: -13px 0 0;
+  border: 1px solid gainsboro;
+  padding-left: 15px;
+}
+
+.btn-item {
+  margin-right: 25px;
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>
