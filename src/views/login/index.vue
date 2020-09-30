@@ -1,11 +1,9 @@
 <template>
   <div class="login-container">
+    <div class="logo">
+
+    </div>
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">Login Form</h3>
-      </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -47,14 +45,7 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
     </el-form>
-
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
+    <span class="statement">Copyright © 2020 上海哲锦信息科技有限公司</span>
   </div>
 </template>
 
@@ -231,6 +222,24 @@ $cursor: #fff;
     }
   }
 
+  .logo {
+    width: 9.375%;
+    padding-bottom:2%;
+    background-image:url('../../../public/img/logo.png') ;
+    background-size:100%;
+    // background: red;
+    margin-left: 17.2%;
+    margin-top: 16px;
+  }
+
+  .statement {
+    color: rgba(0, 0, 0, 0.45);
+    position: absolute;
+    bottom: 0;
+    margin-left: 50%;
+    transform:translateX(-50%);
+  }
+
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
@@ -248,7 +257,10 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  // background-color: $bg;
+  background-image:url('../../../public/img/login.png') ;
+  background-size:100%;
+  background-repeat: no-repeat;
   overflow: hidden;
 
   .login-form {
