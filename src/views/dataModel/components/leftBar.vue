@@ -3,16 +3,12 @@
     <div class="barContent">
       <div class="drop">
         <el-dropdown size="mini">
-          <span class="el-dropdown-link">
-            项目
+          <span class="el-dropdown-link" >
+            {{title}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>黄金糕</el-dropdown-item>
-            <el-dropdown-item>狮子头</el-dropdown-item>
-            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-            <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+          <el-dropdown-menu  slot="dropdown">
+            <el-dropdown-item @click.native="handleCommand(item.name)"  v-for="item in state.projectList" :key="item.id" :command='item.name'>{{item.name}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -23,11 +19,11 @@
     </div>
     <div class="tabs">
       <div
-        @click="currentTab = '模型'"
+        @click="state.currentTab = '模型'"
         class="tab-item"
         :style="{
-          'border-bottom':currentTab === '模型' ? '1px solid #E5E7EC': '1px solid white',
-          'color':currentTab === '模型' ? '#409eff': ''
+          'border-bottom':state.currentTab === '模型' ? '1px solid #E5E7EC': '1px solid white',
+          'color':state.currentTab === '模型' ? '#409eff': ''
         }"
       >模型</div>
 
@@ -35,20 +31,42 @@
     <el-input
     placeholder="请输入内容"
     prefix-icon="el-icon-search"
-    v-model="inputVal">
+    v-model="state.inputVal">
   </el-input>
   </div>
 </template>
 
 <script>
+import { ref, reactive, onMounted } from '@vue/composition-api'
+import { list }  from '@/api/datax-job-project'
 export default {
-  name: "LeftBar",
-  data() {
-    return {
-      currentTab: "模型",
-      inputVal:''
-    };
-  },
+  setup() {
+      const state = reactive({
+        currentTab: "模型",
+        inputVal:'',
+        projectList:[]
+      });
+      let title = ref('项目');
+      onMounted(()=>{
+        getProjectList();
+      });
+
+      function getProjectList(){
+        list({pageNo:1,pageSize:99999}).then(res => {
+          state.projectList = res.records;
+        })
+      };
+
+      function handleCommand(name) {
+        console.log(name);
+        title.value = name;
+      }
+      return {
+        state,
+        title,
+        handleCommand
+      }
+    }
 };
 </script>
 

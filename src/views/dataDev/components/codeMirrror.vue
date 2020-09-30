@@ -18,6 +18,9 @@
       <el-button size="mini">
         <i class="el-icon-copy-document"></i> 分享查询
       </el-button>
+      <el-button size="mini">
+        <i class="el-icon-copy-document"></i> 构建sql任务
+      </el-button>
     </div>
   </div>
 </template>

@@ -426,8 +426,18 @@ function init(_this, timestamp) {
     _this.dialogTableVisible = true;
     _this.fieldsData = e.subject.part.data.fields;
     _this.node = e.subject.part.data;
-    const { pb: { j: pNode } } = e.subject.part.findLinksInto();
-    let dataSourceList = pNode.map(node => myDiagram.model.findNodeDataForKey(node.data.from));
+    const res = e.subject.part.findNodesInto();
+    console.log(res);
+    let dataSourceList = [];
+    if (res.count > 0) {
+      if(res.count === 1){
+        dataSourceList = [res.value.data];
+      } else if (res.count > 1) {
+        for (let key in res.og.Fb) {
+          dataSourceList.push(res.og.Fb[key].value.data)
+        }
+      }
+    }
 
     console.log(dataSourceList, '所有父节点');
     _this.$store.commit('SET_pNode_Data', dataSourceList);

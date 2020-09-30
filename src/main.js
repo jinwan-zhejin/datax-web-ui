@@ -11,7 +11,8 @@ import "element-ui/lib/theme-chalk/index.css"
 //
 import VueClipboard from 'vue-clipboard2'
  
-
+import VueCompositionAPI from '@vue/composition-api' //Vue3
+Vue.use(VueCompositionAPI)
  
 
 import '@/styles/index.scss' // global css

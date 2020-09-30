@@ -39,6 +39,21 @@
         </div>
       </div>
     </el-col>
+
+     <el-col v-for="item in colList" :key="item"  :xs="16" :sm="16" :lg="8" class="card-panel-col">
+      <div class="card-panel">
+        <div class="card-panel-icon-wrapper icon-money">
+          <svg-icon icon-class="running" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            {{item}}
+          </div>
+          <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
+
   </el-row>
 </template>
 
@@ -53,7 +68,8 @@ export default {
     return {
       successCount: parseInt(localStorage.getItem('countSucTotal')),
       failCount: parseInt(localStorage.getItem('countFailTotal')),
-      runningCount: parseInt(localStorage.getItem('countRunningTotal'))
+      runningCount: parseInt(localStorage.getItem('countRunningTotal')),
+      colList:['库', '表', '子段', '表大小', '记录数', '数据源连接数','每个表的大小', '字段数', '纪录数','项目数', '任务数', '任务类型分布统计', '每个任务的执行情况统计图','模型数','规则数', '通用规则数', '个性化规则数']
     }
   },
   methods: {

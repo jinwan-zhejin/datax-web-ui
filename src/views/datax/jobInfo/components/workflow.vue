@@ -1,18 +1,21 @@
 <template>
   <div id="sample">
     <div style="marginBottom: 20px;" class="tit">
-      <el-button type="primary" size="mini" @click="DataSave">保存</el-button>
+      <el-button size="mini" @click="DataSave">保存</el-button>
+      <el-button size="mini" @click="DataSave">执行一次</el-button>
+      <el-button size="mini" @click="DataSave">查看日志</el-button>
+      <el-button size="mini" @click="setCron">设置调度时间</el-button>
     </div>
-    <div style="width: 100%; display: flex; justify-content: space-between">
-      <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; background-color: #282c34;" />
-      <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 750px; background-color: #282c34;" />
+    <div style="width: 100%; display: flex; border: solid 1px lightgray;">
+      <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
+      <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 750px;" />
     </div>
-    <el-dialog title="选择任务" :visible.sync="dialogFormVisible">
+    <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" style="width: 50%; left: 26%;">
       <el-form :model="form">
         <el-form-item label="任务名称" label-width="120">
-          <el-select v-model="form.name" placeholder="请选择任务名称">
-            <el-option label="task_01" value="task_01" />
-            <el-option label="task_02" value="task_02" />
+          <el-select v-model="form.name" placeholder="请选择任务名称" style="width: 280px;">
+            <el-option v-for="item in this.taskList" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
+            <!-- <el-option label="task_02" value="task_02" /> -->
           </el-select>
         </el-form-item>
       </el-form>
@@ -20,6 +23,18 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="sure">确 定</el-button>
       </div>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="showCronBox"
+      width="60%"
+      append-to-body
+    >
+      <cron v-model="jobCron" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showCronBox = false;">关闭</el-button>
+        <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+      </span>
     </el-dialog>
     <!-- <p>
       The FlowChart sample demonstrates several key features of GoJS,
@@ -76,10 +91,14 @@
 </template>
 <script id="code">
 import go from 'gojs';
+import cron from '@/components/Cron'
 
 export default {
+  components: {
+    cron
+  },
   name: 'Flow',
-  props: ['isSave'],
+  props: ['isSave', 'taskList'],
   data() {
     return {
       myDiagram: '',
@@ -87,7 +106,10 @@ export default {
       SaveName: '',
       SaveData: '',
       dialogFormVisible: false,
-      form: {}
+      form: {},
+      selectedNodeKey: 9999,
+      showCronBox: false,
+      jobCron: ''
     }
   },
   watch: {
@@ -100,6 +122,7 @@ export default {
     var timestamp = (new Date()).valueOf()
     console.log(timestamp)
     this.myId = timestamp
+    console.log(this.taskList)
   },
   mounted() {
     this.init()
@@ -118,10 +141,24 @@ export default {
 
       this.myDiagram =
         $(go.Diagram, 'myDiagramDiv' + this.myId, // 必须命名或引用DIV HTML元素
-          {
-            'LinkDrawn': showLinkLabel, // 下面定义了这个DiagramEvent侦听器
-            'LinkRelinked': showLinkLabel,
-            'undoManager.isEnabled': true // 启用撤消和重做
+{
+            padding: 20,  // extra space when scrolled all the way
+            grid: $(go.Panel, "Grid",  // a simple 10x10 grid
+              $(go.Shape, "LineH", { stroke: "lightgray", strokeWidth: 0.5 }),
+              $(go.Shape, "LineV", { stroke: "lightgray", strokeWidth: 0.5 })
+            ),
+            "draggingTool.isGridSnapEnabled": true,
+            handlesDragDropForTopLevelParts: true,
+            "clickCreatingTool.archetypeNodeData": { text: "NEW NODE" },  // create a new node by double-clicking in background
+            "PartCreated": function(e) {
+              var node = e.subject;  // the newly inserted Node -- now need to snap its location to the grid
+              node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize);
+              setTimeout(function() {  // and have the user start editing its text
+                e.diagram.commandHandler.editTextBlock();
+              }, 20);
+            },
+            "commandHandler.archetypeGroupData": { isGroup: true, text: "NEW GROUP" },
+            "undoManager.isEnabled": true
           })
 
       // 当文档被修改时，在标题中添加一个“*”，并启用“保存”按钮
@@ -137,9 +174,9 @@ export default {
       //   }
       // })
 
-      this.myDiagram.addDiagramListener('Modified', function(e) {
-        console.log(e)
-      })
+      // this.myDiagram.addDiagramListener('Modified', function(e) {
+      //   console.log(e)
+      // })
       // console.log(this.myDiagram)
 
       // 节点模板的帮助器定义
@@ -192,32 +229,52 @@ export default {
 
       function textStyle() {
         return {
-          font: 'bold 11pt Lato, Helvetica, Arial, sans-serif',
-          stroke: '#F8F8F8'
+          font: '10pt Lato, Helvetica, Arial, sans-serif',
+          stroke: '#ffffff'
         }
       }
 
       // 为常规节点定义节点模板
       this.myDiagram.addDiagramListener('ObjectDoubleClicked', (e) => {
+        console.log('------------')
         console.log(e)
-        this.dialogFormVisible = true
-        console.log(this.myDiagram.nodeTemplateMap)
-        // const arr = JSON.parse(this.myDiagram.model.toJson()).nodeDataArray
-        // for (let i = 0; i < arr.length; i++) {
-        //   if (!arr[i].category) {
-        //     console.log(arr[i])
-        //     arr[i].text = this.form.name
-        //   }
-        // }
+        // console.log(e.subject.part.data.category)
+        if (e.subject.part.data.category === undefined) {
+          this.dialogFormVisible = true
+          this.selectedNodeKey = e.subject.part.data.key
+          console.log(this.selectedNodeKey)
+          console.log(this.form.name)
+        }
       })
+
+      // 开始节点图表
+      this.myDiagram.nodeTemplateMap.add('Start',
+        $(go.Node, 'Table', nodeStyle(),
+          $(go.Panel, 'Spot',
+            $(go.Shape, 'Circle',
+              { desiredSize: new go.Size(50, 50), fill: '#aaaaff', stroke: '#aaaaff', strokeWidth: 1.5 }),
+            $(go.TextBlock, 'Start', textStyle(),
+              new go.Binding('text'))
+          ),
+          // 三个指定端口(除顶部外，每一边都有一个端口)都是输出端口:
+          makePort('L', go.Spot.Left, go.Spot.Left, true, false),
+          makePort('R', go.Spot.Right, go.Spot.Right, true, false),
+          makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
+        ))
 
       // 步骤节点图表
       this.myDiagram.nodeTemplateMap.add('', // 默认类别
         $(go.Node, 'Table', nodeStyle(),
+          // {doubleClick: function(e, node) {
+          //   console.log('__+++++++++++++__')
+          //   console.log(e)
+          //   console.log(node)
+          //   // console.log(this.dialogFormVisible)
+          // }},
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
-            $(go.Shape, 'Rectangle',
-              { fill: '#282c34', stroke: '#00A9C9', strokeWidth: 1.5 },
+            $(go.Shape, 'RoundedRectangle',
+              { fill: '#0055ff', stroke: '#0055ff', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -233,13 +290,15 @@ export default {
           makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
           makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
         ))
+
+
       // 判断节点图表
       this.myDiagram.nodeTemplateMap.add('Conditional',
         $(go.Node, 'Table', nodeStyle(),
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'Diamond',
-              { fill: '#282c34', stroke: '#00A9C9', strokeWidth: 3.5 },
+              { desiredSize: new go.Size(60, 40), fill: '#55aa7f', stroke: '#55aa7f', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -256,26 +315,13 @@ export default {
           makePort('R', go.Spot.Right, go.Spot.Right, true, true),
           makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
         ))
-      // 开始节点图表
-      this.myDiagram.nodeTemplateMap.add('Start',
-        $(go.Node, 'Table', nodeStyle(),
-          $(go.Panel, 'Spot',
-            $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(70, 70), fill: '#282c34', stroke: '#09d3ac', strokeWidth: 3.5 }),
-            $(go.TextBlock, 'Start', textStyle(),
-              new go.Binding('text'))
-          ),
-          // 三个指定端口(除顶部外，每一边都有一个端口)都是输出端口:
-          makePort('L', go.Spot.Left, go.Spot.Left, true, false),
-          makePort('R', go.Spot.Right, go.Spot.Right, true, false),
-          makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
-        ))
+
       // 结束节点图表
       this.myDiagram.nodeTemplateMap.add('End',
         $(go.Node, 'Table', nodeStyle(),
           $(go.Panel, 'Spot',
             $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(60, 60), fill: '#282c34', stroke: '#DC3C00', strokeWidth: 3.5 }),
+              { desiredSize: new go.Size(50, 50), fill: '#ff007f', stroke: '#ff007f', strokeWidth: 1.5 }),
             $(go.TextBlock, 'End', textStyle(),
               new go.Binding('text'))
           ),
@@ -304,21 +350,21 @@ export default {
         return geo
       })
       // 文本节点图表
-      this.myDiagram.nodeTemplateMap.add('Comment',
-        $(go.Node, 'Auto', nodeStyle(),
-          $(go.Shape, 'File',
-            { fill: '#282c34', stroke: '#DEE0A3', strokeWidth: 3 }),
-          $(go.TextBlock, textStyle(),
-            {
-              margin: 8,
-              maxSize: new go.Size(200, NaN),
-              wrap: go.TextBlock.WrapFit,
-              textAlign: 'center',
-              editable: true
-            },
-            new go.Binding('text').makeTwoWay())
-          // 没有端口，因为没有链接被允许与注释连接
-        ))
+      // this.myDiagram.nodeTemplateMap.add('Comment',
+      //   $(go.Node, 'Auto', nodeStyle(),
+      //     $(go.Shape, 'File',
+      //       { fill: '#282c34', stroke: '#DEE0A3', strokeWidth: 3 }),
+      //     $(go.TextBlock, textStyle(),
+      //       {
+      //         margin: 8,
+      //         maxSize: new go.Size(200, NaN),
+      //         wrap: go.TextBlock.WrapFit,
+      //         textAlign: 'center',
+      //         editable: true
+      //       },
+      //       new go.Binding('text').makeTwoWay())
+      //     // 没有端口，因为没有链接被允许与注释连接
+      //   ))
 
       // 替换linkTemplateMap中的默认链接样板
       this.myDiagram.linkTemplate =
@@ -384,10 +430,10 @@ export default {
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             { category: 'Start', text: '开始' },
-            { text: '步骤' },
+            { text: '子任务' },
             { category: 'Conditional', text: '判断' },
             { category: 'End', text: '结束' },
-            { category: 'Comment', text: '注释' }
+            // { category: 'Comment', text: '注释' }
           ])
         })
 
@@ -416,16 +462,18 @@ export default {
       }
     },
     sure() {
-      console.log(this.myDiagram.model)
-      const arr = JSON.parse(this.myDiagram.model.toJson()).nodeDataArray
-      for (let i = 0; i < arr.length; i++) {
-        if (!arr[i].category) {
-          console.log(arr[i])
-          console.log(this.form.name)
-          arr[i].text = this.form.name
-          console.log(arr[i])
-        }
-      }
+      console.log('---------')
+      let key = this.selectedNodeKey
+      var selectNode = this.myDiagram.nodes.filter(function(e) {
+        return e.data.key === key
+      })
+      console.log(selectNode)
+      selectNode.pb.j[0].data.text = this.form.name
+      // console.log(selectNode)
+      this.myDiagram.model.updateTargetBindings(selectNode.pb.j[0].data);
+      // this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
+      // console.log('++++++++++' + selectNode.data.key)
+      // this.load()
       this.dialogFormVisible = false
     },
     // 命名传到父级
@@ -499,6 +547,9 @@ export default {
         y += printSize.height
       }
       setTimeout(function() { svgWindow.print() }, 1)
+    },
+    setCron() {
+      this.showCronBox = true
     }
   }
 }

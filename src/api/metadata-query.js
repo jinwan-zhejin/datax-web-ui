@@ -29,6 +29,15 @@ export function getColumns(params) {
   })
 }
 
+// 获取字段, 类型，comment
+export function getTableColumns(params) {
+  return request({
+    url: '/api/metadata/getTableColumns',
+    method: 'get',
+    params
+  })
+}
+
 // 根据sql获取字段
 export function getColumnsByQuerySql(params) {
   return request({
@@ -60,5 +69,15 @@ export function getAllName() {
   return request({
     url: '/api/universal/univerToPerson',
     method: 'get'
+  })
+}
+
+// 获取某个schema下的所有元数据
+export function getDbMetadata(params) {
+  console.log(params)
+  return request({
+    url: '/api/metadata/import',
+    method: 'post',
+    params
   })
 }

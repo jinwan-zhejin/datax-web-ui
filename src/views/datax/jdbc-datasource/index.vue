@@ -52,13 +52,16 @@
       <el-table-column label="备注" width="150" align="center">
         <template slot-scope="scope">{{ scope.row.comments }}</template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             删除
+          </el-button>
+          <el-button type="primary" size="small" :disabled="gathering" @click="gatherMetadata(row)">
+            元数据采集
           </el-button>
         </template>
       </el-table-column>
@@ -168,6 +171,7 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
+import * as meta from '@/api/metadata-query'
 
 export default {
   name: 'JdbcDatasource',
@@ -185,6 +189,7 @@ export default {
   },
   data() {
     return {
+      gathering: false,
       list: null,
       listLoading: true,
       total: 0,
@@ -243,6 +248,36 @@ export default {
     this.fetchData()
   },
   methods: {
+    gatherMetadata(row) {
+        this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
+          confirmButtonText: '继续',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log(row)
+          let param = {}
+          param.id = row.id
+          console.log(param)
+          meta.getDbMetadata(param).then(res => {
+            console.log(res)
+            this.gathering = false
+            this.$message({
+              type: 'success',
+              message: '元数据采集成功'
+            })
+          })
+          this.gathering = true
+          this.$message({
+            type: 'info',
+            message: '采集任务开始!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: '已取消元数据采集'
+          });
+        });
+    },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
         this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
