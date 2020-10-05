@@ -18,8 +18,8 @@
       <el-button size="mini">
         <i class="el-icon-copy-document"></i> 分享查询
       </el-button>
-      <el-button size="mini">
-        <i class="el-icon-copy-document"></i> 构建sql任务
+      <el-button size="mini" @click="sqlJobBuild">
+        <i class="el-icon-copy-document" ></i> 构建sql任务
       </el-button>
     </div>
   </div>
@@ -48,6 +48,12 @@ export default {
   methods: {
     chooseSql() {
       console.log(window.getSelection());
+    },
+    sqlJobBuild() {
+      // this.$route.push('/datax/job/JobInfo')
+      this.$router.push({path: '/datax/job/JobInfo'});
+      console.log('=================')
+      // window.location.href = '/datax/job/JobInfo'
     },
     mountCodeMirror() {
       let mime = "text/x-sql";

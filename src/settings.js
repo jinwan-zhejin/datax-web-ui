@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Data Elit',
+  title: 'DataElit',
 
   /**
    * @type {boolean} true | false

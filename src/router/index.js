@@ -188,12 +188,27 @@ export const asyncRoutes = [
   {
     path: '/cloudbeaveratlas',
     component: Layout,
+    redirect: '/cloudbeaveratlas',
+    name: 'cloudbeaveratlas',
+    meta: { title: '元数据管理', icon: 'cfg-datasouce' },
     children: [
       {
-        path: '/cloudbeaveratlas',
+        path: 'cloudbeaveratlas',
         component: () => import('@/views/cloudbeaveratlas/index'),
         name: 'cloudbeaveratlas',
         meta: { title: '元数据管理From Atlas', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'compare',
+        component: () => import('@/views/cloudbeaveratlas/metaCompare'),
+        name: 'compare',
+        meta: { title: '元数据比对', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'analysis',
+        component: () => import('@/views/cloudbeaveratlas/index'),
+        name: 'streamanalysis',
+        meta: { title: '数据流分析', icon: 'form', keepAlive: true }
       }
     ]
   },
@@ -289,18 +304,18 @@ export const asyncRoutes = [
     name: 'quality',
     meta: { title: '数据标准', icon: 'shujuzhiliang' },
     children: [
-      {
-        path: 'techStandard',
-        name: 'techStandard',
-        component: () => import('@/views/datax/metaModel/index'),
-        meta: { title: '技术标准', icon: 'biaozhunhuazhanxian' }
-      },
-      {
-        path: 'bizStandard',
-        name: 'bizStandard',
-        component: () => import('@/views/datax/dataCollect/index'),
-        meta: { title: '业务标准', icon: 'shujujiguanli' }
-      },
+      // {
+      //   path: 'techStandard',
+      //   name: 'techStandard',
+      //   component: () => import('@/views/datax/metaModel/index'),
+      //   meta: { title: '技术标准', icon: 'biaozhunhuazhanxian' }
+      // },
+      // {
+      //   path: 'bizStandard',
+      //   name: 'bizStandard',
+      //   component: () => import('@/views/datax/dataCollect/index'),
+      //   meta: { title: '业务标准', icon: 'shujujiguanli' }
+      // },
       // {
       //   path: 'dataCollect',
       //   name: 'dataCollect',
@@ -364,7 +379,28 @@ export const asyncRoutes = [
         name: 'design',
         component: () => import('@/views/dataModel/dataModel.vue'),
         meta: { title: '数据建模', icon: 'education' }
-      }
+      },
+      // {
+      //   path: 'dataDictionary',
+      //   name: 'dataDictionary',
+      //   component: () => import('@/views/datax/dataCollect/index'),
+      //   meta: { title: '数据字典', icon: 'shujujiguanli' }
+      // },
+    ]
+  },
+  {
+    path: '/asset',
+    component: Layout,
+    redirect: '/asset',
+    name: 'asset',
+    meta: { title: '数据资产', icon: 'excel' },
+    children: [
+      {
+        path: 'design',
+        name: 'design',
+        component: () => import('@/views/dataModel/dataModel.vue'),
+        meta: { title: '数据资产', icon: 'education' }
+      },
     ]
   },
   {
