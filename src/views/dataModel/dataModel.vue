@@ -25,10 +25,13 @@
             <span><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行</span>
           </div>
           <div class="btn-item">
+            <span><i class="el-icon-delete"></i>&nbsp;&nbsp;构建SQL任务</span>
+          </div>
+          <div class="btn-item">
             <span><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
           </div>
         </div>
-          
+
           <Modeling />
         </el-tab-pane>
       </el-tabs>

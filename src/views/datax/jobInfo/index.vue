@@ -27,6 +27,7 @@
               <el-dropdown-item icon="el-icon-present" command="SQLJOB">SQL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-s-goods" command="SPARK">SPARK任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-sell" command="DQCJOB">质量任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-brush" command="METACOMPARE">元数据比较任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided>SHELL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL">POWERSHELL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-box" command="PYTHON">PYTHON任务</el-dropdown-item>
@@ -82,22 +83,22 @@
       </el-tabs>
     </div>
     <div v-if="jobType === 'NORMAL'" class="rg">
-      <JsonBuild></JsonBuild>
+      <JsonBuild/>
     </div>
     <div v-if="jobType === 'IMPORT'" class="rg">
-      <JsonBuild></JsonBuild>
+      <JsonBuild/>
     </div>
     <div v-if="jobType === 'EXPORT'" class="rg">
-      <JsonBuild></JsonBuild>
+      <JsonBuild/>
     </div>
     <div v-if="jobType === 'DQCJOB'" class="rg">
-      <JsonQuality></JsonQuality>
+      <JsonQuality/>
     </div>
     <div v-if="jobType === 'BATCH'" class="rg">
-      <BatchBuild></BatchBuild>
+      <BatchBuild/>
     </div>
     <div v-if="jobType === 'TEMPLATE'" class="rg">
-      <JobTemplate></JobTemplate>
+      <JobTemplate/>
     </div>
     <div v-if="jobType === 'SHELL'" class="rg">
       <SimpleJob jobType="GLUE_SHELL" jobTypeLabel="SHELL任务"></SimpleJob>
@@ -111,7 +112,12 @@
     <div v-if="jobType === 'SPARK'" class="rg">
       <SparkJob jobType="GLUE_SPARK" jobTypeLabel="SPARK任务" ></SparkJob>
     </div>
-
+    <div v-if="jobType === 'SQLJOB'" class="rg">
+      <SqlJob jobType="GLUE_SQL" jobTypeLabel="SQL任务" ></SqlJob>
+    </div>
+    <div v-if="jobType === 'METACOMPARE'" class="rg">
+      <MetaCompare></MetaCompare>
+    </div>
   </div>
 </template>
 
@@ -126,6 +132,9 @@ import JsonBuild from '@/views/datax/json-build/index'
 import JsonQuality from '@/views/datax/jsonQuality/index'
 import BatchBuild from '@/views/datax/json-build-batch/index'
 import JobTemplate from '@/views/datax/jobTemplate/index'
+import SqlJob from '@/views/datax/jobInfo/components/sqlJob'
+import MetaCompare from '@/views/datax/jobInfo/components/metaCompare'
+
 export default {
   name: '',
   components: {
@@ -137,7 +146,9 @@ export default {
     JobDetail,
     BatchBuild,
     JobTemplate,
-    SparkJob
+    SparkJob,
+    SqlJob,
+    MetaCompare
   },
   data() {
     return {
