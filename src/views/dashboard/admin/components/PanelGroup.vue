@@ -69,7 +69,7 @@ export default {
       successCount: parseInt(localStorage.getItem('countSucTotal')),
       failCount: parseInt(localStorage.getItem('countFailTotal')),
       runningCount: parseInt(localStorage.getItem('countRunningTotal')),
-      colList:['库', '表', '子段', '表大小', '记录数', '数据源连接数','每个表的大小', '字段数', '纪录数','项目数', '任务数', '任务类型分布统计', '每个任务的执行情况统计图','模型数','规则数', '通用规则数', '个性化规则数']
+      colList:['库', '表', '字段', '表大小', '记录数', '数据源连接数','每个表的大小', '字段数', '纪录数','项目数', '任务数', '任务类型分布统计', '每个任务的执行情况统计图','模型数','规则数', '通用规则数', '个性化规则数']
     }
   },
   methods: {

@@ -75,6 +75,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { title: '运行报表', icon: 'excel' },
     children: [
       {
         path: 'dashboard',
@@ -82,9 +83,15 @@ export const constantRoutes = [
         name: 'Dashboard',
         meta: { title: '运行报表', icon: 'fenxi_1', affix: true }
       }
+      ,
+      {
+        path: 'dataUsage',
+        component: () => import('@/views/dashboard/admin/index'),
+        name: 'dataUsage',
+        meta: { title: '数据访问量统计', icon: 'fenxi_1', affix: true }
+      }
     ]
   }
-
 ]
 
 /**
@@ -302,7 +309,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/quality',
     name: 'quality',
-    meta: { title: '数据标准', icon: 'shujuzhiliang' },
+    meta: { title: '数据质量', icon: 'shujuzhiliang' },
     children: [
       // {
       //   path: 'techStandard',
@@ -335,23 +342,42 @@ export const asyncRoutes = [
       //   component: () => import('@/views/datax/dataQuality/index'),
       //   meta: { title: '规则设计', icon: 'task-tmp' }
       // },
+      
+      {
+        path: 'dqEstimate',
+        name: 'dqEstimate',
+        component: () => import('@/views/dataQuality/generalRules/index'),
+        meta: { title: '质量评估', icon: 'guize' }
+      },
+      {
+        path: 'dqNotify',
+        name: 'dqNotify',
+        component: () => import('@/views/dataQuality/generalRules/index'),
+        meta: { title: '质量监控', icon: 'guize' }
+      },
       {
         path: 'general',
         name: 'general',
-        component: () => import('@/views/datax/general/index'),
+        component: () => import('@/views/dataQuality/generalRules/index'),
         meta: { title: ' 通用规则', icon: 'guize' }
       },
       {
         path: 'individuation',
         name: 'individuation',
-        component: () => import('@/views/datax/individuation/index'),
+        component: () => import('@/views/dataQuality/specificRules/index'),
         meta: { title: ' 个性化规则', icon: 'guize_1' }
       },
       {
         path: 'standardCheck',
         name: 'standardCheck',
-        component: () => import('@/views/datax/standardCheck/index'),
+        component: () => import('@/views/dataQuality/standardCheck/index'),
         meta: { title: '规则审核', icon: 'shenhe' }
+      },
+      {
+        path: 'appliedStandard',
+        name: 'appliedStandard',
+        component: () => import('@/views/dataQuality/standardCheck/index'),
+        meta: { title: '规则配置详情', icon: 'shenhe' }
       },
       // {
       //   path: 'BusinessTerms',

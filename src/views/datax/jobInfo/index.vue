@@ -27,11 +27,16 @@
               <el-dropdown-item icon="el-icon-present" command="SQLJOB">SQL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-s-goods" command="SPARK">SPARK任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-sell" command="DQCJOB">质量任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-brush" command="METACOLLECT" divided>元数据采集任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-brush" command="METACOMPARE">元数据比较任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided>SHELL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL">POWERSHELL任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-box" command="PYTHON">PYTHON任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-bank-card" command="VJOB" divided>虚任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-bank-card" command="JAVA" divided disabled>Java任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-bank-card" command="SCALA" disabled>Scala任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-bank-card" command="PYSPARK" disabled>PySpark任务</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-bank-card" command="R" disabled>R任务</el-dropdown-item>
               <el-dropdown-item icon="el-icon-copy-document" command="BATCH" divided>任务批量构建</el-dropdown-item>
               <el-dropdown-item icon="el-icon-brush" command="TEMPLATE">普通任务模板</el-dropdown-item>
             </el-dropdown-menu>
@@ -436,6 +441,7 @@ export default {
     .el-tabs {
       .el-tab-pane {
         padding: 10px;
+        margin-top: 10px;
       }
     }
   }

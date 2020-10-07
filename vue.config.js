@@ -74,7 +74,7 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           ['^' + '/session']: '/api/atlas/admin/session'
-        }
+        },
       },
       // '/login': {
       //   target: 'http://47.103.79.104:8080',
@@ -116,6 +116,7 @@ module.exports = {
       // /
       // mock 的代理
       // change xxx-api/login => mock/login
+
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://localhost:${port}/mock`,
         target: 'http://47.103.79.104:9527',
