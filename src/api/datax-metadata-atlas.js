@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-29 18:13:42
+ * @LastEditTime: 2020-09-30 16:23:35
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -60,6 +60,18 @@ export async function getList(type) {
   return res
 }
 
+export async function getListType() {
+  const res = await axios({
+    url: '/atlasApi/v2/types/typedefs/headers',
+    method: 'get',
+    params: {
+      excludeInternalTypesAndReferences: true,
+      _: new Date().getTime()
+    }
+  })
+  return res
+}
+
 /**
  * @description: 获取列表各项非空项数值
  * @param {type}
@@ -110,6 +122,10 @@ export async function getGlossaries() {
   return res
 }
 
+/**
+ * @description: 获取自定义过滤器
+ * @return {object} axios返回值
+ */
 export async function getCustomFilters() {
   const res = await axios({
     url: '/atlasApi/v2/search/saved',
