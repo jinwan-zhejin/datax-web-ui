@@ -20,7 +20,7 @@
         />
         <input
           class="login_Account"
-          type="text"
+          type="password"
           placeholder="请输入登录密码"
           ref="password"
           v-model="loginForm.password"
