@@ -4,6 +4,8 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
+import './assets/css/reset.css'
+
 import Element from 'element-ui'
 import './styles/element-variables.scss'
 import "element-ui/lib/theme-chalk/index.css" 
