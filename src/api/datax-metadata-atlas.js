@@ -2,13 +2,14 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-30 16:23:35
+ * @LastEditTime: 2020-10-09 15:49:11
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
 import axios from 'axios'
 import qs from 'qs'
+import { get } from 'sortablejs';
 
 /**
  * @description: 模拟登陆发送post
@@ -131,6 +132,57 @@ export async function getCustomFilters() {
     url: '/atlasApi/v2/search/saved',
     method: 'get',
     params: {
+      _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取details页面审核Audits信息
+ * @param {String} guid
+ * @return {object} axios返回值
+ */
+export async function getDetailsAudits(guid) {
+  const res = await axios({
+    url: '/atlasApi/v2/entity/'.concat(guid).concat('/audit'),
+    method: 'get',
+    params: {
+      count: 26,
+      _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取details页面属性Properties信息
+ * @param {String} guid
+ * @return {object} axios返回值
+ */
+export async function getDetailsProperties(guid) {
+  const res = await axios({
+    url: '/atlasApi/v2/entity/guid/'.concat(guid),
+    method: 'get',
+    params: {
+      minExtInfo: true,
+      _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取details页面系谱Lineage信息
+ * @param {String} guid
+ * @return {object} axios
+ */
+export async function getDetailsLineage(guid) {
+  const res = await axios({
+    url: '/atlasApi/v2/lineage/'.concat(guid),
+    method: 'get',
+    params: {
+      '': '',
       _: new Date().getTime()
     }
   })

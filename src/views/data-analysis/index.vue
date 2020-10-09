@@ -3,7 +3,7 @@
     <!-- <keep-alive>
       {{ analysis }}
     </keep-alive> -->
-    <!-- <el-button @click="getAnalysis">链接</el-button> -->
+    <el-button @click="getAnalysis">链接</el-button>
     <!-- <iframe src="47.103.79.104:8080"></iframe> -->
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
       goLoginGet()
         .then(res => {
           // csrf_token
-          // console.log(res.data)
+          console.log(res)
           this.analysis.csrf_token = this.getTokenFromHTML(res.data);
           // post info
           goLoginPost(qs.stringify(this.analysis))

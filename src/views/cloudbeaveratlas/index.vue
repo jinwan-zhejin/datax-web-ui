@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-30 18:41:23
+ * @LastEditTime: 2020-10-09 15:51:32
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -132,9 +132,9 @@ export default {
           classification: null,
           termName: null
         },
-        searchByName: {},
         businessMetadata: null
       },
+      searchByName: {},
       /* 折叠面板
        * collapseName 面板名（EN）
        * collapseNameCN 面板名（CN）
@@ -449,30 +449,33 @@ export default {
      * @param {String} routerName 路由Name
      */
     changePage(routerName) {
-      if (routerName.split('?').length === 1) {
-        this.$router.push({ name: routerName })
+      if (routerName === 'initSearchByListItem') {
+        this.searchByListItem = {
+          params: {
+            excludeDeletedEntities: true,
+            includeSubClassifications: true,
+            includeSubTypes: true,
+            includeClassificationAttributes: true,
+            entityFilters: null,
+            tagFilters: null,
+            attributes: [],
+            limit: 25,
+            offset: 0,
+            typeName: null,
+            classification: null,
+            termName: null
+          },
+          businessMetadata: null
+        }
       } else {
-        this.searchByName = JSON.parse(routerName.split('?')[1])
-        console.log(this.searchByName)
-        this.$router.push({ name: routerName.split('?')[0] })
+        if (routerName.split('?').length === 1) {
+          this.$router.push({ name: routerName })
+        } else {
+          this.searchByName = JSON.parse(routerName.split('?')[1])
+          console.log(this.searchByName)
+          this.$router.push({ name: routerName.split('?')[0] })
+        }
       }
-      // this.searchByListItem = {
-      //   params: {
-      //     excludeDeletedEntities: true,
-      //     includeSubClassifications: true,
-      //     includeSubTypes: true,
-      //     includeClassificationAttributes: true,
-      //     entityFilters: null,
-      //     tagFilters: null,
-      //     attributes: [],
-      //     limit: 25,
-      //     offset: 0,
-      //     typeName: null,
-      //     classification: null,
-      //     termName: null
-      //   },
-      //   businessMetadata: null
-      // }
     }
   }
 };
