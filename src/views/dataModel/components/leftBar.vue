@@ -13,8 +13,10 @@
         </el-dropdown>
       </div>
       <div class="btn">
-        <el-button type="info" icon="el-icon-monitor" circle size="mini"></el-button>
-        <el-button @click="$emit('createtab')" type="info" icon="el-icon-folder-add" circle size="mini"></el-button>
+        <!-- <el-button type="info" icon="el-icon-monitor" circle size="mini"></el-button> -->
+        <el-tooltip content="新建模型">
+          <el-button @click="$emit('createtab')" type="info" icon="el-icon-folder-add" circle size="mini"></el-button>
+        </el-tooltip>
       </div>
     </div>
     <div class="tabs">

@@ -36,6 +36,19 @@ module.exports = {
       errors: true
     },
     proxy: {
+      [process.env.VUE_APP_API]: {
+        ws: false,
+        // target: `http://localhost:${apiPort}/api`,
+        target: 'http://47.103.79.104:9527',
+        // target: 'http://192.168.3.83:8080', // 曹海生
+        // target: 'http://192.168.3.72:8080', // 王雷
+        // target: 'http://192.168.3.70:9090', // 刘向前
+        // target: 'http://192.168.3.74:7000', // 侯峰
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
+        }
+      },
       // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
@@ -61,60 +74,49 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           ['^' + '/session']: '/api/atlas/admin/session'
-        }
+        },
       },
-      '/login': {
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/login']: '/login'
-        }
-      },
-      '/test': {
-        target: 'http://192.168.3.60:9000',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/login']: '/login'
-        }
-      },
+      // '/login': {
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/login']: '/login'
+      //   }
+      // },
+      // '/test': {
+      //   target: 'http://192.168.3.60:9000',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/login']: '/login'
+      //   }
+      // },
       // Datains接口
-      '/welcome': {
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/welcome']: '/datains/welcome'
-        }
-      },
-      '/dbeaver/gql': {
-        target: 'http://192.168.3.74:8979',
-        changeOrigin: true,
-        // headers: {
-        //   host: "http://192.168.3.74:8978",
-        //   origin: "http://192.168.3.74:8978"
-        // }
-        pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-        }
-      },
+      // '/welcome': {
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/welcome']: '/datains/welcome'
+      //   }
+      // },
+      // '/dbeaver/gql': {
+      //   target: 'http://192.168.3.74:8979',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+      //   }
+      // },
       // /api
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       // 代理 /dev-api/api 到 http://localhost:8066/api
-      [process.env.VUE_APP_API]: {
-        ws: false,
-        // target: `http://localhost:${apiPort}/api`,
-        target: 'http://47.103.79.104:9527',
-        // target: 'http://192.168.3.83:8080', // 曹海生
-        // target: 'http://192.168.3.72:8080', // 王雷
-        // target: 'http://192.168.3.70:9090', // 刘向前
-        // target: 'http://192.168.3.74:7000', // 侯峰
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
-        }
-      },
+
       // /
       // mock 的代理
       // change xxx-api/login => mock/login
+
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://localhost:${port}/mock`,
         target: 'http://47.103.79.104:9527',
