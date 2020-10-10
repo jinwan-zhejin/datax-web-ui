@@ -326,8 +326,8 @@ export default {
       );
       if (this.jobDetailIdx === name) {
         this.jobDetailIdx =
-          this.jobDetailTabs[removeIndex + 1]?.name ||
-          this.jobDetailTabs[removeIndex - 1]?.name;
+          this.jobDetailTabs[removeIndex + 1].name ||
+          this.jobDetailTabs[removeIndex - 1].name;
       }
       this.jobDetailTabs.splice(removeIndex, 1);
     },
