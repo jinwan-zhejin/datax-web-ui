@@ -2,22 +2,26 @@
   <div class="app-container">
     <div class="build-container">
       <el-steps :active="active" finish-status="success">
-        <el-step title="步骤 1" description="构建reader">1</el-step>
-        <el-step title="步骤 2" description="构建writer">2</el-step>
-        <el-step title="步骤 3" description="字段映射">3</el-step>
-        <el-step title="步骤 4" description="构建">4</el-step>
+        <el-step title="步骤 1" description="新建任务">1</el-step>
+        <el-step title="步骤 2" description="构建reader">2</el-step>
+        <el-step title="步骤 3" description="构建writer">3</el-step>
+        <el-step title="步骤 4" description="字段映射">4</el-step>
+        <el-step title="步骤 5" description="构建">5</el-step>
       </el-steps>
 
-      <div v-show="active===1" class="step1">
+      <div v-show="active===1" class="step0">
+        <Create v-on="$listeners"  :Fjson='configJson' ref="create" />
+      </div>
+      <div v-show="active===2" class="step1">
         <Reader ref="reader" />
       </div>
-      <div v-show="active===2" class="step2">
+      <div v-show="active===3" class="step2">
         <Writer ref="writer" />
       </div>
-      <div v-show="active===3" class="step3">
+      <div v-show="active===4" class="step3">
         <Mapper ref="mapper" />
       </div>
-      <div v-show="active===4" class="step4">
+      <div v-show="active===5" class="step4">
         <el-button type="primary" @click="buildJson">1.构建</el-button>
         <el-button type="primary" @click="handleJobTemplateSelectDrawer">{{ jobTemplate ? jobTemplate : "2.选择模板" }}</el-button>
         <el-button type="info" @click="handleCopy(inputData,$event)">复制json</el-button>
@@ -62,7 +66,7 @@
       </div>
 
       <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
-      <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">下一步</el-button>
+      <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">{{active === 5 ?'提交':'下一步'}}</el-button>
     </div>
   </div>
 </template>
@@ -77,10 +81,11 @@ import Reader from './reader'
 import Writer from './writer'
 import clip from '@/utils/clipboard'
 import Mapper from './mapper'
+import Create from './create'
 
 export default {
   name: 'JsonBuild',
-  components: { Reader, Writer, Pagination, JsonEditor, Mapper },
+  components: { Reader, Writer, Pagination, JsonEditor, Mapper, Create },
   data() {
     return {
       configJson: '',
@@ -152,7 +157,7 @@ export default {
       const toColumnsList = this.$refs.writer.getData().columns
       // const fromTableName = this.$refs.reader.getData().tableName
       // 第一步 reader 判断是否已选字段
-      if (this.active === 1) {
+      if (this.active === 2) {
         // 实现第一步骤读取的表和字段直接带到第二步骤
         // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
         // 取子组件的数据
@@ -160,11 +165,11 @@ export default {
         this.active++
       } else {
         // 将第一步和第二步得到的字段名字发送到第三步
-        if (this.active === 2) {
+        if (this.active === 3) {
           this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
           this.$refs.mapper.sendRuleSettings()
         }
-        if (this.active === 3) {
+        if (this.active === 4) {
           const readerColumns = this.$refs.mapper.getLColumns()
           const writerColumns = this.$refs.mapper.getRColumns()
           var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
@@ -185,19 +190,24 @@ export default {
               )
             }
           }
+
+          this.buildJson();
+
         }
-        if (this.active === 4) {
-          this.temp.jobJson = this.configJson
-          job.createJob(this.temp).then(() => {
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-            // 切回第一步
-            this.active = 1
-          })
+        if (this.active === 5) {
+          console.log('eeee');
+          // this.temp.jobJson = this.configJson
+          // job.createJob(this.temp).then(() => {
+          //   this.$notify({
+          //     title: 'Success',
+          //     message: 'Created Successfully',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          //   // 切回第一步
+          //   this.active = 1
+          // })
+          this.$refs.create.createTask()
         } else {
           this.active++
         }

@@ -4,7 +4,11 @@
       <div class="top">
         <el-row>
           <el-col :span="12">
-            <el-select v-model="selectValue" placeholder="请选择">
+            <el-select
+              v-model="selectValue"
+              placeholder="请选择"
+              @change="fetchJobs"
+            >
               <el-option
                 v-for="item in options"
                 :key="item.id"
@@ -16,22 +20,123 @@
           <el-col :span="12">
             <i class="el-icon-location-outline" />
             <i class="el-icon-coin" />
-            <i class="el-icon-folder-add" />
+            <!-- <i class="el-icon-folder-add" /> -->
+            <el-dropdown @command="createNewJob">
+              <i class="el-icon-folder-add" />
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  icon="el-icon-receiving"
+                  command="NORMAL"
+                >普通任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-collection"
+                  command="IMPORT"
+                >引入任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-files"
+                  command="EXPORT"
+                >导出任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-notebook-1"
+                  command="COMPUTE"
+                  disabled
+                >计算任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-present"
+                  command="SQLJOB"
+                >SQL任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-goods"
+                  command="SPARK"
+                >SPARK任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-sell"
+                  command="DQCJOB"
+                >质量任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-brush"
+                  command="METACOLLECT"
+                  divided
+                >元数据采集任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-brush"
+                  command="METACOMPARE"
+                >元数据比较任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-wallet"
+                  command="SHELL"
+                  divided
+                >SHELL任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-cpu"
+                  command="POWERSHELL"
+                >POWERSHELL任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-box"
+                  command="PYTHON"
+                >PYTHON任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-bank-card"
+                  command="VJOB"
+                  divided
+                >虚任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-bank-card"
+                  command="JAVA"
+                  divided
+                  disabled
+                >Java任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-bank-card"
+                  command="SCALA"
+                  disabled
+                >Scala任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-bank-card"
+                  command="PYSPARK"
+                  disabled
+                >PySpark任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-bank-card"
+                  command="R"
+                  disabled
+                >R任务</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-copy-document"
+                  command="BATCH"
+                  divided
+                >任务批量构建</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-brush"
+                  command="TEMPLATE"
+                >普通任务模板</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-col>
         </el-row>
       </div>
       <div class="bottom">
-        <div class="title">
-          任务
-        </div>
+        <div class="title">任务</div>
         <div class="body">
-          <el-input v-model="search" prefix-icon="el-icon-search" placeholder="请输入内容">
-            <template slot="append">我的</template>
+          <el-input
+            v-model="search"
+            prefix-icon="el-icon-search"
+            placeholder="请输入内容"
+          >
+            <!-- <template slot="append">我的</template> -->
           </el-input>
           <div class="list">
             <ul>
-              <li v-for="item in List" :key="item.name" @click="getList(item)">
-                <a>{{ item.name }}</a>
+              <li
+                v-for="item in List"
+                :key="item.jobDesc"
+                @click="getJobDetail(item)"
+              >
+                <!--  -->
+                <a>{{ item.jobDesc }}
+                  <span style="color: #ff5500">{{
+                    item.glueType.replace("GLUE_", "").toLowerCase()
+                  }}</span></a>
               </li>
             </ul>
           </div>
@@ -39,59 +144,152 @@
       </div>
     </div>
     <div class="rg">
-      <el-tabs v-model="editableTabsValue" type="card" addable :closable="isDel" @tab-remove="handleRemove" @edit="handleTabsEdit" @tab-click="changeTab">
+      <el-tabs
+        v-model="jobDetailIdx"
+        type="card"
+        closable
+        @tab-remove="removeJobTab"
+      >
         <el-tab-pane
-          v-for="(item) in editableTabs"
+          v-for="item in jobDetailTabs"
           :key="item.name"
           :label="item.title"
           :name="item.name"
         >
-          <Flow :is-save="item" @fromChild="getChild" />
+          <JobDetail :job-info="item.content" />
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="
+            jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'
+          "
+          :name="
+            jobType === 'NORMAL'
+              ? 'NORMAL'
+              : jobType === 'IMPORT'
+                ? 'IMPORT'
+                : 'EXPORT'
+          "
+          :label="
+            jobType === 'NORMAL'
+              ? '普通任务'
+              : jobType === 'IMPORT'
+                ? '引入任务'
+                : '导出任务'
+          "
+        >
+          <div class="rg">
+            <JsonBuild @refresh="freshItem" />
+          </div>
+        </el-tab-pane>
+        <!-- <el-tab-pane label="引入任务"  v-if="jobType === 'IMPORT'">
+          <div class="rg">
+            <JsonBuild />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="导出任务" v-if="jobType === 'EXPORT'">
+          <div class="rg">
+            <JsonBuild />
+          </div>
+        </el-tab-pane> -->
+      </el-tabs>
+    </div>
+    <div v-if="jobType === 'VJOB'" class="rg">
+      <el-tabs
+        v-model="editableTabsValue"
+        type="card"
+        addable
+        :closable="isDel"
+        @tab-remove="handleRemove"
+        @edit="handleTabsEdit"
+        @tab-click="changeTab"
+      >
+        <el-tab-pane
+          v-for="item in editableTabs"
+          :key="item.name"
+          :label="item.title"
+          :name="item.name"
+        >
+          <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
         </el-tab-pane>
       </el-tabs>
+    </div>
+
+    <div v-if="jobType === 'DQCJOB'" class="rg">
+      <JsonQuality />
+    </div>
+    <div v-if="jobType === 'BATCH'" class="rg">
+      <BatchBuild />
+    </div>
+    <div v-if="jobType === 'TEMPLATE'" class="rg">
+      <JobTemplate />
+    </div>
+    <div v-if="jobType === 'SHELL'" class="rg">
+      <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+    </div>
+    <div v-if="jobType === 'POWERSHELL'" class="rg">
+      <SimpleJob
+        job-type="GLUE_POWERSHELL"
+        job-type-label="POWERSHELL任务"
+      />
+    </div>
+    <div v-if="jobType === 'PYTHON'" class="rg">
+      <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
+    </div>
+    <div v-if="jobType === 'SPARK'" class="rg">
+      <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
+    </div>
+    <div v-if="jobType === 'SQLJOB'" class="rg">
+      <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
+    </div>
+    <div v-if="jobType === 'METACOMPARE'" class="rg">
+      <MetaCompare />
     </div>
   </div>
 </template>
 
 <script>
-import * as jobProjectApi from '@/api/datax-job-project'
+import Workflow from './components/workflow.vue';
+import SimpleJob from './components/simpleJob.vue';
+import SparkJob from './components/sparkJob.vue';
+import JobDetail from './components/jobDetail.vue';
+import * as jobProjectApi from '@/api/datax-job-project';
+import * as job from '@/api/datax-job-info';
+import JsonBuild from '@/views/datax/json-build/index';
+import JsonQuality from '@/views/datax/jsonQuality/index';
+import BatchBuild from '@/views/datax/json-build-batch/index';
+import JobTemplate from '@/views/datax/jobTemplate/index';
+import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
+import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
+import _ from 'lodash';
+
 export default {
   name: '',
   components: {
     // HelloWorld,
-    Flow
+    Workflow,
+    JsonBuild,
+    JsonQuality,
+    SimpleJob,
+    JobDetail,
+    BatchBuild,
+    JobTemplate,
+    SparkJob,
+    SqlJob,
+    MetaCompare
   },
   data() {
     return {
       editableTabsValue: '1',
       isDel: false,
-      editableTabs: [{
-        title: 'Untitled',
-        name: '1'
-      }],
-      tabIndex: 1,
-      options: [
+      editableTabs: [
         {
-          value: '开水白菜',
-          label: '开水白菜'
-        },
-        {
-          value: '广式早茶',
-          label: '广式早茶'
-        },
-        {
-          value: '煲仔饭',
-          label: '煲仔饭'
-        },
-        {
-          value: '胡辣汤',
-          label: '胡辣汤'
-        },
-        {
-          value: '三不沾',
-          label: '三不沾'
+          title: 'Untitled',
+          name: '1'
         }
       ],
+      jobDetailTabs: [],
+      tabIndex: 1,
+      options: '',
       selectValue: '',
       search: '',
       List: [],
@@ -99,139 +297,236 @@ export default {
         pageNo: 1,
         pageSize: 100,
         searchVal: ''
-      }
-    }
+      },
+      jobType: 'SHOWDETAIL',
+      jobDetailIdx: '',
+      jobTypeMap: '',
+      jobDetailLoading: true
+    };
   },
   watch: {
-    'editableTabs'(val) {
-      console.log(val)
+    editableTabs(val) {
+      console.log(val);
       if (val.length === 1) {
-        this.isDel = false
+        this.isDel = false;
       } else {
-        this.isDel = true
+        this.isDel = true;
       }
     }
   },
   created() {
-    this.getItem()
+    this.getItem();
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
+    removeJobTab(name) {
+      const removeIndex = _.findIndex(
+        this.jobDetailTabs,
+        (ele) => ele.name === name
+      );
+      if (this.jobDetailIdx === name) {
+        this.jobDetailIdx =
+          this.jobDetailTabs[removeIndex + 1]?.name ||
+          this.jobDetailTabs[removeIndex - 1]?.name;
+      }
+      this.jobDetailTabs.splice(removeIndex, 1);
+    },
+
+    freshItem() {
+      this.getItem();
+      this.jobType = 'SHOWDETAIL';
+    },
+
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
-        const newTabName = (new Date()).valueOf().toString()
+        const newTabName = new Date().valueOf().toString();
         this.editableTabs.push({
           title: 'Untitled',
           name: newTabName,
           content: 'New Tab content'
-        })
-        this.editableTabsValue = newTabName
+        });
+        this.editableTabsValue = newTabName;
       }
       if (action === 'remove') {
-        const tabs = this.editableTabs
-        let activeName = this.editableTabsValue
+        const tabs = this.editableTabs;
+        let activeName = this.editableTabsValue;
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1]
+              const nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
-                activeName = nextTab.name
+                activeName = nextTab.name;
               }
             }
-          })
+          });
         }
-        this.editableTabsValue = activeName
-        this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+        this.editableTabsValue = activeName;
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
       }
     },
+
     changeTab(e) {
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].title === e.label) {
-          this.editableTabsValue = this.editableTabs[i].name
+          this.editableTabsValue = this.editableTabs[i].name;
         }
       }
-      console.log(this.editableTabsValue)
+      console.log(this.editableTabsValue);
     },
+
     getChild(v) {
-      console.log(v)
+      console.log(v);
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].name === v.index) {
-          this.editableTabs[i].title = v.name
-          this.pushList(v)
+          this.editableTabs[i].title = v.name;
+          this.pushList(v);
         }
       }
     },
+
     pushList(val) {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
           data: val.data
-        })
+        });
       } else {
         for (let i = 0; i < this.List.length; i++) {
           if (this.List[i].name === val.name) {
-            this.editableTabsValue = val.index
+            this.editableTabsValue = val.index;
           } else {
             this.List.push({
               name: val.name,
               data: val.data
-            })
+            });
           }
         }
       }
     },
+
     handleRemove(name) {
-      console.log(name)
+      console.log(name);
       if (this.editableTabs.length === 1) {
-        this.isDel = false
-        this.editableTabsValue = this.editableTabs[0].name
+        this.isDel = false;
+        this.editableTabsValue = this.editableTabs[0].name;
       } else {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === name) {
-            this.editableTabs.splice(i, 1)
+            this.editableTabs.splice(i, 1);
           }
           if (this.editableTabsValue === name) {
-            this.editableTabsValue = this.editableTabs[this.editableTabs.length].name
+            this.editableTabsValue = this.editableTabs[
+              this.editableTabs.length
+            ].name;
           }
         }
       }
     },
+
+    getJobDetail(data) {
+      console.log(data);
+      const a = {};
+      a.title = data.jobDesc;
+      a.name = data.jobDesc;
+      a.content = data;
+      console.log(this.jobDetailTabs);
+      console.log(a);
+      if (JSON.stringify(this.jobDetailTabs).indexOf(JSON.stringify(a)) == -1) {
+        // this.$message.info("tab not found, open a new one  ")
+        this.jobDetailTabs.push(a);
+        this.jobDetailIdx = a.name;
+      } else {
+        this.jobDetailIdx = a.name;
+      }
+      this.jobType = 'SHOWDETAIL';
+      // this.jobListLoading = false
+    },
+
     getList(data) {
-      console.log(data)
-      console.log(this.editableTabs)
+      console.log(data);
+      console.log(this.editableTabs);
+
       if (this.editableTabs.length > 0) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].title === data.name) {
-            this.editableTabsValue = this.editableTabs[i].name
-            console.log(this.editableTabsValue)
+            this.editableTabsValue = this.editableTabs[i].name;
+            console.log(this.editableTabsValue);
             break;
           } else {
             this.editableTabs.push({
               title: data.name,
               name: (this.editableTabs.length + 1).toString()
-            })
-            this.editableTabsValue = this.editableTabs[this.editableTabs.length - 1].name
+            });
+            this.editableTabsValue = this.editableTabs[
+              this.editableTabs.length - 1
+            ].name;
           }
         }
       } else {
         this.editableTabs.push({
           title: data.name,
           name: (this.editableTabs.length + 1).toString()
-        })
+        });
       }
     },
+
     getItem() {
-      jobProjectApi.list(this.listQuery).then(response => {
-        const { records } = response
-        const { total } = response
-        this.total = total
-        this.options = records
-        this.selectValue = this.options[0].name
-      })
+      jobProjectApi.list(this.listQuery).then((response) => {
+        const { records } = response;
+        const { total } = response;
+        this.total = total;
+        this.options = records;
+        this.selectValue = this.options[0].name;
+        const listQuery = {
+          current: 1,
+          size: 10,
+          jobGroup: 0,
+          // projectIds: '',
+          triggerStatus: -1,
+          jobDesc: '',
+          glueType: ''
+        };
+        listQuery.projectIds = this.options[0].id;
+        job.getList(listQuery).then((response) => {
+          const { content } = response;
+          this.List = content.data;
+          const firstElement = content.data[0];
+          const a = {};
+          a.title = firstElement.jobDesc;
+          a.name = firstElement.jobDesc;
+          a.content = firstElement;
+          this.jobDetailTabs.push(a);
+          this.jobDetailIdx = a.name;
+          this.jobDetailLoading = false;
+        });
+      });
+    },
+
+    fetchJobs(event) {
+      console.log(event);
+      const listQuery = {
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        // projectIds: '',
+        triggerStatus: -1,
+        jobDesc: '',
+        glueType: ''
+      };
+      listQuery.projectIds = event;
+      job.getList(listQuery).then((response) => {
+        const { content } = response;
+        this.List = content.data;
+      });
+    },
+
+    createNewJob(command) {
+      console.log(command);
+      this.jobType = command;
+      this.jobDetailIdx = command;
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

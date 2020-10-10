@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-30 18:32:04
+ * @LastEditTime: 2020-10-10 18:22:22
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -118,6 +118,7 @@ export default {
      */
     backToSearch() {
       // console.log('通知父组件切页面')
+      this.initSearchRequest()
       this.$emit('changepage', 'atlasSearch')
     },
     /**
@@ -160,6 +161,12 @@ export default {
           })
         }
       }
+    },
+    /**
+     * @description: 通知父组件初始化查找条件
+     */
+    initSearchRequest() {
+      this.$emit('changepage', 'initSearchByListItem')
     },
     /**
      * @description: 保存为自定义过滤器

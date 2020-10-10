@@ -14,7 +14,7 @@
       <el-form :model="form">
         <el-form-item label="任务名称" label-width="120">
           <el-select v-model="form.name" placeholder="请选择任务名称" style="width: 280px;">
-            <el-option v-for="item in this.taskList" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
+            <el-option v-for="(item, index) in this.taskList" :key="index" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
             <!-- <el-option label="task_02" value="task_02" /> -->
           </el-select>
         </el-form-item>
