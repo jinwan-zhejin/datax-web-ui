@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-09 15:51:32
+ * @LastEditTime: 2020-10-10 18:52:04
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -12,7 +12,7 @@
     <el-container style="height: 100%;">
       <el-aside style="width: 30%; min-width: 252px;" class="left-container">
         <div class="topSearch">
-          <el-button @click="changePage('atlasDetails')">test</el-button>
+          <!-- <el-button @click="changePage('atlasDetails')">test</el-button> -->
           <label class="searchLabel">搜索</label>
           <el-input v-model="searchTreeList" style="padding: 5px 0;" prefix-icon="el-icon-search" placeholder="搜索实体、分类、词汇表" clearable />
         </div>
@@ -64,7 +64,7 @@
       <el-container>
         <el-main class="right-container">
           <!-- <RightPanelTable :search-request="searchByListItem" /> -->
-          <router-view name="atlas" :search-request="searchByListItem" :details-request="searchByName" @changepage="changePage" />
+          <router-view name="atlas" :search-request="searchByListItem" :details-request="searchByName" @changepage="changePage" @switchpage="switchPage" :key="timer" />
         </el-main>
       </el-container>
     </el-container>
@@ -173,7 +173,8 @@ export default {
       glossariesProps: {
         label: 'name',
         children: 'terms'
-      }
+      },
+      timer: ''
     };
   },
   watch: {
@@ -450,23 +451,7 @@ export default {
      */
     changePage(routerName) {
       if (routerName === 'initSearchByListItem') {
-        this.searchByListItem = {
-          params: {
-            excludeDeletedEntities: true,
-            includeSubClassifications: true,
-            includeSubTypes: true,
-            includeClassificationAttributes: true,
-            entityFilters: null,
-            tagFilters: null,
-            attributes: [],
-            limit: 25,
-            offset: 0,
-            typeName: null,
-            classification: null,
-            termName: null
-          },
-          businessMetadata: null
-        }
+        this.initSearchByName()
       } else {
         if (routerName.split('?').length === 1) {
           this.$router.push({ name: routerName })
@@ -475,6 +460,36 @@ export default {
           console.log(this.searchByName)
           this.$router.push({ name: routerName.split('?')[0] })
         }
+      }
+    },
+    /**
+     * @description: 更改数据
+     * @param {String} 数据
+     */
+    switchPage(routerName) {
+      this.searchByName.typeName = JSON.parse(routerName.split('?')[1]).typeName
+      this.searchByName.guid = JSON.parse(routerName.split('?')[1]).guid
+      console.log(this.searchByName);
+      this.timer = new Date().getTime()
+      this.$router.push({ name: routerName.split('?')[0] })
+    },
+    initSearchByName() {
+      this.searchByListItem = {
+        params: {
+          excludeDeletedEntities: true,
+          includeSubClassifications: true,
+          includeSubTypes: true,
+          includeClassificationAttributes: true,
+          entityFilters: null,
+          tagFilters: null,
+          attributes: [],
+          limit: 25,
+          offset: 0,
+          typeName: null,
+          classification: null,
+          termName: null
+        },
+        businessMetadata: null
       }
     }
   }

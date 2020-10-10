@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-09 15:56:35
+ * @LastEditTime: 2020-10-10 18:22:22
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
  * @Description: 右半部分显示 - 表
 -->
