@@ -1,7 +1,7 @@
 <template>
   <div class="myRegister">
     <!-- 接口列表选择 -->
-<!--    <div class="choose">
+    <!--    <div class="choose">
       <div class="btn">
         <el-button @click="gotoUse">接口使用列表</el-button>
         <el-button @click="gotoRegister"  type="primary">接口注册列表</el-button>
@@ -11,9 +11,9 @@
     <div class="interRegister">
       <!-- <p><i style="margin-right:10px;" class="el-icon-search"></i><span>查询条件</span></p> -->
       <div style="margin-top: 20px;">
-        <el-button @click="gotoInterface" type="primary" plain>接口注册</el-button>
-        <el-input placeholder="请输入接口名称" v-model="interName" class="input-with-select sort">
-          <el-button @click="getAllData" class="search" style="padding: 0px 10px;" slot="append" icon="el-icon-search"></el-button>
+        <el-button type="primary" plain @click="gotoInterface">接口注册</el-button>
+        <el-input v-model="interName" placeholder="请输入接口名称" class="input-with-select sort">
+          <el-button slot="append" class="search" style="padding: 0px 10px;" icon="el-icon-search" @click="getAllData" />
         </el-input>
       </div>
     </div>
@@ -23,25 +23,29 @@
     <el-table
       :data="tableData"
       style="width: 100%"
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+    >
       <el-table-column
         type="index"
-        label="序号">
-      </el-table-column>
+        label="序号"
+        align="center"
+      />
       <el-table-column
         prop="interName"
         border
+        align="center"
         label="接口名称"
-        width="230">
-      </el-table-column>
+      />
       <el-table-column
         prop="interRemark"
-        label="接口描述">
-      </el-table-column>
+        label="接口描述"
+        align="center"
+      />
       <el-table-column
         prop="interState"
         label="状态"
-        width="100">
+        width="230"
+      >
         <template v-slot:default="{ row }">
           <el-tag>{{ row.interState }}</el-tag>
         </template>
@@ -58,7 +62,8 @@
       </el-table-column> -->
       <el-table-column
         label="操作"
-        width="100">
+        align="center"
+      >
         <template v-slot:default="{ row }">
           <a style="color: skyblue;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>
         </template>
@@ -67,24 +72,21 @@
     <!-- 分页 -->
     <el-pagination
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
       :current-page="pageNum"
       :page-size="pageSize"
       :page-sizes="[30, 60, 90]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
 <script>
+import * as interFaceApi from '@/api/data-share'
 export default {
-  created () {
-    this.getAllData()
-    localStorage.removeItem('resData')
-  },
-  data () {
+  data() {
     return {
       activeName: 'second',
       form: {},
@@ -100,108 +102,74 @@ export default {
       myObj: {}
     }
   },
+  created() {
+    this.getAllData()
+  },
   methods: {
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.pageSize = val
       this.pageNum = 1
       this.getAllData()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.pageNum = val
       this.getAllData()
     },
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       console.log(tab, event)
     },
-    gotoUse () {
+    gotoUse() {
       this.$router.push('/myInterface')
     },
-    gotoRegister () {
+    gotoRegister() {
       this.$router.push('/data/register')
     },
     // 接口注册
-    gotoInterface () {
+    gotoInterface() {
       this.$router.push('/data/register')
     },
     // 显示新接口对话框
-    isShowNew () {
+    isShowNew() {
       this.dialogNewInter = true
     },
-    async gotoViewRegister (row) {
+    gotoViewRegister(row) {
       console.log(row)
-      const res = await this.$axios.post(`/interface/getInterfaceDetails?id=${row.id}`)
-      console.log(res)
-      if (res.status === 200) {
-        this.$router.push({
-          name: 'viewRegister',
-          params: res
-        })
-      }
+      interFaceApi.viewDetail(row.id).then(response => {
+        console.log(response)
+        if (response.code === 200) {
+          this.$router.push({
+            name: 'viewRegister',
+            params: response.content
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
-    onSubmit () {
+    onSubmit() {
       console.log('创建')
     },
     // 显示新增接口对话框
-    isShowAddNew () {
+    isShowAddNew() {
       this.dialogNewInter = false
       this.dialogAddNewInter = true
     },
     // 获取全部数据
-    async getAllData () {
-      const res = await this.$axios.post('/interface/getInterfaceInfoPages', {
+    getAllData() {
+      interFaceApi.getList({
         interName: this.interName,
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        registerCompany: localStorage.getItem('UserName'),
-        token: localStorage.getItem('token')
+        dataCompany: this.interName
+      }).then(response => {
+        console.log(response)
+        if (response.code === 200) {
+          this.total = response.content.total
+          this.tableData = response.content.resourceList
+        }
+      }).catch(err => {
+        console.log(err)
       })
-      console.log(res)
-      if (res.status === 200) {
-        this.total = res.data.total
-        this.tableData = res.data.interfaceList
-      }
-      // if (res.status === 200) {
-      //   if (res.data.success) {
-      //     this.$message.success(res.data.message)
-      //     this.total = res.data.total
-      //     this.tableData = res.data.resourceList
-      //   } else {
-      //     this.$message.error(res.data.message)
-      //     localStorage.removeItem('token')
-      //     this.gotoLogin()
-      //   }
-      // }
-    },
-    // token异常跳转到登录页
-    gotoLogin () {
-      window.location.href = 'http://localhost:8080/#/homePage?isOverdue=' + 'true'
-      console.log(123)
-    },
-    // 查询
-    async search () {
-      const res = await this.$axios.post('/applyResource/getMyApplyResourcePages', {
-        dataCompany: '',
-        infoName: this.form.name,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize,
-        token: localStorage.getItem('token')
-      })
-      console.log(res)
-      if (res.status === 200) {
-        this.total = res.data.total
-        this.tableData = res.data.resourceList
-      }
-      // if (res.status === 200) {
-      //   if (res.data.success) {
-      //     this.$message.success(res.data.message)
-      //     this.total = res.data.total
-      //     this.tableData = res.data.resourceList
-      //   } else {
-      //     this.$message.error(res.data.message)
-      //     localStorage.removeItem('token')
-      //     window.open('http://localhost:8080/#/homePage')
-      //   }
-      // }
     }
   }
 }

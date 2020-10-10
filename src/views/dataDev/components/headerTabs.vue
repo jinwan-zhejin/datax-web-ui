@@ -1,8 +1,8 @@
 <template>
   <div class="header">
     <el-tabs
-      :editable="true"
       v-model="editableTabsValue"
+      :editable="true"
       type="card"
       closable
       @tab-remove="removeTab"
@@ -21,36 +21,39 @@
 </template>
 
 <script>
-import DataDevContent from "./content";
+import DataDevContent from './content';
 export default {
-  name: "HeaderTabs",
+  // name: "HeaderTabs",
   components: {
-    DataDevContent,
+    DataDevContent
   },
   data() {
     return {
-      editableTabsValue: "2",
+      editableTabsValue: '2',
       editableTabs: [],
-      tabIndex: 2,
+      tabIndex: 2
     };
+  },
+  mounted() {
+    this.handleTabsEdit('', 'add');
   },
   methods: {
     addTab(targetName) {
-      let newTabName = ++this.tabIndex + "";
+      const newTabName = ++this.tabIndex + '';
       this.editableTabs.push({
-        title: "New Tab",
-        name: newTabName,
+        title: 'New Tab',
+        name: newTabName
         // content: "New Tab content",
       });
       this.editableTabsValue = newTabName;
     },
     removeTab(targetName) {
-      let tabs = this.editableTabs;
+      const tabs = this.editableTabs;
       let activeName = this.editableTabsValue;
       if (activeName === targetName) {
         tabs.forEach((tab, index) => {
           if (tab.name === targetName) {
-            let nextTab = tabs[index + 1] || tabs[index - 1];
+            const nextTab = tabs[index + 1] || tabs[index - 1];
             if (nextTab) {
               activeName = nextTab.name;
             }
@@ -62,22 +65,22 @@ export default {
       this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
     },
     handleTabsEdit(targetName, action) {
-      if (action === "add") {
-        let newTabName = ++this.tabIndex + "";
+      if (action === 'add') {
+        const newTabName = ++this.tabIndex + '';
         this.editableTabs.push({
-          title: "New Tab",
+          title: 'New Tab',
           name: newTabName,
-          content: "New Tab content",
+          content: 'New Tab content'
         });
         this.editableTabsValue = newTabName;
       }
-      if (action === "remove") {
-        let tabs = this.editableTabs;
+      if (action === 'remove') {
+        const tabs = this.editableTabs;
         let activeName = this.editableTabsValue;
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
                 activeName = nextTab.name;
               }
@@ -88,11 +91,8 @@ export default {
         this.editableTabsValue = activeName;
         this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
       }
-    },
-  },
-  mounted() {
-    this.handleTabsEdit("", "add");
-  },
+    }
+  }
 };
 </script>
 
