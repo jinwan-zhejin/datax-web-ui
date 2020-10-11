@@ -449,6 +449,19 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/dataMask',
+    component: Layout,
+    redirect: '/dataMask',
+    children: [
+      {
+        path: 'list',
+        name: 'list',
+        component: () => import('@/views/dataExplore/index.vue'),
+        meta: { title: '数据脱敏', icon: 'eye-open' }
+      },
+    ]
+  },
+  {
     path: '/data',
     component: Layout,
     redirect: '/data',
