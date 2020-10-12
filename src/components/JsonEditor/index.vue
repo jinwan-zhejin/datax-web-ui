@@ -60,6 +60,7 @@ export default {
 <style scoped>
 .json-editor{
   height: 100%;
+  max-width:900px ;
   position: relative;
 }
 .json-editor >>> .CodeMirror {
