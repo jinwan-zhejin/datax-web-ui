@@ -12,7 +12,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
       <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
@@ -249,34 +249,34 @@ export default {
   },
   methods: {
     gatherMetadata(row) {
-        this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
-          confirmButtonText: '继续',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          console.log(row)
-          let param = {}
-          param.id = row.id
-          console.log(param)
-          meta.getDbMetadata(param).then(res => {
-            console.log(res)
-            this.gathering = false
-            this.$message({
-              type: 'success',
-              message: '元数据采集成功'
-            })
+      this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
+        confirmButtonText: '继续',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(row)
+        const param = {}
+        param.id = row.id
+        console.log(param)
+        meta.getDbMetadata(param).then(res => {
+          console.log(res)
+          this.gathering = false
+          this.$message({
+            type: 'success',
+            message: '元数据采集成功'
           })
-          this.gathering = true
-          this.$message({
-            type: 'info',
-            message: '采集任务开始!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'warning',
-            message: '已取消元数据采集'
-          });
+        })
+        this.gathering = true
+        this.$message({
+          type: 'info',
+          message: '采集任务开始!'
         });
+      }).catch(() => {
+        this.$message({
+          type: 'warning',
+          message: '已取消元数据采集'
+        });
+      });
     },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
@@ -306,11 +306,11 @@ export default {
         const { records } = response
         const { total } = response
         this.total = total
-        let bdsource = ['hive', 'impala', 'spark', 'flink']
+        const bdsource = ['hive', 'impala', 'spark', 'flink']
         this.list = records.filter(function(e) {
-            if (!bdsource.includes(e.datasource)) {
-              return true
-            }
+          if (!bdsource.includes(e.datasource)) {
+            return true
+          }
         })
         this.listLoading = false
       })

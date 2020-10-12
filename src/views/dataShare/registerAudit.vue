@@ -6,46 +6,48 @@
     </div> -->
     <!-- 菜单栏 -->
     <div class="Menu">
-        <!-- 切换按钮 -->
-        <div class="btn">
-          <el-radio-group v-model="radio" size="small">
-            <el-radio-button label="待审批"></el-radio-button>
-            <el-radio-button label="已同意"></el-radio-button>
-            <el-radio-button label="已驳回"></el-radio-button>
-          </el-radio-group>
+      <!-- 切换按钮 -->
+      <div class="btn">
+        <el-radio-group v-model="radio" size="small">
+          <el-radio-button label="待审批" />
+          <el-radio-button label="已同意" />
+          <el-radio-button label="已驳回" />
+        </el-radio-group>
+      </div>
+      <!-- 时间日期 -->
+      <div class="time">
+        <div class="search">
+          <el-input
+            v-model="interName"
+            style="width: 300px;"
+            placeholder="请输入接口名称"
+          >
+            <i slot="suffix" style="margin-right: 5px;cursor: pointer;" class="el-icon-search" @click="search" />
+          </el-input>
         </div>
-        <!-- 时间日期 -->
-        <div class="time">
-            <div class="search">
-              <el-input
-                style="width: 300px;"
-                placeholder="请输入接口名称"
-                v-model="interName">
-                <i slot="suffix" style="margin-right: 5px;cursor: pointer;" class="el-icon-search" @click="search"></i>
-              </el-input>
-            </div>
-        </div>
+      </div>
     </div>
     <!-- 表格 -->
     <div class="tabel">
       <!-- 待审核 -->
       <el-table
-      v-show="wait"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="wait"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="interName"
-          label="接口名称">
-        </el-table-column>
+          label="接口名称"
+        />
         <el-table-column
           prop="interRemark"
-          label="接口描述">
-        </el-table-column>
+          label="接口描述"
+        />
         <!-- <el-table-column
           prop="telephone"
           label="联系方式">
@@ -56,37 +58,39 @@
         </el-table-column> -->
         <el-table-column
           prop="createTime"
-          label="注册时间">
-        </el-table-column>
+          label="注册时间"
+        />
         <el-table-column
           prop="updateTime"
-          label="更新时间">
-        </el-table-column>
+          label="更新时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowBatch(row)" href="#">审核</a>
+            <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
           </template>
         </el-table-column>
       </el-table>
       <!-- 已同意 -->
       <el-table
-      v-show="agree"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="agree"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="interName"
-          label="接口名称">
-        </el-table-column>
+          label="接口名称"
+        />
         <el-table-column
           prop="interRemark"
-          label="接口描述">
-        </el-table-column>
+          label="接口描述"
+        />
         <!-- <el-table-column
           prop="telephone"
           label="联系方式">
@@ -97,37 +101,39 @@
         </el-table-column> -->
         <el-table-column
           prop="createTime"
-          label="注册时间">
-        </el-table-column>
+          label="注册时间"
+        />
         <el-table-column
           prop="updateTime"
-          label="更新时间">
-        </el-table-column>
+          label="更新时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowViewBatch(row)" href="#">已审核(通过)</a>
+            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
           </template>
         </el-table-column>
       </el-table>
       <!-- 已驳回 -->
       <el-table
-      v-show="dismiss"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="dismiss"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="interName"
-          label="接口名称">
-        </el-table-column>
+          label="接口名称"
+        />
         <el-table-column
           prop="interRemark"
-          label="接口描述">
-        </el-table-column>
+          label="接口描述"
+        />
         <!-- <el-table-column
           prop="telephone"
           label="联系方式">
@@ -138,16 +144,17 @@
         </el-table-column> -->
         <el-table-column
           prop="createTime"
-          label="注册时间">
-        </el-table-column>
+          label="注册时间"
+        />
         <el-table-column
           prop="updateTime"
-          label="更新时间">
-        </el-table-column>
+          label="更新时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowViewBatch(row)" href="#">已审核(驳回)</a>
+            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
           </template>
         </el-table-column>
       </el-table>
@@ -156,15 +163,15 @@
     <el-dialog class="useBatch" title="使用审批" :visible.sync="dialogBatch">
       <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 200px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="接口名称:">
-          <el-input :disabled="isBan" v-model="batchForm.interName"></el-input>
+          <el-input v-model="batchForm.interName" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="接口描述:">
-          <el-input :disabled="isBan" v-model="batchForm.interRemark"></el-input>
+          <el-input v-model="batchForm.interRemark" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="部门审批意见:">
-          <el-input @focus="clearDescribe" type="textarea" height="80px" v-model="batchForm.exaDescribe"></el-input>
-            <el-radio v-model="judge" label="通过">通过</el-radio>
-            <el-radio v-model="judge" label="驳回">驳回</el-radio>
+          <el-input v-model="batchForm.exaDescribe" type="textarea" height="80px" @focus="clearDescribe" />
+          <el-radio v-model="judge" label="通过">通过</el-radio>
+          <el-radio v-model="judge" label="驳回">驳回</el-radio>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -174,15 +181,15 @@
     </el-dialog>
     <!-- 查看审批对话框 -->
     <el-dialog class="useBatch" title="查看审批情况" :visible.sync="dialogViewBatch">
-     <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 200px;overflow: hidden;overflow-y: auto;padding-right:30px">
+      <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 200px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="接口名称:">
-          <el-input :disabled="isBan" v-model="batchForm.interName"></el-input>
+          <el-input v-model="batchForm.interName" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="接口描述:">
-          <el-input :disabled="isBan" v-model="batchForm.interRemark"></el-input>
+          <el-input v-model="batchForm.interRemark" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="部门审批意见:">
-          <el-input placeholder="同意" :disabled="isBan" height="80px" type="textarea" v-model="batchForm.exaDescribe"></el-input>
+          <el-input v-model="batchForm.exaDescribe" placeholder="同意" :disabled="isBan" height="80px" type="textarea" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -193,12 +200,9 @@
 </template>
 
 <script>
+import * as interFaceApi from '@/api/data-share'
 export default {
-  created () {
-    this.radio = this.radio1
-    this.search()
-  },
-  data () {
+  data() {
     return {
       radio: '',
       radio1: '待审批',
@@ -219,7 +223,7 @@ export default {
         shortcuts: [
           {
             text: '最近一周',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
@@ -228,7 +232,7 @@ export default {
           },
           {
             text: '最近一个月',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
@@ -237,7 +241,7 @@ export default {
           },
           {
             text: '最近三个月',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
@@ -267,7 +271,7 @@ export default {
     }
   },
   watch: {
-    radio: function (val) {
+    radio: function(val) {
       if (val === '待审批') {
         this.wait = true
         this.agree = false
@@ -291,7 +295,7 @@ export default {
         console.log(this.wait)
       }
     },
-    judge: function (val) {
+    judge: function(val) {
       if (val === '通过') {
         this.isDis = true
         this.isPass = false
@@ -307,26 +311,30 @@ export default {
       }
     }
   },
+  created() {
+    this.radio = this.radio1
+    this.search()
+  },
   methods: {
     // 跳转查看地址
-    link () {
+    link() {
       window.open(this.url)
     },
-    clearDescribe () {
+    clearDescribe() {
       console.log(123)
       this.judge = ''
       this.batchForm.exaDescribe = ''
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.pageSize = val
       this.pageNum = 1
       this.getAllResult()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.pageNum = val
       this.getAllResult()
     },
-    isShowBatch (row) {
+    isShowBatch(row) {
       console.log(row)
       this.interId = row.interId
       this.exaResult = row.exaResult
@@ -334,7 +342,7 @@ export default {
       this.batchForm.interRemark = row.interRemark
       this.dialogBatch = true
     },
-    isShowViewBatch (row) {
+    isShowViewBatch(row) {
       console.log(row)
       this.interId = row.interId
       this.batchForm.exaDescribe = row.exaDescribe
@@ -346,7 +354,7 @@ export default {
       this.dialogViewBatch = true
     },
     // 获取全部数据
-    async getAllResult () {
+    async getAllResult() {
       const res = await this.$axios.post('/interface/getInterfaceExamPage', {
         interName: '',
         pageSize: this.pageSize,
@@ -363,61 +371,66 @@ export default {
       }
     },
     // 查询
-    async search () {
+    async search() {
       console.log(this.radio)
-      const res = await this.$axios.post('/interface/getInterfaceExamPage', {
+      interFaceApi.auditSearch({
         interName: this.interName,
         pageSize: this.pageSize,
         pageNum: this.pageNum,
-        registerCompany: localStorage.getItem('UserName'),
+        registerCompany: '省经济信息中心',
         state: this.radio
+      }).then(response => {
+        console.log(response)
+        if (response.code === 200) {
+          this.tabelList = response.content.examineList
+        }
+      }).catch(err => {
+        console.log(err)
       })
-      console.log(res)
-      if (res.status === 200) {
-        this.tabelList = res.data.examineList
-      }
     },
     // 审核通过
-    async pass () {
+    async pass() {
       this.exaResult = 0
-      const res = await this.$axios.post('/interface/approvalInterface', {
+      interFaceApi.interFaceAudit({
         exaDescribe: this.batchForm.exaDescribe,
         exaResult: this.exaResult,
         interId: this.interId,
         token: localStorage.getItem('token')
-      })
-      console.log(res)
-      if (res.status === 200) {
-        if (res.data.success) {
-          this.$message.success(res.data.message)
-          this.dialogBatch = false
-          this.search()
-        } else {
-          this.$message.error(res.data.message)
-          this.search()
+      }).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          if (res.content.success) {
+            this.$message.success(res.content.message)
+            this.dialogBatch = false
+            this.search()
+          } else {
+            this.$message.error(res.content.message)
+            this.search()
+          }
         }
-      }
+      })
     },
     // 审核驳回
-    async dismissM () {
+    async dismissM() {
       this.exaResult = 1
-      const res = await this.$axios.post('/interface/approvalInterface', {
+      interFaceApi.interFaceAudit({
         exaDescribe: this.batchForm.exaDescribe,
         exaResult: this.exaResult,
         interId: this.interId,
         token: localStorage.getItem('token')
-      })
-      console.log(res)
-      if (res.status === 200) {
-        if (res.data.success) {
-          this.$message.success(res.data.message)
-          this.dialogBatch = false
-          this.search()
-        } else {
-          this.$message.error(res.data.message)
-          this.search()
+      }).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          if (res.content.success) {
+            this.$message.success(res.content.message)
+            this.dialogBatch = false
+            this.search()
+          } else {
+            this.$message.error(res.content.message)
+            this.search()
+          }
         }
-      }
+      })
     }
   }
 }

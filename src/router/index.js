@@ -81,9 +81,8 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/admin/index'),
         name: 'Dashboard',
-        meta: { title: '运行报表', icon: 'fenxi_1', affix: true }
-      }
-      ,
+        meta: { title: '运行报表', icon: 'dashboard', affix: true }
+      },
       {
         path: 'dataUsage',
         component: () => import('@/views/dashboard/admin/index'),
@@ -238,7 +237,7 @@ export const asyncRoutes = [
         name: 'JobInfo2',
         component: () => import('@/views/datax/jobInfo/index1'),
         meta: { title: '任务管理2', icon: 'renwu' }
-      },
+      }
       // {
       //   path: 'jsonBuild',
       //   name: 'JsonBuild',
@@ -342,7 +341,7 @@ export const asyncRoutes = [
       //   component: () => import('@/views/datax/dataQuality/index'),
       //   meta: { title: '规则设计', icon: 'task-tmp' }
       // },
-      
+
       {
         path: 'dqEstimate',
         name: 'dqEstimate',
@@ -405,7 +404,7 @@ export const asyncRoutes = [
         name: 'design',
         component: () => import('@/views/dataModel/dataModel.vue'),
         meta: { title: '数据建模', icon: 'education' }
-      },
+      }
       // {
       //   path: 'dataDictionary',
       //   name: 'dataDictionary',
@@ -426,7 +425,7 @@ export const asyncRoutes = [
         name: 'design',
         component: () => import('@/views/dataModel/dataModel.vue'),
         meta: { title: '数据资产', icon: 'education' }
-      },
+      }
     ]
   },
   {
@@ -450,6 +449,19 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/dataMask',
+    component: Layout,
+    redirect: '/dataMask',
+    children: [
+      {
+        path: 'list',
+        name: 'list',
+        component: () => import('@/views/dataExplore/index.vue'),
+        meta: { title: '数据脱敏', icon: 'eye-open' }
+      },
+    ]
+  },
+  {
     path: '/data',
     component: Layout,
     redirect: '/data',
@@ -461,6 +473,13 @@ export const asyncRoutes = [
         name: 'list',
         component: () => import('@/views/dataShare/interfaceList.vue'),
         meta: { title: '接口列表', icon: 'business' }
+      },
+      {
+        path: 'viewRegister',
+        name: 'viewRegister',
+        component: () => import('@/views/dataShare/viewRegister.vue'),
+        meta: { title: '接口详情', icon: 'chuangjiangongdan' },
+        hidden: true
       },
       {
         path: 'register',
@@ -479,7 +498,7 @@ export const asyncRoutes = [
         name: 'debug',
         component: () => import('@/views/dataShare/debug.vue'),
         meta: { title: '接口调试', icon: 'business' }
-      },
+      }
 
     ]
   },

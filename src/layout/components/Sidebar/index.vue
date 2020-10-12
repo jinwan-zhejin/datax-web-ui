@@ -12,6 +12,12 @@
         :collapse-transition="false"
         mode="vertical"
       >
+        <el-menu-item style="text-align: center;">
+          <template slot="title">
+            <!-- <span class="Title">DetaElit</span> -->
+            <img src="@/assets/LogoTit.png" alt="">
+          </template>
+        </el-menu-item>
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -52,3 +58,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.Title {
+  font-size: 24px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+  color: aliceblue;
+}
+img {
+  width: 160px;
+}
+</style>

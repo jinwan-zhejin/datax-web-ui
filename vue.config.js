@@ -49,6 +49,15 @@ module.exports = {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
+      // 数据共享接口 - share
+      '/mock': {
+        ws: false,
+        target: 'http://47.103.79.104:3000',
+        changeOrigin: true
+        // pathRewrite: {
+        //   ['^' + '/share']: '/share'
+        // }
+      },
       // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
@@ -74,7 +83,7 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           ['^' + '/session']: '/api/atlas/admin/session'
-        },
+        }
       },
       // '/login': {
       //   target: 'http://47.103.79.104:8080',

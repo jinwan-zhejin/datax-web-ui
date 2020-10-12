@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-09 18:52:21
+ * @LastEditTime: 2020-10-10 18:31:40
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelDetails.vue
  * @Description: 详情页
 -->
@@ -30,13 +30,62 @@
       <el-row class="bottomBar">
         <el-col>
           <el-tabs v-model="tabActiveName" type="card" @tab-click="handleTabClick">
-            <el-tab-pane label="属性" name="properties">用户管理</el-tab-pane>
-            <el-tab-pane label="系谱" name="lineage">用户管理</el-tab-pane>
+            <el-tab-pane label="属性" name="properties">
+              <el-row>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-collapse v-model="activeCollapse1">
+                    <el-collapse-item title="技术特性" name="collapse1">
+                      <el-table :data="techProp" :show-header="false">
+                        <el-table-column label="left" prop="key" />
+                        <el-table-column label="right" prop="value">
+                          <template v-slot:default="{ row }">
+                            <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextTable(row.value[0])">{{ row.value[0] }}</a>
+                            <a v-else-if="row.key === 'instance'" class="aClass">{{ row.value }}</a>
+                            <span v-else>{{ row.value }}</span>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </el-collapse-item>
+                  </el-collapse>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-collapse v-model="activeCollapse2">
+                    <el-collapse-item title="用户定义的属性" name="collapse2">
+                      <el-table :data="custProp" :show-header="false">
+                        <el-table-column label="left" prop="key" />
+                        <el-table-column label="right" prop="value" />
+                      </el-table>
+                    </el-collapse-item>
+                  </el-collapse>
+                  <el-collapse v-model="activeCollapse3">
+                    <el-collapse-item title="标签" name="collapse3">
+                      <div v-if="properties.entity.labels !== undefined">
+                        <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index">{{ item }}</el-tag>
+                      </div>
+                    </el-collapse-item>
+                  </el-collapse>
+                  <el-collapse v-model="activeCollapse4">
+                    <el-collapse-item title="业务元数据" name="collapse4">
+                      Coding...
+                    </el-collapse-item>
+                  </el-collapse>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="血缘" name="lineage">用户管理</el-tab-pane>
             <el-tab-pane label="关系" name="relationships">
-              <!-- <el-table :data="properties.entity.relationshipAttributes">
+              <el-row>
+                <el-col :span="12">
+                  <el-switch v-model="graphTable" active-text="表格" inactive-text="图表" />
+                </el-col>
+                <el-col :span="12">
+                  <el-switch v-if="graphTable" v-model="showEmptyRelationships" active-text="显示空值" />
+                </el-col>
+              </el-row>
+              <el-table v-if="graphTable" :data="relationshipShow">
                 <el-table-column label="键" prop="key" />
                 <el-table-column label="值" prop="value" />
-              </el-table> -->
+              </el-table>
             </el-tab-pane>
             <el-tab-pane label="分类" name="classifications">
               <el-select v-model="classificationsValue" filterable placeholder="请选择" clearable @change="handleSelectClass">
@@ -76,10 +125,23 @@
                 @current-change="handleCurrentChange"
               />
             </el-tab-pane>
-            <el-tab-pane label="审核" name="audits">
+            <el-tab-pane label="审计" name="audits">
               <el-table :data="audits">
+                <el-table-column type="expand">
+                  <template slot-scope="props">
+                    <el-form label-position="left" inline>
+                      <el-form-item label="名称">
+                        <span>{{ props.row | displayName }}</span>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
                 <el-table-column label="用户名" prop="user" />
-                <el-table-column label="审核时间" prop="timestamp" />
+                <el-table-column label="审核时间">
+                  <template v-slot:default="{ row }">
+                    {{ row.timestamp | formatDate }}
+                  </template>
+                </el-table-column>
                 <el-table-column label="状态" prop="action" />
               </el-table>
               <el-pagination
@@ -93,7 +155,7 @@
                 @current-change="handleCurrentChange"
               />
             </el-tab-pane>
-            <el-tab-pane label="架构" name="schema">
+            <el-tab-pane label="Schema" name="schema">
               <el-table>
                 <el-table-column label="名称" />
                 <el-table-column label="描述" />
@@ -124,6 +186,52 @@
 import * as apiatlas from '@/api/datax-metadata-atlas'
 export default {
   name: 'RightPanelDetails',
+  filters: {
+    formatDate(val) {
+      const date = new Date(val);
+      const y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      let h = date.getHours();
+      h = h < 10 ? ('0' + h) : h;
+      let m = date.getMinutes();
+      m = m < 10 ? ('0' + m) : m;
+      let s = date.getSeconds();
+      s = s < 10 ? ('0' + s) : s;
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s + ' (CST)';
+    },
+    displayName(row) {
+      if (row.action.split('_')[0] === 'LABEL') {
+        return row.details.split(': ')[1]
+      } else if (row.action.split('_')[0] === 'ENTITY' || row.action.split('_')[0] === 'TERM') {
+        const objStart = row.details.indexOf('name') + 'name'.length + 3 // 开始下标
+        let objEnd = objStart
+        while (objEnd < row.details.length) {
+          if (row.details[objEnd] !== '"') {
+            objEnd++
+          } else {
+            break
+          }
+        }
+        const subStr = row.details.substring(objStart, objEnd)
+        return subStr
+      } else {
+        const objStart = row.details.indexOf('typeName') + 'typeName'.length + 3 // 开始下标
+        let objEnd = objStart
+        while (objEnd < row.details.length) {
+          if (row.details[objEnd] !== '"') {
+            objEnd++
+          } else {
+            break
+          }
+        }
+        const subStr = row.details.substring(objStart, objEnd)
+        return subStr
+      }
+    }
+  },
   props: {
     detailsRequest: Object
   },
@@ -135,8 +243,14 @@ export default {
         value: '',
         label: '全部'
       }],
+      activeCollapse1: 'collapse1',
+      activeCollapse2: 'collapse2',
+      activeCollapse3: 'collapse3',
+      activeCollapse4: 'collapse4',
       classificationsValue: '',
-      properties: '', // 保存属性返回值
+      properties: [], // 保存属性返回值
+      techProp: [],
+      custProp: [],
       audits: [], // 保存审核返回值
       lineage: [], // 保存系谱返回值
       classifications: [], // 表格 分类
@@ -146,7 +260,33 @@ export default {
       auditsCurrent: 1,
       schemaTotal: 0,
       schemaCurrent: 1,
-      relationshipList: []
+      relationshipList: [],
+      relationshipShow: [],
+      graphTable: true, // 表格或图表 false-Graph true-Table
+      showEmptyRelationships: false // 显示空值
+    }
+  },
+  computed: {
+    // techProp() {
+    //   var tempList = []
+    //   for (var i in this.properties.entity.attributes) {
+    //     tempList.push({
+    //       key: i,
+    //       value: this.properties.entity.attributes[i]
+    //     })
+    //   }
+    //   return tempList
+    // }
+  },
+  watch: {
+    showEmptyRelationships: {
+      handler(newName, oldName) {
+        if (this.showEmptyRelationships) {
+          this.relationshipShow = this.relationshipList
+        } else {
+          this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
+        }
+      }
     }
   },
   created() {
@@ -158,13 +298,35 @@ export default {
             label: this.properties.entity.classifications[i].typeName
           })
         }
+        for (var j in this.properties.entity.attributes) {
+          this.techProp.push({
+            key: j,
+            value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
+          })
+        }
+        for (var f in this.properties.entity.customAttributes) {
+          this.custProp.push({
+            key: f,
+            value: this.properties.entity.customAttributes[f] === null ? 'N/A' : this.properties.entity.customAttributes[f]
+          })
+        }
         this.classifications = this.classificationsOptions.filter(item => item.value !== '')
-        // for (var k in this.properties.entity.relationshipAttributes) {
-        //   this.relationshipList.push({
-        //     key: k,
-        //     value: this.properties.entity.relationshipAttributes[k]
-        //   })
-        // }
+        for (var k in this.properties.entity.relationshipAttributes) {
+          // console.log(k + this.properties.entity.relationshipAttributes[k].length);
+          this.relationshipList.push({
+            key: k.concat((this.properties.entity.relationshipAttributes[k].length !== undefined && this.properties.entity.relationshipAttributes[k].length > 0) ? '(' + this.properties.entity.relationshipAttributes[k].length + ')' : ''),
+            value: this.properties.entity.relationshipAttributes[k].length === undefined
+              ? this.properties.entity.relationshipAttributes[k].displayText
+              : this.properties.entity.relationshipAttributes[k].length > 0
+                ? this.properties.entity.relationshipAttributes[k][0].displayText
+                : 'N/A'
+          })
+        }
+        if (this.showEmptyRelationships) {
+          this.relationshipShow = this.relationshipList
+        } else {
+          this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
+        }
         // console.log(this.relationshipList)
       }
     })
@@ -188,6 +350,12 @@ export default {
      */
     handleTabClick(tab, event) {
       // console.log(tab, event)
+    },
+    /**
+     * @description: 切到另一张表
+     */
+    gotoNextTable(tableObj) {
+      this.$emit('switchpage', 'atlasDetails'.concat('?').concat(JSON.stringify(tableObj)))
     },
     /**
      * @description: 下拉菜单选择分类
@@ -297,6 +465,28 @@ export default {
   }
   .bottomBar {
     margin: 0 auto 0 auto;
+  }
+}
+.aClass {
+  color: #006ad4;
+}
+.aClass:hover {
+  text-decoration:underline;
+}
+.el-collapse {
+  border: 1px solid #EBEEF5;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+}
+::v-deep .el-collapse-item__header {
+  color: #409EFF;
+  font-size: 15px;
+  flex: 1 0 auto;
+  order: -1;
+  .collapse-title {
+    flex: 1 0 100%;
+    order: 1;
   }
 }
 </style>

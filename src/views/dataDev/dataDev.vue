@@ -1,7 +1,7 @@
 <template>
   <div style="padding:10px 0;min-height:705px;">
-      <HeaderTabs />
-      <!-- <DataDevContent /> -->
+    <HeaderTabs />
+    <!-- <DataDevContent /> -->
   </div>
 </template>
 
@@ -9,11 +9,11 @@
 import HeaderTabs from './components/headerTabs'
 import DataDevContent from './components/content'
 export default {
-    name: 'DataDev',
-    components:{
-        HeaderTabs,
-        DataDevContent
-    }
+  name: 'DataDev',
+  components: {
+    HeaderTabs,
+    DataDevContent
+  }
 }
 </script>
 

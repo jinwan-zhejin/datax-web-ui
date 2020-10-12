@@ -70,7 +70,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.msg || 'Error'))
+      return Promise.reject(new Error(res || 'Error'))
     } else {
       const { data } = response
       const { code } = data
