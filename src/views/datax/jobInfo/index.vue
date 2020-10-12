@@ -154,10 +154,10 @@
           欢迎
         </el-tab-pane>
         <el-tab-pane
-          :key="item.id"
+          :key="item.content.id"
           v-for="item in jobDetailTabs"
           :label="item.title"
-          :name="item.name"
+          :name="item.content.id + ''"
         >
           <JobDetail :job-info="item.content" />
         </el-tab-pane>
@@ -305,6 +305,7 @@ export default {
       jobDetailIdx: "欢迎",
       jobTypeMap: "",
       jobDetailLoading: true,
+      firstTime:true
     };
   },
   watch: {
@@ -323,15 +324,13 @@ export default {
   mounted() {},
   methods: {
     removeJobTab(name) {
-      console.log(name);
       const removeIndex = _.findIndex(
         this.jobDetailTabs,
-        (ele) => ele.name === name
+        (ele) => ele.content.id == name
       );
       if (this.jobDetailIdx === name) {
         this.jobDetailIdx =
-          this.jobDetailTabs[removeIndex + 1].name ||
-          this.jobDetailTabs[removeIndex - 1].name;
+          (this.jobDetailTabs[removeIndex + 1]?.content?.id  || this.jobDetailTabs[removeIndex - 1]?.content?.id) + '' ;
       }
       if (name === "NORMAL" || name === "IMPORT" || name === "EXPORT") {
         this.jobType = "SHOWDETAIL";
@@ -445,9 +444,9 @@ export default {
       if (JSON.stringify(this.jobDetailTabs).indexOf(JSON.stringify(a)) == -1) {
         // this.$message.info("tab not found, open a new one  ")
         this.jobDetailTabs.push(a);
-        this.jobDetailIdx = a.name;
+        this.jobDetailIdx = a.content.id + '';
       } else {
-        this.jobDetailIdx = a.name;
+        this.jobDetailIdx = a.content.id + '';
       }
       this.jobType = 'SHOWDETAIL';
       // this.jobListLoading = false
@@ -506,8 +505,12 @@ export default {
           a.title = firstElement.jobDesc;
           a.name = firstElement.jobDesc;
           a.content = firstElement;
-          // this.jobDetailTabs.push(a);
-          // this.jobDetailIdx = a.name;
+          if(!this.firstTime){
+            this.jobDetailTabs.push(a);
+            this.jobDetailIdx = a.content.id + '';
+          } else {
+            this.firstTime = false
+          }
           this.jobDetailLoading = false;
         });
       });
