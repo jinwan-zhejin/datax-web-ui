@@ -20,96 +20,88 @@
           <el-col :span="12">
             <i class="el-icon-location-outline" />
             <i class="el-icon-coin" />
-            <!-- <i class="el-icon-folder-add" /> -->
             <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
-                <el-dropdown-item
-                  icon="el-icon-receiving"
-                  command="NORMAL"
-                >普通任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-collection"
-                  command="IMPORT"
-                >引入任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-files"
-                  command="EXPORT"
-                >导出任务</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-receiving" command="NORMAL"
+                  >普通任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-collection" command="IMPORT"
+                  >引入任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-files" command="EXPORT"
+                  >导出任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-notebook-1"
                   command="COMPUTE"
                   disabled
-                >计算任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-present"
-                  command="SQLJOB"
-                >SQL任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-goods"
-                  command="SPARK"
-                >SPARK任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-sell"
-                  command="DQCJOB"
-                >质量任务</el-dropdown-item>
+                  >计算任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-present" command="SQLJOB"
+                  >SQL任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-s-goods" command="SPARK"
+                  >SPARK任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-sell" command="DQCJOB"
+                  >质量任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-brush"
                   command="METACOLLECT"
                   divided
-                >元数据采集任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-brush"
-                  command="METACOMPARE"
-                >元数据比较任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-wallet"
-                  command="SHELL"
-                  divided
-                >SHELL任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-cpu"
-                  command="POWERSHELL"
-                >POWERSHELL任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-box"
-                  command="PYTHON"
-                >PYTHON任务</el-dropdown-item>
+                  >元数据采集任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-brush" command="METACOMPARE"
+                  >元数据比较任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided
+                  >SHELL任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL"
+                  >POWERSHELL任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-box" command="PYTHON"
+                  >PYTHON任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-bank-card"
                   command="VJOB"
                   divided
-                >虚任务</el-dropdown-item>
+                  >虚任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-bank-card"
                   command="JAVA"
                   divided
                   disabled
-                >Java任务</el-dropdown-item>
+                  >Java任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-bank-card"
                   command="SCALA"
                   disabled
-                >Scala任务</el-dropdown-item>
+                  >Scala任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-bank-card"
                   command="PYSPARK"
                   disabled
-                >PySpark任务</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-bank-card"
-                  command="R"
-                  disabled
-                >R任务</el-dropdown-item>
+                  >PySpark任务</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-bank-card" command="R" disabled
+                  >R任务</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-copy-document"
                   command="BATCH"
                   divided
-                >任务批量构建</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-brush"
-                  command="TEMPLATE"
-                >普通任务模板</el-dropdown-item>
+                  >任务批量构建</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-brush" command="TEMPLATE"
+                  >普通任务模板</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -133,10 +125,12 @@
                 @click="getJobDetail(item)"
               >
                 <!--  -->
-                <a>{{ item.jobDesc }}
+                <a
+                  >{{ item.jobDesc }}
                   <span style="color: #ff5500">{{
                     item.glueType.replace("GLUE_", "").toLowerCase()
-                  }}</span></a>
+                  }}</span></a
+                >
               </li>
             </ul>
           </div>
@@ -150,7 +144,7 @@
         closable
         @tab-remove="removeJobTab"
       >
-        <el-tab-pane v-if='!jobDetailTabs.length' label="欢迎" name="欢迎">
+        <el-tab-pane v-if="!jobDetailTabs.length" label="欢迎" name="欢迎">
           欢迎
         </el-tab-pane>
         <el-tab-pane
@@ -159,7 +153,7 @@
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail :job-info="item.content" />
+          <JobDetail @deleteJob='getItem()' :job-info="item.content" />
         </el-tab-pane>
         <el-tab-pane
           v-if="
@@ -169,31 +163,21 @@
             jobType === 'NORMAL'
               ? 'NORMAL'
               : jobType === 'IMPORT'
-                ? 'IMPORT'
-                : 'EXPORT'
+              ? 'IMPORT'
+              : 'EXPORT'
           "
           :label="
             jobType === 'NORMAL'
               ? '普通任务'
               : jobType === 'IMPORT'
-                ? '引入任务'
-                : '导出任务'
+              ? '引入任务'
+              : '导出任务'
           "
         >
           <div class="rg">
             <JsonBuild @refresh="freshItem" />
           </div>
         </el-tab-pane>
-        <!-- <el-tab-pane label="引入任务"  v-if="jobType === 'IMPORT'">
-          <div class="rg">
-            <JsonBuild />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="导出任务" v-if="jobType === 'EXPORT'">
-          <div class="rg">
-            <JsonBuild />
-          </div>
-        </el-tab-pane> -->
       </el-tabs>
     </div>
     <div v-if="jobType === 'VJOB'" class="rg">
@@ -230,10 +214,7 @@
       <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
     </div>
     <div v-if="jobType === 'POWERSHELL'" class="rg">
-      <SimpleJob
-        job-type="GLUE_POWERSHELL"
-        job-type-label="POWERSHELL任务"
-      />
+      <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
     </div>
     <div v-if="jobType === 'PYTHON'" class="rg">
       <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
@@ -251,24 +232,23 @@
 </template>
 
 <script>
-import Workflow from './components/workflow.vue';
-import SimpleJob from './components/simpleJob.vue';
-import SparkJob from './components/sparkJob.vue';
-import JobDetail from './components/jobDetail.vue';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as job from '@/api/datax-job-info';
-import JsonBuild from '@/views/datax/json-build/index';
-import JsonQuality from '@/views/datax/jsonQuality/index';
-import BatchBuild from '@/views/datax/json-build-batch/index';
-import JobTemplate from '@/views/datax/jobTemplate/index';
-import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
-import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
-import _ from 'lodash';
+import Workflow from "./components/workflow.vue";
+import SimpleJob from "./components/simpleJob.vue";
+import SparkJob from "./components/sparkJob.vue";
+import JobDetail from "./components/jobDetail.vue";
+import * as jobProjectApi from "@/api/datax-job-project";
+import * as job from "@/api/datax-job-info";
+import JsonBuild from "@/views/datax/json-build/index";
+import JsonQuality from "@/views/datax/jsonQuality/index";
+import BatchBuild from "@/views/datax/json-build-batch/index";
+import JobTemplate from "@/views/datax/jobTemplate/index";
+import SqlJob from "@/views/datax/jobInfo/components/sqlJob";
+import MetaCompare from "@/views/datax/jobInfo/components/metaCompare";
+import _ from "lodash";
 
 export default {
-  name: '',
+  name: "",
   components: {
-    // HelloWorld,
     Workflow,
     JsonBuild,
     JsonQuality,
@@ -278,34 +258,34 @@ export default {
     JobTemplate,
     SparkJob,
     SqlJob,
-    MetaCompare
+    MetaCompare,
   },
   data() {
     return {
-      editableTabsValue: '1',
+      editableTabsValue: "1",
       isDel: false,
       editableTabs: [
         {
-          title: 'Untitled',
-          name: '1'
-        }
+          title: "Untitled",
+          name: "1",
+        },
       ],
       jobDetailTabs: [],
       tabIndex: 1,
-      options: '',
-      selectValue: '',
-      search: '',
+      options: "",
+      selectValue: "",
+      search: "",
       List: [],
       listQuery: {
         pageNo: 1,
         pageSize: 100,
-        searchVal: ''
+        searchVal: "",
       },
       jobType: "SHOWDETAIL",
       jobDetailIdx: "欢迎",
       jobTypeMap: "",
       jobDetailLoading: true,
-      firstTime:true
+      firstTime: true,
     };
   },
   watch: {
@@ -316,7 +296,7 @@ export default {
       } else {
         this.isDel = true;
       }
-    }
+    },
   },
   created() {
     this.getItem();
@@ -330,34 +310,35 @@ export default {
       );
       if (this.jobDetailIdx === name) {
         this.jobDetailIdx =
-          (this.jobDetailTabs[removeIndex + 1]?.content?.id  || this.jobDetailTabs[removeIndex - 1]?.content?.id) + '' ;
+          (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
+            this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
       }
       if (name === "NORMAL" || name === "IMPORT" || name === "EXPORT") {
         this.jobType = "SHOWDETAIL";
       } else {
         this.jobDetailTabs.splice(removeIndex, 1);
         if (this.jobDetailTabs.length === 0) {
-          this.jobDetailIdx = '欢迎';
+          this.jobDetailIdx = "欢迎";
         }
       }
     },
 
     freshItem() {
       this.getItem();
-      this.jobType = 'SHOWDETAIL';
+      this.jobType = "SHOWDETAIL";
     },
 
     handleTabsEdit(targetName, action) {
-      if (action === 'add') {
+      if (action === "add") {
         const newTabName = new Date().valueOf().toString();
         this.editableTabs.push({
-          title: 'Untitled',
+          title: "Untitled",
           name: newTabName,
-          content: 'New Tab content'
+          content: "New Tab content",
         });
         this.editableTabsValue = newTabName;
       }
-      if (action === 'remove') {
+      if (action === "remove") {
         const tabs = this.editableTabs;
         let activeName = this.editableTabsValue;
         if (activeName === targetName) {
@@ -398,7 +379,7 @@ export default {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
-          data: val.data
+          data: val.data,
         });
       } else {
         for (let i = 0; i < this.List.length; i++) {
@@ -407,7 +388,7 @@ export default {
           } else {
             this.List.push({
               name: val.name,
-              data: val.data
+              data: val.data,
             });
           }
         }
@@ -439,17 +420,13 @@ export default {
       a.title = data.jobDesc;
       a.name = data.jobDesc;
       a.content = data;
-      console.log(this.jobDetailTabs);
-      console.log(a);
-      if (JSON.stringify(this.jobDetailTabs).indexOf(JSON.stringify(a)) == -1) {
-        // this.$message.info("tab not found, open a new one  ")
+      if (_.findIndex(this.jobDetailTabs, a) === -1) {
         this.jobDetailTabs.push(a);
-        this.jobDetailIdx = a.content.id + '';
+        this.jobDetailIdx = a.content.id + "";
       } else {
-        this.jobDetailIdx = a.content.id + '';
+        this.jobDetailIdx = a.content.id + "";
       }
-      this.jobType = 'SHOWDETAIL';
-      // this.jobListLoading = false
+      this.jobType = "SHOWDETAIL";
     },
 
     getList(data) {
@@ -465,7 +442,7 @@ export default {
           } else {
             this.editableTabs.push({
               title: data.name,
-              name: (this.editableTabs.length + 1).toString()
+              name: (this.editableTabs.length + 1).toString(),
             });
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
@@ -475,7 +452,7 @@ export default {
       } else {
         this.editableTabs.push({
           title: data.name,
-          name: (this.editableTabs.length + 1).toString()
+          name: (this.editableTabs.length + 1).toString(),
         });
       }
     },
@@ -493,8 +470,8 @@ export default {
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: '',
-          glueType: ''
+          jobDesc: "",
+          glueType: "",
         };
         listQuery.projectIds = this.options[0].id;
         job.getList(listQuery).then((response) => {
@@ -505,11 +482,11 @@ export default {
           a.title = firstElement.jobDesc;
           a.name = firstElement.jobDesc;
           a.content = firstElement;
-          if(!this.firstTime){
+          if (!this.firstTime) {
             this.jobDetailTabs.push(a);
-            this.jobDetailIdx = a.content.id + '';
+            this.jobDetailIdx = a.content.id + "";
           } else {
-            this.firstTime = false
+            this.firstTime = false;
           }
           this.jobDetailLoading = false;
         });
@@ -524,8 +501,8 @@ export default {
         jobGroup: 0,
         // projectIds: '',
         triggerStatus: -1,
-        jobDesc: '',
-        glueType: ''
+        jobDesc: "",
+        glueType: "",
       };
       listQuery.projectIds = event;
       job.getList(listQuery).then((response) => {
@@ -538,8 +515,8 @@ export default {
       console.log(command);
       this.jobType = command;
       this.jobDetailIdx = command;
-    }
-  }
+    },
+  },
 };
 </script>
 
