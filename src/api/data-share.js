@@ -83,7 +83,7 @@ export function regExamineDetail(query) {
 // 查询所有服务器名称
 export function getServerName() {
   return request({
-    url: '/api/interface/getInterfaceDetails',
+    url: '/api/databaseInfo/getDataBaseInfoServerName',
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ export function getInfoList(query) {
 // 获取信息资源数据项列表
 export function getItemByInfoList(query) {
   return request({
-    url: `/api/dataCatalog/getItemByInfoName?serverName=${query}`,
+    url: `/api/dataCatalog/getItemByInfoName?infoName=${query}`,
     method: 'post',
     headers: {
       'Content-Type': 'application/json'

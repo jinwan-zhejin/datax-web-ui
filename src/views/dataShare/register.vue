@@ -39,11 +39,11 @@
           <el-row>
             <el-col :span="9">
               <el-form-item label="数据源:">
-                <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 200px" @change="fetchTables">
+                <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 200px" @change="getTableName">
                   <el-option
-                    v-for="item in dsList"
+                    v-for="item in options1"
                     :key="item.id"
-                    :label="item.datasourceName"
+                    :label="item.dataServerName"
                     :value="item.id"
                   />
                 </el-select>
@@ -51,11 +51,11 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="数据表:">
-                <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 200px" @change="fetchColumns">
+                <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 200px" @change="getColumns">
                   <el-option
                     v-for="item in tableList"
-                    :label="item"
-                    :value="item"
+                    :label="item.tableEnglish"
+                    :value="item.tableEnglish"
                   />
                 </el-select>
               </el-form-item>
@@ -182,6 +182,7 @@ export default {
         ],
         isLimit: '无条件共享'
       },
+      serverName: '',
       rules: {
         contacts: [
           { required: true, message: '请输入联系人', trigger: 'blur' }
@@ -248,7 +249,8 @@ export default {
   created() {
     // this.form.registerCompany = localStorage.getItem('UserName')
     this.form.registerCompany = 'admin'
-    this.fetchDataSource()
+    // this.fetchDataSource()
+    this.getServer()
   },
   mounted() {
     const em = document.getElementsByClassName('el-tabs__header')[0]
@@ -355,14 +357,6 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除${file.name}？`)
     },
-    // 选择
-    async chooseServer(name) {
-      const res = await this.$axios.post(`/dataCatalog/getCatalogByServerName?serverName=${name}&token=${localStorage.getItem('token')}`)
-      console.log(res)
-      if (res.status === 200) {
-        this.tableList = res.data.message
-      }
-    },
     // 选择信息资源名称
     async chooseInfo(name) {
       interFaceApi.getInfoList(name).then(res => {
@@ -375,12 +369,51 @@ export default {
       })
     },
     // 获取所在服务器名称
-    async getServer() {
-      const res = await this.$axios.post('/databaseInfo/getDataBaseInfoServerName')
-      console.log(res)
-      if (res.status === 200) {
-        this.options1 = res.data
+    getServer() {
+      interFaceApi.getServerName().then(res => {
+        console.log(res, 'ooooooooooooooooooo')
+        if (res.code === 200) {
+          this.options1 = res.content
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 根据服务器名称查询表名
+    getTableName() {
+      for (let i = 0; i < this.options1.length; i++) {
+        if (this.options1[i].id === this.paramForm.serverName) {
+          this.serverName = this.options1[i].dataServerName
+        }
       }
+      interFaceApi.getInfoList(this.serverName).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.tableList = res.content.message
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 根据表名获取字段
+    getColumns() {
+      for (let i = 0; i < this.options1.length; i++) {
+        if (this.options1[i].id === this.paramForm.serverName) {
+          this.serverName = this.options1[i].dataServerName
+        }
+      }
+      const obj = {
+        datasourceId: this.paramForm.serverName,
+        tableName: this.paramForm.infoName
+      }
+      dsQueryApi.getTableColumns(obj).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          // this.tableList = res.content.message
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     chooseName(name) {
       for (let i = 0; i < this.options3.length; i++) {
@@ -467,17 +500,17 @@ export default {
     },
     // 获取infoId和tableName
     getParams() {
-      console.log(this.tableList)
-      for (let i = 0; i < this.tableList.length; i++) {
-        if (this.tableList[i].infoName === this.paramForm.infoName) {
-          this.tableEnglish = this.tableList[i]
-        }
-      }
-      for (let j = 0; j < this.dsList.length; j++) {
-        if (this.dsList[j].id === this.paramForm.serverName) {
-          this.paramForm.serverName = this.dsList[j].datasourceName
-        }
-      }
+      // console.log(this.tableList)
+      // for (let i = 0; i < this.tableList.length; i++) {
+      //   if (this.tableList[i].infoName === this.paramForm.infoName) {
+      //     this.tableEnglish = this.tableList[i]
+      //   }
+      // }
+      // for (let j = 0; j < this.dsList.length; j++) {
+      //   if (this.dsList[j].id === this.paramForm.serverName) {
+      //     this.paramForm.serverName = this.dsList[j].datasourceName
+      //   }
+      // }
     },
     // 确定注册
     async ok() {

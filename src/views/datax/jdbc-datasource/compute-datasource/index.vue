@@ -72,6 +72,7 @@
       :total="total"
       :page.sync="listQuery.current"
       :limit.sync="listQuery.size"
+      layout="total, prev, pager, next, sizes"
       @pagination="fetchData"
     />
 
@@ -433,6 +434,8 @@ export default {
     line-height: 56px;
     background-color: #ffffff;
     border-radius: 5px 5px 0px 0px;
+    padding: 0px;
+    box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
     .left {
       float: left;
       width: 120px;
@@ -445,12 +448,15 @@ export default {
     }
     .right {
       float: right;
+      margin-right: 20px;
       .el-input {
         overflow: hidden;
         .el-input__inner {
           float: left;
           width: 200px;
           padding-right: 15px;
+          height: 35px;
+          line-height: 35px;
         }
         .el-input-group__append {
           float: left;

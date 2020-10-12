@@ -14,9 +14,9 @@
       >
         <el-menu-item style="text-align: center;">
           <template slot="title">
-            <!-- <span class="Title">DetaElit</span> -->
-            <img src="@/assets/LogoTit.png" alt="">
+            <img v-show="!isCollapse" slot="title" src="@/assets/LogoTit.png" alt="">
           </template>
+          <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
         </el-menu-item>
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>

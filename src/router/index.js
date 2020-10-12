@@ -458,7 +458,7 @@ export const asyncRoutes = [
         name: 'list',
         component: () => import('@/views/dataExplore/index.vue'),
         meta: { title: '数据脱敏', icon: 'eye-open' }
-      },
+      }
     ]
   },
   {

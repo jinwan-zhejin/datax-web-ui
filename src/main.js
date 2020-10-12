@@ -54,7 +54,7 @@ Vue.prototype.$axios = axios
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium' // set element-ui default size
+  size: Cookies.get('size') || 'small' // set element-ui default size
 })
 
 // register global utility filters

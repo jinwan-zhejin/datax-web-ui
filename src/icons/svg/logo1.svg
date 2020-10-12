@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128px" height="128px" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>画板</title>
+    <g id="画板" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.900000036">
+        <polygon id="Fill-1" fill="#5A3EFF" points="63.8751 64 10.0001 94.858 10.0001 94.988 63.8751 126.124 117.6961 94.988 117.6961 94.858"></polygon>
+        <polygon id="Fill-1" fill="#FEC532" points="64.103 33 10 63.68 10 63.81 63.898 95.123 117.822 64.166 117.823 64.035"></polygon>
+        <polygon id="Fill-1" fill="#FF2E5B" points="63.875 2 10 32.857 10 32.987 63.875 64.123 117.696 32.987 117.696 32.857"></polygon>
+        <polygon id="Fill-1" fill="#002DFF" points="10.126 33 10.126 33.13 63.875 64.266 63.875 126.549 10 95.691"></polygon>
+    </g>
+</svg>
