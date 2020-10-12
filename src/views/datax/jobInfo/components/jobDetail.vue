@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <div class="action_btn">
-      <span><i class="el-icon-video-play"></i>执行一次</span>
-      <span><i class="el-icon-tickets"></i>查询日志</span>
-      <span><i class="el-icon-edit"></i>编辑</span>
-      <span><i class="el-icon-copy-document"></i>注册节点</span>
-      <span><i class="el-icon-time"></i>下次触发时间</span>
-      <span><i class="el-icon-delete"></i>删除</span>
+      <span class="span_btn"><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行一次</span>
+      <span class="span_btn"><i class="el-icon-tickets"></i>&nbsp;&nbsp;查询日志</span>
+      <span class="span_btn"><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
+      <span class="span_btn"><i class="el-icon-copy-document"></i>&nbsp;&nbsp;注册节点</span>
+      <span class="span_btn"><i class="el-icon-time"></i>&nbsp;&nbsp;下次触发时间</span>
+      <span class="span_btn"><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
     <el-switch
       active-color="#00A854"
       active-text="启动"
@@ -370,17 +370,20 @@
       v-model="temp.jobJson"
     />
     <div slot="footer" class="dialog-footer ">
-      <el-button
-        @click="drawer = true"
-        plain
-        type="primary"
-        style="margin: 16px;margin-left:0;"
-      >
-        运行日志
-      </el-button>
-      <el-drawer title="运行日志" :visible.sync="drawer" :with-header="false" direction="btt">
-        <span>运行日志!</span>
-      </el-drawer>
+      <div >
+        <div class="log_title">
+          <span>运行日志</span>
+          <span @click="showLog = !showLog" class="unflod">
+            <i v-if="!showLog" class="el-icon-sort-up"></i>
+            <i v-else class="el-icon-sort-down"></i>
+          </span>
+        </div>
+        <transition name="fade">
+        <div v-if="showLog" class="log_container">
+
+        </div>
+        </transition>
+      </div>
     </div>
     <!-- </el-dialog> -->
 </div>
@@ -436,7 +439,7 @@ export default {
       callback();
     };
     return {
-      drawer: false,
+      showLog: false,
       projectIds: "",
       list: null,
       listLoading: true,
@@ -845,7 +848,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
@@ -853,9 +856,35 @@ export default {
 .el-dropdown + .el-dropdown {
   margin-left: 15px;
 }
-.action_btn span {
-  margin-left: 15px;
-  font-size:16px;
+.action_btn {
+  font-size:14px;
   cursor: pointer;
+}
+.span_btn {
+  margin-left: 15px;
+}
+.span_btn > i {
+  color: gray;
+}
+.log_title {
+  color: #409eff;
+  font-size: 12px;
+  background: rgb(247, 247, 247);
+  padding: 10px;
+}
+.unflod {
+  color: black;
+  float: right;
+  cursor: pointer;
+}
+.log_container {
+  height: 150px;
+  border: 1px solid rgb(247, 247, 247);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: height .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  height: 0;
 }
 </style>

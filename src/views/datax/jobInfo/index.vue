@@ -584,7 +584,7 @@ export default {
             li {
               height: 40px;
               line-height: 40px;
-              background-color: rgb(218, 243, 253);
+              // background-color: rgb(218, 243, 253);
               text-align: left;
               list-style: none;
               text-indent: 2rem;

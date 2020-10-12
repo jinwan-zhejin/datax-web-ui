@@ -1,6 +1,6 @@
 <template>
   <div class="json-editor">
-    <textarea ref="textarea" />
+    <textarea  ref="textarea" />
   </div>
 </template>
 
@@ -40,7 +40,8 @@ export default {
       mode: 'application/json',
       gutters: ['CodeMirror-lint-markers'],
       theme: 'rubyblue',
-      lint: true
+      lint: true,
+      readOnly: 'nocursor'
     })
 
     this.jsonEditor.setValue(`${this.value}`)
@@ -60,7 +61,6 @@ export default {
 <style scoped>
 .json-editor{
   height: 100%;
-  max-width:900px ;
   position: relative;
 }
 .json-editor >>> .CodeMirror {

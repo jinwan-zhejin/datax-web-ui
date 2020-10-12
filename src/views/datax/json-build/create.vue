@@ -471,7 +471,7 @@ export default {
     },
 
     createTask() {
-      this.temp.jobJson = JSON.stringify(this.Fjson);
+      this.temp.jobJson = JSON.stringify(this.Fjson, null,2);
       console.log('this.Fjson',this.Fjson);
       let str = "";
       this.temp.childJobIdArr.forEach((ele) => {
