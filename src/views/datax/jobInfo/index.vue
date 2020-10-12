@@ -122,7 +122,7 @@
             <ul>
               <li
                 v-for="item in List"
-                :key="item.jobDesc"
+                :key="item.id"
                 @click="getJobDetail(item)"
               >
                 <!--  -->
@@ -145,8 +145,11 @@
         closable
         @tab-remove="removeJobTab"
       >
+        <el-tab-pane v-if='!jobDetailTabs.length' label="欢迎" name="欢迎">
+          欢迎
+        </el-tab-pane>
         <el-tab-pane
-          :key="item.name"
+          :key="item.id"
           v-for="item in jobDetailTabs"
           :label="item.title"
           :name="item.name"
@@ -200,7 +203,7 @@
       >
         <el-tab-pane
           v-for="item in editableTabs"
-          :key="item.name"
+          :key="item.id"
           :label="item.title"
           :name="item.name"
         >
@@ -294,7 +297,7 @@ export default {
         searchVal: "",
       },
       jobType: "SHOWDETAIL",
-      jobDetailIdx: "",
+      jobDetailIdx: "欢迎",
       jobTypeMap: "",
       jobDetailLoading: true,
     };
@@ -315,6 +318,7 @@ export default {
   mounted() {},
   methods: {
     removeJobTab(name) {
+      console.log(name);
       const removeIndex = _.findIndex(
         this.jobDetailTabs,
         (ele) => ele.name === name
@@ -324,7 +328,14 @@ export default {
           this.jobDetailTabs[removeIndex + 1]?.name ||
           this.jobDetailTabs[removeIndex - 1]?.name;
       }
-      this.jobDetailTabs.splice(removeIndex, 1);
+      if (name === "NORMAL" || name === "IMPORT" || name === "EXPORT") {
+        this.jobType = "SHOWDETAIL";
+      } else {
+        this.jobDetailTabs.splice(removeIndex, 1);
+        if (this.jobDetailTabs.length === 0) {
+          this.jobDetailIdx = '欢迎';
+        }
+      }
     },
 
     freshItem() {
@@ -490,8 +501,8 @@ export default {
           a.title = firstElement.jobDesc;
           a.name = firstElement.jobDesc;
           a.content = firstElement;
-          this.jobDetailTabs.push(a);
-          this.jobDetailIdx = a.name;
+          // this.jobDetailTabs.push(a);
+          // this.jobDetailIdx = a.name;
           this.jobDetailLoading = false;
         });
       });

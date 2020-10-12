@@ -25,6 +25,7 @@ export default {
     value(value) {
       const editorValue = this.shellEditor.getValue()
       if (value !== editorValue) {
+        
         this.shellEditor.setValue(this.value)
       }
     }
@@ -37,7 +38,7 @@ export default {
       theme: 'rubyblue',
       lint: true
     })
-
+    console.log('shell');
     this.shellEditor.setValue(this.value ? this.value : '')
     this.shellEditor.on('change', cm => {
       this.$emit('changed', cm.getValue())
