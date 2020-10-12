@@ -68,13 +68,6 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-<!--          <el-col :span="12">
-            <el-form-item label="执行器" prop="jobGroup">
-              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
 
           <el-col :span="12">
             <el-form-item label="失败重试次数">
@@ -84,13 +77,7 @@
         </el-row>
 
         <el-row :gutter="20">
-<!--          <el-col :span="12">
-            <el-form-item label="路由策略" prop="executorRouteStrategy">
-              <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
-                <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
+
           <el-col :span="12">
             <el-form-item label="子任务">
               <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
