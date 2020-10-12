@@ -2,8 +2,8 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-30 18:41:23
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
+ * @LastEditTime: 2020-10-12 09:46:09
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据管理-apache atlas
 -->
 
