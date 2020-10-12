@@ -326,6 +326,8 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as jobProjectApi from '@/api/datax-job-project'
 import { isJSON } from '@/utils/validate'
 
+import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, handlerUpdate } from './method'
+
 export default {
   name: 'JobInfo',
   components: { Pagination, JsonEditor, ShellEditor, PythonEditor, PowershellEditor, Cron },
@@ -591,43 +593,8 @@ export default {
       })
     },
     handlerUpdate(row) {
-      this.resetTemp()
-      this.temp = Object.assign({}, row) // copy obj
-      if (this.temp.jobJson) this.jobJson = JSON.parse(this.temp.jobJson)
-      this.glueSource = this.temp.glueSource
-      const arrchildSet = []
-      const arrJobIdList = []
-      if (this.jobIdList) {
-        for (const n in this.jobIdList) {
-          if (this.jobIdList[n].id !== this.temp.id) {
-            arrJobIdList.push(this.jobIdList[n])
-          }
-        }
-        this.JobIdList = arrJobIdList
-      }
-
-      if (this.temp.childJobId) {
-        const arrString = this.temp.childJobId.split(',')
-        for (const i in arrString) {
-          for (const n in this.jobIdList) {
-            if (this.jobIdList[n].id === parseInt(arrString[i])) {
-              arrchildSet.push(this.jobIdList[n])
-            }
-          }
-        }
-        this.temp.childJobId = arrchildSet
-      }
-      if (this.temp.partitionInfo) {
-        const partition = this.temp.partitionInfo.split(',')
-        this.partitionField = partition[0]
-        this.timeOffset = partition[1]
-        this.timeFormatType = partition[2]
-      }
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      console.log(row);
+      handlerUpdate.call(this, row);
     },
     updateData() {
       this.temp.jobJson = typeof (this.jobJson) !== 'string' ? JSON.stringify(this.jobJson) : this.jobJson
@@ -666,66 +633,23 @@ export default {
       })
     },
     handlerDelete(row) {
-      this.$confirm('确定删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        job.removeJob(row.id).then(response => {
-          this.fetchData()
-          this.$notify({
-            title: 'Success',
-            message: 'Delete Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        })
+      handlerDelete.call(this, row)
+      .then(() => {
+        this.fetchData
       })
-
-      // const index = this.list.indexOf(row)
     },
     handlerExecute(row) {
-      this.$confirm('确定执行吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const param = {}
-        param.jobId = row.id
-        param.executorParam = row.executorParam
-        job.triggerJob(param).then(response => {
-          this.$notify({
-            title: 'Success',
-            message: 'Execute Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        })
-      })
+      handlerExecute.call(this, row);
     },
     // 查看日志
     handlerViewLog(row) {
-      this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
+      handlerViewLog.call(this, row)
     },
     handlerStart(row) {
-      job.startJob(row.id).then(response => {
-        this.$notify({
-          title: 'Success',
-          message: 'Start Successfully',
-          type: 'success',
-          duration: 2000
-        })
-      })
+      handlerStart.call(this, row)
     },
     handlerStop(row) {
-      job.stopJob(row.id).then(response => {
-        this.$notify({
-          title: 'Success',
-          message: 'Start Successfully',
-          type: 'success',
-          duration: 2000
-        })
-      })
+      handlerStop.call(this, row)
     },
     changeSwitch(row) {
       row.triggerStatus === 1 ? this.handlerStart(row) : this.handlerStop(row)
@@ -737,11 +661,7 @@ export default {
       })
     },
     loadById(row) {
-      executor.loadById(row.jobGroup).then(response => {
-        this.registerNode = []
-        const { content } = response
-        this.registerNode.push(content)
-      })
+      loadById.call(this, row);
     }
   }
 }

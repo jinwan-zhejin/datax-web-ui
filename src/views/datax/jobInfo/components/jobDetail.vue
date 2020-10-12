@@ -1,19 +1,42 @@
 <template>
   <div class="app-container">
     <div class="action_btn">
-      <span><i class="el-icon-video-play"></i>执行一次</span>
-      <span><i class="el-icon-tickets"></i>查询日志</span>
-      <span><i class="el-icon-edit"></i>编辑</span>
-      <span><i class="el-icon-copy-document"></i>注册节点</span>
-      <span><i class="el-icon-time"></i>下次触发时间</span>
-      <span><i class="el-icon-delete"></i>删除</span>
+      <span class="span_btn" @click="handlerExecute(temp)"><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行一次</span>
+      <span class="span_btn" @click="handlerViewLog(temp)"><i class="el-icon-tickets"></i>&nbsp;&nbsp;查询日志</span>
+      <span class="span_btn" @click="handlerUpdate(temp)"><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
+
+      <el-popover
+            placement="bottom"
+            width="500"
+            @show="loadById(temp)"
+          >
+            <el-table :data="registerNode">
+              <el-table-column width="150" property="title" label="执行器名称" />
+              <el-table-column width="150" property="appName" label="appName" />
+              <el-table-column width="150" property="registryList" label="机器地址" />
+            </el-table>
+            <span slot="reference" class="span_btn"><i class="el-icon-copy-document"></i>&nbsp;&nbsp;注册节点</span>
+      </el-popover>
+      
+      <el-popover
+            placement="bottom"
+            width="300"
+            @show="nextTriggerTime(temp)"
+          >
+            <h5 v-html="triggerNextTimes" />
+            <span slot="reference" class="span_btn"><i class="el-icon-time"></i>&nbsp;&nbsp;下次触发时间</span>
+      </el-popover>
+      
+      <span class="span_btn" @click="handlerDelete(temp)"><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
     <el-switch
+      v-model='switchVal'
       active-color="#00A854"
       active-text="启动"
       :active-value="1"
       inactive-color="#F04134"
       inactive-text="停止"
       :inactive-value="0"
+      @change="changeSwitch(temp)"
     ></el-switch>
     </div>
     <el-divider></el-divider>
@@ -23,14 +46,11 @@
       :model="temp"
       label-position="left"
       label-width="110px"
-      disabled=""
+      :disabled="editFrom"
     >
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务类型" prop="glueType">
-            <!-- <el-select v-model="temp.glueType" placeholder="任务脚本类型">
-                <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select> -->
             {{ this.temp.glueType }}
           </el-form-item>
         </el-col>
@@ -370,19 +390,223 @@
       v-model="temp.jobJson"
     />
     <div slot="footer" class="dialog-footer ">
-      <el-button
-        @click="drawer = true"
-        plain
-        type="primary"
-        style="margin: 16px;margin-left:0;"
-      >
-        运行日志
-      </el-button>
-      <el-drawer title="运行日志" :visible.sync="drawer" :with-header="false" direction="btt">
-        <span>运行日志!</span>
-      </el-drawer>
+      <div >
+        <div class="log_title">
+          <span>运行日志</span>
+          <span @click="showLog = !showLog" class="unflod">
+            <i v-if="!showLog" class="el-icon-sort-up"></i>
+            <i v-else class="el-icon-sort-down"></i>
+          </span>
+        </div>
+        <transition name="fade">
+        <div v-if="showLog" class="log_container">
+
+        </div>
+        </transition>
+      </div>
     </div>
     <!-- </el-dialog> -->
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="执行器" prop="jobGroup">
+              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="任务名称" prop="jobDesc">
+              <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="路由策略" prop="executorRouteStrategy">
+              <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
+                <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-dialog
+              title="提示"
+              :visible.sync="showCronBox"
+              width="60%"
+              append-to-body
+            >
+              <cron v-model="temp.jobCron" />
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="showCronBox = false;">关闭</el-button>
+                <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+              </span>
+            </el-dialog>
+            <el-form-item label="Cron" prop="jobCron">
+              <el-input v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
+                <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+                <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
+                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="报警邮件">
+              <el-input v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="任务类型" prop="glueType">
+              <el-select v-model="temp.glueType" placeholder="任务脚本类型">
+                <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="失败重试次数">
+              <el-input-number v-model="temp.executorFailRetryCount" :min="0" :max="20" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="所属项目" prop="projectId">
+              <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
+                <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="超时时间(分钟)">
+              <el-input-number v-model="temp.executorTimeout" :min="0" :max="120" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="子任务">
+              <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
+                <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" />
+        </el-row>
+        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="辅助参数" prop="incrementType">
+              <el-select v-model="temp.incrementType" placeholder="请选择参数类型" value="">
+                <el-option v-for="item in incrementTypes" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="增量主键开始ID" prop="incStartId">
+              <el-input v-model="temp.incStartId" placeholder="首次增量使用" style="width: 56%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="ID增量参数" prop="replaceParam">
+              <el-input v-model="temp.replaceParam" placeholder="-DstartId='%s' -DendId='%s'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="reader数据源" prop="datasourceId">
+              <el-select v-model="temp.datasourceId" placeholder="reader数据源" class="filter-item">
+                <el-option v-for="item in dataSourceList" :key="item.id" :label="item.datasourceName" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="reader表" prop="readerTable">
+              <el-input v-model="temp.readerTable" placeholder="读表的表名" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="主键" label-width="40px" prop="primaryKey">
+              <el-input v-model="temp.primaryKey" placeholder="请填写主键字段名" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 2" :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="增量开始时间" prop="incStartTime">
+              <el-date-picker
+                v-model="temp.incStartTime"
+                type="datetime"
+                placeholder="首次增量使用"
+                format="yyyy-MM-dd HH:mm:ss"
+                style="width: 57%"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="增量时间字段" prop="replaceParam">
+              <el-input v-model="temp.replaceParam" placeholder="-DlastTime='%s' -DcurrentTime='%s'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="增量时间格式" prop="replaceParamType">
+              <el-select v-model="temp.replaceParamType" placeholder="增量时间格式" @change="incStartTimeFormat">
+                <el-option v-for="item in replaceFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+        </el-row>
+        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 3" :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="分区字段" prop="partitionField">
+              <el-input v-model="partitionField" placeholder="请输入分区字段" style="width: 56%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="分区时间">
+              <el-select v-model="timeFormatType" placeholder="分区时间格式">
+                <el-option v-for="item in timeFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-input-number v-model="timeOffset" :min="-20" :max="0" style="width: 65%" />
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="JVM启动参数">
+              <el-input v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="jobJson" />
+      <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
+      <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
+      <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" />
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+
 </div>
 </template>
 
@@ -399,6 +623,8 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
+
+import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
 export default {
   name: "SimpleJob",
@@ -436,7 +662,9 @@ export default {
       callback();
     };
     return {
-      drawer: false,
+      editFrom: true,
+      switchVal: 1,
+      showLog: false,
       projectIds: "",
       list: null,
       listLoading: true,
@@ -454,7 +682,7 @@ export default {
       showCronBox: false,
       dialogPluginVisible: false,
       pluginData: [],
-      dialogFormVisible: true,
+      dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "Edit",
@@ -616,14 +844,73 @@ export default {
     };
   },
   created() {
+    // console.log('this.temp',this.jobInfo);
     this.fetchData();
     this.getExecutor();
     this.getJobIdList();
     this.getJobProject();
-    this.getDataSourceList(), (this.temp = this.jobInfo);
+    this.getDataSourceList();
+    this.temp = this.jobInfo;
+    
   },
 
   methods: {
+    //执行一次
+    handlerExecute(temp) {
+      handlerExecute.call(this, temp);
+    },
+
+    //查看日志
+    handlerViewLog(temp) {
+      handlerViewLog.call(this, temp);
+    },
+
+    //删除
+    handlerDelete(temp) {
+      handlerDelete.call(this, temp)
+      .then(()=>{
+        this.$emit('deleteJob')
+      })
+    },
+
+    //开关
+    changeSwitch(temp) {
+      temp.triggerStatus === 1 ? handlerStart.call(this, temp) : handlerStop.call(this, temp)
+    },
+
+    //注册节点
+    loadById(row) {
+      loadById.call(this, row);
+    },
+
+    //下次触发时间
+    nextTriggerTime(row) {
+      nextTriggerTime.call(this, row);
+    },
+
+    //编辑
+    handlerUpdate(row) {
+      console.log(row);
+      row.childJobId = row.childJobId.join?.(',')
+      handlerUpdate.call(this, row)
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then((_) => {
@@ -675,45 +962,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    handlerUpdate(row) {
-      this.resetTemp();
-      this.temp = Object.assign({}, row); // copy obj
-      if (this.temp.jobJson) this.jobJson = JSON.parse(this.temp.jobJson);
-      this.glueSource = this.temp.glueSource;
-      const arrchildSet = [];
-      const arrJobIdList = [];
-      if (this.jobIdList) {
-        for (const n in this.jobIdList) {
-          if (this.jobIdList[n].id !== this.temp.id) {
-            arrJobIdList.push(this.jobIdList[n]);
-          }
-        }
-        this.JobIdList = arrJobIdList;
-      }
-
-      if (this.temp.childJobId) {
-        const arrString = this.temp.childJobId.split(",");
-        for (const i in arrString) {
-          for (const n in this.jobIdList) {
-            if (this.jobIdList[n].id === parseInt(arrString[i])) {
-              arrchildSet.push(this.jobIdList[n]);
-            }
-          }
-        }
-        this.temp.childJobId = arrchildSet;
-      }
-      if (this.temp.partitionInfo) {
-        const partition = this.temp.partitionInfo.split(",");
-        this.partitionField = partition[0];
-        this.timeOffset = partition[1];
-        this.timeFormatType = partition[2];
-      }
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
-    },
+    
     updateData() {
       this.temp.jobJson =
         typeof this.jobJson !== "string"
@@ -760,92 +1009,13 @@ export default {
         }
       });
     },
-    handlerDelete(row) {
-      this.$confirm("确定删除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        job.removeJob(row.id).then((response) => {
-          this.fetchData();
-          this.$notify({
-            title: "Success",
-            message: "Delete Successfully",
-            type: "success",
-            duration: 2000,
-          });
-        });
-      });
-
-      // const index = this.list.indexOf(row)
-    },
-    handlerExecute(row) {
-      this.$confirm("确定执行吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        const param = {};
-        param.jobId = row.id;
-        param.executorParam = row.executorParam;
-        job.triggerJob(param).then((response) => {
-          this.$notify({
-            title: "Success",
-            message: "Execute Successfully",
-            type: "success",
-            duration: 2000,
-          });
-        });
-      });
-    },
-    // 查看日志
-    handlerViewLog(row) {
-      this.$router.push({
-        path: "/datax/log/jobLog",
-        query: { jobId: row.id },
-      });
-    },
-    handlerStart(row) {
-      job.startJob(row.id).then((response) => {
-        this.$notify({
-          title: "Success",
-          message: "Start Successfully",
-          type: "success",
-          duration: 2000,
-        });
-      });
-    },
-    handlerStop(row) {
-      job.stopJob(row.id).then((response) => {
-        this.$notify({
-          title: "Success",
-          message: "Start Successfully",
-          type: "success",
-          duration: 2000,
-        });
-      });
-    },
-    changeSwitch(row) {
-      row.triggerStatus === 1 ? this.handlerStart(row) : this.handlerStop(row);
-    },
-    nextTriggerTime(row) {
-      job.nextTriggerTime(row.jobCron).then((response) => {
-        const { content } = response;
-        this.triggerNextTimes = content.join("<br>");
-      });
-    },
-    loadById(row) {
-      executor.loadById(row.jobGroup).then((response) => {
-        this.registerNode = [];
-        const { content } = response;
-        this.registerNode.push(content);
-      });
-    },
+    
+    
   },
 };
 </script>
 
-<style>
+<style scoped>
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
@@ -853,9 +1023,35 @@ export default {
 .el-dropdown + .el-dropdown {
   margin-left: 15px;
 }
-.action_btn span {
-  margin-left: 15px;
-  font-size:16px;
+.action_btn {
+  font-size:14px;
   cursor: pointer;
+}
+.span_btn {
+  margin-left: 15px;
+}
+.span_btn > i {
+  color: gray;
+}
+.log_title {
+  color: #409eff;
+  font-size: 12px;
+  background: rgb(247, 247, 247);
+  padding: 10px;
+}
+.unflod {
+  color: black;
+  float: right;
+  cursor: pointer;
+}
+.log_container {
+  height: 150px;
+  border: 1px solid rgb(247, 247, 247);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: height .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  height: 0;
 }
 </style>
