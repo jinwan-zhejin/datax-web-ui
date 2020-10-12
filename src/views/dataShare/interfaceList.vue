@@ -11,7 +11,7 @@
     <div class="interRegister">
       <!-- <p><i style="margin-right:10px;" class="el-icon-search"></i><span>查询条件</span></p> -->
       <div style="margin-top: 20px;">
-        <el-button type="primary" plain @click="gotoInterface">接口注册</el-button>
+        <el-button type="primary" @click="gotoInterface">接口注册</el-button>
         <el-input v-model="interName" placeholder="请输入接口名称" class="input-with-select sort">
           <el-button slot="append" class="search" style="padding: 0px 10px;" icon="el-icon-search" @click="getAllData" />
         </el-input>

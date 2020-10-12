@@ -1,73 +1,74 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.datasourceName"
-        clearable
-        placeholder="数据源名称"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
-        搜索
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
-      <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
-      </el-checkbox> -->
+      <div class="left">
+        计算数据源
+      </div>
+      <div class="right">
+        <el-input
+          v-model="listQuery.datasourceName"
+          clearable
+          placeholder="数据源名称"
+          style="width: 268px;"
+          class="filter-item"
+          @keyup.enter.native="handleFilter"
+        >
+          <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="primary" @click="fetchData">搜索</el-button>
+        </el-input>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+          添加
+        </el-button>
+        <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+          reviewer
+        </el-checkbox> -->
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
+      :header-cell-style="{background:'#FAFAFC'}"
       fit
       highlight-current-row
     >
       <!-- <el-table-column align="center" label="序号" width="95">
         <template slot-scope="scope">{{ scope.$index }}</template>
       </el-table-column> -->
-      <el-table-column label="数据源" width="200" align="center">
+      <el-table-column label="数据源" width="150" align="center">
         <template slot-scope="scope">{{ scope.row.datasource }}</template>
       </el-table-column>
-      <el-table-column label="数据源名称" width="150" align="center">
+      <el-table-column label="数据源名称" width="100" align="center">
         <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
       </el-table-column>
-      <el-table-column label="数据源分组" width="200" align="center">
+      <el-table-column label="数据源分组" width="150" align="center">
         <template slot-scope="scope">{{ scope.row.datasourceGroup }}
         </template>
       </el-table-column>
-      <el-table-column label="jdbc连接串" align="center" :show-overflow-tooltip="true">
+      <el-table-column label="jdbc连接串" width="200" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">{{ scope.row.jdbcUrl ? scope.row.jdbcUrl:'-' }}</template>
       </el-table-column>
       <el-table-column label="ZK地址" width="200" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">{{ scope.row.zkAdress ? scope.row.zkAdress:'-' }}</template>
       </el-table-column>
-      <el-table-column label="数据库名" width="200" align="center" :show-overflow-tooltip="true">-->
+      <el-table-column label="数据库名" width="120" align="center" :show-overflow-tooltip="true">-->
         <template slot-scope="scope">{{ scope.row.database ? scope.row.database:'-' }}</template>-->
       </el-table-column>
-      <el-table-column label="备注" width="150" align="center">
+      <el-table-column label="备注" width="120" align="center">
         <template slot-scope="scope">{{ scope.row.comments }}</template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
-            删除
-          </el-button>
-          <el-button type="primary" size="small" @click="gatherMetadata(row)">
-            元数据采集
-          </el-button>
+          <a style="color: #3D5FFF;margin: 0px 10px;" @click="handleUpdate(row)">编辑</a>
+          <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+          <a style="color: #FE4646;margin: 0px 10px;" @click="handleDelete(row)">删除</a>
+          <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+          <a style="color: #3D5FFF;margin: 0px 10px;" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
         </template>
       </el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
+      style="float: right"
       :total="total"
       :page.sync="listQuery.current"
       :limit.sync="listQuery.size"
@@ -424,3 +425,43 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.app-container {
+  .filter-container {
+    overflow: hidden;
+    line-height: 56px;
+    background-color: #ffffff;
+    border-radius: 5px 5px 0px 0px;
+    .left {
+      float: left;
+      width: 120px;
+      height: 33px;
+      font-size: 24px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      font-weight: 500;
+      color: #333333;
+      margin-left: 24px;
+    }
+    .right {
+      float: right;
+      .el-input {
+        overflow: hidden;
+        .el-input__inner {
+          float: left;
+          width: 200px;
+          padding-right: 15px;
+        }
+        .el-input-group__append {
+          float: left;
+          width: 60px;
+          padding: 0px 15px;
+          text-align: center;
+          color: #fff;
+          background-color: #409EFF;
+        }
+      }
+    }
+  }
+}
+</style>
