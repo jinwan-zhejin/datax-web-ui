@@ -8,14 +8,15 @@ import './assets/css/reset.css'
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
-import "element-ui/lib/theme-chalk/index.css" 
+import 'element-ui/lib/theme-chalk/index.css'
+import comButton from './components/Generic/button.vue' // 自定义按钮
+Vue.component('comButton', comButton)
 
 //
 import VueClipboard from 'vue-clipboard2'
- 
-import VueCompositionAPI from '@vue/composition-api' //Vue3
+
+import VueCompositionAPI from '@vue/composition-api' // Vue3
 Vue.use(VueCompositionAPI)
- 
 
 import '@/styles/index.scss' // global css
 
@@ -55,8 +56,6 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
-
-
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

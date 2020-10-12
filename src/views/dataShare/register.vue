@@ -202,7 +202,7 @@ export default {
       infoMsg: '',
       options1: [],
       tableList: [],
-      dsList: '',
+      dsList: [],
       options3: [],
       isBan: false,
       detailForm: {},
@@ -470,21 +470,30 @@ export default {
       console.log(this.tableList)
       for (let i = 0; i < this.tableList.length; i++) {
         if (this.tableList[i].infoName === this.paramForm.infoName) {
-          this.tableEnglish = this.tableList[i].tableEnglish
-          this.infoId = this.tableList[i].infoId
-          console.log(this.infoId)
+          this.tableEnglish = this.tableList[i]
+        }
+      }
+      for (let j = 0; j < this.dsList.length; j++) {
+        if (this.dsList[j].id === this.paramForm.serverName) {
+          this.paramForm.serverName = this.dsList[j].datasourceName
         }
       }
     },
     // 确定注册
     async ok() {
       this.getParams()
+      console.log('12333333333333', this.paramForm.serverName)
+      console.log(this.form)
       interFaceApi.regInterFace({
-        ...this.form,
+        contacts: this.form.contacts,
+        telephone: this.form.telephone,
+        interName: this.form.interName,
+        interRemark: this.form.interRemark,
+        registerCompany: this.form.registerCompany,
+        responseMode: this.form.responseMode,
         inputParams: this.tableData1,
         outputParams: this.tableData2,
-        infoId: this.infoId,
-        tableEnglish: this.tableEnglish,
+        tableEnglish: this.paramForm.infoName,
         serverName: this.paramForm.serverName
       }).then(res => {
         console.log('----------------')
@@ -516,10 +525,11 @@ export default {
       datasourceApi.list(this.listQuery).then(response => {
         const { records } = response
         this.dsList = records
-        console.log(records)
+        console.log(records, '@@@@@@@@@@')
       })
     },
     fetchTables(e) {
+      console.log(e, '111111111')
       const param = {}
       param.datasourceId = e
       dsQueryApi.getTables(param).then(res => {
