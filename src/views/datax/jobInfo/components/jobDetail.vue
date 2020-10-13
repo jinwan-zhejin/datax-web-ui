@@ -607,6 +607,14 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="日志信息" :visible.sync="logview">
+  <el-table :data="logData">
+    <el-table-column property="date" label="日期" width="150"></el-table-column>
+    <el-table-column property="name" label="姓名" width="200"></el-table-column>
+    <el-table-column property="address" label="地址"></el-table-column>
+  </el-table>
+</el-dialog>
+
 </div>
 </template>
 
@@ -662,6 +670,8 @@ export default {
       callback();
     };
     return {
+      logview:false,
+      logData:[],
       editFrom: true,
       switchVal: 1,
       showLog: false,
@@ -862,7 +872,8 @@ export default {
 
     //查看日志
     handlerViewLog(temp) {
-      handlerViewLog.call(this, temp);
+      // handlerViewLog.call(this, temp);
+      this.logview = true;
     },
 
     //删除
