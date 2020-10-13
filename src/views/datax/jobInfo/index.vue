@@ -153,7 +153,7 @@
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail @deleteJob='getItem()' :job-info="item.content" />
+          <JobDetail @deleteJob='getItem()' @deleteDetailTab='removeJobTab' :job-info="item.content" />
         </el-tab-pane>
         <el-tab-pane
           v-if="
