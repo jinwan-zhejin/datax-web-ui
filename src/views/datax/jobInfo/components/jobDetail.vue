@@ -29,7 +29,7 @@
       
       <span class="span_btn" @click="handlerDelete(temp)"><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
     <el-switch
-      v-model='switchVal'
+      v-model='temp.triggerStatus'
       active-color="#00A854"
       active-text="启动"
       :active-value="1"
@@ -593,10 +593,10 @@
           </el-col>
         </el-row>
       </el-form>
-      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="jobJson" />
-      <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
+      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
+      <!-- <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
       <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
-      <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" />
+      <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" /> -->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
@@ -606,6 +606,14 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="日志信息" :visible.sync="logview">
+  <el-table :data="logData">
+    <el-table-column property="date" label="日期" width="150"></el-table-column>
+    <el-table-column property="name" label="姓名" width="200"></el-table-column>
+    <el-table-column property="address" label="地址"></el-table-column>
+  </el-table>
+</el-dialog>
 
 </div>
 </template>
@@ -662,6 +670,8 @@ export default {
       callback();
     };
     return {
+      logview:false,
+      logData:[],
       editFrom: true,
       switchVal: 1,
       showLog: false,
@@ -804,10 +814,10 @@ export default {
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
-        // { value: 'BEAN', label: 'DataX任务' },
+        { value: 'BEAN', label: 'DataX任务' },
         { value: "GLUE_SHELL", label: "Shell任务" },
-        // { value: 'GLUE_PYTHON', label: 'Python任务' },
-        // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
+        { value: 'GLUE_PYTHON', label: 'Python任务' },
+        { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
       incrementTypes: [
         { value: 0, label: "无" },
@@ -862,7 +872,8 @@ export default {
 
     //查看日志
     handlerViewLog(temp) {
-      handlerViewLog.call(this, temp);
+      // handlerViewLog.call(this, temp);
+      this.logview = true;
     },
 
     //删除
@@ -891,7 +902,7 @@ export default {
     //编辑
     handlerUpdate(row) {
       console.log(row);
-      row.childJobId = row.childJobId.join?.(',')
+      row.childJobId = row.childJobId?.join?.(',')
       handlerUpdate.call(this, row)
     },
 
@@ -966,7 +977,7 @@ export default {
     updateData() {
       this.temp.jobJson =
         typeof this.jobJson !== "string"
-          ? JSON.stringify(this.jobJson)
+          ? JSON.stringify(this.jobJson, null, 2)
           : this.jobJson;
       if (this.temp.glueType === "BEAN" && !isJSON(this.temp.jobJson)) {
         this.$notify({
@@ -978,6 +989,7 @@ export default {
         return;
       }
       this.$refs["dataForm"].validate((valid) => {
+        const tabName = this.temp.id;
         if (valid) {
           if (this.temp.childJobId) {
             const auth = [];
@@ -1005,6 +1017,9 @@ export default {
               type: "success",
               duration: 2000,
             });
+
+            this.$emit('deleteJob')
+            this.$emit('deleteDetailTab', tabName)
           });
         }
       });

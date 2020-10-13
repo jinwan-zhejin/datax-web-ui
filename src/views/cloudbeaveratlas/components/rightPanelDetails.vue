@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-10 18:31:40
+ * @LastEditTime: 2020-10-12 18:58:28
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelDetails.vue
  * @Description: 详情页
 -->
@@ -16,16 +16,16 @@
             <i class="el-icon-arrow-left topArrow" @click="backToResult" />
           </el-tooltip>
           <i class="el-icon-document" />
-          <span v-if="a">{{ detailsRequest.attributes.name }}（{{ detailsRequest.typeName }}）</span>
+          <span>{{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;</span>
         </el-col>
       </el-row>
       <el-row class="centerBar">
         <el-col>
           分类：<el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
         </el-col>
-        <el-col>
+        <!-- <el-col>
           术语：<el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row class="bottomBar">
         <el-col>
@@ -49,26 +49,24 @@
                   </el-collapse>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                  <el-collapse v-model="activeCollapse2">
+                  <!-- <el-collapse v-model="activeCollapse2">
                     <el-collapse-item title="用户定义的属性" name="collapse2">
                       <el-table :data="custProp" :show-header="false">
                         <el-table-column label="left" prop="key" />
                         <el-table-column label="right" prop="value" />
                       </el-table>
                     </el-collapse-item>
-                  </el-collapse>
+                  </el-collapse> -->
                   <el-collapse v-model="activeCollapse3">
                     <el-collapse-item title="标签" name="collapse3">
-                      <div v-if="properties.entity.labels !== undefined">
-                        <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index">{{ item }}</el-tag>
-                      </div>
+                      <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index">{{ item }}</el-tag>
                     </el-collapse-item>
                   </el-collapse>
-                  <el-collapse v-model="activeCollapse4">
+                  <!-- <el-collapse v-model="activeCollapse4">
                     <el-collapse-item title="业务元数据" name="collapse4">
                       Coding...
                     </el-collapse-item>
-                  </el-collapse>
+                  </el-collapse> -->
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -155,7 +153,7 @@
                 @current-change="handleCurrentChange"
               />
             </el-tab-pane>
-            <el-tab-pane label="Schema" name="schema">
+            <el-tab-pane v-if="properties.entity.typeName.split('_')[properties.entity.typeName.split('_').length-1] === 'table'" label="Schema" name="schema">
               <el-table>
                 <el-table-column label="名称" />
                 <el-table-column label="描述" />
@@ -237,7 +235,6 @@ export default {
   },
   data() {
     return {
-      a: true,
       tabActiveName: 'properties',
       classificationsOptions: [{
         value: '',
@@ -291,44 +288,44 @@ export default {
   },
   created() {
     this.getProperties().then(() => {
-      if (this.properties.entity.classifications.length > 0) {
+      if (this.properties.entity.hasOwnProperty('classifications')) {
         for (var i in this.properties.entity.classifications) {
           this.classificationsOptions.push({
             value: this.properties.entity.classifications[i].typeName,
             label: this.properties.entity.classifications[i].typeName
           })
         }
-        for (var j in this.properties.entity.attributes) {
-          this.techProp.push({
-            key: j,
-            value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
-          })
-        }
-        for (var f in this.properties.entity.customAttributes) {
-          this.custProp.push({
-            key: f,
-            value: this.properties.entity.customAttributes[f] === null ? 'N/A' : this.properties.entity.customAttributes[f]
-          })
-        }
-        this.classifications = this.classificationsOptions.filter(item => item.value !== '')
-        for (var k in this.properties.entity.relationshipAttributes) {
-          // console.log(k + this.properties.entity.relationshipAttributes[k].length);
-          this.relationshipList.push({
-            key: k.concat((this.properties.entity.relationshipAttributes[k].length !== undefined && this.properties.entity.relationshipAttributes[k].length > 0) ? '(' + this.properties.entity.relationshipAttributes[k].length + ')' : ''),
-            value: this.properties.entity.relationshipAttributes[k].length === undefined
-              ? this.properties.entity.relationshipAttributes[k].displayText
-              : this.properties.entity.relationshipAttributes[k].length > 0
-                ? this.properties.entity.relationshipAttributes[k][0].displayText
-                : 'N/A'
-          })
-        }
-        if (this.showEmptyRelationships) {
-          this.relationshipShow = this.relationshipList
-        } else {
-          this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
-        }
-        // console.log(this.relationshipList)
       }
+      for (var j in this.properties.entity.attributes) {
+        this.techProp.push({
+          key: j,
+          value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
+        })
+      }
+      for (var f in this.properties.entity.customAttributes) {
+        this.custProp.push({
+          key: f,
+          value: this.properties.entity.customAttributes[f] === null ? 'N/A' : this.properties.entity.customAttributes[f]
+        })
+      }
+      this.classifications = this.classificationsOptions.filter(item => item.value !== '')
+      for (var k in this.properties.entity.relationshipAttributes) {
+        // console.log(k + this.properties.entity.relationshipAttributes[k].length);
+        this.relationshipList.push({
+          key: k.concat((this.properties.entity.relationshipAttributes[k].length !== undefined && this.properties.entity.relationshipAttributes[k].length > 0) ? '(' + this.properties.entity.relationshipAttributes[k].length + ')' : ''),
+          value: this.properties.entity.relationshipAttributes[k].length === undefined
+            ? this.properties.entity.relationshipAttributes[k].displayText
+            : this.properties.entity.relationshipAttributes[k].length > 0
+              ? this.properties.entity.relationshipAttributes[k][0].displayText
+              : 'N/A'
+        })
+      }
+      if (this.showEmptyRelationships) {
+        this.relationshipShow = this.relationshipList
+      } else {
+        this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
+      }
+      // console.log(this.relationshipList)
     })
     this.getAudits()
     this.getLineage()
@@ -375,7 +372,6 @@ export default {
      */
     async getProperties() {
       const res = await apiatlas.getDetailsProperties(this.detailsRequest.guid)
-      // console.log(res)
       if (res.status === 200 && res.statusText === 'OK') {
         this.properties = res.data
         console.log(this.properties)
@@ -438,6 +434,7 @@ export default {
   .topBar {
     margin: 0 auto 20px auto;
     font-size: 2.8em;
+    line-clamp: 2.9em;
     display: -webkit-box;/*作为弹性伸缩盒子模型显示*/
     -webkit-line-clamp: 1; /*显示的行数；如果要设置2行加...则设置为2*/
     overflow: hidden; /*超出的文本隐藏*/
