@@ -377,7 +377,7 @@ export default {
         interName: this.interName,
         pageSize: this.pageSize,
         pageNum: this.pageNum,
-        registerCompany: '省经济信息中心',
+        registerCompany: 'admin',
         state: this.radio
       }).then(response => {
         console.log(response)
@@ -395,7 +395,8 @@ export default {
         exaDescribe: this.batchForm.exaDescribe,
         exaResult: this.exaResult,
         interId: this.interId,
-        token: localStorage.getItem('token')
+        applyUserName: JSON.parse(localStorage.getItem('roles'))[0].split('_')[1].toLowerCase(),
+        token: JSON.parse(localStorage.getItem('token'))
       }).then(res => {
         console.log(res)
         if (res.code === 200) {
@@ -417,7 +418,8 @@ export default {
         exaDescribe: this.batchForm.exaDescribe,
         exaResult: this.exaResult,
         interId: this.interId,
-        token: localStorage.getItem('token')
+        applyUserName: JSON.parse(localStorage.getItem('roles'))[0].split('_')[1].toLowerCase(),
+        token: JSON.parse(localStorage.getItem('token'))
       }).then(res => {
         console.log(res)
         if (res.code === 200) {

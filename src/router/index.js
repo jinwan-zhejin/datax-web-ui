@@ -484,7 +484,7 @@ export const asyncRoutes = [
       {
         path: 'register',
         name: 'register',
-        component: () => import('@/views/dataShare/register.vue'),
+        component: () => import('@/views/dataShare/register1.vue'),
         meta: { title: '接口注册', icon: 'chuangjiangongdan' }
       },
       {

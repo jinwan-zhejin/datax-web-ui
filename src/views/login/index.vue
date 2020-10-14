@@ -72,7 +72,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      errorMes: false
+      errorMes: false,
     };
   },
   watch: {
@@ -89,14 +89,12 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+     document.addEventListener("keydown", (e) => {
+      if (e.keyCode === 13) {
+        this.handleLogin()
+      }
+    });
   },
-  //   mounted() {
-  //     if (this.loginForm.username === "") {
-  //       this.$refs.username.focus();
-  //     } else if (this.loginForm.password === "") {
-  //       this.$refs.password.focus();
-  //     }
-  //   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },

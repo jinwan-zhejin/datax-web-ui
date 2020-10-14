@@ -50,7 +50,7 @@ export function handlerStart(row) {
   job.startJob(row.id).then(response => {
     this.$notify({
       title: "Success",
-      message: "Start Successfully",
+      message: "启动成功",
       type: "success",
       duration: 2000
     });
@@ -62,7 +62,7 @@ export function handlerStop(row) {
   job.stopJob(row.id).then(response => {
     this.$notify({
       title: "Success",
-      message: "Start Successfully",
+      message: "停止成功",
       type: "success",
       duration: 2000
     });
@@ -114,7 +114,7 @@ export function handlerUpdate(row) {
       }
       this.temp.childJobId = arrchildSet
     }
-    
+
     if (this.temp.partitionInfo) {
       const partition = this.temp.partitionInfo.split(',')
       this.partitionField = partition[0]
