@@ -880,6 +880,9 @@ export default {
     handlerDelete(temp) {
       handlerDelete.call(this, temp)
       .then(()=>{
+        this.$emit('deleteDetailTab',temp.id)
+      })
+      .then(()=>{
         this.$emit('deleteJob')
       })
     },
@@ -1017,9 +1020,8 @@ export default {
               type: "success",
               duration: 2000,
             });
-
-            this.$emit('deleteJob')
             this.$emit('deleteDetailTab', tabName)
+            this.$emit('deleteJob')
           });
         }
       });

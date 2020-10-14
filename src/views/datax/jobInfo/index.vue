@@ -323,6 +323,14 @@ export default {
       }
     },
 
+    clearJobTab(name) {
+      const removeIndex = _.findIndex(
+        this.jobDetailTabs,
+        (ele) => ele.content.id == name
+      );
+      this.jobDetailTabs.splice(removeIndex, 1);
+    },
+
     freshItem() {
       this.getItem();
       this.jobType = "SHOWDETAIL";
