@@ -15,9 +15,9 @@
               class="filter-item"
               @keyup.enter.native="handleFilter"
             >
-              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="primary" @click="fetchData">搜索</el-button>
+              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
             </el-input>
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="showAdd">
+            <el-button class="filter-item" style="margin-left: 10px;" type="goon" icon="el-icon-plus" @click="showAdd">
               添加
             </el-button>
             <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
@@ -154,10 +154,10 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="goon" @click="dialogStatus==='create'?createData():updateData()">
           确认
         </el-button>
-        <el-button type="primary" @click="testDataSource()">
+        <el-button type="goon" @click="testDataSource()">
           测试连接
         </el-button>
       </div>
@@ -168,7 +168,7 @@
         <el-table-column prop="pv" label="Pv" />
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
+        <el-button type="goon" @click="dialogPvVisible = false">Confirm</el-button>
       </span>
     </el-dialog>
     <!-- UI添加对话框 -->
@@ -177,85 +177,100 @@
         <span>{{ diaTit }}</span>
       </div>
       <!-- 第一步选择连接类型 -->
+      <div v-show="currentStep === 1" class="topSelect">
+        <span>选择数据源:</span><el-input v-model="sqlName" style="width: 80%;float: right;" disabled />
+      </div>
       <el-tabs v-show="currentStep === 1" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="所有类型" name="first">
           <ul>
-            <li>
+            <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/athena_icon_big@2x.png" alt="">
-                <p>Athena</p>
+                <img src="@/assets/松鼠png/monetdb_icon_big@2x.png" alt="">
+                <p>mangodb</p>
               </a>
             </li>
-            <li>
-              <a>
-                <img src="@/assets/松鼠png/azure_icon_big@2x.png" alt="">
-                <p>Azure Sql server</p>
-              </a>
-            </li>
-            <li>
-              <a>
-                <img src="@/assets/松鼠png/dremio_icon_big@2x.png" alt="">
-                <p>Dremio</p>
-              </a>
-            </li>
-            <li>
-              <a>
-                <img src="@/assets/松鼠png/db2_zos_icon_big@2x.png" alt="">
-                <p>DB2</p>
-              </a>
-            </li>
-            <li>
-              <a>
-                <img src="@/assets/松鼠png/informix_icon_big@2x.png" alt="">
-                <p>Informix</p>
-              </a>
-            </li>
-            <li>
+            <li @click="getInfo">
               <a>
                 <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
-                <p>Mysql</p>
+                <p>MYSQL</p>
               </a>
             </li>
-            <li>
+            <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/edb_icon_big@2x.png" alt="">
-                <p>EDB</p>
+                <img src="@/assets/松鼠png/ignite_icon_big@2x.png" alt="">
+                <p>greenplum</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="">
+                <p>hive</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/mssql_icon_big@2x.png" alt="">
+                <p>sqlserver</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="">
+                <p>postgresql</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/h2gis_icon_big@2x.png" alt="">
+                <p>oracle</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/elasticsearch_icon_big@2x.png" alt="">
+                <p>clickhouse</p>
+              </a>
+            </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/bigquery_icon_big@2x.png" alt="">
+                <p>hbase</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
           <ul>
-            <li>
+            <li @click="getInfo">
               <a>
                 <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
-                <p>Mysql</p>
+                <p>MYSQL</p>
               </a>
             </li>
-            <li>
+            <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/edb_icon_big@2x.png" alt="">
-                <p>EDB</p>
+                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="">
+                <p>postgresql</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="SQL" name="third">
           <ul>
-            <li>
+            <li @click="getInfo">
               <a>
                 <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
-                <p>Mysql</p>
+                <p>MYSQL</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="分析型" name="fourth">
           <ul>
-            <li>
+            <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/athena_icon_big@2x.png" alt="">
-                <p>Athena</p>
+                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="">
+                <p>hive</p>
               </a>
             </li>
           </ul>
@@ -264,10 +279,10 @@
       <!-- 第二步表单 -->
       <el-form v-show="currentStep === 2" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="主机" prop="master">
-          <el-input v-model="ruleForm.master" />
+          <el-input v-model="ruleForm.master" placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用" />
         </el-form-item>
-        <el-form-item label="数据库架构" prop="sql">
-          <el-input v-model="ruleForm.sql" />
+        <el-form-item label="数据库架构">
+          <el-input v-model="ruleForm.sql" placeholder="当前属性同上原因,暂时不起任何作用" />
         </el-form-item>
         <el-form-item label="认证" prop="authentication">
           <el-select v-model="ruleForm.authentication" placeholder="请选择">
@@ -324,7 +339,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button v-show="currentStep === 2" style="float: left;">测试连接...</el-button>
         <el-button :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
-        <el-button type="primary" @click="nextStep">下一步</el-button>
+        <el-button type="goon" @click="nextStep">下一步</el-button>
         <el-button @click="cancel">取 消</el-button>
         <el-button :disabled="currentStep === 1" @click="addData">完 成</el-button>
       </div>
@@ -412,16 +427,22 @@ export default {
       diaTit: '选中新连接类型',
       currentStep: 1,
       activeName: 'first',
-      ruleForm: {},
+      ruleForm: {
+        datasourceName: '',
+        userName: '',
+        password: '',
+        jdbcUrl: '',
+        comments: '',
+        datasource: '',
+        zkAdress: '',
+        database: ''
+      },
       AdvancedForm: {},
       ServerForm: {},
       userForm: {},
       rules: {
         master: [
           { required: true, message: '请输入主机名称', trigger: 'blur' }
-        ],
-        authentication: [
-          { required: true, message: '请选择认证', trigger: 'blur' }
         ],
         sql: [
           { required: true, message: '请输入数据库/架构名称', trigger: 'blur' }
@@ -435,6 +456,17 @@ export default {
         driver: [
           { required: true, message: '请输入驱动名称', trigger: 'blur' }
         ]
+      },
+      sqlName: '',
+      params: {
+        comments: '',
+        datasource: '',
+        datasourceGroup: '',
+        datasourceName: '',
+        jdbcDriverClass: '',
+        jdbcUrl: '',
+        password: '',
+        userName: ''
       }
     }
   },
@@ -449,6 +481,28 @@ export default {
       } else if (val === 3) {
         this.diaTit = '连接设置'
         console.log(val, this.diaTit)
+      }
+    },
+    sqlName: function(val) {
+      console.log(val)
+      console.log(this.params, '----------')
+      if (val === 'MYSQL') {
+        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
+        console.log(this.params.jdbcUrl)
+      } else if (val === 'oracle') {
+        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}'
+      } else if (val === 'postgresql') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
+      } else if (val === 'greenplum') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
+      } else if (val === 'sqlserver') {
+        this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}'
+      } else if (val === 'clickhouse') {
+        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
+      } else if (val === 'hive') {
+        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
       }
     }
   },
@@ -503,8 +557,6 @@ export default {
         this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
       } else if (datasource === 'hive') {
         this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
-        this.hbase = this.mongodb = false
-        this.jdbc = true
       }
       this.getShowStrategy(datasource)
     },
@@ -539,17 +591,30 @@ export default {
     showAdd() {
       this.dialogVisible = true
     },
+    // 获取点击当前数据源名称方法
+    getInfo(e) {
+      this.sqlName = e.path[1].textContent.split(' ')[1]
+      // for (let i = 0; i < e.path[2].children.length; i++) {
+      //   e.path[2].children[i].style.color = '#606266'
+      //   console.log(e.path[2].children[i])
+      // }
+      // e.path[1].style.color = 'skyblue'
+      // console.log(e.path[1])
+      console.log(this.sqlName)
+      console.log(e)
+    },
     // tabs标签页方法
     handleClick(tab, event) {
       console.log(tab, event);
     },
     cancel() {
       this.dialogVisible = false
+      this.$refs[this.ruleForm].resetFields()
       this.currentStep = 1
       this.ruleForm = {}
     },
     nextStep() {
-      if (this.currentStep < 3) {
+      if (this.currentStep < 2) {
         this.currentStep++
       }
       console.log(this.currentStep)
@@ -568,6 +633,7 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 添加数据源（原方法）
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -586,9 +652,16 @@ export default {
     },
     // 添加数据源
     addData() {
+      this.params.datasourceName = this.ruleForm.master
+      this.params.datasource = this.sqlName
+      this.params.jdbcDriverClass = this.ruleForm.driver
+      this.params.username = this.ruleForm.username
+      this.params.password = this.ruleForm.password
+      this.params.datasourceGroup = 'Default'
+      this.params.comments = ''
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          datasourceApi.created(this.ruleForm).then(() => {
+          datasourceApi.created(this.params).then(() => {
             this.fetchData()
             this.dialogVisible = false
             this.$notify({
@@ -739,7 +812,7 @@ export default {
             padding: 0px 15px;
             text-align: center;
             color: #fff;
-            background-color: #409EFF;
+            background-color: #3D5FFF;
           }
         }
       }
@@ -766,7 +839,13 @@ export default {
         color: #333333;
       }
     }
+    .topSelect {
+      overflow: hidden;
+      height: 40px;
+      line-height: 40px;
+    }
     .el-tabs {
+      margin-top: 20px;
       .el-tab-pane {
         ul {
           overflow: hidden;
@@ -777,14 +856,18 @@ export default {
             a {
               text-align: center;
               img {
-                margin-top: 10px;
                 display: block;
+                margin: 0 auto;
+                margin-top: 10px;
                 width: 80%;
               }
               p {
                 font-size: 16px;
                 margin-top: 20px;
               }
+            }
+            a:visited {
+              background-color:#f5f6fa;
             }
           }
         }

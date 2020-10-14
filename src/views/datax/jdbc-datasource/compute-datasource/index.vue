@@ -15,9 +15,9 @@
               class="filter-item"
               @keyup.enter.native="handleFilter"
             >
-              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="primary" @click="fetchData">搜索</el-button>
+              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
             </el-input>
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+            <el-button class="filter-item" style="margin-left: 10px;" type="goon" icon="el-icon-plus" @click="handleCreate">
               添加
             </el-button>
             <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
@@ -153,10 +153,10 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="goon" @click="dialogStatus==='create'?createData():updateData()">
           确认
         </el-button>
-        <el-button type="primary" @click="testDataSource()">
+        <el-button type="goon" @click="testDataSource()">
           测试连接
         </el-button>
       </div>
@@ -167,7 +167,7 @@
         <el-table-column prop="pv" label="Pv" />
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
+        <el-button type="goon" @click="dialogPvVisible = false">Confirm</el-button>
       </span>
     </el-dialog>
   </div>
@@ -469,7 +469,7 @@ export default {
             padding: 0px 15px;
             text-align: center;
             color: #fff;
-            background-color: #409EFF;
+            background-color: #3D5FFF;
           }
         }
       }
