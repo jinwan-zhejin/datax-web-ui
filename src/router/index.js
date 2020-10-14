@@ -202,7 +202,7 @@ export const asyncRoutes = [
         path: 'cloudbeaveratlas',
         component: () => import('@/views/cloudbeaveratlas/index'),
         name: 'cloudbeaveratlas',
-        meta: { title: '元数据管理From Atlas', icon: 'form', keepAlive: true }
+        meta: { title: '元数据管理', icon: 'form', keepAlive: true }
       },
       {
         path: 'compare',
