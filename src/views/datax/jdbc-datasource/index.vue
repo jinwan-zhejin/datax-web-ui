@@ -792,27 +792,27 @@ export default {
             background-color: #3D5FFF;
           }
         }
+      }
     }
-
-    .main {
-        background-color: #fff;
-        overflow: hidden;
-        margin-top: 20px;
-
-        .el-table {}
-
-        .pagination-container {
-            // background-color: #f5f6fa;
-        }
-    }
-    .topSelect {
-      overflow: hidden;
-      height: 40px;
-      line-height: 40px;
-    }
-    .el-tabs {
-      margin-top: 20px;
-      .el-tab-pane {
+  }
+  .main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  .topSelect {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+  }
+  .topSelect {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+  }
+  .el-tabs {
+    margin-top: 20px;
+    .el-tab-pane {
         ul {
           overflow: hidden;
           li {
@@ -833,69 +833,25 @@ export default {
               }
             }
             a:visited {
-              background-color:#f5f6fa;
+              background-color: #f5f6fa;
             }
           }
         }
-
-        .topSelect {
-            overflow: hidden;
-            height: 40px;
-            line-height: 40px;
-        }
-
-        .el-tabs {
-            margin-top: 20px;
-
-            .el-tab-pane {
-                ul {
-                    overflow: hidden;
-
-                    li {
-                        list-style: none;
-                        width: 20%;
-                        float: left;
-
-                        a {
-                            text-align: center;
-
-                            img {
-                                display: block;
-                                margin: 0 auto;
-                                margin-top: 10px;
-                                width: 80%;
-                            }
-
-                            p {
-                                font-size: 16px;
-                                margin-top: 20px;
-                            }
-                        }
-
-                        a:visited {
-                            background-color: #f5f6fa;
-                        }
-                    }
-                }
-            }
-        }
-
-        .set {
-            p {
-                font-size: 20px;
-                margin: 20px 0px;
-            }
-
-            .bgcForm {
-                background-color: #f5f6fa;
-                padding: 20px;
-            }
-        }
-
-        .el-dialog__footer {
-            border-top: 1px solid #F3F3F3;
-            padding: 20px;
-        }
     }
+  }
+  .set {
+    p {
+      font-size: 20px;
+      margin: 20px 0px;
+    }
+    .bgcForm {
+      background-color: #f5f6fa;
+      padding: 20px;
+    }
+  }
+  .el-dialog__footer {
+    border-top: 1px solid #F3F3F3;
+    padding: 20px;
+  }
 }
 </style>
