@@ -28,14 +28,7 @@
       </el-card>
     </div>
     <div class="main">
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        :header-cell-style="{background:'#FAFAFC'}"
-        fit
-        highlight-current-row
-      >
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{background:'#FAFAFC'}" fit highlight-current-row>
         <!-- <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index }}</template>
         </el-table-column> -->
@@ -71,15 +64,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        v-show="total>0"
-        style="float: right"
-        :total="total"
-        :page.sync="listQuery.current"
-        :limit.sync="listQuery.size"
-        layout="total, prev, pager, next, sizes"
-        @pagination="fetchData"
-      />
+      <pagination v-show="total>0" style="float: right" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
     </div>
     <!-- 原添加编辑对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
@@ -350,7 +335,9 @@
 <script>
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
+import {
+  parseTime
+} from '@/utils'
 import Pagination from '@/components/Pagination'
 import * as meta from '@/api/metadata-query'
 
@@ -560,20 +547,8 @@ export default {
       }
       this.getShowStrategy(datasource)
     },
-    fetchData() {
-      this.listLoading = true
-      datasourceApi.list(this.listQuery).then(response => {
-        const { records } = response
-        const { total } = response
-        this.total = total
-        const bdsource = ['hive', 'impala', 'spark', 'flink']
-        this.list = records.filter(function(e) {
-          if (!bdsource.includes(e.datasource)) {
-            return true
-          }
-        })
-        this.listLoading = false
-      })
+    directives: {
+      waves
     },
     resetTemp() {
       this.temp = {
@@ -625,14 +600,6 @@ export default {
         this.currentStep--
       }
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
     // 添加数据源（原方法）
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -648,6 +615,14 @@ export default {
             })
           })
         }
+      })
+    },
+    handleCreate() {
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
       })
     },
     // 添加数据源
@@ -742,7 +717,9 @@ export default {
       idList.push(row.id)
       // 拼成 idList=xx
       // 多个比较麻烦，这里不处理
-      datasourceApi.deleted({ idList: row.id }).then(response => {
+      datasourceApi.deleted({
+        idList: row.id
+      }).then(response => {
         this.fetchData()
         this.$notify({
           title: 'Success',
@@ -815,29 +792,18 @@ export default {
             background-color: #3D5FFF;
           }
         }
-      }
     }
-  }
-  .main {
-    background-color: #fff;
-    overflow: hidden;
-    margin-top: 20px;
-    .el-table {
-    }
-    .pagination-container {
-      // background-color: #f5f6fa;
-    }
-  }
-  .el-dialog {
-    .el-dialog__header {
-      border-bottom: 1px solid #F3F3F3;
-      padding-bottom: 20px;
-      span {
-        font-size: 24px;
-        font-family: PingFangHK-Medium, PingFangHK;
-        font-weight: 500;
-        color: #333333;
-      }
+
+    .main {
+        background-color: #fff;
+        overflow: hidden;
+        margin-top: 20px;
+
+        .el-table {}
+
+        .pagination-container {
+            // background-color: #f5f6fa;
+        }
     }
     .topSelect {
       overflow: hidden;
@@ -871,22 +837,65 @@ export default {
             }
           }
         }
-      }
+
+        .topSelect {
+            overflow: hidden;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .el-tabs {
+            margin-top: 20px;
+
+            .el-tab-pane {
+                ul {
+                    overflow: hidden;
+
+                    li {
+                        list-style: none;
+                        width: 20%;
+                        float: left;
+
+                        a {
+                            text-align: center;
+
+                            img {
+                                display: block;
+                                margin: 0 auto;
+                                margin-top: 10px;
+                                width: 80%;
+                            }
+
+                            p {
+                                font-size: 16px;
+                                margin-top: 20px;
+                            }
+                        }
+
+                        a:visited {
+                            background-color: #f5f6fa;
+                        }
+                    }
+                }
+            }
+        }
+
+        .set {
+            p {
+                font-size: 20px;
+                margin: 20px 0px;
+            }
+
+            .bgcForm {
+                background-color: #f5f6fa;
+                padding: 20px;
+            }
+        }
+
+        .el-dialog__footer {
+            border-top: 1px solid #F3F3F3;
+            padding: 20px;
+        }
     }
-    .set {
-      p {
-        font-size: 20px;
-        margin: 20px 0px;
-      }
-      .bgcForm {
-        background-color: #f5f6fa;
-        padding: 20px;
-      }
-    }
-    .el-dialog__footer {
-      border-top: 1px solid #F3F3F3;
-      padding: 20px;
-    }
-  }
 }
 </style>
