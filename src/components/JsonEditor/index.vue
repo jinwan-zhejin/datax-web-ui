@@ -17,7 +17,7 @@ import 'codemirror/addon/lint/json-lint'
 export default {
   name: 'JsonEditor',
   /* eslint-disable vue/require-prop-types */
-  props: ['value'],
+  props: ['value', 'caniEdit'],
   data() {
     return {
       jsonEditor: false
@@ -41,7 +41,8 @@ export default {
       gutters: ['CodeMirror-lint-markers'],
       theme: 'rubyblue',
       lint: true,
-      readOnly: 'nocursor'
+      // readOnly: 'nocursor'
+      readOnly:this.caniEdit
     })
 
     this.jsonEditor.setValue(`${this.value}`)
