@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-12 18:58:28
+ * @LastEditTime: 2020-10-14 18:41:36
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelDetails.vue
  * @Description: 详情页
 -->
@@ -11,12 +11,16 @@
   <div>
     <div class="container">
       <el-row>
-        <el-col class="topBar">
+        <el-col class="topBar" :span="4">
           <el-tooltip content="返回" placement="top">
             <i class="el-icon-arrow-left topArrow" @click="backToResult" />
           </el-tooltip>
           <i class="el-icon-document" />
-          <span>{{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;</span>
+        </el-col>
+        <el-col :span="18">
+          <el-tooltip :content="properties.entity.attributes.name.concat(' ( ').concat(properties.entity.typeName).concat(' ) ')" placement="top">
+            <span class="topBarText">{{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;</span>
+          </el-tooltip>
         </el-col>
       </el-row>
       <el-row class="centerBar">
@@ -34,13 +38,20 @@
               <el-row>
                 <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                   <el-collapse v-model="activeCollapse1">
-                    <el-collapse-item title="技术特性" name="collapse1">
-                      <el-table :data="techProp" :show-header="false">
+                    <el-collapse-item name="collapse1">
+                      <div slot="title" class="collapse-title">
+                        技术特性&nbsp;
+                        <el-tooltip :content="techPropShow ?'隐藏空值':'显示空值'">
+                          <el-switch v-model="techPropShow" @click.stop.native />
+                        </el-tooltip>
+                      </div>
+                      <el-table :data="techPropShow ? techProp : techPropHasVal" :show-header="false">
                         <el-table-column label="left" prop="key" />
                         <el-table-column label="right" prop="value">
                           <template v-slot:default="{ row }">
-                            <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextTable(row.value[0])">{{ row.value[0] }}</a>
-                            <a v-else-if="row.key === 'instance'" class="aClass">{{ row.value }}</a>
+                            <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextDetails(row.value[0])">{{ row.value[0].displayText }}</a>
+                            <a v-else-if="row.key === 'instance'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.displayText }}</a>
+                            <!-- <a v-else-if="row.key === 'databases'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.name }}</a> -->
                             <span v-else>{{ row.value }}</span>
                           </template>
                         </el-table-column>
@@ -58,8 +69,12 @@
                     </el-collapse-item>
                   </el-collapse> -->
                   <el-collapse v-model="activeCollapse3">
-                    <el-collapse-item title="标签" name="collapse3">
-                      <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index">{{ item }}</el-tag>
+                    <el-collapse-item name="collapse3">
+                      <div slot="title" class="collapse-title">
+                        标签&nbsp;
+                        <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button>
+                      </div>
+                      <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index" style="margin: 2px;">{{ item }}</el-tag>
                     </el-collapse-item>
                   </el-collapse>
                   <!-- <el-collapse v-model="activeCollapse4">
@@ -98,7 +113,7 @@
                 <el-table-column label="分类" prop="value" />
                 <el-table-column label="属性" prop="">
                   <template v-slot:default="{ row }">
-                    NA
+                    N/A
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -128,9 +143,35 @@
                 <el-table-column type="expand">
                   <template slot-scope="props">
                     <el-form label-position="left" inline>
-                      <el-form-item label="名称">
-                        <span>{{ props.row | displayName }}</span>
-                      </el-form-item>
+                      <el-row>
+                        <el-col>
+                          <el-form-item key="名称" label="名称">
+                            <!-- <span>{{ props.row | toObject }}</span> -->
+                            <span>{{ transformObject(props.row) | displayName }}</span>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col>
+                          <el-form-item>
+                            <span>{{ transformObject(props.row) }}</span>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col v-if="hasAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse></el-collapse>
+                        </el-col>
+                        <el-col v-if="hasRelationshipAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse></el-collapse>
+                        </el-col>
+                        <el-col v-if="hasCustomAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse></el-collapse>
+                        </el-col>
+                        <el-col v-if="hasTerm" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse></el-collapse>
+                        </el-col>
+                      </el-row>
                     </el-form>
                   </template>
                 </el-table-column>
@@ -200,33 +241,20 @@ export default {
       s = s < 10 ? ('0' + s) : s;
       return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s + ' (CST)';
     },
-    displayName(row) {
-      if (row.action.split('_')[0] === 'LABEL') {
-        return row.details.split(': ')[1]
-      } else if (row.action.split('_')[0] === 'ENTITY' || row.action.split('_')[0] === 'TERM') {
-        const objStart = row.details.indexOf('name') + 'name'.length + 3 // 开始下标
-        let objEnd = objStart
-        while (objEnd < row.details.length) {
-          if (row.details[objEnd] !== '"') {
-            objEnd++
-          } else {
-            break
-          }
-        }
-        const subStr = row.details.substring(objStart, objEnd)
-        return subStr
-      } else {
-        const objStart = row.details.indexOf('typeName') + 'typeName'.length + 3 // 开始下标
-        let objEnd = objStart
-        while (objEnd < row.details.length) {
-          if (row.details[objEnd] !== '"') {
-            objEnd++
-          } else {
-            break
-          }
-        }
-        const subStr = row.details.substring(objStart, objEnd)
-        return subStr
+    displayName(object) {
+      switch (object[0]) {
+        case 'LABEL_ADD': // 添加Label
+          return object[1]['Added labels']
+        case 'ENTITY_UPDATE': // 更新实体
+          return object[1]['Updated']['typeName']
+        case 'TERM_ADD':
+          return object[1]['Added term']['name']
+        case 'CLASSIFICATION_ADD':
+          return object[1]['Added classification']['typeName']
+        case 'ENTITY_CREATE':
+          return object[1]['Created']['typeName']
+        default:
+          return 'N/A'
       }
     }
   },
@@ -247,6 +275,7 @@ export default {
       classificationsValue: '',
       properties: [], // 保存属性返回值
       techProp: [],
+      techPropShow: false, // 技术特性collapse显示空值
       custProp: [],
       audits: [], // 保存审核返回值
       lineage: [], // 保存系谱返回值
@@ -274,6 +303,47 @@ export default {
     //   }
     //   return tempList
     // }
+    techPropHasVal() {
+      return this.techProp.filter(item => item.value !== 'N/A')
+    },
+    // 处理details
+    transformObject() {
+      return (row) => {
+        var tempStr = row.details
+        switch (row.action) {
+          case 'LABEL_ADD': // 添加Label
+            for (var i in tempStr.split(': ')) {
+              tempStr = tempStr.replace(tempStr.split(': ')[i], this.quotesFormat(tempStr.split(': ')[i]))
+            }
+            break
+          case 'ENTITY_UPDATE': // 更新实体
+          case 'TERM_ADD':
+          case 'CLASSIFICATION_ADD':
+          case 'ENTITY_CREATE':
+            tempStr = tempStr.replace(tempStr.split(': ')[0], this.quotesFormat(tempStr.split(': ')[0]))
+            break
+          default:
+            return 'N/A'
+        }
+        tempStr = this.bracketFormat(tempStr)
+        var temp = []
+        temp.push(row.action)
+        temp.push(JSON.parse(tempStr))
+        return temp
+      }
+    },
+    hasAttributes() {
+      return false
+    },
+    hasRelationshipAttributes() {
+      return false
+    },
+    hasCustomAttributes() {
+      return false
+    },
+    hasTerm() {
+      return false
+    }
   },
   watch: {
     showEmptyRelationships: {
@@ -297,10 +367,22 @@ export default {
         }
       }
       for (var j in this.properties.entity.attributes) {
-        this.techProp.push({
-          key: j,
-          value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
-        })
+        if (j === 'tables' || j === 'instance') {
+          this.techProp.push({
+            key: j,
+            value: this.properties.entity.relationshipAttributes[j] === null ? 'N/A' : this.properties.entity.relationshipAttributes[j]
+          })
+        // } else if (j === 'databases') {
+        //   this.techProp.push({
+        //     key: j,
+        //     value: this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes === null ? 'N/A' : this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes
+        //   })
+        } else {
+          this.techProp.push({
+            key: j,
+            value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
+          })
+        }
       }
       for (var f in this.properties.entity.customAttributes) {
         this.custProp.push({
@@ -335,7 +417,7 @@ export default {
       console.log(info)
     },
     /**
-     * @description: 回到表页面
+     * @description: 回到Result页面
      */
     backToResult() {
       this.$emit('changepage', 'atlasResult')
@@ -349,10 +431,10 @@ export default {
       // console.log(tab, event)
     },
     /**
-     * @description: 切到另一张表
+     * @description: 切换到另一张详情
      */
-    gotoNextTable(tableObj) {
-      this.$emit('switchpage', 'atlasDetails'.concat('?').concat(JSON.stringify(tableObj)))
+    gotoNextDetails(details) {
+      this.$emit('changedetail', JSON.stringify(details))
     },
     /**
      * @description: 下拉菜单选择分类
@@ -423,6 +505,22 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    /**
+     * @description: 为两端添加引号
+     * @param {string} str 待格式化的字符串
+     * @return {string} 格式化的字符串
+     */
+    quotesFormat(str) {
+      return '"' + str + '"'
+    },
+    /**
+     * @description: 为两端添加括号
+     * @param {string} str 待格式化的字符串
+     * @return {string} 格式化的字符串
+     */
+    bracketFormat(str) {
+      return '{' + str + '}'
     }
   }
 }
@@ -433,13 +531,9 @@ export default {
   margin: 20px;
   .topBar {
     margin: 0 auto 20px auto;
+    min-width: 113px;
     font-size: 2.8em;
-    line-clamp: 2.9em;
-    display: -webkit-box;/*作为弹性伸缩盒子模型显示*/
-    -webkit-line-clamp: 1; /*显示的行数；如果要设置2行加...则设置为2*/
-    overflow: hidden; /*超出的文本隐藏*/
-    text-overflow: ellipsis; /* 溢出用省略号*/
-    -webkit-box-orient: vertical;/*伸缩盒子的子元素排列：从上到下*/
+    line-height: 3.2rem;
     .topArrow {
       font-weight: bold;
       color: rgb(192, 192, 192);
@@ -452,6 +546,15 @@ export default {
       font-weight: bold;
       color: #006ad4;
     }
+  }
+  .topBarText {
+    font-size: 2.8em;
+    line-height: 3.2rem;
+    display: -webkit-box;/*作为弹性伸缩盒子模型显示*/
+    -webkit-line-clamp: 1; /*显示的行数；如果要设置2行加...则设置为2*/
+    overflow: hidden; /*超出的文本隐藏*/
+    text-overflow: ellipsis; /* 溢出用省略号*/
+    -webkit-box-orient: vertical;/*伸缩盒子的子元素排列：从上到下*/
   }
   .centerBar {
     margin: 0 auto 20px auto;

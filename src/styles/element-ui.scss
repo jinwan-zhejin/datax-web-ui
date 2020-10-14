@@ -77,3 +77,46 @@
 .el-range-editor.el-input__inner {
   display: inline-flex !important;
 }
+
+// 按钮样式
+// 普通使用按钮
+.el-button--goon.is-active,
+.el-button--goon:active {
+  background: #3655E5;
+  border-color: #3655E5;
+  color: #fff;
+}
+
+.el-button--goon:focus,
+.el-button--goon:hover {
+  background: #506FFF;
+  border-color: #506FFF;
+  color: #fff;
+}
+
+.el-button--goon {
+  color: #FFF;
+  background-color: #3D5FFF;
+  border-color: #3D5FFF;
+}
+
+// 普通删除使用按钮
+.el-button--delete.is-active,
+.el-button--delete:active {
+  background:#E43E3E;
+  border-color:#E43E3E;
+  color: #fff;
+}
+
+.el-button--delete:focus,
+.el-button--delete:hover {
+  background: #FE5858;
+  border-color: #FE5858;
+  color: #fff;
+}
+
+.el-button--delete {
+  color: #FFF;
+  background-color: #FE4646;
+  border-color: #FE4646;
+}
