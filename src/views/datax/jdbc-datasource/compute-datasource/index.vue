@@ -27,59 +27,60 @@
         </div>
       </el-card>
     </div>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      :header-cell-style="{background:'#FAFAFC'}"
-      fit
-      highlight-current-row
-    >
-      <!-- <el-table-column align="center" label="序号" width="95">
-        <template slot-scope="scope">{{ scope.$index }}</template>
-      </el-table-column> -->
-      <el-table-column label="数据源" width="150" align="center">
-        <template slot-scope="scope">{{ scope.row.datasource }}</template>
-      </el-table-column>
-      <el-table-column label="数据源名称" width="100" align="center">
-        <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
-      </el-table-column>
-      <el-table-column label="数据源分组" width="150" align="center">
-        <template slot-scope="scope">{{ scope.row.datasourceGroup }}
-        </template>
-      </el-table-column>
-      <el-table-column label="jdbc连接串" width="200" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">{{ scope.row.jdbcUrl ? scope.row.jdbcUrl:'-' }}</template>
-      </el-table-column>
-      <el-table-column label="ZK地址" width="200" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">{{ scope.row.zkAdress ? scope.row.zkAdress:'-' }}</template>
-      </el-table-column>
-      <el-table-column label="数据库名" width="120" align="center" :show-overflow-tooltip="true">-->
-        <template slot-scope="scope">{{ scope.row.database ? scope.row.database:'-' }}</template>-->
-      </el-table-column>
-      <el-table-column label="备注" width="120" align="center">
-        <template slot-scope="scope">{{ scope.row.comments }}</template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-          <a style="color: #3D5FFF;margin: 0px 10px;" @click="handleUpdate(row)">编辑</a>
-          <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
-          <a style="color: #FE4646;margin: 0px 10px;" @click="handleDelete(row)">删除</a>
-          <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
-          <a style="color: #3D5FFF;margin: 0px 10px;" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination
-      v-show="total>0"
-      style="float: right"
-      :total="total"
-      :page.sync="listQuery.current"
-      :limit.sync="listQuery.size"
-      layout="total, prev, pager, next, sizes"
-      @pagination="fetchData"
-    />
-
+    <div class="main">
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        :header-cell-style="{background:'#FAFAFC'}"
+        fit
+        highlight-current-row
+      >
+        <!-- <el-table-column align="center" label="序号" width="95">
+          <template slot-scope="scope">{{ scope.$index }}</template>
+        </el-table-column> -->
+        <el-table-column label="数据源" width="150" align="center">
+          <template slot-scope="scope">{{ scope.row.datasource }}</template>
+        </el-table-column>
+        <el-table-column label="数据源名称" width="100" align="center">
+          <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
+        </el-table-column>
+        <el-table-column label="数据源分组" width="150" align="center">
+          <template slot-scope="scope">{{ scope.row.datasourceGroup }}
+          </template>
+        </el-table-column>
+        <el-table-column label="jdbc连接串" width="200" align="center" :show-overflow-tooltip="true">
+          <template slot-scope="scope">{{ scope.row.jdbcUrl ? scope.row.jdbcUrl:'-' }}</template>
+        </el-table-column>
+        <el-table-column label="ZK地址" width="200" align="center" :show-overflow-tooltip="true">
+          <template slot-scope="scope">{{ scope.row.zkAdress ? scope.row.zkAdress:'-' }}</template>
+        </el-table-column>
+        <el-table-column label="数据库名" width="120" align="center" :show-overflow-tooltip="true">-->
+          <template slot-scope="scope">{{ scope.row.database ? scope.row.database:'-' }}</template>-->
+        </el-table-column>
+        <el-table-column label="备注" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.comments }}</template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="{row}">
+            <a style="color: #3D5FFF;margin: 0px 10px;" @click="handleUpdate(row)">编辑</a>
+            <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+            <a style="color: #FE4646;margin: 0px 10px;" @click="handleDelete(row)">删除</a>
+            <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+            <a style="color: #3D5FFF;margin: 0px 10px;" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="total>0"
+        style="float: right"
+        :total="total"
+        :page.sync="listQuery.current"
+        :limit.sync="listQuery.size"
+        layout="total, prev, pager, next, sizes"
+        @pagination="fetchData"
+      />
+    </div>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px">
         <el-form-item label="数据源" prop="datasource">
@@ -474,11 +475,15 @@ export default {
       }
     }
   }
-  .el-table {
-    margin-top: 10px;
-  }
-  .pagination-container {
-    background-color: #f5f6fa;
+  .main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 20px;
+    .el-table {
+    }
+    .pagination-container {
+      // background-color: #f5f6fa;
+    }
   }
 }
 </style>
