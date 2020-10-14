@@ -183,7 +183,7 @@ export default {
         res => {
           console.log(res)
           if (res.code === 200) {
-            this.approvalForm.reviewer = res.content[0].contacts
+            this.approvalForm.reviewer = res.content[0].registerCompany
             this.approvalForm.exaTime = res.content[0].updateTime
             this.approvalForm.exaDescribe = res.content[0].interRemark
             this.dialogApproval = true

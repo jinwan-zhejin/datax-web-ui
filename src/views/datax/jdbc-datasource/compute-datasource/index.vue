@@ -1,27 +1,31 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <div class="left">
-        计算数据源
-      </div>
-      <div class="right">
-        <el-input
-          v-model="listQuery.datasourceName"
-          clearable
-          placeholder="数据源名称"
-          style="width: 268px;"
-          class="filter-item"
-          @keyup.enter.native="handleFilter"
-        >
-          <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="primary" @click="fetchData">搜索</el-button>
-        </el-input>
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-          添加
-        </el-button>
-        <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-          reviewer
-        </el-checkbox> -->
-      </div>
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">
+            计算数据源
+          </div>
+          <div class="right">
+            <el-input
+              v-model="listQuery.datasourceName"
+              clearable
+              placeholder="数据源名称"
+              style="width: 268px;"
+              class="filter-item"
+              @keyup.enter.native="handleFilter"
+            >
+              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="primary" @click="fetchData">搜索</el-button>
+            </el-input>
+            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+              添加
+            </el-button>
+            <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+              reviewer
+            </el-checkbox> -->
+          </div>
+        </div>
+      </el-card>
     </div>
     <el-table
       v-loading="listLoading"
@@ -431,43 +435,50 @@ export default {
 .app-container {
   .filter-container {
     overflow: hidden;
-    line-height: 56px;
+    // line-height: 56px;
     background-color: #ffffff;
-    border-radius: 5px 5px 0px 0px;
     padding: 0px;
-    box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
-    .left {
-      float: left;
-      width: 120px;
-      height: 33px;
-      font-size: 24px;
-      font-family: PingFangHK-Medium, PingFangHK;
-      font-weight: 500;
-      color: #333333;
-      margin-left: 24px;
-    }
-    .right {
-      float: right;
-      margin-right: 20px;
-      .el-input {
-        overflow: hidden;
-        .el-input__inner {
-          float: left;
-          width: 200px;
-          padding-right: 15px;
-          height: 35px;
-          line-height: 35px;
-        }
-        .el-input-group__append {
-          float: left;
-          width: 60px;
-          padding: 0px 15px;
-          text-align: center;
-          color: #fff;
-          background-color: #409EFF;
+    // border-radius: 5px 5px 0px 0px;
+    // box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
+    .el-card {
+      .left {
+        float: left;
+        width: 120px;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 35px;
+            line-height: 35px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+            width: 60px;
+            padding: 0px 15px;
+            text-align: center;
+            color: #fff;
+            background-color: #409EFF;
+          }
         }
       }
     }
+  }
+  .el-table {
+    margin-top: 10px;
+  }
+  .pagination-container {
+    background-color: #f5f6fa;
   }
 }
 </style>
