@@ -20,43 +20,45 @@
             </div>
         </el-card>
     </div>
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{background:'#FAFAFC'}" fit highlight-current-row>
-        <!-- <el-table-column align="center" label="序号" width="95">
-        <template slot-scope="scope">{{ scope.$index }}</template>
-      </el-table-column> -->
-        <el-table-column label="数据源" width="120" align="center">
-            <template slot-scope="scope">{{ scope.row.datasource }}</template>
-        </el-table-column>
-        <el-table-column label="数据源名称" width="120" align="center" :show-overflow-tooltip="true">
-            <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
-        </el-table-column>
-        <el-table-column label="数据源分组" width="130" align="center">
-            <template slot-scope="scope">{{ scope.row.datasourceGroup }}
-            </template>
-        </el-table-column>
-        <el-table-column label="jdbc连接串" width="200" align="center" :show-overflow-tooltip="true">
-            <template slot-scope="scope">{{ scope.row.jdbcUrl ? scope.row.jdbcUrl:'-' }}</template>
-        </el-table-column>
-        <el-table-column label="ZK地址" width="160" align="center" :show-overflow-tooltip="true">
-            <template slot-scope="scope">{{ scope.row.zkAdress ? scope.row.zkAdress:'-' }}</template>
-        </el-table-column>
-        <el-table-column label="数据库名" width="120" align="center" :show-overflow-tooltip="true">-->
-            <template slot-scope="scope">{{ scope.row.database ? scope.row.database:'-' }}</template>-->
-        </el-table-column>
-        <el-table-column label="备注" width="120" align="center">
-            <template slot-scope="scope">{{ scope.row.comments }}</template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="{row}">
-                <a style="color: #3D5FFF;margin: 0px 10px;" @click="handleUpdate(row)">编辑</a>
-                <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
-                <a style="color: #FE4646;margin: 0px 10px;" @click="handleDelete(row)">删除</a>
-                <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
-                <a style="color: #3D5FFF;margin: 0px 10px;" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
-            </template>
-        </el-table-column>
-    </el-table>
-    <pagination v-show="total>0" style="float: right" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
+    <div class="main">
+        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{background:'#FAFAFC'}" fit highlight-current-row>
+            <!-- <el-table-column align="center" label="序号" width="95">
+          <template slot-scope="scope">{{ scope.$index }}</template>
+        </el-table-column> -->
+            <el-table-column label="数据源" width="150" align="center">
+                <template slot-scope="scope">{{ scope.row.datasource }}</template>
+            </el-table-column>
+            <el-table-column label="数据源名称" width="100" align="center">
+                <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
+            </el-table-column>
+            <el-table-column label="数据源分组" width="150" align="center">
+                <template slot-scope="scope">{{ scope.row.datasourceGroup }}
+                </template>
+            </el-table-column>
+            <el-table-column label="jdbc连接串" width="200" align="center" :show-overflow-tooltip="true">
+                <template slot-scope="scope">{{ scope.row.jdbcUrl ? scope.row.jdbcUrl:'-' }}</template>
+            </el-table-column>
+            <el-table-column label="ZK地址" width="200" align="center" :show-overflow-tooltip="true">
+                <template slot-scope="scope">{{ scope.row.zkAdress ? scope.row.zkAdress:'-' }}</template>
+            </el-table-column>
+            <el-table-column label="数据库名" width="120" align="center" :show-overflow-tooltip="true">-->
+                <template slot-scope="scope">{{ scope.row.database ? scope.row.database:'-' }}</template>-->
+            </el-table-column>
+            <el-table-column label="备注" width="120" align="center">
+                <template slot-scope="scope">{{ scope.row.comments }}</template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                <template slot-scope="{row}">
+                    <a style="color: #3D5FFF;margin: 0px 10px;" @click="handleUpdate(row)">编辑</a>
+                    <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+                    <a style="color: #FE4646;margin: 0px 10px;" @click="handleDelete(row)">删除</a>
+                    <span style="width: 1px;height: 12px;background: #E6E6E8;display: inline-block;" />
+                    <a style="color: #3D5FFF;margin: 0px 10px;" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
+                </template>
+            </el-table-column>
+        </el-table>
+        <pagination v-show="total>0" style="float: right" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
+    </div>
     <!-- 原添加编辑对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
         <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px">
@@ -241,47 +243,13 @@
                 <el-button>编辑驱动名称</el-button>
             </el-form-item>
         </el-form>
-        <!-- 连接设置表单 -->
-        <div v-show="currentStep === 3" class="set">
-            <p>Server</p>
-            <el-form :model="ServerForm" label-width="100px" class="bgcForm">
-                <el-form-item label="服务器地址:" prop="master">
-                    <el-input v-model="ServerForm.serverUrl" />
-                </el-form-item>
-                <el-form-item label="端口:" prop="sql">
-                    <el-input v-model="ServerForm.port" />
-                </el-form-item>
-                <el-form-item label="数据库:" prop="username">
-                    <el-input v-model="ServerForm.sql" />
-                </el-form-item>
-            </el-form>
-            <p>认证</p>
-            <el-form :model="userForm" label-width="100px" class="bgcForm">
-                <el-form-item label="用户名:">
-                    <el-input v-model="userForm.username" />
-                </el-form-item>
-                <el-form-item label="密码:">
-                    <el-input v-model="userForm.password" />
-                </el-form-item>
-            </el-form>
-            <p>Advanced</p>
-            <el-form :model="AdvancedForm" label-width="100px" class="bgcForm">
-                <el-form-item label="服务器时区:">
-                    <el-input v-model="AdvancedForm.serverTime" />
-                </el-form-item>
-                <el-form-item label="本地客户端:">
-                    <el-input v-model="AdvancedForm.client" />
-                </el-form-item>
-            </el-form>
-        </div>
         <div slot="footer" class="dialog-footer">
             <el-button v-show="currentStep === 2" style="float: left;">测试连接...</el-button>
             <el-button :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
             <el-button type="primary" @click="nextStep">下一步</el-button>
             <el-button @click="cancel">取 消</el-button>
-            <el-button :disabled="currentStep === 3" @click="dialogVisible = false">完 成</el-button>
+            <el-button :disabled="currentStep === 1" @click="addData">完 成</el-button>
         </div>
-    </el-dialog>
 </div>
 </template>
 
@@ -461,6 +429,162 @@ export default {
                     trigger: 'blur'
                 }]
             }
+        }
+    },
+    watch: {
+        currentStep: function (val) {
+            if (val === 1) {
+                console.log(val, this.diaTit)
+                this.diaTit = '选中新连接类型'
+            } else if (val === 2) {
+                this.diaTit = '通用JDBC连接设置'
+                console.log(val, this.diaTit)
+            } else if (val === 3) {
+                this.diaTit = '连接设置'
+                console.log(val, this.diaTit)
+            }
+        }
+    },
+    created() {
+        this.fetchData()
+    },
+    methods: {
+        gatherMetadata(row) {
+            this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
+                confirmButtonText: '继续',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                console.log(row)
+                const param = {}
+                param.id = row.id
+                console.log(param)
+                meta.getDbMetadata(param).then(res => {
+                    console.log(res)
+                    this.gathering = false
+                    this.$message({
+                        type: 'success',
+                        message: '元数据采集成功'
+                    })
+                })
+                this.gathering = true
+                this.$message({
+                    type: 'info',
+                    message: '采集任务开始!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'warning',
+                    message: '已取消元数据采集'
+                });
+            });
+        },
+        selectDataSource(datasource) {
+            if (datasource === 'MYSQL') {
+                this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
+            } else if (datasource === 'oracle') {
+                this.temp.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}'
+            } else if (datasource === 'postgresql') {
+                this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+                this.temp.jdbcDriverClass = 'org.postgresql.Driver'
+            } else if (datasource === 'greenplum') {
+                this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+                this.temp.jdbcDriverClass = 'org.postgresql.Driver'
+            } else if (datasource === 'sqlserver') {
+                this.temp.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}'
+            } else if (datasource === 'clickhouse') {
+                this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
+            } else if (datasource === 'hive') {
+                this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
+                this.hbase = this.mongodb = false
+                this.jdbc = true
+            }
+            this.getShowStrategy(datasource)
+        },
+        fetchData() {
+            this.listLoading = true
+            datasourceApi.list(this.listQuery).then(response => {
+                const {
+                    records
+                } = response
+                const {
+                    total
+                } = response
+                this.total = total
+                const bdsource = ['hive', 'impala', 'spark', 'flink']
+                this.list = records.filter(function (e) {
+                    if (!bdsource.includes(e.datasource)) {
+                        return true
+                    }
+                })
+                this.listLoading = false
+            })
+        },
+        resetTemp() {
+            this.temp = {
+                id: undefined,
+                datasourceName: '',
+                datasourceGroup: 'Default',
+                userName: '',
+                password: '',
+                jdbcUrl: '',
+                jdbcDriverClass: '',
+                comments: ''
+            }
+        },
+        directives: {
+            waves
+        },
+        filters: {
+            statusFilter(status) {
+                const statusMap = {
+                    published: 'success',
+                    draft: 'gray',
+                    deleted: 'danger'
+                }
+                return statusMap[status]
+            }
+        },
+        // 添加数据源
+        addData() {
+            this.$refs['ruleForm'].validate((valid) => {
+                if (valid) {
+                    datasourceApi.created(this.ruleForm).then(() => {
+                        this.fetchData()
+                        this.dialogVisible = false
+                        this.$notify({
+                            title: 'Success',
+                            message: 'Created Successfully',
+                            type: 'success',
+                            duration: 2000
+                        })
+                    })
+                }
+            })
+        },
+        testDataSource() {
+            this.$refs['dataForm'].validate((valid) => {
+                if (valid) {
+                    datasourceApi.test(this.temp).then(response => {
+                        if (response.data === false) {
+                            this.$notify({
+                                title: 'Fail',
+                                message: response.data.msg,
+                                type: 'fail',
+                                duration: 2000
+                            })
+                        } else {
+                            this.$notify({
+                                title: 'Success',
+                                message: 'Tested Successfully',
+                                type: 'success',
+                                duration: 2000
+                            })
+                        }
+                    })
+                }
+            })
+
         }
     },
     watch: {
@@ -979,73 +1103,56 @@ export default {
                 }
             }
         }
+    }
+}
 
-        .el-table {
-            margin-top: 10px;
+.main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.el-dialog {
+    .el-dialog__header {
+        border-bottom: 1px solid #F3F3F3;
+        padding-bottom: 20px;
+
+        span {
+            font-size: 24px;
+            font-family: PingFangHK-Medium, PingFangHK;
+            font-weight: 500;
+            color: #333333;
         }
+    }
 
-        .pagination-container {
-            background-color: #f5f6fa;
-        }
+    .el-tabs {
+        .el-tab-pane {
+            ul {
+                overflow: hidden;
 
-        .el-dialog {
-            .el-dialog__header {
-                border-bottom: 1px solid #F3F3F3;
-                padding-bottom: 20px;
+                li {
+                    list-style: none;
+                    width: 20%;
+                    float: left;
 
-                span {
-                    font-size: 24px;
-                    font-family: PingFangHK-Medium, PingFangHK;
-                    font-weight: 500;
-                    color: #333333;
-                }
-            }
+                    a {
+                        text-align: center;
 
-            .el-tabs {
-                .el-tab-pane {
-                    ul {
-                        overflow: hidden;
+                        img {
+                            margin-top: 10px;
+                            display: block;
+                            width: 80%;
+                        }
 
-                        li {
-                            list-style: none;
-                            width: 20%;
-                            float: left;
-
-                            a {
-                                text-align: center;
-
-                                img {
-                                    margin-top: 10px;
-                                    display: block;
-                                    width: 80%;
-                                }
-
-                                p {
-                                    font-size: 16px;
-                                    margin-top: 20px;
-                                }
-                            }
+                        p {
+                            font-size: 16px;
+                            margin-top: 20px;
                         }
                     }
                 }
             }
-
-            .set {
-                p {
-                    font-size: 20px;
-                    margin: 20px 0px;
-                }
-
-                .bgcForm {
-                    background-color: #f5f6fa;
-                    padding: 20px;
-                }
-            }
-
-            .el-dialog__footer {
-                border-top: 1px solid #F3F3F3;
-                padding: 20px;
-            }
         }
     }
+
+}
 </style>
