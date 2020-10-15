@@ -1086,12 +1086,13 @@ export default {
   cursor: pointer;
 }
 .log_container {
-  height: 150px;
+  height: 350px;
   border: 1px solid rgb(247, 247, 247);
-  background: black;
-  color: white;
+  background: white;
+  color: black;
   font-size: 12px;
   overflow-y: scroll;
+  padding: 10px;
 }
 .fade-enter-active, .fade-leave-active {
   transition: height .5s;
