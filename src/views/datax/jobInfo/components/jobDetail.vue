@@ -386,7 +386,7 @@
         </div>
         <transition name="fade">
         <div v-if="showLog" class="log_container">
-
+          <span>{{newstlogContent}}</span>
         </div>
         </transition>
       </div>
@@ -655,6 +655,7 @@ export default {
       callback();
     };
     return {
+      newstlogContent: '',
       jobId:'',
       logview:false,
       logData:[],
@@ -853,7 +854,10 @@ export default {
   methods: {
     //执行一次
     handlerExecute(temp) {
-      handlerExecute.call(this, temp);
+      handlerExecute.call(this, temp)
+      .then(() => {
+        this.logList();
+      }) 
     },
 
     //查看日志
@@ -861,7 +865,7 @@ export default {
       // handlerViewLog.call(this, temp);
       this.logview = true;
       this.jobId = temp.id;
-      this.$refs.jobLog.fetchData()
+      this.$refs.jobLog?.fetchData()
     },
 
     //删除
@@ -898,6 +902,37 @@ export default {
       handlerUpdate.call(this, row)
     },
 
+    //实时更新日志
+    logList() {
+      const param = Object.assign({},{
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        jobId: this.temp.id,
+        logStatus: -1,
+        filterTime: "",
+      });
+      let status = 0;
+        log.getList(param).then((response) => {
+        const { content } = response;
+        
+        let newestLog = content.data[0];
+        console.log(newestLog);
+        status = newestLog.handleCode;
+        const triggerTime = Date.parse(newestLog?.triggerTime)
+        log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
+        .then(response => {
+          this.newstlogContent = response.content.logContent
+        })
+        .then(() => {
+          if(status === 0){
+            console.log('更新日志');
+            setTimeout(this.logList(), 1000)
+          }
+        })
+      });
+
+    },
 
 
 
@@ -1053,6 +1088,10 @@ export default {
 .log_container {
   height: 150px;
   border: 1px solid rgb(247, 247, 247);
+  background: black;
+  color: white;
+  font-size: 12px;
+  overflow-y: scroll;
 }
 .fade-enter-active, .fade-leave-active {
   transition: height .5s;
