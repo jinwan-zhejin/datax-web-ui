@@ -698,6 +698,21 @@ export default {
         }
       })
     },
+    fetchData() {
+      this.listLoading = true
+      datasourceApi.list(this.listQuery).then(response => {
+        const { records } = response
+        const { total } = response
+        this.total = total
+        const bdsource = ['hive', 'impala', 'spark', 'flink']
+        this.list = records.filter(function(e) {
+          if (!bdsource.includes(e.datasource)) {
+            return true
+          }
+        })
+        this.listLoading = false
+      })
+    },
     getShowStrategy(datasource) {
       if (datasource === 'hbase') {
         this.jdbc = this.mongodb = false
