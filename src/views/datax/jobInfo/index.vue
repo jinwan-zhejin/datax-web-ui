@@ -147,37 +147,29 @@
         <el-tab-pane v-if="!jobDetailTabs.length" label="欢迎" name="欢迎">
           欢迎
         </el-tab-pane>
+        
         <el-tab-pane
           :key="item.content.id"
           v-for="item in jobDetailTabs"
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail @deleteJob='getItem()' @deleteDetailTab='removeJobTab' :job-info="item.content" />
+          <JobDetail @deleteJob='getItem' @deleteDetailTab='clearJobTab' :job-info="item.content" />
         </el-tab-pane>
+
         <el-tab-pane
-          v-if="
-            jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'
-          "
-          :name="
-            jobType === 'NORMAL'
-              ? 'NORMAL'
-              : jobType === 'IMPORT'
-              ? 'IMPORT'
-              : 'EXPORT'
-          "
-          :label="
-            jobType === 'NORMAL'
-              ? '普通任务'
-              : jobType === 'IMPORT'
-              ? '引入任务'
-              : '导出任务'
-          "
+          v-if="$store.state.taskAdmin.tabType"
+          :name="$store.state.taskAdmin.tabType"
+          :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]"
         >
-          <div class="rg">
+          <div  v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  class="rg">
             <JsonBuild @refresh="freshItem" />
           </div>
+          <div v-if="jobType === 'SQLJOB'" class="rg">
+            <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
+          </div>
         </el-tab-pane>
+
       </el-tabs>
     </div>
     <div v-if="jobType === 'VJOB'" class="rg">
@@ -221,9 +213,6 @@
     </div>
     <div v-if="jobType === 'SPARK'" class="rg">
       <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
-    </div>
-    <div v-if="jobType === 'SQLJOB'" class="rg">
-      <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
     </div>
     <div v-if="jobType === 'METACOMPARE'" class="rg">
       <MetaCompare />
@@ -300,6 +289,7 @@ export default {
   },
   created() {
     this.getItem();
+    console.log(this.$store.state);
   },
   mounted() {},
   methods: {
@@ -321,6 +311,17 @@ export default {
           this.jobDetailIdx = "欢迎";
         }
       }
+    },
+
+    clearJobTab(name) {
+      const removeIndex = _.findIndex(
+        this.jobDetailTabs,
+        (ele) => ele.content.id == name
+      );
+      this.jobDetailIdx =
+          (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
+            this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
+      this.jobDetailTabs.splice(removeIndex, 1);
     },
 
     freshItem() {
@@ -420,7 +421,8 @@ export default {
       a.title = data.jobDesc;
       a.name = data.jobDesc;
       a.content = data;
-      if (_.findIndex(this.jobDetailTabs, a) === -1) {
+      
+      if (_.findIndex(this.jobDetailTabs, (tab)=>tab.content.id == data.id) === -1) {
         this.jobDetailTabs.push(a);
         this.jobDetailIdx = a.content.id + "";
       } else {
@@ -457,7 +459,7 @@ export default {
       }
     },
 
-    getItem() {
+    getItem(del) {
       jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
@@ -483,8 +485,10 @@ export default {
           a.name = firstElement.jobDesc;
           a.content = firstElement;
           if (!this.firstTime) {
-            this.jobDetailTabs.push(a);
-            this.jobDetailIdx = a.content.id + "";
+            if(!del){
+              this.jobDetailTabs.push(a);
+              this.jobDetailIdx = a.content.id + "";
+            }
           } else {
             this.firstTime = false;
           }
@@ -513,6 +517,7 @@ export default {
 
     createNewJob(command) {
       console.log(command);
+      this.$store.commit('SET_TAB_TYPE', command)
       this.jobType = command;
       this.jobDetailIdx = command;
     },
