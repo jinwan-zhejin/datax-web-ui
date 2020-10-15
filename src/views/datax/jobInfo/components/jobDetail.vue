@@ -594,12 +594,8 @@
     </el-dialog>
 
     <el-dialog title="日志信息" :visible.sync="logview">
-  <el-table :data="logData">
-    <el-table-column property="date" label="日期" width="150"></el-table-column>
-    <el-table-column property="name" label="姓名" width="200"></el-table-column>
-    <el-table-column property="address" label="地址"></el-table-column>
-  </el-table>
-</el-dialog>
+      <jobLog :id='jobId' ></jobLog>
+    </el-dialog>
 
 </div>
 </template>
@@ -607,6 +603,7 @@
 <script>
 import * as executor from "@/api/datax-executor";
 import * as job from "@/api/datax-job-info";
+import * as log from "@/api/datax-job-log";
 import waves from "@/directive/waves"; // waves directive
 import Cron from "@/components/Cron";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -617,6 +614,7 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
+import jobLog from './jobLog'
 
 import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
@@ -630,6 +628,7 @@ export default {
     PythonEditor,
     PowershellEditor,
     Cron,
+    jobLog
   },
   directives: { waves },
   filters: {
@@ -656,6 +655,7 @@ export default {
       callback();
     };
     return {
+      jobId:'',
       logview:false,
       logData:[],
       editFrom: true,
@@ -860,16 +860,18 @@ export default {
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
       this.logview = true;
+      this.jobId = temp.id
     },
 
     //删除
     handlerDelete(temp) {
       handlerDelete.call(this, temp)
       .then(()=>{
-        this.$emit('deleteDetailTab',temp.id)
+        this.$emit('deleteDetailTab',temp.id);
+        this.$emit('deleteJob', true)
       })
       .then(()=>{
-        this.$emit('deleteJob')
+        
       })
     },
 

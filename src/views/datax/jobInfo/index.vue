@@ -153,7 +153,7 @@
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail @deleteJob='getItem()' @deleteDetailTab='removeJobTab' :job-info="item.content" />
+          <JobDetail @deleteJob='getItem' @deleteDetailTab='clearJobTab' :job-info="item.content" />
         </el-tab-pane>
         <el-tab-pane
           v-if="
@@ -328,6 +328,9 @@ export default {
         this.jobDetailTabs,
         (ele) => ele.content.id == name
       );
+      this.jobDetailIdx =
+          (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
+            this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
       this.jobDetailTabs.splice(removeIndex, 1);
     },
 
@@ -465,7 +468,7 @@ export default {
       }
     },
 
-    getItem() {
+    getItem(del) {
       jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
@@ -491,8 +494,10 @@ export default {
           a.name = firstElement.jobDesc;
           a.content = firstElement;
           if (!this.firstTime) {
-            this.jobDetailTabs.push(a);
-            this.jobDetailIdx = a.content.id + "";
+            if(!del){
+              this.jobDetailTabs.push(a);
+              this.jobDetailIdx = a.content.id + "";
+            }
           } else {
             this.firstTime = false;
           }
