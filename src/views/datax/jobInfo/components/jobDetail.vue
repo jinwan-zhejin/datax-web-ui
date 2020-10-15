@@ -594,7 +594,7 @@
     </el-dialog>
 
     <el-dialog title="日志信息" :visible.sync="logview">
-      <jobLog :id='jobId' ></jobLog>
+      <jobLog ref="jobLog" :id='jobId' ></jobLog>
     </el-dialog>
 
 </div>
@@ -860,7 +860,8 @@ export default {
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
       this.logview = true;
-      this.jobId = temp.id
+      this.jobId = temp.id;
+      this.$refs.jobLog.fetchData()
     },
 
     //删除
