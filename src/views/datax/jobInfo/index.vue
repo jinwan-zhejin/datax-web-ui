@@ -431,7 +431,8 @@ export default {
       a.title = data.jobDesc;
       a.name = data.jobDesc;
       a.content = data;
-      if (_.findIndex(this.jobDetailTabs, a) === -1) {
+      
+      if (_.findIndex(this.jobDetailTabs, (tab)=>tab.content.id == data.id) === -1) {
         this.jobDetailTabs.push(a);
         this.jobDetailIdx = a.content.id + "";
       } else {
