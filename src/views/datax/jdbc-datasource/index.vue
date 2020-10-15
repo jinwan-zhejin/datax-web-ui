@@ -157,9 +157,10 @@
       </span>
     </el-dialog>
     <!-- UI添加对话框 -->
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" width="60%">
       <div slot="title">
-        <span>{{ diaTit }}</span>
+        <span v-show="currentStep === 2">{{ sqlName }}连接设置</span>
+        <span v-show="currentStep === 1">选择新连接类型</span>
       </div>
       <!-- 第一步选择连接类型 -->
       <div v-show="currentStep === 1" class="topSelect">
@@ -170,8 +171,8 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/monetdb_icon_big@2x.png" alt="">
-                <p>mangodb</p>
+                <img src="@/assets/松鼠png/MongoDB.png" alt="">
+                <p>mongodb</p>
               </a>
             </li>
             <li @click="getInfo">
@@ -182,7 +183,7 @@
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/ignite_icon_big@2x.png" alt="">
+                <img src="@/assets/松鼠png/GREEN.png" alt="">
                 <p>greenplum</p>
               </a>
             </li>
@@ -206,22 +207,34 @@
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/h2gis_icon_big@2x.png" alt="">
+                <img src="@/assets/松鼠png/oracle.png" alt="">
                 <p>oracle</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/elasticsearch_icon_big@2x.png" alt="">
+                <img src="@/assets/松鼠png/clickhouse.png" alt="">
                 <p>clickhouse</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/bigquery_icon_big@2x.png" alt="">
+                <img src="@/assets/松鼠png/hbase.png" alt="">
                 <p>hbase</p>
               </a>
             </li>
+            <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/db2_i_icon_big@2x.png" alt="">
+                <p>DB2</p>
+              </a>
+            </li>
+            <!-- <li @click="getInfo">
+              <a>
+                <img src="@/assets/松鼠png/mariadb_icon_big@2x.png" alt="">
+                <p>MariaDB</p>
+              </a>
+            </li> -->
           </ul>
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
@@ -262,7 +275,8 @@
         </el-tab-pane>
       </el-tabs>
       <!-- 第二步表单 -->
-      <el-form v-show="currentStep === 2" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+      <!-- SQL Server连接设置表单 -->
+      <el-form v-show="sqlserver" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="主机" prop="master">
           <el-input v-model="ruleForm.master" placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用" />
         </el-form-item>
@@ -281,25 +295,50 @@
         <el-form-item label="密码" prop="password">
           <el-input v-model="ruleForm.password" />
         </el-form-item>
-        <el-form-item label="驱动名称" prop="driver">
-          <el-input v-model="ruleForm.driver" />
-        </el-form-item>
-        <el-form-item>
-          <el-button>编辑驱动名称</el-button>
-        </el-form-item>
       </el-form>
-      <!-- 连接设置表单 -->
-      <div v-show="currentStep === 3" class="set">
-        <p>Server</p>
+      <!-- MariaDB MYSQL连接设置表单 -->
+      <div v-show="mm" class="set">
+        <p>服务器</p>
         <el-form :model="ServerForm" label-width="100px" class="bgcForm">
-          <el-form-item label="服务器地址:" prop="master">
+          <el-form-item label="服务器地址:" style="width: 50%;float: left">
             <el-input v-model="ServerForm.serverUrl" />
           </el-form-item>
-          <el-form-item label="端口:" prop="sql">
-            <el-input v-model="ServerForm.port" />
+          <el-form-item label="端口:" style="width: 50%;float: right">
+            <el-input v-model="ServerForm.serverPort" />
           </el-form-item>
-          <el-form-item label="数据库:" prop="username">
-            <el-input v-model="ServerForm.sql" />
+          <el-form-item label="数据库:" style="width: 50%;">
+            <el-input v-model="ServerForm.database" />
+          </el-form-item>
+        </el-form>
+        <p>认证</p>
+        <el-form :model="userForm" label-width="100px" class="bgcForm">
+          <el-form-item label="用户名:" style="width: 50%;">
+            <el-input v-model="userForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:" style="width: 50%;">
+            <el-input v-model="userForm.password" type="password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+          </el-form-item>
+        </el-form>
+        <p>高级</p>
+        <el-form :model="AdvancedForm" label-width="100px" class="bgcForm">
+          <el-form-item label="服务器时区:" style="width: 50%;">
+            <el-input v-model="AdvancedForm.serverTime" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- Greenplum PostqreSQL连接设置表单 -->
+      <div v-show="gp" class="set">
+        <p>服务器</p>
+        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+          <el-form-item label="主机:">
+            <el-input v-model="ServerForm.master" />
+          </el-form-item>
+          <el-form-item label="端口:">
+            <el-input v-model="ServerForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="数据库:">
+            <el-input v-model="ServerForm.database" />
           </el-form-item>
         </el-form>
         <p>认证</p>
@@ -309,15 +348,154 @@
           </el-form-item>
           <el-form-item label="密码:">
             <el-input v-model="userForm.password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
-        <p>Advanced</p>
+        <p>高级</p>
         <el-form :model="AdvancedForm" label-width="100px" class="bgcForm">
-          <el-form-item label="服务器时区:">
-            <el-input v-model="AdvancedForm.serverTime" />
+          <el-form-item label="用户角色:" style="width: 50%;float: left;">
+            <el-input v-model="AdvancedForm.userRole" />
           </el-form-item>
-          <el-form-item label="本地客户端:">
+          <el-form-item label="本地客户端:" style="width: 50%;float: right;">
             <el-input v-model="AdvancedForm.client" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
+      <div v-show="threeSQL" class="set">
+        <p>一般</p>
+        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+          <el-form-item label="JDBC URL:" style="width: 50%;">
+            <el-input v-model="ServerForm.jdbcUrl" />
+          </el-form-item>
+          <el-form-item label="主机:" style="width: 50%;float: left;">
+            <el-input v-model="ServerForm.master" />
+          </el-form-item>
+          <el-form-item label="端口:" style="width: 50%;float: right;">
+            <el-input v-model="ServerForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="数据库/模式:" style="width: 50%;">
+            <el-input v-model="ServerForm.database" />
+          </el-form-item>
+        </el-form>
+        <p>认证</p>
+        <el-form :model="userForm" label-width="100px" class="bgcForm">
+          <el-form-item label="用户名:" style="width: 50%;">
+            <el-input v-model="userForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:" style="width: 50%;">
+            <el-input v-model="userForm.password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- oracle连接设置表单 -->
+      <div v-show="oracle" class="set">
+        <p>连接类型</p>
+        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+          <el-form-item label="主机:" style="width: 50%;float: left;">
+            <el-input v-model="ServerForm.master" />
+          </el-form-item>
+          <el-form-item label="端口:" style="width: 50%;float: right;">
+            <el-input v-model="ServerForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="Database:">
+            <el-select v-model="ServerForm.database" placeholder="ORCL" style="width: 55%;float: left;">
+              <el-option
+                v-for="item in roleList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-select v-model="ServerForm.role" placeholder="ORCL" style="width: 40%;float: right;">
+              <el-option
+                v-for="item in roleList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <p>认证</p>
+        <el-form :model="userForm" label-width="100px" class="bgcForm">
+          <el-form-item label="认证:" style="width: 50%;">
+            <el-select v-model="userForm.advanced" placeholder="请选择认证">
+              <el-option
+                v-for="item in roleList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="用户名:" style="width: 50%;float: left;">
+            <el-input v-model="userForm.username" />
+          </el-form-item>
+          <el-form-item label="角色:" style="width: 50%;float: right;">
+            <el-select v-model="userForm.role" placeholder="请选择角色">
+              <el-option
+                v-for="item in roleList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="密码:" style="width: 50%;">
+            <el-input v-model="userForm.password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- DB2 LUW 连接设置表单 -->
+      <div v-show="DB2" class="set">
+        <p>数据库</p>
+        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+          <el-form-item label="主机:" style="width: 50%;float: left;">
+            <el-input v-model="ServerForm.master" />
+          </el-form-item>
+          <el-form-item label="端口:" style="width: 50%;float: right;">
+            <el-input v-model="ServerForm.port" />
+          </el-form-item>
+          <el-form-item label="数据库:" prop="username">
+            <el-input v-model="ServerForm.sql" />
+          </el-form-item>
+        </el-form>
+        <p>认证</p>
+        <el-form :model="userForm" label-width="100px" class="bgcForm">
+          <el-form-item label="用户名:" style="width: 50%;">
+            <el-input v-model="userForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:" style="width: 50%;">
+            <el-input v-model="userForm.password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- ClickHouse HBase 连接设置表单 -->
+      <div v-show="ch" class="set">
+        <p>一般</p>
+        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+          <el-form-item label="JDBC URL:" style="width: 50%;">
+            <el-input v-model="ServerForm.jdbcUrl" />
+          </el-form-item>
+          <el-form-item label="端口:" style="width: 50%;float: right;">
+            <el-input v-model="ServerForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="主机:" style="width: 50%;">
+            <el-input v-model="ServerForm.master" />
+          </el-form-item>
+        </el-form>
+        <p>认证</p>
+        <el-form :model="userForm" label-width="100px" class="bgcForm">
+          <el-form-item label="用户名:" style="width: 50%;">
+            <el-input v-model="userForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:" style="width: 50%;">
+            <el-input v-model="userForm.password" />
+            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
@@ -326,7 +504,7 @@
         <el-button :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
         <el-button type="goon" @click="nextStep">下一步</el-button>
         <el-button @click="cancel">取 消</el-button>
-        <el-button :disabled="currentStep === 1" @click="addData">完 成</el-button>
+        <el-button :disabled="currentStep === 1" @clsick="addData">完 成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -365,6 +543,13 @@ export default {
         current: 1,
         size: 10
       },
+      checked: false, // 是否保存本地密码
+      roleList: [
+        {
+          value: '123',
+          label: '管理员'
+        }
+      ],
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
       pluginData: [],
@@ -427,23 +612,23 @@ export default {
       AdvancedForm: {},
       ServerForm: {},
       userForm: {},
-      rules: {
-        master: [
-          { required: true, message: '请输入主机名称', trigger: 'blur' }
-        ],
-        sql: [
-          { required: true, message: '请输入数据库/架构名称', trigger: 'blur' }
-        ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ],
-        driver: [
-          { required: true, message: '请输入驱动名称', trigger: 'blur' }
-        ]
-      },
+      // rules: {
+      //   master: [
+      //     { required: true, message: '请输入主机名称', trigger: 'blur' }
+      //   ],
+      //   sql: [
+      //     { required: true, message: '请输入数据库/架构名称', trigger: 'blur' }
+      //   ],
+      //   username: [
+      //     { required: true, message: '请输入用户名', trigger: 'blur' }
+      //   ],
+      //   password: [
+      //     { required: true, message: '请输入密码', trigger: 'blur' }
+      //   ],
+      //   driver: [
+      //     { required: true, message: '请输入驱动名称', trigger: 'blur' }
+      //   ]
+      // },
       sqlName: '',
       params: {
         comments: '',
@@ -457,19 +642,38 @@ export default {
       }
     }
   },
-  watch: {
-    currentStep: function(val) {
-      if (val === 1) {
-        console.log(val, this.diaTit)
-        this.diaTit = '选中新连接类型'
-      } else if (val === 2) {
-        this.diaTit = '通用JDBC连接设置'
-        console.log(val, this.diaTit)
-      } else if (val === 3) {
-        this.diaTit = '连接设置'
-        console.log(val, this.diaTit)
-      }
+  // 计算属性
+  computed: {
+    // ClickHouse HBase
+    ch() {
+      return this.currentStep === 2 && (this.sqlName === 'clickhouse' || this.sqlName === 'hbase')
     },
+    // Greenplum PostqreSQL
+    gp() {
+      return (this.sqlName === 'greenplum' || this.sqlName === 'postgresql') && this.currentStep === 2
+    },
+    // oracle
+    oracle() {
+      return this.sqlName === 'oracle' && this.currentStep === 2
+    },
+    // MariaDB MYSQL
+    mm() {
+      return (this.sqlName === 'MariaDB' || this.sqlName === 'MYSQL') && this.currentStep === 2
+    },
+    // DB2
+    DB2() {
+      return this.sqlName === 'DB2' && this.currentStep === 2
+    },
+    // Apache Hive,Apache Spark,Cloudera Impala
+    threeSQL() {
+      return (this.sqlName === 'hive' || this.sqlName === 'ApacheSpark' || this.sqlName === 'ClouderaImpala') && this.currentStep === 2
+    },
+    // sqlserver
+    sqlserver() {
+      return (this.sqlName === 'sqlserver' || this.sqlName === 'mongodb') && this.currentStep === 2
+    }
+  },
+  watch: {
     sqlName: function(val) {
       console.log(val)
       console.log(this.params, '----------')
@@ -547,9 +751,6 @@ export default {
       }
       this.getShowStrategy(datasource)
     },
-    directives: {
-      waves
-    },
     resetTemp() {
       this.temp = {
         id: undefined,
@@ -582,15 +783,22 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    // 取消
     cancel() {
       this.dialogVisible = false
       this.$refs[this.ruleForm].resetFields()
       this.currentStep = 1
+      console.log(this.currentStep, '1111111111111111111111')
       this.ruleForm = {}
     },
+    // 下一步
     nextStep() {
       if (this.currentStep < 2) {
-        this.currentStep++
+        if (this.sqlName !== '') {
+          this.currentStep++
+        } else {
+          this.$message.warning('请选择数据源类型')
+        }
       }
       console.log(this.currentStep)
     },
@@ -813,7 +1021,7 @@ export default {
   .main {
     background-color: #fff;
     overflow: hidden;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   .topSelect {
     overflow: hidden;
@@ -848,20 +1056,44 @@ export default {
               }
             }
             a:visited {
-              background-color: #f5f6fa;
+              background-color:  blue;
             }
+          }
+          li:hover {
+            background-color: #F7F7FC;
+          }
+          li:active {
+            background-color: #C4CFFF;
+          }
+          li:visited {
+            background-color: #C4CFFF;
           }
         }
     }
   }
   .set {
     p {
-      font-size: 20px;
+      font-size: 18px;
       margin: 20px 0px;
     }
     .bgcForm {
       background-color: #f5f6fa;
       padding: 20px;
+    }
+  }
+  .el-dialog__header {
+    font-size: 24px;
+    .p_tit {
+      font-size: 16px;
+      color: #cccccc;
+      margin-top: 20px;
+    }
+  }
+  .el-dialog__body {
+    padding: 10px 20px;
+    .el-form {
+      overflow: hidden;
+      border-radius: 6px;
     }
   }
   .el-dialog__footer {
