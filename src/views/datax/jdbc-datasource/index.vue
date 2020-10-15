@@ -670,7 +670,7 @@ export default {
     },
     // sqlserver
     sqlserver() {
-      return this.sqlName === 'sqlserver' && this.currentStep === 2
+      return (this.sqlName === 'sqlserver' || this.sqlName === 'mongodb') && this.currentStep === 2
     }
   },
   watch: {
