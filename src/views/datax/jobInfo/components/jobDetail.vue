@@ -373,21 +373,7 @@
       v-if="temp.glueType === 'BEAN'"
       ref="jsonEditor"
       v-model="temp.jobJson"
-    />
-    <shell-editor
-      v-if="temp.glueType === 'GLUE_SHELL'"
-      ref="shellEditor"
-      v-model="temp.jobJson"
-    />
-    <python-editor
-      v-if="temp.glueType === 'GLUE_PYTHON'"
-      ref="pythonEditor"
-      v-model="temp.jobJson"
-    />
-    <powershell-editor
-      v-if="temp.glueType === 'GLUE_POWERSHELL'"
-      ref="powershellEditor"
-      v-model="temp.jobJson"
+      caniEdit='nocursor'
     />
     <div slot="footer" class="dialog-footer ">
       <div >
@@ -593,7 +579,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
+      <json-editor :caniEdit='false' v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
       <!-- <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
       <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
       <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" /> -->
@@ -880,6 +866,9 @@ export default {
     handlerDelete(temp) {
       handlerDelete.call(this, temp)
       .then(()=>{
+        this.$emit('deleteDetailTab',temp.id)
+      })
+      .then(()=>{
         this.$emit('deleteJob')
       })
     },
@@ -1017,9 +1006,8 @@ export default {
               type: "success",
               duration: 2000,
             });
-
-            this.$emit('deleteJob')
             this.$emit('deleteDetailTab', tabName)
+            this.$emit('deleteJob')
           });
         }
       });

@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-12 19:11:05
+ * @LastEditTime: 2020-10-14 14:25:38
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -10,16 +10,16 @@
 <template>
   <div>
     <el-row class="top-buttons">
-      <el-col :span="12" style="min-width: 234px;">
+      <el-col :span="8" style="min-width: 234px;">
         <el-tooltip content="刷新搜索结果" placement="top">
           <el-button type="primary" size="" plain icon="el-icon-refresh" @click="refreshList" />
         </el-tooltip>
         <el-button type="primary" size="" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
-        <el-button type="primary" size="" plain @click="backToSearch">Clear</el-button>
+        <el-button type="primary" size="" plain @click="backToSearch">清除</el-button>
       </el-col>
-      <el-col :span="12" style="min-width: 334px;">
+      <el-col :span="16" style="width: 370px;">
         <el-tooltip content="保存为自定义筛选器" placement="top">
-          <el-button type="primary" size="" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">Save Filter</el-button>
+          <el-button type="primary" size="" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
         </el-tooltip>
         <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="createNewEntity">新建实体</el-button> -->
         <!-- <el-dropdown size="" trigger="click" :hide-on-click="false">
@@ -48,13 +48,28 @@
       </el-col>
     </el-row>
     <el-row class="typeAndClassifications">
-      <el-col v-if="searchRequestItem.length > 0">
-        <div v-for="(item, index) in searchRequestItem" :key="item+index">
+      <el-col v-if="searchRequestItem.length > 0" :span="24">
+        <span class="searchResult">
+          <span v-for="(item, index) in searchRequestItem" :key="item+index" class="filterQuery">
+            <span>(</span>
+            <span class="group">
+              <span class="capsuleView">
+                <span class="key">{{ item.key }}</span>
+                <span> : </span>
+                <span class="value">{{ item.value }}</span>
+                <i class="el-icon-error" @click="deleteFilterItem(item)" />
+              </span>
+            </span>
+            <span>)</span>
+            <span v-if="index !== (searchRequestItem.length - 1)">AND</span>
+          </span>
+        </span>
+        <!-- <div v-for="(item, index) in searchRequestItem" :key="item+index">
           <span>{{ index === 0 ? '(&nbsp;' : '' }}</span>
           <span>{{ item.key }}: {{ item.value }}<i class="el-icon-error" @click="deleteThisRequest(item)" /></span>
           {{ index !== (searchRequestItem.length - 1) ? '&nbsp;And&nbsp;' : '' }}
           <span>{{ index === (searchRequestItem.length - 1) ? ')&nbsp;' : '' }}</span>
-        </div>
+        </div> -->
       </el-col>
     </el-row>
     <el-row>
@@ -65,29 +80,40 @@
               <a class="tableItemLink" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
             </template>
           </el-table-column>
-          <el-table-column key="所有者" label="所有者" min-width="80" prop="attributes.owner" />
+          <el-table-column key="所有者" label="所有者" prop="attributes.owner" />
           <el-table-column key="描述" label="描述" min-width="110" prop="attributes.description" />
-          <el-table-column key="类型" label="类型" min-width="115" prop="typeName">
+          <el-table-column key="类型" label="类型" prop="typeName">
             <template v-slot:default="{row}">
-              <a class="tableItemLink" @click="refreshList">{{ row.typeName }}</a>
+              <a class="tableItemLink" @click="gotoNextResult('entity',row.typeName)">{{ row.typeName }}</a>
             </template>
           </el-table-column>
-          <el-table-column key="分类" label="分类" prop="classificationNames">
+          <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
               <div v-for="classes in row.classifications" :key="classes">
-                <el-tooltip :content="classes.typeName">
-                  <el-button type="primary" plain size="mini">{{ classes.typeName }}</el-button>
-                </el-tooltip>
+                <el-button-group style="width: 150px">
+                  <el-tooltip :content="classes.typeName">
+                    <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
+                  </el-tooltip>
+                  <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                </el-button-group>
               </div>
               <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
             </template>
           </el-table-column>
-          <el-table-column key="术语" label="术语" prop="">
+          <el-table-column key="术语" label="术语" width="150">
             <template v-slot:default="{ row }">
+              <div v-for="classes in row.meanings" :key="classes">
+                <el-button-group style="width: 150px">
+                  <el-tooltip :content="classes.displayText">
+                    <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="test(classes)">{{ classes.displayText }}</el-button>
+                  </el-tooltip>
+                  <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                </el-button-group>
+              </div>
               <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
             </template>
           </el-table-column>
-          <el-table-column key="操作" label="操作" min-width="80">
+          <el-table-column key="操作" label="操作" min-width="115">
             <template v-slot:default="{ row }">
               <el-button type="primary" plain size="mini" @click="metaCompare(row)">元数据比对</el-button>
             </template>
@@ -205,6 +231,13 @@ export default {
           value: this.searchRequest['params'].termName
         })
       }
+      if (this.searchRequest['params'].query !== null) {
+        temp.push({
+          key: '查询',
+          name: 'query',
+          value: this.searchRequest['params'].query
+        })
+      }
       console.log(temp)
       return temp
     }
@@ -226,6 +259,9 @@ export default {
   methods: {
     test2() {
       console.log(this.tableColumnsSelected)
+    },
+    test(info) {
+      console.log(info)
     },
     metaCompare(row) {
       console.log(row)
@@ -250,9 +286,6 @@ export default {
         duration: 3000
       })
     },
-    test(info) {
-      console.log(info)
-    },
     /**
          * @description: 初始化页面并返回到Search界面
          */
@@ -265,14 +298,14 @@ export default {
          * @description: 通知父组件跳转到details界面
          */
     goToDetails(row) {
-      this.$emit('changepage', 'atlasDetails'.concat('?').concat(JSON.stringify(row)))
+      this.$emit('changedetail', JSON.stringify(row))
     },
     /**
          * @description: 重新获取表信息
          */
     async refreshList() {
       // console.log('父组件传值改变重新获取数据')
-      if (this.searchRequest.params.typeName === null && this.searchRequest.params.termName === null && this.searchRequest.params.classification === null) {
+      if (this.searchRequest.params.typeName === null && this.searchRequest.params.termName === null && this.searchRequest.params.classification === null && this.searchRequest.params.query === null) {
         if (this.searchRequest.businessMetadata === null) {
           // 全空报错
           // this.$message({
@@ -321,16 +354,14 @@ export default {
       console.log('弹出新建实体组件')
     },
     /**
-         * @description: 删除查询搜索条件
+         * @description: 删除筛选条件
          */
-    deleteThisRequest(item) {
-      console.log('删除查询搜索条件')
-      for (var i in this.searchRequestItem) {
-        if (item.key === this.searchRequestItem[i].key) {
-          this.searchRequestItem.splice(i, 1)
-        }
-      }
-      console.log(this.searchRequestItem)
+    deleteFilterItem(item) {
+      // console.log('删除查询搜索条件')
+      this.$emit('deletefilteritem', JSON.stringify(item))
+    },
+    gotoNextResult(type, param) {
+      this.$emit('changeresult', type.concat('?').concat(param))
     }
   }
 }
@@ -351,16 +382,38 @@ export default {
     .el-col {
         span {
             position: relative;
-            color: #409eff;
-
+            // color: #409eff;
+            color: #686868;
+            font-weight: bold;
             i {
                 cursor: pointer;
-                color: rgb(56, 56, 56);
+                color: #686868;
             }
-
             i:hover {
-                color: rgb(126, 126, 126);
+                color: #acacac;
             }
+        }
+        .searchResult {
+          .filterQuery {
+            .group {
+              display: inline-block;
+              height: 1.9em;
+              line-height: 1.9em;
+              border: 1px solid #409eff;
+              border-radius: 1.9em;
+              .capsuleView {
+                padding: 5px;
+                .key {
+                  color: #38BB9B;
+                  font-size: 0.8rem;
+                }
+                .value {
+                  color: #409eff;
+                  font-size: 0.9rem;
+                }
+              }
+            }
+          }
         }
     }
 }

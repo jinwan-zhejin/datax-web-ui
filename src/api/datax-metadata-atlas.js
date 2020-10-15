@@ -2,14 +2,14 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-09 15:49:11
+ * @LastEditTime: 2020-10-13 18:07:17
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
 import axios from 'axios'
 import qs from 'qs'
-import { get } from 'sortablejs';
+import { get, Swap } from 'sortablejs';
 
 /**
  * @description: 模拟登陆发送post
@@ -61,6 +61,10 @@ export async function getList(type) {
   return res
 }
 
+/**
+ * @description: 获取所有实体
+ * @return {object} axios返回值
+ */
 export async function getListType() {
   const res = await axios({
     url: '/atlasApi/v2/types/typedefs/headers',
@@ -175,7 +179,7 @@ export async function getDetailsProperties(guid) {
 /**
  * @description: 获取details页面系谱Lineage信息
  * @param {String} guid
- * @return {object} axios
+ * @return {object} axios返回值
  */
 export async function getDetailsLineage(guid) {
   const res = await axios({
@@ -184,6 +188,40 @@ export async function getDetailsLineage(guid) {
     params: {
       '': '',
       _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取快速查找框内快速查找结果
+ * @param {String} searchText 查找词
+ * @return {object} axios返回值
+ */
+export async function getQuickSearch(searchText) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/quick',
+    method: 'get',
+    params: {
+      query: searchText.concat('*'),
+      limit: 5,
+      offset: 0
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取快速查找框内建议结果
+ * @param {String} searchText 查找词
+ * @return {object} axios返回值
+ */
+export async function getQuickSuggest(searchText) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/suggestions',
+    method: 'get',
+    params: {
+      prefixString: searchText
     }
   })
   return res
