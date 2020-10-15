@@ -2,94 +2,16 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 14:25:25
+ * @LastEditTime: 2020-10-15 10:00:38
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelSearch.vue
  * @Description: 右半部分查找 子组件
 -->
 <template>
   <div>
     <div style="height: 100%">
-      <div id="create">
-        <el-button type="success" plain size="medium" icon="el-icon-circle-plus" @click="createDialogShow = true">新建实体</el-button>
-      </div>
-      <!-- <el-row style="top:20%">
-        <el-col :span="24">
-          <div class="searchBar">
-            <el-input v-model="searchEntityName" size="medium" prefix-icon="el-icon-search" placeholder="查找实体" clearable>
-              <i slot="suffix" class="el-input__icon el-icon-caret-bottom" style="cursor: pointer;" @click="showSearchCardFun" />
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :span="24">
-          <div class="searchBarCard">
-            <el-collapse-transition>
-              <el-card v-show="showSearchCard" key="card1" shadow="always" class="card-text">
-                <el-row style="margin-bottom: 15px;">
-                  <span style="line-height: 32px;">
-                    高级<i class="el-icon-question" style="cursor: pointer;" @click="test" />
-                  </span>
-                  <el-tooltip style="float:right; position:relative;" content="刷新" placement="top">
-                    <el-button size="mini" type="success" plain @click="test">
-                      <i class="el-icon-refresh" />
-                    </el-button>
-                  </el-tooltip>
-                </el-row>
-                <el-row style="margin-top: 15px;">
-                  通过类型查找
-                </el-row>
-                <el-row>
-                  <el-col :span="24">
-                    <el-select v-model="entityType" size="small" filterable placeholder="请选择实体" clearable>
-                      <el-option
-                        v-for="item in entities"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name"
-                      />
-                    </el-select>
-                  </el-col>
-                </el-row>
-                <el-row style="margin-top: 15px;">
-                  通过查询语句查找
-                </el-row>
-                <el-row :span="24">
-                  <el-input v-model="searchByQuery" placeholder="通过查询语句查找 例.where name=&quot;sales_fact&quot;" />
-                </el-row>
-                <el-row style="margin-top: 15px;">
-                  <el-button type="success" @click="clearCardInput">清空</el-button>
-                  <el-button style="float:right; position:relative;" type="success" @click="searchEntity">搜索</el-button>
-                </el-row>
-              </el-card>
-            </el-collapse-transition>
-            <el-collapse-transition>
-              <el-card v-show="showResultCard && !showSearchCard" key="card2" shadow="always" class="card-text">
-                <el-row>
-                  <el-col style="margin-top:10px;color:#909399;font-size:16px;">实体</el-col>
-                  <el-table :data="tableEntities" :show-header="false">
-                    <el-table-column label="nothing">
-                      <template v-slot:default="{ row }">
-                        <div style="cursor: pointer;" @click="gotoDetails(row)">
-                          <i class="el-icon-document" style="color: #409eff" />
-                          {{ row.displayText }}({{ row.typeName }})
-                        </div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-col style="margin-top:10px;color:#909399;font-size:16px;">建议</el-col>
-                  <el-table :data="tableSuggest" :show-header="false">
-                    <el-table-column label="nothing">
-                      <template v-slot:default="{ row }">
-                        <div style="cursor: pointer;" @click="gotoResult(row.suggest)">
-                          {{ row.suggest }}
-                        </div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-row>
-              </el-card>
-            </el-collapse-transition>
-          </div></el-col>
-      </el-row> -->
+      <!-- <div id="create">
+        <el-button type="primary" plain size="medium" icon="el-icon-plus" @click="createDialogShow = true">新建实体</el-button>
+      </div> -->
       <Search class="search" :entities="entities" @changedetail="changeDetail" @changeresult="changeResult" />
     </div>
   </div>
@@ -248,16 +170,6 @@ export default {
       position: absolute;
       top: 10px;
       right: 10px;
-    }
-    ::v-deep .el-button--success {
-      color:  #409EFF;
-      background-color:#fff;
-      border-color: #409EFF;
-    }
-    ::v-deep .el-button--success:hover {
-      color:  #fff;
-      background-color:#409EFF;
-      border-color: #409EFF;
     }
   }
   .search {
