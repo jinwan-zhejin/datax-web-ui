@@ -386,7 +386,7 @@
         </div>
         <transition name="fade">
         <div v-if="showLog" class="log_container">
-
+          <span>{{newstlogContent}}</span>
         </div>
         </transition>
       </div>
@@ -594,12 +594,8 @@
     </el-dialog>
 
     <el-dialog title="日志信息" :visible.sync="logview">
-  <el-table :data="logData">
-    <el-table-column property="date" label="日期" width="150"></el-table-column>
-    <el-table-column property="name" label="姓名" width="200"></el-table-column>
-    <el-table-column property="address" label="地址"></el-table-column>
-  </el-table>
-</el-dialog>
+      <jobLog ref="jobLog" :id='jobId' ></jobLog>
+    </el-dialog>
 
 </div>
 </template>
@@ -607,6 +603,7 @@
 <script>
 import * as executor from "@/api/datax-executor";
 import * as job from "@/api/datax-job-info";
+import * as log from "@/api/datax-job-log";
 import waves from "@/directive/waves"; // waves directive
 import Cron from "@/components/Cron";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -617,6 +614,7 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
+import jobLog from './jobLog'
 
 import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
@@ -630,6 +628,7 @@ export default {
     PythonEditor,
     PowershellEditor,
     Cron,
+    jobLog
   },
   directives: { waves },
   filters: {
@@ -656,6 +655,8 @@ export default {
       callback();
     };
     return {
+      newstlogContent: '',
+      jobId:'',
       logview:false,
       logData:[],
       editFrom: true,
@@ -853,23 +854,29 @@ export default {
   methods: {
     //执行一次
     handlerExecute(temp) {
-      handlerExecute.call(this, temp);
+      handlerExecute.call(this, temp)
+      .then(() => {
+        this.logList();
+      }) 
     },
 
     //查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
       this.logview = true;
+      this.jobId = temp.id;
+      this.$refs.jobLog?.fetchData()
     },
 
     //删除
     handlerDelete(temp) {
       handlerDelete.call(this, temp)
       .then(()=>{
-        this.$emit('deleteDetailTab',temp.id)
+        this.$emit('deleteDetailTab',temp.id);
+        this.$emit('deleteJob', true)
       })
       .then(()=>{
-        this.$emit('deleteJob')
+        
       })
     },
 
@@ -895,6 +902,37 @@ export default {
       handlerUpdate.call(this, row)
     },
 
+    //实时更新日志
+    logList() {
+      const param = Object.assign({},{
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        jobId: this.temp.id,
+        logStatus: -1,
+        filterTime: "",
+      });
+      let status = 0;
+        log.getList(param).then((response) => {
+        const { content } = response;
+        
+        let newestLog = content.data[0];
+        console.log(newestLog);
+        status = newestLog.handleCode;
+        const triggerTime = Date.parse(newestLog?.triggerTime)
+        log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
+        .then(response => {
+          this.newstlogContent = response.content.logContent
+        })
+        .then(() => {
+          if(status === 0){
+            console.log('更新日志');
+            setTimeout(this.logList(), 1000)
+          }
+        })
+      });
+
+    },
 
 
 
@@ -1048,8 +1086,13 @@ export default {
   cursor: pointer;
 }
 .log_container {
-  height: 150px;
+  height: 350px;
   border: 1px solid rgb(247, 247, 247);
+  background: white;
+  color: black;
+  font-size: 12px;
+  overflow-y: scroll;
+  padding: 10px;
 }
 .fade-enter-active, .fade-leave-active {
   transition: height .5s;

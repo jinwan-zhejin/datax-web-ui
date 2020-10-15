@@ -3,7 +3,7 @@ import * as executor from "@/api/datax-executor";
 
 //执行一次
 export function handlerExecute(row) {
-  this.$confirm("确定执行吗？", "提示", {
+  return this.$confirm("确定执行吗？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning"
