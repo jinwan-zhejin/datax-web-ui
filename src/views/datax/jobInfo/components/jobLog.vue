@@ -18,11 +18,11 @@
         <template slot-scope="scope">{{ scope.row.triggerTime }}</template>
       </el-table-column>
       <el-table-column label="调度结果" align="center" width="100">
-        <!-- <template slot-scope="scope">
+        <template slot-scope="scope">
           <span :style="`color:${scope.row.triggerCode == 500 ? 'red' : ''}`">{{
             statusList.find((t) => t.value === scope.row.triggerCode).label
           }}</span></template
-        > -->
+        >
       </el-table-column>
       <el-table-column label="调度备注" align="center">
         <template slot-scope="scope">
@@ -36,11 +36,11 @@
         <template slot-scope="scope">{{ scope.row.handleTime }}</template>
       </el-table-column>
       <el-table-column label="执行结果" align="center">
-        <!-- <template slot-scope="scope">
+        <template slot-scope="scope">
           <span :style="`color:${scope.row.handleCode == 500 ? 'red' : ''}`">{{
             statusList.find((t) => t.value === scope.row.handleCode).label
           }}</span></template
-        > -->
+        >
       </el-table-column>
       <el-table-column label="执行备注" align="center">
         <template slot-scope="scope">
@@ -119,6 +119,12 @@ export default {
       },
       // handleViewJobLog: false,
       dialogVisible:false,
+      statusList: [
+        { value: 500, label: '失败' },
+        { value: 502, label: '失败(超时)' },
+        { value: 200, label: '成功' },
+        { value: 0, label: '无' }
+      ],
     };
   },
   methods: {
