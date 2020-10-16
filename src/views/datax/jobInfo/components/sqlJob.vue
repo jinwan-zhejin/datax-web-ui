@@ -77,7 +77,7 @@
               <el-option
                 v-for="item in blockStrategies"
                 :key="item.id"
-                :label="item.datasource"
+                :label="item.datasourceName"
                 :value="item.id"
               />
             </el-select>
