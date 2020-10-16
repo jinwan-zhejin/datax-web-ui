@@ -503,7 +503,7 @@
             </div>
           </div>
 
-          <div class="from_item_input last_input">
+          <div class="from_item_input">
             <span class="input_label">密码:</span>
             <div class="input_content">
               <el-input
