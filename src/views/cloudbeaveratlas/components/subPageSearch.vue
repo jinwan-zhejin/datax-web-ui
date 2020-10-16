@@ -2,8 +2,8 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-15 10:00:38
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelSearch.vue
+ * @LastEditTime: 2020-10-16 18:22:44
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageSearch.vue
  * @Description: 右半部分查找 子组件
 -->
 <template>
@@ -22,11 +22,12 @@ import * as apiatlas from '@/api/datax-metadata-atlas'
 import Search from './search'
 
 export default {
-  name: 'RightPanelSearch',
+  name: 'SubPageSearch',
   components: {
     Search
   },
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     entities: Object
   },
   data() {

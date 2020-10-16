@@ -2,8 +2,8 @@
  * @Date: 2020-09-27 16:38:14
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-09-28 18:16:12
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\createNewEntityDialog.vue
+ * @LastEditTime: 2020-10-16 14:36:29
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewEntity.vue
  * @Description: 新建实体 模态框
 -->
 
@@ -67,7 +67,7 @@
 
 <script>
 export default {
-  name: 'CreateNewEntityDialog',
+  name: 'AddNewEntity',
   prop: ['createDialogShow'], // createDialogShow - 父传子 显示Dialog与否
   data() {
     return {

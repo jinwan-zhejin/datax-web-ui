@@ -2,14 +2,13 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-13 18:07:17
+ * @LastEditTime: 2020-10-16 18:22:22
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
 import axios from 'axios'
 import qs from 'qs'
-import { get, Swap } from 'sortablejs';
 
 /**
  * @description: 模拟登陆发送post
@@ -223,6 +222,20 @@ export async function getQuickSuggest(searchText) {
     params: {
       prefixString: searchText
     }
+  })
+  return res
+}
+
+/**
+ * @description: 添加分类
+ * @param {object} 参数
+ * @return {object} axios返回值
+ */
+export async function addClassification(data) {
+  const res = await axios({
+    url: '/atlasApi/v2/entity/bulk/classification',
+    method: 'post',
+    data
   })
   return res
 }

@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-15 18:50:18
+ * @LastEditTime: 2020-10-16 16:59:18
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -230,7 +230,19 @@
       <el-container>
         <el-main class="right-container">
           <Search v-if="['atlasResult','atlasDetails'].indexOf(this.$route.name) > -1" :entities="entity.data" @changedetail="changeDetail" @changeresult="changeResult" />
-          <router-view :key="timer" name="atlas" :search-request="searchByListItem" :details-request="searchByName" :entities="entity.data" replace @changepage="changePage" @changedetail="changeDetail" @changeresult="changeResult" @deletefilteritem="deleteFilterItem" />
+          <router-view
+            :key="timer"
+            name="atlas"
+            :search-request="searchByListItem"
+            :details-request="searchByName"
+            :entities="entity.data"
+            :classification-list="classifications.data"
+            replace
+            @changepage="changePage"
+            @changedetail="changeDetail"
+            @changeresult="changeResult"
+            @deletefilteritem="deleteFilterItem"
+          />
         </el-main>
       </el-container>
     </el-container>
@@ -238,9 +250,9 @@
 </template>
 
 <script>
-import RightPanelSearch from './components/rightPanelSearch'
-import RightPanelTable from './components/rightPanelTable'
-import RightPanelDetails from './components/rightPanelDetails'
+import SubPageSearch from './components/subPageSearch'
+import SubPageResult from './components/subPageResult'
+import SubPageDetails from './components/subPageDetails'
 import Search from './components/search'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import Router from 'vue-router'
@@ -252,7 +264,7 @@ const router = new Router({
       path: '/cloudbeaveratlas/management/search',
       name: 'atlasSearch',
       components: {
-        atlas: RightPanelSearch
+        atlas: SubPageSearch
       }
     },
     // 路由传参√ props传参×
@@ -260,21 +272,21 @@ const router = new Router({
       path: '/cloudbeaveratlas/management/result',
       name: 'atlasResult',
       components: {
-        atlas: RightPanelTable
+        atlas: SubPageResult
       }
     },
     {
       path: '/cloudbeaveratlas/management/details',
       name: 'atlasDetails',
       components: {
-        atlas: RightPanelDetails
+        atlas: SubPageDetails
       }
     },
     {
       path: '*',
       name: 'default',
       components: {
-        atlas: RightPanelSearch
+        atlas: SubPageSearch
       }
     }
   ]
@@ -406,7 +418,7 @@ export default {
     }
   },
   computed: {
-    
+
   },
   watch: {
     searchTreeList(val) {
@@ -662,6 +674,40 @@ export default {
         this.classifications.data = res.data.classificationDefs
         this.classifications.hasVal = this.classifications.data.filter(
           item => this.notEmptyList.tag.tagEntities.hasOwnProperty(item.name) === true
+        )
+        this.classifications.data.push(
+          {
+            category: 'CLASSIFICATION',
+            name: '_ALL_CLASSIFICATION_TYPES',
+            description: '_ALL_CLASSIFICATION_TYPES'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_CLASSIFIED',
+            description: '_CLASSIFIED'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_NOT_CLASSIFIED',
+            description: '_NOT_CLASSIFIED'
+          }
+        )
+        this.classifications.hasVal.push(
+          {
+            category: 'CLASSIFICATION',
+            name: '_ALL_CLASSIFICATION_TYPES',
+            description: '_ALL_CLASSIFICATION_TYPES'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_CLASSIFIED',
+            description: '_CLASSIFIED'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_NOT_CLASSIFIED',
+            description: '_NOT_CLASSIFIED'
+          }
         )
         this.classifications.toShow = this.classifications.hasVal
         for (var i in this.classifications.toShow) {

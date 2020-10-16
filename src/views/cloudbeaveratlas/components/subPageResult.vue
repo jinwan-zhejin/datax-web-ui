@@ -2,8 +2,8 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-15 15:50:49
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
+ * @LastEditTime: 2020-10-16 16:00:54
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
 
@@ -19,7 +19,7 @@
         <el-tooltip content="保存为自定义筛选器" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
         </el-tooltip>
-        <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="createNewEntity">新建实体</el-button> -->
+        <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="addNewEntity">新建实体</el-button> -->
         <el-select
           v-model="tableColumnsSelected"
           size="small"
@@ -79,15 +79,38 @@
           </el-table-column>
           <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
-              <div v-for="classes in row.classifications" :key="classes">
+              <el-button-group style="width: 150px">
+                <el-tooltip :content="row.classifications[0].typeName">
+                  <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
+                </el-tooltip>
+                <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+              </el-button-group>
+              <!-- <div v-for="classes in row.classifications" :key="classes">
                 <el-button-group style="width: 150px">
                   <el-tooltip :content="classes.typeName">
                     <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
                   </el-tooltip>
                   <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
                 </el-button-group>
-              </div>
-              <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+              </div> -->
+              <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
+                <el-button type="success" plain size="mini">
+                  <i class="el-icon-more" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <div v-for="(classes, index) in row.classifications" :key="classes">
+                      <el-button-group v-if="index !== 0" style="width: 150px">
+                        <el-tooltip :content="classes.typeName">
+                          <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
+                        </el-tooltip>
+                        <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                      </el-button-group>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassification(row)" />
             </template>
           </el-table-column>
           <!-- <el-table-column key="术语" label="术语" width="150">
@@ -140,21 +163,26 @@
         <el-button type="primary" @click="submitCompareTask">提交</el-button>
       </div>
     </el-dialog>
-
+    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationShow=false" />
   </div>
 </template>
 
 <script>
-import CreateNewEntityDialog from './createNewEntityDialog'
-import {
-  getTableByItems
-} from '@/api/datax-metadata-atlas'
+// import AddNewEntity from './addNewEntity'
+import AddClassification from './addClassification'
+import { getTableByItems } from '@/api/datax-metadata-atlas'
 
 export default {
-  name: 'RightPanelTable',
+  name: 'SubPageResult',
+  components: {
+    AddClassification
+  },
   // searchRequest 对象，存entity type和classifications
   props: {
-    searchRequest: Object
+    // eslint-disable-next-line vue/require-default-prop
+    searchRequest: Object,
+    // eslint-disable-next-line vue/require-default-prop
+    classificationList: Array // 分类有值列表
   },
   data() {
     return {
@@ -194,7 +222,9 @@ export default {
         baselineTime: '2020-09-10 12:31:31',
         toTime: '2020-09-19 14:31:09'
       },
-      compareType: 'time'
+      compareType: 'time',
+      addClassificationShow: false, // 打开添加分类面板
+      classificationInfo: {} // 为该条添加分类（guid，typeName）
     }
   },
   computed: {
@@ -340,7 +370,7 @@ export default {
     /**
          * @description: 新建实体
          */
-    createNewEntity() {
+    addNewEntity() {
       console.log('弹出新建实体组件')
     },
     /**
@@ -352,6 +382,13 @@ export default {
     },
     gotoNextResult(type, param) {
       this.$emit('changeresult', type.concat('?').concat(param))
+    },
+    /**
+     * @description: 打开添加分类面板
+     */
+    addClassification(row) {
+      this.classificationInfo = row
+      this.addClassificationShow = true
     }
   }
 }
