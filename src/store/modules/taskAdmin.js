@@ -5,6 +5,7 @@ const state = {
         'EXPORT': '导出任务',
         'SQLJOB': 'SQL任务',
     },
+    tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB'],
     tabType: ''
   }
   

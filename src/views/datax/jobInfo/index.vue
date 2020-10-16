@@ -143,6 +143,7 @@
         type="card"
         closable
         @tab-remove="removeJobTab"
+        @tab-click="JobTabClick"
       >
         <el-tab-pane v-if="!jobDetailTabs.length" label="欢迎" name="欢迎">
           欢迎
@@ -303,14 +304,19 @@ export default {
           (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
             this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
       }
-      if (name === "NORMAL" || name === "IMPORT" || name === "EXPORT") {
-        this.jobType = "SHOWDETAIL";
+      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name)!= -1) {
+        this.jobType = "";
+        this.$store.commit('SET_TAB_TYPE', '')
       } else {
         this.jobDetailTabs.splice(removeIndex, 1);
         if (this.jobDetailTabs.length === 0) {
           this.jobDetailIdx = "欢迎";
         }
       }
+    },
+
+    JobTabClick(ele) {
+      this.jobType = ele.name;
     },
 
     clearJobTab(name) {

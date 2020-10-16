@@ -76,9 +76,9 @@
             >
               <el-option
                 v-for="item in blockStrategies"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.id"
+                :label="item.datasource"
+                :value="item.id"
               />
             </el-select>
           </el-form-item>
@@ -324,6 +324,7 @@
         :limit="3"
         :on-exceed="handleExceed"
         :file-list="fileList"
+        :on-success="successFile"
         v-if="radio === '2'"
       >
         <el-button size="small" type="primary">点击上传</el-button>
@@ -332,10 +333,7 @@
 
     </el-form>
     <div class="scriptJson">
-      <json-editor
-      v-if="this.jobType === 'GLUE_SQL'"
-      ref="jsonEditor"
-      v-model="jobJson"/>
+      <textarea v-model="jsonContent"  ref="mycode" class="codesql" ></textarea>
     </div>
     <div>
       <el-button @click="dialogFormVisible = false"> 取消 </el-button>
@@ -354,7 +352,6 @@ import * as job from "@/api/datax-job-info";
 import waves from "@/directive/waves"; // waves directive
 import Cron from "@/components/Cron";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import JsonEditor from "@/components/JsonEditor";
 import ShellEditor from "@/components/ShellEditor";
 import PythonEditor from "@/components/PythonEditor";
 import PowershellEditor from "@/components/PowershellEditor";
@@ -362,12 +359,23 @@ import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
 
+
+import "codemirror/theme/ambiance.css";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/hint/show-hint.css";
+
+let CodeMirror = require("codemirror/lib/codemirror");
+require("codemirror/addon/edit/matchbrackets");
+require("codemirror/addon/selection/active-line");
+require("codemirror/mode/sql/sql");
+require("codemirror/addon/hint/show-hint");
+require("codemirror/addon/hint/sql-hint");
+
 export default {
   name: "SqlJob",
   props: ["jobType", "jobTypeLabel"],
   components: {
     Pagination,
-    JsonEditor,
     ShellEditor,
     PythonEditor,
     PowershellEditor,
@@ -398,6 +406,7 @@ export default {
       callback();
     };
     return {
+      jsonContent: '',
       fileList: [],
       radio: "1",
       projectIds: "",
@@ -521,11 +530,7 @@ export default {
       jobIdList: "",
       jobProjectList: "",
       dataSourceList: "",
-      blockStrategies: [
-        { value: "SERIAL_EXECUTION", label: "单机串行" },
-        { value: "DISCARD_LATER", label: "丢弃后续调度" },
-        { value: "COVER_EARLY", label: "覆盖之前调度" },
-      ],
+      blockStrategies: [],
       routeStrategies: [
         { value: "FIRST", label: "第一个" },
         { value: "LAST", label: "最后一个" },
@@ -584,7 +589,12 @@ export default {
     this.getJobIdList();
     this.getJobProject();
     this.getDataSourceList(), console.log(this.jobType);
+    this.fetchSourceData();
     this.temp.glueType = this.jobType;
+  },
+
+  mounted() {
+    this.mountCodeMirror();
   },
 
   methods: {
@@ -867,7 +877,60 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
+    successFile(response, file, fileList){
+      const _this = this
+      //FileReader读取文件内容
+      let reader = new FileReader();
+      reader.readAsText(file.raw, 'UTF-8');
+      reader.onload = function (e) {
+          // urlData就是对应的文件内容
+          let urlData = this.result;
+          _this.jsonContent = urlData;
+          _this.$options.editor.getDoc().setValue(urlData)
+      };
+    },
+
+    //数据源列表
+  fetchSourceData() {
+      datasourceApi.list({current: 1,size: 1000}).then(response => {
+        const { records } = response
+        const { total } = response
+        this.blockStrategies = records
+      })
+    },
+
+  //初始化sql编辑器
+   mountCodeMirror() {
+      let mime = "text/x-sql";
+      let theme = "ambiance"; //设置主题，不设置的会使用默认主题
+      const _this = this;
+      this.$options.editor = CodeMirror.fromTextArea(this.$refs.mycode, {
+        mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
+        indentWithTabs: true,
+        smartIndent: true,
+        lineNumbers: true,
+        matchBrackets: true,
+        // theme: theme,
+        // autofocus: true,
+        // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
+        hintOptions: {
+          // 自定义提示选项,
+          completeSingle: false,
+          // tables: _this.tips,
+        },
+        configureMouse() {
+          console.log(window.getSelection());
+          return {
+            unit: "word",
+          };
+        },
+      });
+    },
   },
+
+  editor:null,
+
+  
 };
 </script>
 
