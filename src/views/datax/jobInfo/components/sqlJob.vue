@@ -929,6 +929,7 @@ export default {
         smartIndent: true,
         lineNumbers: true,
         matchBrackets: true,
+        gutters:['CodeMirror-linenumbers'],
         // theme: theme,
         // autofocus: true,
         // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
@@ -977,5 +978,8 @@ export default {
 }
 .scriptJson {
   margin-top: 20px;
+}
+.CodeMirror-linenumbers {
+  background: rgb(23, 31, 71);
 }
 </style>
