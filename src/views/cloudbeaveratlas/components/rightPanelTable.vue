@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 14:25:38
+ * @LastEditTime: 2020-10-15 15:50:49
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -10,32 +10,22 @@
 <template>
   <div>
     <el-row class="top-buttons">
-      <el-col :span="8" style="min-width: 234px;">
+      <el-col>
         <el-tooltip content="刷新搜索结果" placement="top">
-          <el-button type="primary" size="" plain icon="el-icon-refresh" @click="refreshList" />
+          <el-button type="primary" size="mini" plain icon="el-icon-refresh" @click="refreshList" />
         </el-tooltip>
-        <el-button type="primary" size="" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
-        <el-button type="primary" size="" plain @click="backToSearch">清除</el-button>
-      </el-col>
-      <el-col :span="16" style="width: 370px;">
+        <el-button type="primary" size="mini" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
+        <el-button type="primary" size="mini" plain @click="backToSearch">清除</el-button>
         <el-tooltip content="保存为自定义筛选器" placement="top">
-          <el-button type="primary" size="" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
+          <el-button type="primary" size="mini" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
         </el-tooltip>
         <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="createNewEntity">新建实体</el-button> -->
-        <!-- <el-dropdown size="" trigger="click" :hide-on-click="false">
-          <el-button type="primary" size="" plain>
-            列项<i class="el-icon-arrow-down el-icon--right" />
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="item in tableColumns" :key="item">{{ item }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
         <el-select
           v-model="tableColumnsSelected"
+          size="small"
           multiple
           collapse-tags
-          style="margin-left: 20px;"
-          placeholder="列项"
+          placeholder="其他列项"
           @change="test2"
         >
           <el-option
@@ -100,7 +90,7 @@
               <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
             </template>
           </el-table-column>
-          <el-table-column key="术语" label="术语" width="150">
+          <!-- <el-table-column key="术语" label="术语" width="150">
             <template v-slot:default="{ row }">
               <div v-for="classes in row.meanings" :key="classes">
                 <el-button-group style="width: 150px">
@@ -112,7 +102,7 @@
               </div>
               <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column key="操作" label="操作" min-width="115">
             <template v-slot:default="{ row }">
               <el-button type="primary" plain size="mini" @click="metaCompare(row)">元数据比对</el-button>
@@ -372,13 +362,24 @@ export default {
     .el-button {
         font-size: 14px;
     }
-
     .el-col {
         margin-bottom: 10px;
+        .el-select {
+          margin: 0 0 0 10px;
+          ::v-deep .el-input__inner {
+            background: #ECF5FF;
+            border-color: #b1d7fd;
+            height: 30px;
+            &::placeholder {
+              color: #409eff;
+            }
+          }
+        }
     }
 }
 
 .typeAndClassifications {
+  margin-bottom: 10px;
     .el-col {
         span {
             position: relative;
