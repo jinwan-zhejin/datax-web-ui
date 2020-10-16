@@ -85,7 +85,17 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="Schema">
-            <el-input v-model="temp.schema" placeholder="请输入Schema" />
+            <el-select
+              v-model="temp.schema"
+              placeholder="请选择schema"
+            >
+              <el-option
+                v-for="item in schemaList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -358,6 +368,7 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
+import { getTableSchema } from "@/api/metadata-query";
 
 
 import "codemirror/theme/ambiance.css";
@@ -406,6 +417,7 @@ export default {
       callback();
     };
     return {
+      schemaList: [],
       jsonContent: '',
       fileList: [],
       radio: "1",
@@ -898,6 +910,13 @@ export default {
         this.blockStrategies = records
       })
     },
+    //schema列表
+    async getSchemaList() {
+      let schemaList = await getTableSchema({datasourceId:this.temp.dataSourceId});
+      console.log(schemaList);
+      this.schemaList = schemaList
+
+    },
 
   //初始化sql编辑器
    mountCodeMirror() {
@@ -927,6 +946,20 @@ export default {
       });
     },
   },
+
+  computed: {
+    dataSourceIdSchema(){
+      return this.temp.dataSourceId
+    }
+  },
+
+  watch: {
+    dataSourceIdSchema(){
+      this.getSchemaList()
+    }
+  },
+
+
 
   editor:null,
 
