@@ -630,7 +630,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button v-show="currentStep === 2" size="small" style="float: left;">测试连接...</el-button>
-        <el-button size="small" :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
+        <el-button v-show="currentStep !== 1" size="small" @click="lastStep">上一步</el-button>
         <el-button size="small" type="goon" @click="nextStep">下一步</el-button>
         <el-button size="small" @click="cancel">取 消</el-button>
         <el-button size="small" :disabled="currentStep === 1" @clsick="addData">完 成</el-button>
@@ -1311,7 +1311,7 @@ export default {
           }
         }
         li:hover {
-          background-color: #e9e9f5;
+          background-color: #e9e9f5 !important;
         }
         li:active {
           background-color: #C4CFFF;
