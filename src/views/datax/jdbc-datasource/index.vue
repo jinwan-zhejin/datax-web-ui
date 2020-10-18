@@ -15,9 +15,9 @@
               class="filter-item"
               @keyup.enter.native="handleFilter"
             >
-              <el-button slot="append" v-waves style="margin: 0px;padding: 10px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
+              <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
             </el-input>
-            <el-button class="filter-item" style="margin-left: 10px;" type="goon" icon="el-icon-plus" @click="showAdd">
+            <el-button class="filter-item" style="margin-left: 10px;" type="goon" size="small" icon="el-icon-plus" @click="showAdd">
               添加
             </el-button>
             <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
@@ -164,90 +164,33 @@
       </div>
       <!-- 第一步选择连接类型 -->
       <div v-show="currentStep === 1" class="topSelect">
-        <span>选择数据源:</span><el-input v-model="sqlName" style="width: 80%;float: right;" disabled />
+        <!-- <span>选择数据源:</span><el-input v-model="sqlName" style="width: 80%;float: right;" disabled /> -->
+        <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
+          <el-button slot="append" style="backgroundColor: #3D5FFF;border-radius: 0px 4px 4px 0px;color: #FFFFFF;" size="small" @click="searchSQL">搜索</el-button>
+        </el-input>
       </div>
       <el-tabs v-show="currentStep === 1" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="所有类型" name="first">
           <ul>
-            <li @click="getInfo">
+            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.name" :key="item.name" @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/MongoDB.png" alt="">
-                <p>mongodb</p>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
               </a>
             </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
-                <p>MYSQL</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/GREEN.png" alt="">
-                <p>greenplum</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="">
-                <p>hive</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/mssql_icon_big@2x.png" alt="">
-                <p>sqlserver</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="">
-                <p>postgresql</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/oracle.png" alt="">
-                <p>oracle</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/clickhouse.png" alt="">
-                <p>clickhouse</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/hbase.png" alt="">
-                <p>hbase</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/db2_i_icon_big@2x.png" alt="">
-                <p>DB2</p>
-              </a>
-            </li>
-            <!-- <li @click="getInfo">
-              <a>
-                <img src="@/assets/松鼠png/mariadb_icon_big@2x.png" alt="">
-                <p>MariaDB</p>
-              </a>
-            </li> -->
           </ul>
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
+                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="">
+                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
                 <p>postgresql</p>
               </a>
             </li>
@@ -257,7 +200,7 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="">
+                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
               </a>
             </li>
@@ -267,7 +210,7 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="">
+                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
                 <p>hive</p>
               </a>
             </li>
@@ -500,11 +443,11 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-show="currentStep === 2" style="float: left;">测试连接...</el-button>
-        <el-button :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
-        <el-button type="goon" @click="nextStep">下一步</el-button>
-        <el-button @click="cancel">取 消</el-button>
-        <el-button :disabled="currentStep === 1" @clsick="addData">完 成</el-button>
+        <el-button v-show="currentStep === 2" size="small" style="float: left;">测试连接...</el-button>
+        <el-button size="small" :disabled="currentStep === 1" @click="lastStep">上一步</el-button>
+        <el-button size="small" type="goon" @click="nextStep">下一步</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" :disabled="currentStep === 1" @clsick="addData">完 成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -543,13 +486,67 @@ export default {
         current: 1,
         size: 10
       },
+      isShowSQL: true, // SQL的显示
       checked: false, // 是否保存本地密码
+      iconTXT: [
+        {
+          name: 'MySQL',
+          url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+          selected: 0
+        },
+        {
+          name: 'MongoDB',
+          url: require('@/assets/dataSourceIcon/MongoDB.png'),
+          selected: 0
+        },
+        {
+          name: 'Greenplum',
+          url: require('@/assets/dataSourceIcon/GREEN.png'),
+          selected: 0
+        },
+        {
+          name: 'Hive',
+          url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
+          selected: 0
+        },
+        {
+          name: 'Sql Server',
+          url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
+          selected: 0
+        },
+        {
+          name: 'PostgreSQL',
+          url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
+          selected: 0
+        },
+        {
+          name: 'Oracle',
+          url: require('@/assets/dataSourceIcon/oracle.png'),
+          selected: 0
+        },
+        {
+          name: 'ClickHouse',
+          url: require('@/assets/dataSourceIcon/clickhouse.png'),
+          selected: 0
+        },
+        {
+          name: 'HBase',
+          url: require('@/assets/dataSourceIcon/hbase.png'),
+          selected: 0
+        },
+        {
+          name: 'DB2',
+          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          selected: 0
+        }
+      ],
       roleList: [
         {
           value: '123',
           label: '管理员'
         }
       ],
+      input3: '',
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
       pluginData: [],
@@ -639,7 +636,9 @@ export default {
         jdbcUrl: '',
         password: '',
         userName: ''
-      }
+      },
+      lastSelect: '',
+      currentSelect: ''
     }
   },
   // 计算属性
@@ -731,6 +730,16 @@ export default {
         });
       });
     },
+    searchSQL() {
+      for (let i = 0; i < this.iconTXT.length; i++) {
+        console.log(this.iconTXT[i].name.indexOf(this.input3))
+        if (this.iconTXT[i].name.toLowerCase().indexOf(this.input3.toLowerCase()) === 0) {
+          document.getElementById(this.iconTXT[i].name).style.display = 'block'
+        } else {
+          document.getElementById(this.iconTXT[i].name).style.display = 'none'
+        }
+      }
+    },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
         this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
@@ -769,15 +778,18 @@ export default {
     },
     // 获取点击当前数据源名称方法
     getInfo(e) {
-      this.sqlName = e.path[1].textContent.split(' ')[1]
-      // for (let i = 0; i < e.path[2].children.length; i++) {
-      //   e.path[2].children[i].style.color = '#606266'
-      //   console.log(e.path[2].children[i])
-      // }
-      // e.path[1].style.color = 'skyblue'
-      // console.log(e.path[1])
-      console.log(this.sqlName)
+      this.sqlName = e.path[1].textContent.trim()
       console.log(e)
+      if (this.sqlName !== this.lastSelect) {
+        this.currentSelect = this.sqlName
+        if (this.lastSelect !== '') {
+          document.getElementById(this.lastSelect).style.backgroundColor = '#fff'
+        }
+        document.getElementById(this.currentSelect).style.backgroundColor = '#C4CFFF'
+        this.lastSelect = this.sqlName
+      }
+      console.log(this.sqlName)
+      console.log(document.getElementById(this.sqlName))
     },
     // tabs标签页方法
     handleClick(tab, event) {
@@ -1002,8 +1014,8 @@ export default {
           .el-input__inner {
             float: left;
             width: 200px;
-            height: 35px;
-            line-height: 35px;
+            height: 32px;
+            line-height: 32px;
             padding-right: 15px;
           }
           .el-input-group__append {
@@ -1027,11 +1039,16 @@ export default {
     overflow: hidden;
     height: 40px;
     line-height: 40px;
-  }
-  .topSelect {
-    overflow: hidden;
-    height: 40px;
-    line-height: 40px;
+    .el-input {
+      .el-input__inner {
+        height: 32px;
+      }
+      .el-button {
+        .el-button--default {
+          color: #ffffff;
+        }
+      }
+    }
   }
   .el-tabs {
     margin-top: 20px;
@@ -1040,19 +1057,24 @@ export default {
           overflow: hidden;
           li {
             list-style: none;
-            width: 20%;
             float: left;
+            width: 12.5%;
             a {
               text-align: center;
               img {
                 display: block;
                 margin: 0 auto;
                 margin-top: 10px;
-                width: 80%;
+                width: 64px;
               }
               p {
-                font-size: 16px;
-                margin-top: 20px;
+                height: 40px;
+                font-size: 14px;
+                font-family: PingFangHK-Regular, PingFangHK;
+                font-weight: 400;
+                color: #333333;
+                line-height: 20px;
+                margin-top: 10px;
               }
             }
             a:visited {
@@ -1060,7 +1082,7 @@ export default {
             }
           }
           li:hover {
-            background-color: #F7F7FC;
+            background-color: #e9e9f5;
           }
           li:active {
             background-color: #C4CFFF;
@@ -1081,24 +1103,27 @@ export default {
       padding: 20px;
     }
   }
-  .el-dialog__header {
-    font-size: 24px;
-    .p_tit {
-      font-size: 16px;
-      color: #cccccc;
-      margin-top: 20px;
+  .el-dialog {
+    border-radius: 8px;
+    .el-dialog__header {
+      font-size: 24px;
+      .p_tit {
+        font-size: 16px;
+        color: #cccccc;
+        margin-top: 20px;
+      }
     }
-  }
-  .el-dialog__body {
-    padding: 10px 20px;
-    .el-form {
-      overflow: hidden;
-      border-radius: 6px;
+    .el-dialog__body {
+      padding: 10px 20px;
+      .el-form {
+        overflow: hidden;
+        border-radius: 6px;
+      }
     }
-  }
-  .el-dialog__footer {
-    border-top: 1px solid #F3F3F3;
-    padding: 20px;
+    .el-dialog__footer {
+      border-top: 1px solid #F3F3F3;
+      padding: 20px;
+    }
   }
 }
 </style>
