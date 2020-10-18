@@ -443,7 +443,10 @@
           <div class="from_item_input last_input">
             <span class="input_label">服务器时区:</span>
             <div class="input_content">
-              <el-input v-model="AdvancedForm.serverTime" size="small" />
+              <!-- <el-input v-model="AdvancedForm.serverTime" size="small" /> -->
+              <el-select v-model="AdvancedForm.serverTime" style="height: 32px;" placeholder="请选择服务器时区">
+                <el-option label="Asia/Shanghai" value="shanghai" />
+              </el-select>
             </div>
           </div>
         </el-form>
@@ -845,24 +848,24 @@ export default {
     ch() {
       return (
         this.currentStep === 2 &&
-        (this.sqlName === 'clickhouse' || this.sqlName === 'hbase')
+        (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase')
       );
     },
     // Greenplum PostqreSQL
     gp() {
       return (
-        (this.sqlName === 'greenplum' || this.sqlName === 'postgresql') &&
+        (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') &&
         this.currentStep === 2
       );
     },
     // oracle
     oracle() {
-      return this.sqlName === 'oracle' && this.currentStep === 2;
+      return this.sqlName === 'Oracle' && this.currentStep === 2;
     },
     // MariaDB MYSQL
     mm() {
       return (
-        (this.sqlName === 'MariaDB' || this.sqlName === 'MYSQL') &&
+        (this.sqlName === 'MariaDB' || this.sqlName === 'MySQL') &&
         this.currentStep === 2
       );
     },
@@ -873,7 +876,7 @@ export default {
     // Apache Hive,Apache Spark,Cloudera Impala
     threeSQL() {
       return (
-        (this.sqlName === 'hive' ||
+        (this.sqlName === 'Hive' ||
           this.sqlName === 'ApacheSpark' ||
           this.sqlName === 'ClouderaImpala') &&
         this.currentStep === 2
@@ -882,7 +885,7 @@ export default {
     // sqlserver
     sqlserver() {
       return (
-        (this.sqlName === 'sqlserver' || this.sqlName === 'mongodb') &&
+        (this.sqlName === 'Sql Server' || this.sqlName === 'MongoDB') &&
         this.currentStep === 2
       );
     }
