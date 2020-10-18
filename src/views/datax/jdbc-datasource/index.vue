@@ -1106,6 +1106,7 @@ export default {
     // 显示添加对话框
     showAdd() {
       this.dialogVisible = true;
+      this.MySQLForm.serverTime = 'Asia/Shanghai'
     },
     // 获取点击当前数据源名称方法
     getInfo(e) {
@@ -1243,7 +1244,6 @@ export default {
             type: 'success',
             duration: 2000
           });
-          this.MySQLForm = {}
           this.isBanAdd = false
         }
       })
