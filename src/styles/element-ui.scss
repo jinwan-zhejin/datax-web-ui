@@ -78,6 +78,13 @@
   display: inline-flex !important;
 }
 
+.el-input {
+  .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+  }
+}
+
 // 按钮样式
 // 普通使用按钮
 .el-button--goon.is-active,

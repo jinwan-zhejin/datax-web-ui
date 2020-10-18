@@ -173,15 +173,14 @@
     </el-dialog>
 
     <!-- UI添加对话框 -->
-    <el-dialog :visible.sync="dialogVisible" width="70%" top='51px'>
+    <el-dialog :visible.sync="dialogVisible" width="70%" top="51px">
       <div slot="title" class="add_dialog_title">
         <span v-show="currentStep === 2">{{ sqlName }}连接设置</span>
         <span v-show="currentStep === 1">选择新连接类型</span>
       </div>
       <!-- 第一步选择连接类型 -->
       <div v-show="currentStep === 1" class="topSelect">
-        <span>选择数据源:</span
-        ><el-input
+        <span>选择数据源:</span><el-input
           v-model="sqlName"
           style="width: 80%; float: right"
           disabled
@@ -197,25 +196,25 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
                 <p>hive</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mssql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="">
                 <p>impala</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
                 <p>spark</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/oracle.png" alt="" />
+                <img src="@/assets/dataSourceIcon/oracle.png" alt="">
                 <p>flink</p>
               </a>
             </li>
@@ -225,13 +224,13 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
                 <p>postgresql</p>
               </a>
             </li>
@@ -241,7 +240,7 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
               </a>
             </li>
@@ -251,7 +250,7 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
                 <p>hive</p>
               </a>
             </li>
@@ -300,30 +299,30 @@
           <div class="from_item_input float_input">
             <span class="input_label">服务器地址:</span>
             <div class="input_content">
-              <el-input size="small" v-model="ServerForm.serverUrl" />
+              <el-input v-model="ServerForm.serverUrl" size="small" />
             </div>
           </div>
 
           <div class="from_item_input float_input">
             <span class="input_label">端口:</span>
             <div class="input_content">
-              <el-input size="small" v-model="ServerForm.serverPort" />
+              <el-input v-model="ServerForm.serverPort" size="small" />
             </div>
           </div>
 
           <div class="from_item_input float_input last_input">
             <span class="input_label">数据库:</span>
             <div class="input_content">
-              <el-input size="small" v-model="ServerForm.database" />
+              <el-input v-model="ServerForm.database" size="small" />
             </div>
           </div>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm"  class="bgcForm">
+        <el-form :model="userForm" class="bgcForm">
           <div class="from_item_input">
             <span class="input_label">用户名:</span>
             <div class="input_content">
-              <el-input size="small" v-model="userForm.username" />
+              <el-input v-model="userForm.username" size="small" />
             </div>
           </div>
 
@@ -331,8 +330,8 @@
             <span class="input_label">密码:</span>
             <div class="input_content">
               <el-input
-                size="small"
                 v-model="userForm.password"
+                size="small"
                 type="password"
               />
               <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
@@ -340,12 +339,12 @@
           </div>
         </el-form>
         <p>高级</p>
-        <el-form :model="AdvancedForm"  class="bgcForm">
+        <el-form :model="AdvancedForm" class="bgcForm">
 
           <div class="from_item_input last_input">
             <span class="input_label">服务器时区:</span>
             <div class="input_content">
-              <el-input size="small" v-model="AdvancedForm.serverTime" />
+              <el-input v-model="AdvancedForm.serverTime" size="small" />
             </div>
           </div>
         </el-form>
@@ -531,17 +530,20 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-show="currentStep === 2" style="float: left"
-          >测试连接...</el-button
-        >
-        <el-button :disabled="currentStep === 1" @click="lastStep"
-          >上一步</el-button
-        >
+        <el-button
+          v-show="currentStep === 2"
+          style="float: left"
+        >测试连接...</el-button>
+        <el-button
+          :disabled="currentStep === 1"
+          @click="lastStep"
+        >上一步</el-button>
         <el-button type="goon" @click="nextStep">下一步</el-button>
         <el-button @click="cancel">取 消</el-button>
-        <el-button :disabled="currentStep === 1" @clsick="addData"
-          >完 成</el-button
-        >
+        <el-button
+          :disabled="currentStep === 1"
+          @clsick="addData"
+        >完 成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -580,9 +582,9 @@ export default {
       checked: false, // 是否保存本地密码
       roleList: [
         {
-          value: "123",
-          label: "管理员",
-        },
+          value: '123',
+          label: '管理员'
+        }
       ],
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
@@ -634,31 +636,31 @@ export default {
       mongodb: false,
       dialogVisible: false,
       currentStep: 1,
-      activeName: "first",
+      activeName: 'first',
       ruleForm: {
-        datasourceName: "",
-        userName: "",
-        password: "",
-        jdbcUrl: "",
-        comments: "",
-        datasource: "",
-        zkAdress: "",
-        database: "",
+        datasourceName: '',
+        userName: '',
+        password: '',
+        jdbcUrl: '',
+        comments: '',
+        datasource: '',
+        zkAdress: '',
+        database: ''
       },
       AdvancedForm: {},
       ServerForm: {},
       userForm: {},
-      sqlName: "",
+      sqlName: '',
       params: {
-        comments: "",
-        datasource: "",
-        datasourceGroup: "",
-        datasourceName: "",
-        jdbcDriverClass: "",
-        jdbcUrl: "",
-        password: "",
-        userName: "",
-      },
+        comments: '',
+        datasource: '',
+        datasourceGroup: '',
+        datasourceName: '',
+        jdbcDriverClass: '',
+        jdbcUrl: '',
+        password: '',
+        userName: ''
+      }
     }
   },
   // 计算属性
@@ -667,82 +669,82 @@ export default {
     ch() {
       return (
         this.currentStep === 2 &&
-        (this.sqlName === "clickhouse" || this.sqlName === "hbase")
+        (this.sqlName === 'clickhouse' || this.sqlName === 'hbase')
       );
     },
     // Greenplum PostqreSQL
     gp() {
       return (
-        (this.sqlName === "greenplum" || this.sqlName === "postgresql") &&
+        (this.sqlName === 'greenplum' || this.sqlName === 'postgresql') &&
         this.currentStep === 2
       );
     },
     // oracle
     oracle() {
-      return this.sqlName === "oracle" && this.currentStep === 2;
+      return this.sqlName === 'oracle' && this.currentStep === 2;
     },
     // MariaDB MYSQL
     mm() {
       return (
-        (this.sqlName === "MariaDB" || this.sqlName === "MYSQL") &&
+        (this.sqlName === 'MariaDB' || this.sqlName === 'MYSQL') &&
         this.currentStep === 2
       );
     },
     // DB2
     DB2() {
-      return this.sqlName === "DB2" && this.currentStep === 2;
+      return this.sqlName === 'DB2' && this.currentStep === 2;
     },
     // Apache Hive,Apache Spark,Cloudera Impala
     threeSQL() {
       return (
-        (this.sqlName === "hive" ||
-          this.sqlName === "ApacheSpark" ||
-          this.sqlName === "ClouderaImpala") &&
+        (this.sqlName === 'hive' ||
+          this.sqlName === 'ApacheSpark' ||
+          this.sqlName === 'ClouderaImpala') &&
         this.currentStep === 2
       );
     },
     // sqlserver
     sqlserver() {
       return (
-        (this.sqlName === "sqlserver" || this.sqlName === "mongodb") &&
+        (this.sqlName === 'sqlserver' || this.sqlName === 'mongodb') &&
         this.currentStep === 2
       );
-    },
+    }
   },
   watch: {
-    sqlName: function (val) {
+    sqlName: function(val) {
       console.log(val);
-      console.log(this.params, "----------");
-      if (val === "MYSQL") {
-        this.params.jdbcUrl = "jdbc:mysql://{host}:{port}/{database}";
+      console.log(this.params, '----------');
+      if (val === 'MYSQL') {
+        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
         console.log(this.params.jdbcUrl);
-      } else if (val === "oracle") {
-        this.params.jdbcUrl = "jdbc:oracle:thin:@//{host}:{port}/{database}";
-      } else if (val === "postgresql") {
-        this.params.jdbcUrl = "jdbc:postgresql://{host}:{port}/{database}";
-        this.ruleForm.driver = "org.postgresql.Driver";
-      } else if (val === "greenplum") {
-        this.params.jdbcUrl = "jdbc:postgresql://{host}:{port}/{database}";
-        this.ruleForm.driver = "org.postgresql.Driver";
-      } else if (val === "sqlserver") {
+      } else if (val === 'oracle') {
+        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+      } else if (val === 'postgresql') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.ruleForm.driver = 'org.postgresql.Driver';
+      } else if (val === 'greenplum') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.ruleForm.driver = 'org.postgresql.Driver';
+      } else if (val === 'sqlserver') {
         this.params.jdbcUrl =
-          "jdbc:sqlserver://{host}:{port};DatabaseName={database}";
-      } else if (val === "clickhouse") {
-        this.params.jdbcUrl = "jdbc:clickhouse://{host}:{port}/{database}";
-      } else if (val === "hive") {
-        this.params.jdbcUrl = "jdbc:hive2://{host}:{port}/{database}";
+          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+      } else if (val === 'clickhouse') {
+        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+      } else if (val === 'hive') {
+        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
       }
-    },
+    }
   },
   created() {
     this.fetchData()
   },
   methods: {
     gatherMetadata() {
-      this.$confirm("即将开始元数据采集, 是否继续?", "提示", {
-        confirmButtonText: "继续",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
+        confirmButtonText: '继续',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           console.log(row);
@@ -753,20 +755,20 @@ export default {
             console.log(res);
             this.gathering = false;
             this.$message({
-              type: "success",
-              message: "元数据采集成功",
+              type: 'success',
+              message: '元数据采集成功'
             });
           });
           this.gathering = true;
           this.$message({
-            type: "info",
-            message: "采集任务开始!",
+            type: 'info',
+            message: '采集任务开始!'
           });
         })
         .catch(() => {
           this.$message({
-            type: "warning",
-            message: "已取消元数据采集",
+            type: 'warning',
+            message: '已取消元数据采集'
           });
         });
     },
@@ -829,7 +831,7 @@ export default {
     },
     // 获取点击当前数据源名称方法
     getInfo(e) {
-      this.sqlName = e.path[1].textContent.split(" ")[1];
+      this.sqlName = e.path[1].textContent.split(' ')[1];
       // for (let i = 0; i < e.path[2].children.length; i++) {
       //   e.path[2].children[i].style.color = '#606266'
       //   console.log(e.path[2].children[i])
@@ -843,26 +845,26 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
-    //取消
-    cancel(){
+    // 取消
+    cancel() {
       this.dialogVisible = false;
       this.$refs[this.ruleForm].resetFields();
       this.currentStep = 1;
-      console.log(this.currentStep, "1111111111111111111111");
+      console.log(this.currentStep, '1111111111111111111111');
       this.ruleForm = {};
     },
     // 下一步
     nextStep() {
       if (this.currentStep < 2) {
-        if (this.sqlName !== "") {
+        if (this.sqlName !== '') {
           this.currentStep++;
         } else {
-          this.$message.warning("请选择数据源类型");
+          this.$message.warning('请选择数据源类型');
         }
       }
       console.log(this.currentStep);
     },
-    //上一步
+    // 上一步
     lastStep() {
       console.log(this.currentStep);
       if (this.currentStep > 1) {
@@ -892,18 +894,18 @@ export default {
       this.params.jdbcDriverClass = this.ruleForm.driver;
       this.params.username = this.ruleForm.username;
       this.params.password = this.ruleForm.password;
-      this.params.datasourceGroup = "Default";
-      this.params.comments = "";
-      this.$refs["ruleForm"].validate((valid) => {
+      this.params.datasourceGroup = 'Default';
+      this.params.comments = '';
+      this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           datasourceApi.created(this.params).then(() => {
             this.fetchData();
             this.dialogVisible = false;
             this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
             });
           });
         }

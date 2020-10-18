@@ -311,7 +311,7 @@
       >
         <el-tab-pane label="所有类型" name="first">
           <ul>
-            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.name" :key="item.name" @click="getInfo">
+            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.name" :key="item.name" @click="getInfo" @dbclick="dbClickNext">
               <a>
                 <img :src="item.url" :alt="item.name">
                 <p>{{ item.name }}</p>
@@ -648,6 +648,8 @@ import waves from '@/directive/waves'; // waves directive
 import { parseTime } from '@/utils';
 import Pagination from '@/components/Pagination';
 import * as meta from '@/api/metadata-query';
+
+let time = null
 
 export default {
   name: 'JdbcDatasource',
@@ -1000,18 +1002,19 @@ export default {
     },
     // 获取点击当前数据源名称方法
     getInfo(e) {
-      this.sqlName = e.path[1].textContent.trim()
-      console.log(e)
-      if (this.sqlName !== this.lastSelect) {
-        this.currentSelect = this.sqlName
-        if (this.lastSelect !== '') {
-          document.getElementById(this.lastSelect).style.backgroundColor = '#fff'
+      window.clearTimeout(time) // 首先清除计时器
+      time = setTimeout(() => {
+        this.sqlName = e.path[1].textContent.trim()
+        if (this.sqlName !== this.lastSelect) {
+          this.currentSelect = this.sqlName
+          if (this.lastSelect !== '') {
+            document.getElementById(this.lastSelect).style.backgroundColor = '#fff'
+          }
+          document.getElementById(this.currentSelect).style.backgroundColor = '#C4CFFF'
+          this.lastSelect = this.sqlName
         }
-        document.getElementById(this.currentSelect).style.backgroundColor = '#C4CFFF'
-        this.lastSelect = this.sqlName
-      }
-      console.log(this.sqlName)
-      console.log(document.getElementById(this.sqlName))
+        console.log(this.sqlName)
+      }, 1000); // 大概时间300ms
     },
     // tabs标签页方法
     handleClick(tab, event) {
@@ -1035,6 +1038,19 @@ export default {
         }
       }
       console.log(this.currentStep);
+    },
+    // 双击下一步
+    dbClickNext() {
+      window.clearTimeout(time) // 首先清除计时器
+      if (this.currentStep < 2) {
+        if (this.sqlName !== '') {
+          this.currentStep++
+        } else {
+          this.$message.warning('请选择数据源类型')
+        }
+      }
+      console.log(this.currentStep)
+      console.log('双击下一步')
     },
     lastStep() {
       console.log(this.currentStep);
