@@ -197,42 +197,42 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
                 <p>hive</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mssql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="" />
                 <p>impala</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="" />
                 <p>spark</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/oracle.png" alt="" />
+                <img src="@/assets/dataSourceIcon/oracle.png" alt="" />
                 <p>flink</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
-          <ul>
+           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="" />
-                <p>MYSQL</p>
+                <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="" />
+                <p>impala</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/postgresql_icon_big@2x.png" alt="" />
-                <p>postgresql</p>
+                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="" />
+                <p>spark</p>
               </a>
             </li>
           </ul>
@@ -241,8 +241,8 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/mysql_icon_big@2x.png" alt="" />
-                <p>MYSQL</p>
+                <img src="@/assets/dataSourceIcon/oracle.png" alt="" />
+                <p>flink</p>
               </a>
             </li>
           </ul>
@@ -251,7 +251,7 @@
           <ul>
             <li @click="getInfo">
               <a>
-                <img src="@/assets/松鼠png/hive_icon_big@2x.png" alt="" />
+                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
                 <p>hive</p>
               </a>
             </li>
