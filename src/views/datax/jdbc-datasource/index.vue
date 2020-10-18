@@ -366,6 +366,24 @@
         label-width="100px"
         class="demo-ruleForm"
       >
+        <el-form-item label="数据源名称">
+          <el-input
+            v-model="ruleForm.dataSourceNamed"
+            placeholder="请输入"
+          />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="ruleForm.comments"
+            placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用"
+          />
+        </el-form-item>
+        <el-form-item label="数据源分组">
+          <el-input
+            v-model="ruleForm.group"
+            placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用"
+          />
+        </el-form-item>
         <el-form-item label="主机" prop="master">
           <el-input
             v-model="ruleForm.master"
@@ -393,35 +411,58 @@
       </el-form>
       <!-- MariaDB MYSQL连接设置表单 -->
       <div v-show="mm" class="set">
+        <p>基本信息</p>
+        <el-form :model="MySQLForm" class="bgcForm">
+          <div class="from_item_input float_input">
+            <span class="input_label">数据源名称:</span>
+            <div class="input_content">
+              <el-input v-model="MySQLForm.datasourceName" size="small" />
+            </div>
+          </div>
+
+          <div class="from_item_input float_input">
+            <span class="input_label">数据源分组:</span>
+            <div class="input_content">
+              <el-input v-model="MySQLForm.datasourceGroupe" size="small" />
+            </div>
+          </div>
+
+          <div class="from_item_input float_input">
+            <span class="input_label">备注:</span>
+            <div class="input_content">
+              <el-input v-model="MySQLForm.comments" size="small" />
+            </div>
+          </div>
+        </el-form>
         <p>服务器</p>
-        <el-form :model="ServerForm" class="bgcForm">
+        <el-form :model="MySQLForm" class="bgcForm">
           <div class="from_item_input float_input">
             <span class="input_label">服务器地址:</span>
             <div class="input_content">
-              <el-input v-model="ServerForm.serverUrl" size="small" />
+              <el-input v-model="MySQLForm.serverUrl" size="small" />
             </div>
           </div>
 
           <div class="from_item_input float_input">
             <span class="input_label">端口:</span>
             <div class="input_content">
-              <el-input v-model="ServerForm.serverPort" size="small" />
+              <el-input v-model="MySQLForm.serverPort" size="small" />
             </div>
           </div>
 
           <div class="from_item_input float_input last_input">
             <span class="input_label">数据库:</span>
             <div class="input_content">
-              <el-input v-model="ServerForm.database" size="small" />
+              <el-input v-model="MySQLForm.database" size="small" />
             </div>
           </div>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" class="bgcForm">
+        <el-form :model="MySQLForm" class="bgcForm">
           <div class="from_item_input">
             <span class="input_label">用户名:</span>
             <div class="input_content">
-              <el-input v-model="userForm.username" size="small" />
+              <el-input v-model="MySQLForm.username" size="small" />
             </div>
           </div>
 
@@ -429,7 +470,7 @@
             <span class="input_label">密码:</span>
             <div class="input_content">
               <el-input
-                v-model="userForm.password"
+                v-model="MySQLForm.password"
                 size="small"
                 type="password"
               />
@@ -438,13 +479,13 @@
           </div>
         </el-form>
         <p>高级</p>
-        <el-form :model="AdvancedForm" class="bgcForm">
+        <el-form :model="MySQLForm" class="bgcForm">
 
           <div class="from_item_input last_input">
             <span class="input_label">服务器时区:</span>
             <div class="input_content">
-              <!-- <el-input v-model="AdvancedForm.serverTime" size="small" /> -->
-              <el-select v-model="AdvancedForm.serverTime" style="height: 32px;" placeholder="请选择服务器时区">
+              <!-- <el-input v-model="MySQLForm.serverTime" size="small" /> -->
+              <el-select v-model="MySQLForm.serverTime" style="height: 32px;" placeholder="请选择服务器时区">
                 <el-option label="Asia/Shanghai" value="shanghai" />
               </el-select>
             </div>
@@ -453,79 +494,115 @@
       </div>
       <!-- Greenplum PostqreSQL连接设置表单 -->
       <div v-show="gp" class="set">
+        <p>基本信息</p>
+        <el-form :model="GPForm" label-width="100px" class="bgcForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="GPForm.master" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="GPForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="GPForm.database" />
+          </el-form-item>
+        </el-form>
         <p>服务器</p>
-        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+        <el-form :model="GPForm" label-width="100px" class="bgcForm">
           <el-form-item label="主机:">
-            <el-input v-model="ServerForm.master" />
+            <el-input v-model="GPForm.master" />
           </el-form-item>
           <el-form-item label="端口:">
-            <el-input v-model="ServerForm.serverPort" />
+            <el-input v-model="GPForm.serverPort" />
           </el-form-item>
           <el-form-item label="数据库:">
-            <el-input v-model="ServerForm.database" />
+            <el-input v-model="GPForm.database" />
           </el-form-item>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" label-width="100px" class="bgcForm">
+        <el-form :model="GPForm" label-width="100px" class="bgcForm">
           <el-form-item label="用户名:">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="GPForm.username" />
           </el-form-item>
           <el-form-item label="密码:">
-            <el-input v-model="userForm.password" />
+            <el-input v-model="GPForm.password" />
             <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
         <p>高级</p>
-        <el-form :model="AdvancedForm" label-width="100px" class="bgcForm">
+        <el-form :model="GPForm" label-width="100px" class="bgcForm">
           <el-form-item label="用户角色:" style="width: 50%; float: left">
-            <el-input v-model="AdvancedForm.userRole" />
+            <el-input v-model="GPForm.userRole" />
           </el-form-item>
           <el-form-item label="本地客户端:" style="width: 50%; float: right">
-            <el-input v-model="AdvancedForm.client" />
+            <el-input v-model="GPForm.client" />
           </el-form-item>
         </el-form>
       </div>
       <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
       <div v-show="threeSQL" class="set">
+        <p>基本信息</p>
+        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="SparkForm.master" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="SparkForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="SparkForm.database" />
+          </el-form-item>
+        </el-form>
         <p>一般</p>
-        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
           <el-form-item label="JDBC URL:" style="width: 50%">
-            <el-input v-model="ServerForm.jdbcUrl" />
+            <el-input v-model="SparkForm.jdbcUrl" />
           </el-form-item>
           <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="ServerForm.master" />
+            <el-input v-model="SparkForm.master" />
           </el-form-item>
           <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="ServerForm.serverPort" />
+            <el-input v-model="SparkForm.serverPort" />
           </el-form-item>
           <el-form-item label="数据库/模式:" style="width: 50%">
-            <el-input v-model="ServerForm.database" />
+            <el-input v-model="SparkForm.database" />
           </el-form-item>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" label-width="100px" class="bgcForm">
+        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
           <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="SparkForm.username" />
           </el-form-item>
           <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="userForm.password" />
+            <el-input v-model="SparkForm.password" />
             <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
       <!-- oracle连接设置表单 -->
       <div v-show="oracle" class="set">
+        <p>基本信息</p>
+        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="OracleForm.master" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="OracleForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="OracleForm.database" />
+          </el-form-item>
+        </el-form>
         <p>连接类型</p>
-        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
           <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="ServerForm.master" />
+            <el-input v-model="OracleForm.master" />
           </el-form-item>
           <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="ServerForm.serverPort" />
+            <el-input v-model="OracleForm.serverPort" />
           </el-form-item>
           <el-form-item label="Database:">
             <el-select
-              v-model="ServerForm.database"
+              v-model="OracleForm.database"
               placeholder="ORCL"
               style="width: 55%; float: left"
             >
@@ -537,7 +614,7 @@
               />
             </el-select>
             <el-select
-              v-model="ServerForm.role"
+              v-model="OracleForm.role"
               placeholder="ORCL"
               style="width: 40%; float: right"
             >
@@ -551,9 +628,9 @@
           </el-form-item>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" label-width="100px" class="bgcForm">
+        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
           <el-form-item label="认证:" style="width: 50%">
-            <el-select v-model="userForm.advanced" placeholder="请选择认证">
+            <el-select v-model="OracleForm.advanced" placeholder="请选择认证">
               <el-option
                 v-for="item in roleList"
                 :key="item.value"
@@ -563,10 +640,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="用户名:" style="width: 50%; float: left">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="OracleForm.username" />
           </el-form-item>
           <el-form-item label="角色:" style="width: 50%; float: right">
-            <el-select v-model="userForm.role" placeholder="请选择角色">
+            <el-select v-model="OracleForm.role" placeholder="请选择角色">
               <el-option
                 v-for="item in roleList"
                 :key="item.value"
@@ -576,57 +653,81 @@
             </el-select>
           </el-form-item>
           <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="userForm.password" />
+            <el-input v-model="OracleForm.password" />
             <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
       <!-- DB2 LUW 连接设置表单 -->
       <div v-show="DB2" class="set">
+        <p>基本信息</p>
+        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="DB2Form.master" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="DB2Form.serverPort" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="DB2Form.database" />
+          </el-form-item>
+        </el-form>
         <p>数据库</p>
-        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
           <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="ServerForm.master" />
+            <el-input v-model="DB2Form.master" />
           </el-form-item>
           <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="ServerForm.port" />
+            <el-input v-model="DB2Form.port" />
           </el-form-item>
           <el-form-item label="数据库:" prop="username">
-            <el-input v-model="ServerForm.sql" />
+            <el-input v-model="DB2Form.sql" />
           </el-form-item>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" label-width="100px" class="bgcForm">
+        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
           <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="DB2Form.username" />
           </el-form-item>
           <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="userForm.password" />
+            <el-input v-model="DB2Form.password" />
             <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
       <!-- ClickHouse HBase 连接设置表单 -->
       <div v-show="ch" class="set">
+        <p>基本信息</p>
+        <el-form :model="CHForm" label-width="100px" class="bgcForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="CHForm.master" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="CHForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="CHForm.database" />
+          </el-form-item>
+        </el-form>
         <p>一般</p>
-        <el-form :model="ServerForm" label-width="100px" class="bgcForm">
+        <el-form :model="CHForm" label-width="100px" class="bgcForm">
           <el-form-item label="JDBC URL:" style="width: 50%">
-            <el-input v-model="ServerForm.jdbcUrl" />
+            <el-input v-model="CHForm.jdbcUrl" />
           </el-form-item>
           <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="ServerForm.serverPort" />
+            <el-input v-model="CHForm.serverPort" />
           </el-form-item>
           <el-form-item label="主机:" style="width: 50%">
-            <el-input v-model="ServerForm.master" />
+            <el-input v-model="CHForm.master" />
           </el-form-item>
         </el-form>
         <p>认证</p>
-        <el-form :model="userForm" label-width="100px" class="bgcForm">
+        <el-form :model="CHForm" label-width="100px" class="bgcForm">
           <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="CHForm.username" />
           </el-form-item>
           <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="userForm.password" />
+            <el-input v-model="CHForm.password" />
             <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
           </el-form-item>
         </el-form>
@@ -636,7 +737,7 @@
         <el-button v-show="currentStep !== 1" size="small" @click="lastStep">上一步</el-button>
         <el-button size="small" type="goon" @click="nextStep">下一步</el-button>
         <el-button size="small" @click="cancel">取 消</el-button>
-        <el-button size="small" :disabled="currentStep === 1" @clsick="addData">完 成</el-button>
+        <el-button size="small" :disabled="currentStep === 1" @click="addData">完 成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -810,7 +911,12 @@ export default {
         database: ''
       },
       AdvancedForm: {},
-      ServerForm: {},
+      MySQLForm: {},
+      GPForm: {}, // greenplum, postgresql
+      SparkForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
+      OracleForm: {}, // oracle
+      DB2Form: {}, // OracleForm
+      CHForm: {}, // ClickHouse HBase
       userForm: {},
       // rules: {
       //   master: [
@@ -838,7 +944,7 @@ export default {
         jdbcDriverClass: '',
         jdbcUrl: '',
         password: '',
-        userName: ''
+        username: ''
       },
       lastSelect: '',
       currentSelect: ''
@@ -1085,27 +1191,26 @@ export default {
     },
     // 添加数据源
     addData() {
-      this.params.datasourceName = this.ruleForm.master;
-      this.params.datasource = this.sqlName;
-      this.params.jdbcDriverClass = this.ruleForm.driver;
-      this.params.username = this.ruleForm.username;
-      this.params.password = this.ruleForm.password;
-      this.params.datasourceGroup = 'Default';
-      this.params.comments = '';
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          datasourceApi.created(this.params).then(() => {
-            this.fetchData();
-            this.dialogVisible = false;
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            });
-          });
-        }
-      });
+      if (this.sqlName === 'MySQL') {
+        this.params.datasourceName = this.MySQLForm.datasourceName;
+        this.params.datasource = this.sqlName.toLowerCase();
+        this.params.jdbcUrl = ' jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/';
+        this.params.username = this.MySQLForm.username;
+        this.params.password = this.MySQLForm.password;
+        this.params.datasourceGroup = this.MySQLForm.datasourceGroup;
+        this.params.comments = this.MySQLForm.comments;
+        this.params.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      }
+      datasourceApi.created(this.params).then(() => {
+        this.fetchData();
+        this.dialogVisible = false;
+        this.$notify({
+          title: 'Success',
+          message: 'Created Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     testDataSource() {
       this.$refs['dataForm'].validate((valid) => {
