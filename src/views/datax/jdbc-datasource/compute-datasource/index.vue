@@ -202,58 +202,36 @@
             </li>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="">
-=======
-                <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="" />
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
                 <p>impala</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
-=======
-                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="" />
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
                 <p>spark</p>
               </a>
             </li>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/oracle.png" alt="">
-=======
-                <img src="@/assets/dataSourceIcon/oracle.png" alt="" />
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
                 <p>flink</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
-           <ul>
+          <ul>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
-=======
-                <img src="@/assets/dataSourceIcon/mssql_icon_big@2x.png" alt="" />
-                <p>impala</p>
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
               </a>
             </li>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
                 <p>postgresql</p>
-=======
-                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="" />
-                <p>spark</p>
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
               </a>
             </li>
           </ul>
@@ -262,13 +240,8 @@
           <ul>
             <li @click="getInfo">
               <a>
-<<<<<<< HEAD
                 <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
                 <p>MYSQL</p>
-=======
-                <img src="@/assets/dataSourceIcon/oracle.png" alt="" />
-                <p>flink</p>
->>>>>>> 14b5b0b9015826d4785d3b268d8fca13b7493272
               </a>
             </li>
           </ul>
