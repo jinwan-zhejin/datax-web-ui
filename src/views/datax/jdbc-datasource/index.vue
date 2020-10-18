@@ -15,7 +15,7 @@
             >
               <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
             </el-input>
-            <el-button class="filter-item" style="margin-left: 10px;" type="goon" size="small" icon="el-icon-plus" @click="showAdd">
+            <el-button class="filter-item" style="margin-left: 30px;" type="goon" size="small" icon="el-icon-plus" @click="showAdd">
               添加
             </el-button>
             <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
@@ -423,7 +423,7 @@
           <div class="from_item_input float_input">
             <span class="input_label">数据源分组:</span>
             <div class="input_content">
-              <el-input v-model="MySQLForm.datasourceGroupe" size="small" />
+              <el-input v-model="MySQLForm.datasourceGroup" size="small" />
             </div>
           </div>
 
@@ -733,11 +733,11 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-show="currentStep === 2" size="small" style="float: left;">测试连接...</el-button>
+        <el-button v-show="currentStep === 2" size="small" style="float: left;" @click="testLink">测试连接...</el-button>
         <el-button v-show="currentStep !== 1" size="small" @click="lastStep">上一步</el-button>
-        <el-button size="small" type="goon" @click="nextStep">下一步</el-button>
+        <el-button v-show="currentStep === 1" size="small" type="goon" @click="nextStep">下一步</el-button>
         <el-button size="small" @click="cancel">取 消</el-button>
-        <el-button size="small" :disabled="currentStep === 1" @click="addData">完 成</el-button>
+        <el-button size="small" :disabled="isBanAdd" @click="addData">完 成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -771,6 +771,7 @@ export default {
       gathering: false,
       list: null,
       listLoading: true,
+      isBanAdd: true,
       total: 0,
       listQuery: {
         current: 1,
@@ -943,8 +944,8 @@ export default {
         datasourceName: '',
         jdbcDriverClass: '',
         jdbcUrl: '',
-        password: '',
-        username: ''
+        jdbcPassword: '',
+        jdbcUsername: ''
       },
       lastSelect: '',
       currentSelect: ''
@@ -1191,25 +1192,60 @@ export default {
     },
     // 添加数据源
     addData() {
+      const obj = {}
       if (this.sqlName === 'MySQL') {
-        this.params.datasourceName = this.MySQLForm.datasourceName;
-        this.params.datasource = this.sqlName.toLowerCase();
-        this.params.jdbcUrl = ' jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/';
-        this.params.username = this.MySQLForm.username;
-        this.params.password = this.MySQLForm.password;
-        this.params.datasourceGroup = this.MySQLForm.datasourceGroup;
-        this.params.comments = this.MySQLForm.comments;
-        this.params.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+        obj.datasourceName = this.MySQLForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = ' jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
+        obj.userName = this.MySQLForm.username;
+        obj.password = this.MySQLForm.password;
+        obj.datasourceGroup = this.MySQLForm.datasourceGroup;
+        obj.comments = this.MySQLForm.comments;
+        obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
       }
-      datasourceApi.created(this.params).then(() => {
+      datasourceApi.created(obj).then(() => {
         this.fetchData();
         this.dialogVisible = false;
         this.$notify({
-          title: 'Success',
-          message: 'Created Successfully',
+          title: '成功',
+          message: '数据源添加成功',
           type: 'success',
           duration: 2000
         })
+        this.MySQLForm = {}
+      })
+    },
+    // 测试连接
+    testLink() {
+      const obj1 = {}
+      if (this.sqlName === 'MySQL') {
+        obj1.datasourceName = this.MySQLForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
+        obj1.jdbcUsername = this.MySQLForm.username;
+        obj1.jdbcPassword = this.MySQLForm.password;
+        obj1.datasourceGroup = this.MySQLForm.datasourceGroup;
+        obj1.comments = this.MySQLForm.comments;
+        obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      }
+      datasourceApi.test(obj1).then((response) => {
+        if (response.data === false) {
+          this.$notify({
+            title: 'Fail',
+            message: response.data.msg,
+            type: 'fail',
+            duration: 2000
+          });
+        } else {
+          this.$notify({
+            title: '成功',
+            message: '数据库测试连接成功',
+            type: 'success',
+            duration: 2000
+          });
+          this.MySQLForm = {}
+          this.isBanAdd = false
+        }
       })
     },
     testDataSource() {
