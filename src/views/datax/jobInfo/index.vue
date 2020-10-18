@@ -143,10 +143,12 @@
         type="card"
         closable
         @tab-remove="removeJobTab"
+        @tab-click="JobTabClick"
       >
         <el-tab-pane v-if="!jobDetailTabs.length" label="欢迎" name="欢迎">
           欢迎
         </el-tab-pane>
+        
         <el-tab-pane
           :key="item.content.id"
           v-for="item in jobDetailTabs"
@@ -155,29 +157,20 @@
         >
           <JobDetail @deleteJob='getItem' @deleteDetailTab='clearJobTab' :job-info="item.content" />
         </el-tab-pane>
+
         <el-tab-pane
-          v-if="
-            jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'
-          "
-          :name="
-            jobType === 'NORMAL'
-              ? 'NORMAL'
-              : jobType === 'IMPORT'
-              ? 'IMPORT'
-              : 'EXPORT'
-          "
-          :label="
-            jobType === 'NORMAL'
-              ? '普通任务'
-              : jobType === 'IMPORT'
-              ? '引入任务'
-              : '导出任务'
-          "
+          v-if="$store.state.taskAdmin.tabType"
+          :name="$store.state.taskAdmin.tabType"
+          :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]"
         >
-          <div class="rg">
+          <div  v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  class="rg">
             <JsonBuild @refresh="freshItem" />
           </div>
+          <div v-if="jobType === 'SQLJOB'" class="rg">
+            <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
+          </div>
         </el-tab-pane>
+
       </el-tabs>
     </div>
     <div v-if="jobType === 'VJOB'" class="rg">
@@ -221,9 +214,6 @@
     </div>
     <div v-if="jobType === 'SPARK'" class="rg">
       <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
-    </div>
-    <div v-if="jobType === 'SQLJOB'" class="rg">
-      <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
     </div>
     <div v-if="jobType === 'METACOMPARE'" class="rg">
       <MetaCompare />
@@ -300,6 +290,7 @@ export default {
   },
   created() {
     this.getItem();
+    console.log(this.$store.state);
   },
   mounted() {},
   methods: {
@@ -313,14 +304,19 @@ export default {
           (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
             this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
       }
-      if (name === "NORMAL" || name === "IMPORT" || name === "EXPORT") {
-        this.jobType = "SHOWDETAIL";
+      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name)!= -1) {
+        this.jobType = "";
+        this.$store.commit('SET_TAB_TYPE', '')
       } else {
         this.jobDetailTabs.splice(removeIndex, 1);
         if (this.jobDetailTabs.length === 0) {
           this.jobDetailIdx = "欢迎";
         }
       }
+    },
+
+    JobTabClick(ele) {
+      this.jobType = ele.name;
     },
 
     clearJobTab(name) {
@@ -527,6 +523,7 @@ export default {
 
     createNewJob(command) {
       console.log(command);
+      this.$store.commit('SET_TAB_TYPE', command)
       this.jobType = command;
       this.jobDetailIdx = command;
     },

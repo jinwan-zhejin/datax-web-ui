@@ -490,6 +490,7 @@ export default {
           duration: 2000,
         });
         this.$emit("refresh");
+        this.$store.commit('SET_TAB_TYPE', '')
       });
     },
   },

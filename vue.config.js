@@ -10,7 +10,7 @@ const name = defaultSettings.title || 'DATAX-ADMIN' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
-const port = 8082 // dev port
+const port = 8888 // dev port
 // eslint-disable-next-line no-unused-vars
 const apiPort = 9527
 

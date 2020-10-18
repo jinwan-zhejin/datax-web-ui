@@ -2,40 +2,30 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 14:25:38
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelTable.vue
+ * @LastEditTime: 2020-10-16 16:00:54
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
 
 <template>
   <div>
     <el-row class="top-buttons">
-      <el-col :span="8" style="min-width: 234px;">
+      <el-col>
         <el-tooltip content="刷新搜索结果" placement="top">
-          <el-button type="primary" size="" plain icon="el-icon-refresh" @click="refreshList" />
+          <el-button type="primary" size="mini" plain icon="el-icon-refresh" @click="refreshList" />
         </el-tooltip>
-        <el-button type="primary" size="" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
-        <el-button type="primary" size="" plain @click="backToSearch">清除</el-button>
-      </el-col>
-      <el-col :span="16" style="width: 370px;">
+        <el-button type="primary" size="mini" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
+        <el-button type="primary" size="mini" plain @click="backToSearch">清除</el-button>
         <el-tooltip content="保存为自定义筛选器" placement="top">
-          <el-button type="primary" size="" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
+          <el-button type="primary" size="mini" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
         </el-tooltip>
-        <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="createNewEntity">新建实体</el-button> -->
-        <!-- <el-dropdown size="" trigger="click" :hide-on-click="false">
-          <el-button type="primary" size="" plain>
-            列项<i class="el-icon-arrow-down el-icon--right" />
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="item in tableColumns" :key="item">{{ item }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
+        <!-- <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="addNewEntity">新建实体</el-button> -->
         <el-select
           v-model="tableColumnsSelected"
+          size="small"
           multiple
           collapse-tags
-          style="margin-left: 20px;"
-          placeholder="列项"
+          placeholder="其他列项"
           @change="test2"
         >
           <el-option
@@ -89,18 +79,41 @@
           </el-table-column>
           <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
-              <div v-for="classes in row.classifications" :key="classes">
+              <el-button-group style="width: 150px">
+                <el-tooltip :content="row.classifications[0].typeName">
+                  <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
+                </el-tooltip>
+                <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+              </el-button-group>
+              <!-- <div v-for="classes in row.classifications" :key="classes">
                 <el-button-group style="width: 150px">
                   <el-tooltip :content="classes.typeName">
                     <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
                   </el-tooltip>
                   <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
                 </el-button-group>
-              </div>
-              <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+              </div> -->
+              <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
+                <el-button type="success" plain size="mini">
+                  <i class="el-icon-more" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <div v-for="(classes, index) in row.classifications" :key="classes">
+                      <el-button-group v-if="index !== 0" style="width: 150px">
+                        <el-tooltip :content="classes.typeName">
+                          <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
+                        </el-tooltip>
+                        <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                      </el-button-group>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassification(row)" />
             </template>
           </el-table-column>
-          <el-table-column key="术语" label="术语" width="150">
+          <!-- <el-table-column key="术语" label="术语" width="150">
             <template v-slot:default="{ row }">
               <div v-for="classes in row.meanings" :key="classes">
                 <el-button-group style="width: 150px">
@@ -112,7 +125,7 @@
               </div>
               <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column key="操作" label="操作" min-width="115">
             <template v-slot:default="{ row }">
               <el-button type="primary" plain size="mini" @click="metaCompare(row)">元数据比对</el-button>
@@ -150,21 +163,26 @@
         <el-button type="primary" @click="submitCompareTask">提交</el-button>
       </div>
     </el-dialog>
-
+    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationShow=false" />
   </div>
 </template>
 
 <script>
-import CreateNewEntityDialog from './createNewEntityDialog'
-import {
-  getTableByItems
-} from '@/api/datax-metadata-atlas'
+// import AddNewEntity from './addNewEntity'
+import AddClassification from './addClassification'
+import { getTableByItems } from '@/api/datax-metadata-atlas'
 
 export default {
-  name: 'RightPanelTable',
+  name: 'SubPageResult',
+  components: {
+    AddClassification
+  },
   // searchRequest 对象，存entity type和classifications
   props: {
-    searchRequest: Object
+    // eslint-disable-next-line vue/require-default-prop
+    searchRequest: Object,
+    // eslint-disable-next-line vue/require-default-prop
+    classificationList: Array // 分类有值列表
   },
   data() {
     return {
@@ -204,7 +222,9 @@ export default {
         baselineTime: '2020-09-10 12:31:31',
         toTime: '2020-09-19 14:31:09'
       },
-      compareType: 'time'
+      compareType: 'time',
+      addClassificationShow: false, // 打开添加分类面板
+      classificationInfo: {} // 为该条添加分类（guid，typeName）
     }
   },
   computed: {
@@ -350,7 +370,7 @@ export default {
     /**
          * @description: 新建实体
          */
-    createNewEntity() {
+    addNewEntity() {
       console.log('弹出新建实体组件')
     },
     /**
@@ -362,6 +382,13 @@ export default {
     },
     gotoNextResult(type, param) {
       this.$emit('changeresult', type.concat('?').concat(param))
+    },
+    /**
+     * @description: 打开添加分类面板
+     */
+    addClassification(row) {
+      this.classificationInfo = row
+      this.addClassificationShow = true
     }
   }
 }
@@ -372,13 +399,24 @@ export default {
     .el-button {
         font-size: 14px;
     }
-
     .el-col {
         margin-bottom: 10px;
+        .el-select {
+          margin: 0 0 0 10px;
+          ::v-deep .el-input__inner {
+            background: #ECF5FF;
+            border-color: #b1d7fd;
+            height: 30px;
+            &::placeholder {
+              color: #409eff;
+            }
+          }
+        }
     }
 }
 
 .typeAndClassifications {
+  margin-bottom: 10px;
     .el-col {
         span {
             position: relative;

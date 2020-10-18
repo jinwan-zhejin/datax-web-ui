@@ -202,7 +202,7 @@ export default {
     }
   }
   .login-container {
-    height: 100%;
+    height: 90%;
     width: 100%;
     background-image: url("../../../public/img/login.png");
     background-size: 100%;

@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 15:08:22
+ * @LastEditTime: 2020-10-16 16:07:20
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -137,6 +137,7 @@ import * as apiatlas from '@/api/datax-metadata-atlas'
 export default {
   name: 'Search',
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     entities: Object
   },
   data() {

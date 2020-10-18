@@ -199,10 +199,17 @@ export const asyncRoutes = [
     meta: { title: '元数据管理', icon: 'cfg-datasouce' },
     children: [
       {
-        path: 'cloudbeaveratlas',
+        path: 'management',
         component: () => import('@/views/cloudbeaveratlas/index'),
-        name: 'cloudbeaveratlas',
+        name: 'management',
         meta: { title: '元数据管理', icon: 'form', keepAlive: true }
+      },
+      // 重定向 防止404
+      {
+        path: 'management/*',
+        component: () => import('@/views/cloudbeaveratlas/index'),
+        redirect: 'management',
+        name: 'managementredirect'
       },
       {
         path: 'compare',

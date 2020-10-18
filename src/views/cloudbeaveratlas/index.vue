@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 18:06:48
+ * @LastEditTime: 2020-10-16 16:59:18
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -34,7 +34,7 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree v-loading="leftLoading.indexOf('entity') > -1" ref="entity" :data="entity.toShow" default-expand-all highlight-current :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity" />
+              <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.toShow" node-key="description" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity" />
             </div>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('classifications') > -1" name="classifications">
@@ -68,12 +68,12 @@
               </div>
             </div>
             <div style="overflow-y:hidden;">
-              <el-tree v-loading="leftLoading.indexOf('classifications') > -1" ref="classifications" :data="classifications.toShow" default-expand-all highlight-current :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
+              <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.toShow" node-key="description" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
                   <span>{{ node.label }}</span>
                   <span>
-                    <el-button v-show="true" type="text">
+                    <el-button v-show="searchByListItem.params.classification === node.label.split(' (')[0]" type="text">
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
                         <span class="el-dropdown-link">
                           <i class="el-icon-more" />
@@ -88,7 +88,7 @@
                           <el-dropdown-item @click.stop.native="">
                             <i class="el-icon-delete" style="color:#409EFF;" />删除
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="handleNodeClickClassifications(data)">
+                          <el-dropdown-item @click.stop.native="handleNodeClickClassificationsMini(data)">
                             <i class="el-icon-search" style="color:#409EFF;" />查找
                           </el-dropdown-item>
                         </el-dropdown-menu>
@@ -136,7 +136,7 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree v-loading="leftLoading.indexOf('businessMetadata') > -1" ref="businessMetadata" :data="businessMetadata.toShow" default-expand-all highlight-current :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickBusinessMetadata" />
+              <el-tree ref="businessMetadata" v-loading="leftLoading.indexOf('businessMetadata') > -1" :data="businessMetadata.toShow" default-expand-all :highlight-current="businessMetadataHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickBusinessMetadata" />
             </div>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('glossaries') > -1" name="glossaries">
@@ -176,7 +176,7 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree v-loading="leftLoading.indexOf('glossaries') > -1" ref="glossaries" :data="glossaries.toShow" default-expand-all highlight-current :props="glossariesProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickGlossaries" />
+              <el-tree ref="glossaries" v-loading="leftLoading.indexOf('glossaries') > -1" :data="glossaries.toShow" default-expand-all :highlight-current="glossariesHighlight" :props="glossariesProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickGlossaries" />
             </div>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('customFilter') > -1" name="customFilter">
@@ -196,12 +196,16 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree v-loading="leftLoading.indexOf('customFilter') > -1" ref="customFilter" :data="customFilter.toShow" default-expand-all highlight-current :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
+              <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.toShow" node-key="searchParameters" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
                   <span>{{ node.label }}</span>
                   <span>
-                    <el-button v-show="true" type="text">
+                    <el-button
+                      v-if="node.label !== '高级搜索' && node.label !== '普通搜索'"
+                      v-show="searchByListItem.params.typeName === data.searchParameters.typeName && searchByListItem.params.classification === data.searchParameters.classification"
+                      type="text"
+                    >
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
                         <span class="el-dropdown-link">
                           <i class="el-icon-more" />
@@ -226,7 +230,19 @@
       <el-container>
         <el-main class="right-container">
           <Search v-if="['atlasResult','atlasDetails'].indexOf(this.$route.name) > -1" :entities="entity.data" @changedetail="changeDetail" @changeresult="changeResult" />
-          <router-view :key="timer" name="atlas" :search-request="searchByListItem" :details-request="searchByName" :entities="entity.data" @changepage="changePage" @changedetail="changeDetail" @changeresult="changeResult" @deletefilteritem="deleteFilterItem" />
+          <router-view
+            :key="timer"
+            name="atlas"
+            :search-request="searchByListItem"
+            :details-request="searchByName"
+            :entities="entity.data"
+            :classification-list="classifications.data"
+            replace
+            @changepage="changePage"
+            @changedetail="changeDetail"
+            @changeresult="changeResult"
+            @deletefilteritem="deleteFilterItem"
+          />
         </el-main>
       </el-container>
     </el-container>
@@ -234,43 +250,45 @@
 </template>
 
 <script>
-import RightPanelSearch from './components/rightPanelSearch'
-import RightPanelTable from './components/rightPanelTable'
-import RightPanelDetails from './components/rightPanelDetails'
+import SubPageSearch from './components/subPageSearch'
+import SubPageResult from './components/subPageResult'
+import SubPageDetails from './components/subPageDetails'
 import Search from './components/search'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import Router from 'vue-router'
 
 const router = new Router({
-  routes: [{
-    path: '/datax/metadata/cloudbeaveratlas/atlasSearch',
-    name: 'atlasSearch',
-    components: {
-      atlas: RightPanelSearch
+  // mode: 'history',
+  routes: [
+    {
+      path: '/cloudbeaveratlas/management/search',
+      name: 'atlasSearch',
+      components: {
+        atlas: SubPageSearch
+      }
+    },
+    // 路由传参√ props传参×
+    {
+      path: '/cloudbeaveratlas/management/result',
+      name: 'atlasResult',
+      components: {
+        atlas: SubPageResult
+      }
+    },
+    {
+      path: '/cloudbeaveratlas/management/details',
+      name: 'atlasDetails',
+      components: {
+        atlas: SubPageDetails
+      }
+    },
+    {
+      path: '*',
+      name: 'default',
+      components: {
+        atlas: SubPageSearch
+      }
     }
-  },
-  // 路由传参√ props传参×
-  {
-    path: '/datax/metadata/cloudbeaveratlas/atlasSearch/searchResult',
-    name: 'atlasResult',
-    components: {
-      atlas: RightPanelTable
-    }
-  },
-  {
-    path: '/datax/metadata/cloudbeaveratlas/atlasDetails',
-    name: 'atlasDetails',
-    components: {
-      atlas: RightPanelDetails
-    }
-  },
-  {
-    path: '*',
-    name: 'default',
-    components: {
-      atlas: RightPanelSearch
-    }
-  }
   ]
 })
 
@@ -391,8 +409,16 @@ export default {
         label: 'name',
         children: 'terms'
       },
-      timer: ''
-    };
+      timer: '',
+      entityHighlight: false,
+      classificationsHighlight: false,
+      businessMetadataHighlight: false,
+      glossariesHighlight: false,
+      customFilterHighlight: false
+    }
+  },
+  computed: {
+
   },
   watch: {
     searchTreeList(val) {
@@ -450,6 +476,24 @@ export default {
           delete this.leftLoading[this.leftLoading.indexOf('customFilter')]
         }
       }
+    },
+    'searchByListItem.params.typeName'(val, oldVal) {
+      if (val === null) {
+        this.$refs.entity.setCurrentKey(null)
+        this.entityHighlight = false
+      } else {
+        this.$refs.entity.setCurrentKey(val)
+        this.entityHighlight = true
+      }
+    },
+    'searchByListItem.params.classification'(val, oldVal) {
+      if (val === null) {
+        this.$refs.classifications.setCurrentKey(null)
+        this.classificationsHighlight = false
+      } else {
+        this.$refs.classifications.setCurrentKey(val)
+        this.classificationsHighlight = true
+      }
     }
   },
   mounted() {
@@ -486,27 +530,47 @@ export default {
       console.log(info)
     },
     test3() {
-      console.log(this.$route);
+      console.log(this.$router, this.$route)
     },
     /**
-         * @description: el-tree节点点击事件
-         */
+     * @description: entity el-tree节点点击事件
+     */
     handleNodeClickEntity(data) {
-      this.$router.push({
+      this.searchByListItem.params.typeName =
+        (this.searchByListItem.params.typeName === data.name.split(' (')[0])
+          ? null : data.name.split(' (')[0]
+      this.searchByListItem.businessMetadata = null
+      this.$router.replace({
         name: 'atlasResult'
       })
-      this.searchByListItem.businessMetadata = null
-      this.searchByListItem.params.typeName = data.name.split(' (')[0]
     },
+    /**
+     * @description: entity el-tree节点点击事件
+     */
     handleNodeClickClassifications(data) {
-      this.$router.push({
+      // console.log(this.classifications.toShow);
+      this.searchByListItem.params.classification =
+        (this.searchByListItem.params.classification === data.name.split(' (')[0])
+          ? null : data.name.split(' (')[0]
+      this.searchByListItem.businessMetadata = null
+      this.$router.replace({
         name: 'atlasResult'
       })
-      this.searchByListItem.businessMetadata = null
-      this.searchByListItem.params.classification = data.name.split(' (')[0]
     },
+    handleNodeClickClassificationsMini(data) {
+      this.searchByListItem.params.classification = data.name.split(' (')[0]
+      this.searchByListItem.businessMetadata = null
+      this.searchByListItem.params.typeName = null
+      this.searchByListItem.params.termName = null
+      this.$router.replace({
+        name: 'atlasResult'
+      })
+    },
+    /**
+     * @description: entity el-tree节点点击事件
+     */
     handleNodeClickBusinessMetadata(data) {
-      this.$router.push({
+      this.$router.replace({
         name: 'atlasResult'
       })
       this.searchByListItem.params.typeName = null
@@ -514,21 +578,32 @@ export default {
       this.searchByListItem.params.termName = null
       this.searchByListItem.businessMetadata = data
     },
+    /**
+     * @description: entity el-tree节点点击事件
+     */
     handleNodeClickGlossaries(data) {
-      this.$router.push({
+      this.$router.replace({
         name: 'atlasResult'
       })
       this.searchByListItem.businessMetadata = null
       this.searchByListItem.params.termName = data.name.concat('@').concat(data.fathername)
     },
+    /**
+     * @description: entity el-tree节点点击事件
+     */
     handleNodeClickCustomFilter(data) {
-      this.$router.push({
-        name: 'atlasResult'
-      })
+      if (this.searchByListItem.params.typeName === data.searchParameters.typeName && this.searchByListItem.params.classification === data.searchParameters.classification) {
+        this.searchByListItem.params.typeName = null
+        this.searchByListItem.params.classification = null
+      } else {
+        this.searchByListItem.params.typeName = data.searchParameters.typeName
+        this.searchByListItem.params.classification = data.searchParameters.classification
+      }
       this.searchByListItem.params.termName = null
       this.searchByListItem.businessMetadata = null
-      this.searchByListItem.params.typeName = data.searchParameters.typeName
-      this.searchByListItem.params.classification = data.searchParameters.classification
+      this.$router.replace({
+        name: 'atlasResult'
+      })
     },
     /**
          * @description: 搜索左边栏el-tree节点
@@ -566,11 +641,13 @@ export default {
           item => tempObject.hasOwnProperty(item.name) === true && 'path TYPES type db column table instance'.indexOf(item.name.split('_')[item.name.split('_').length - 1]) > -1)
         this.entity.data.push({
           category: 'ENTITY',
-          name: '_ALL_ENTITY_TYPES'
+          name: '_ALL_ENTITY_TYPES',
+          description: '_ALL_ENTITY_TYPES'
         })
         this.entity.hasVal.push({
           category: 'ENTITY',
-          name: '_ALL_ENTITY_TYPES'
+          name: '_ALL_ENTITY_TYPES',
+          description: '_ALL_ENTITY_TYPES'
         })
         this.entity.toShow = this.entity.hasVal
         for (var i in this.entity.toShow) {
@@ -597,6 +674,40 @@ export default {
         this.classifications.data = res.data.classificationDefs
         this.classifications.hasVal = this.classifications.data.filter(
           item => this.notEmptyList.tag.tagEntities.hasOwnProperty(item.name) === true
+        )
+        this.classifications.data.push(
+          {
+            category: 'CLASSIFICATION',
+            name: '_ALL_CLASSIFICATION_TYPES',
+            description: '_ALL_CLASSIFICATION_TYPES'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_CLASSIFIED',
+            description: '_CLASSIFIED'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_NOT_CLASSIFIED',
+            description: '_NOT_CLASSIFIED'
+          }
+        )
+        this.classifications.hasVal.push(
+          {
+            category: 'CLASSIFICATION',
+            name: '_ALL_CLASSIFICATION_TYPES',
+            description: '_ALL_CLASSIFICATION_TYPES'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_CLASSIFIED',
+            description: '_CLASSIFIED'
+          },
+          {
+            category: 'CLASSIFICATION',
+            name: '_NOT_CLASSIFIED',
+            description: '_NOT_CLASSIFIED'
+          }
         )
         this.classifications.toShow = this.classifications.hasVal
         for (var i in this.classifications.toShow) {
@@ -659,6 +770,7 @@ export default {
       const res = await apiatlas.getCustomFilters()
       // console.log(res)
       if (res !== '' || res !== undefined) {
+        this.customFilter.data[1].children = []
         for (var i = 0; i < res.data.length; i++) {
           this.customFilter.data[1].children.push(res.data[i])
         }
@@ -678,10 +790,10 @@ export default {
          */
     async loadLeftList() {
       this.loadListEntities().then(res => this.loadListClassifications())
-      this.loadListBusinessMetadata()
-      this.loadListGlossaries()
+      // this.loadListBusinessMetadata()
+      // this.loadListGlossaries()
       this.loadListCustomFilters()
-      this.loadListClassifications()
+      // this.loadListClassifications()
     },
     /**
          * @description: 获取到有值的列表项
@@ -711,7 +823,7 @@ export default {
       //   this.$router.go(parseInt(routerName))
       } else {
         this.timer = new Date().getTime()
-        this.$router.push({
+        this.$router.replace({
           name: routerName
         })
       }
@@ -727,7 +839,7 @@ export default {
       }
       console.log(this.searchByName);
       this.timer = new Date().getTime()
-      this.$router.push({
+      this.$router.replace({
         name: 'atlasDetails'
       })
     },
@@ -759,7 +871,7 @@ export default {
           this.searchByListItem.params.query = string.split('?')[1]
       }
       this.timer = new Date().getTime()
-      this.$router.push({
+      this.$router.replace({
         name: 'atlasResult'
       })
     },
@@ -809,26 +921,25 @@ export default {
     font-family: Arial, Helvetica, sans-serif;
 
     .topSearch {
-        height: 79px;
-
-        .searchLabel {
-            font-size: 18px;
-            font-weight: normal;
-            color: dimgray;
-        }
+      height: 79px;
+      .searchLabel {
+          font-size: 18px;
+          font-weight: normal;
+          color: dimgray;
+      }
     }
 
     .el-collapse {
         height: calc(100vh - 219px);
         overflow-y: auto;
-
+        background: white;
         ::v-deep .el-collapse-item__header {
             color: #409EFF;
             font-size: 15px;
             font-weight: bold;
             flex: 1 0 auto;
             order: -1;
-
+            // border-bottom: #409EFF;
             .collapse-title {
                 flex: 1 0 100%;
                 order: 1;
@@ -842,13 +953,18 @@ export default {
     }
 
     ::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-        background-color: #409EFF;
+      background-color: #409EFF;
+      color: white;
+      i {
         color: white;
+      }
+      i:hover {
+        color: #d7ebff;
+      }
     }
-
     ::v-deep .el-tree-node__content:hover {
-        background-color: #d9e6fd;
-        // color: #fff;
+      background-color: #d9e6fd;
+      // color: #fff;
     }
 }
 

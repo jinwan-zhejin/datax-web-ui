@@ -2,8 +2,8 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-14 18:41:36
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\rightPanelDetails.vue
+ * @LastEditTime: 2020-10-16 16:08:40
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
 
@@ -25,10 +25,22 @@
       </el-row>
       <el-row class="centerBar">
         <el-col>
-          分类：<el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+          <!-- {{ properties.entity.classifications }} -->
+          分类：
+          <el-button-group v-for="classifiy in properties.entity.classifications" :key="classifiy.typeName">
+            <el-button type="primary" plain size="mini">
+              {{ classifiy.typeName }}
+            </el-button>
+            <el-tooltip content="删除分类" placement="bottom">
+              <el-button type="primary" plain size="mini" icon="el-icon-close" />
+            </el-tooltip>
+          </el-button-group>
+          <el-tooltip content="添加分类" placement="bottom">
+            <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+          </el-tooltip>
         </el-col>
         <!-- <el-col>
-          术语：<el-button type="primary" plain size="mini" icon="el-icon-plus" @click="test(row)" />
+          术语：<el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
         </el-col> -->
       </el-row>
       <el-row class="bottomBar">
@@ -37,17 +49,21 @@
             <el-tab-pane label="属性" name="properties">
               <el-row>
                 <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                  <el-collapse v-model="activeCollapse1">
-                    <el-collapse-item name="collapse1">
+                  <el-collapse v-model="propertiesCollapseActive[0]">
+                    <el-collapse-item name="properties0">
                       <div slot="title" class="collapse-title">
-                        技术特性&nbsp;
+                        技术属性&nbsp;
                         <el-tooltip :content="techPropShow ?'隐藏空值':'显示空值'">
                           <el-switch v-model="techPropShow" @click.stop.native />
                         </el-tooltip>
                       </div>
                       <el-table :data="techPropShow ? techProp : techPropHasVal" :show-header="false">
-                        <el-table-column label="left" prop="key" />
-                        <el-table-column label="right" prop="value">
+                        <el-table-column label="left">
+                          <template v-slot:default="{ row }">
+                            {{ translater(row.key) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="right">
                           <template v-slot:default="{ row }">
                             <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextDetails(row.value[0])">{{ row.value[0].displayText }}</a>
                             <a v-else-if="row.key === 'instance'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.displayText }}</a>
@@ -60,39 +76,40 @@
                   </el-collapse>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                  <!-- <el-collapse v-model="activeCollapse2">
-                    <el-collapse-item title="用户定义的属性" name="collapse2">
+                  <!-- <el-collapse v-model="propertiesCollapseActive[1]">
+                    <el-collapse-item title="用户定义的属性" name="properties1">
                       <el-table :data="custProp" :show-header="false">
                         <el-table-column label="left" prop="key" />
                         <el-table-column label="right" prop="value" />
                       </el-table>
                     </el-collapse-item>
                   </el-collapse> -->
-                  <el-collapse v-model="activeCollapse3">
-                    <el-collapse-item name="collapse3">
+                  <el-collapse v-model="propertiesCollapseActive[2]">
+                    <el-collapse-item name="properties2">
                       <div slot="title" class="collapse-title">
                         标签&nbsp;
                         <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button>
                       </div>
+                      <span v-if="properties.entity.labels.length <= 0">&nbsp;暂无数据</span>
                       <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index" style="margin: 2px;">{{ item }}</el-tag>
                     </el-collapse-item>
                   </el-collapse>
-                  <!-- <el-collapse v-model="activeCollapse4">
-                    <el-collapse-item title="业务元数据" name="collapse4">
+                  <!-- <el-collapse v-model="propertiesCollapseActive[3]">
+                    <el-collapse-item title="业务元数据" name="properties3">
                       Coding...
                     </el-collapse-item>
                   </el-collapse> -->
                 </el-col>
               </el-row>
             </el-tab-pane>
-            <el-tab-pane label="血缘" name="lineage">用户管理</el-tab-pane>
+            <el-tab-pane label="血缘" name="lineage">血缘关系</el-tab-pane>
             <el-tab-pane label="关系" name="relationships">
-              <el-row>
-                <el-col :span="12">
+              <el-row style="margin-bottom: 10px;">
+                <el-col :span="8">
                   <el-switch v-model="graphTable" active-text="表格" inactive-text="图表" />
                 </el-col>
-                <el-col :span="12">
-                  <el-switch v-if="graphTable" v-model="showEmptyRelationships" active-text="显示空值" />
+                <el-col :span="8">
+                  <el-switch v-if="graphTable" v-model="showEmptyRelationships" active-text="显示空值" inactive-text="不显示空值" />
                 </el-col>
               </el-row>
               <el-table v-if="graphTable" :data="relationshipShow">
@@ -101,7 +118,7 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="分类" name="classifications">
-              <el-select v-model="classificationsValue" filterable placeholder="请选择" clearable @change="handleSelectClass">
+              <el-select v-model="classificationsValue" style="margin-bottom: 10px;" filterable placeholder="请选择" clearable @change="handleSelectClass">
                 <el-option
                   v-for="item in classificationsOptions"
                   :key="item.value"
@@ -110,9 +127,9 @@
                 />
               </el-select>
               <el-table :data="classifications">
-                <el-table-column label="分类" prop="value" />
+                <el-table-column label="分类" prop="value" sortable />
                 <el-table-column label="属性" prop="">
-                  <template v-slot:default="{ row }">
+                  <template v-slot:default="{ }">
                     N/A
                   </template>
                 </el-table-column>
@@ -151,37 +168,97 @@
                           </el-form-item>
                         </el-col>
                       </el-row>
-                      <el-row>
+                      <!-- <el-row>
                         <el-col>
                           <el-form-item>
                             <span>{{ transformObject(props.row) }}</span>
                           </el-form-item>
                         </el-col>
-                      </el-row>
+                      </el-row> -->
                       <el-row>
-                        <el-col v-if="hasAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                          <el-collapse></el-collapse>
+                        <el-col v-if="hasAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse v-model="detailsCollapseActive[0]">
+                            <el-collapse-item name="details0">
+                              <div slot="title" class="collapse-title">
+                                技术属性
+                              </div>
+                              <el-table :data="detailsAttributes(transformObject(props.row)[1])" :show-header="false">
+                                <el-table-column label="键">
+                                  <template v-slot:default="{ row }">
+                                    {{ translater(row.key) }}
+                                  </template>
+                                </el-table-column>
+                                <el-table-column label="值" prop="value" />
+                              </el-table>
+                            </el-collapse-item>
+                          </el-collapse>
                         </el-col>
-                        <el-col v-if="hasRelationshipAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                          <el-collapse></el-collapse>
+                        <el-col v-if="hasRelationshipAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse v-model="detailsCollapseActive[1]">
+                            <el-collapse-item name="details1">
+                              <div slot="title" class="collapse-title">
+                                关系属性
+                              </div>
+                              <el-table :data="detailsRelationshipAttributes(transformObject(props.row)[1])" :show-header="false">
+                                <el-table-column label="键">
+                                  <template v-slot:default="{ row }">
+                                    {{ translater(row.key) }}
+                                  </template>
+                                </el-table-column>
+                                <el-table-column label="值" prop="value" />
+                              </el-table>
+                            </el-collapse-item>
+                          </el-collapse>
                         </el-col>
-                        <el-col v-if="hasCustomAttributes" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                          <el-collapse></el-collapse>
+                        <el-col v-if="hasCustomAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse v-model="detailsCollapseActive[2]">
+                            <el-collapse-item name="details2">
+                              <div slot="title" class="collapse-title">
+                                自定义属性
+                              </div>
+                              <el-table :data="detailsCustomAttributes(transformObject(props.row)[1])" :show-header="false">
+                                <el-table-column label="键">
+                                  <template v-slot:default="{ row }">
+                                    {{ translater(row.key) }}
+                                  </template>
+                                </el-table-column>
+                                <el-table-column label="值" prop="value" />
+                              </el-table>
+                            </el-collapse-item>
+                          </el-collapse>
                         </el-col>
-                        <el-col v-if="hasTerm" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-                          <el-collapse></el-collapse>
+                        <el-col v-if="hasTerm(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                          <el-collapse v-model="detailsCollapseActive[3]">
+                            <el-collapse-item name="details3">
+                              <div slot="title" class="collapse-title">
+                                属性
+                              </div>
+                              <el-table :data="detailsTerm(transformObject(props.row)[1])" :show-header="false">
+                                <el-table-column label="键">
+                                  <template v-slot:default="{ row }">
+                                    {{ translater(row.key) }}
+                                  </template>
+                                </el-table-column>
+                                <el-table-column label="值" prop="value" />
+                              </el-table>
+                            </el-collapse-item>
+                          </el-collapse>
                         </el-col>
                       </el-row>
                     </el-form>
                   </template>
                 </el-table-column>
-                <el-table-column label="用户名" prop="user" />
-                <el-table-column label="审核时间">
+                <el-table-column label="用户名" prop="user" sortable />
+                <el-table-column label="审核时间" sortable>
                   <template v-slot:default="{ row }">
                     {{ row.timestamp | formatDate }}
                   </template>
                 </el-table-column>
-                <el-table-column label="状态" prop="action" />
+                <el-table-column label="状态" sortable>
+                  <template v-slot:default="{ row }">
+                    {{ translaterMaster(row.action) }}
+                  </template>
+                </el-table-column>
               </el-table>
               <el-pagination
                 background
@@ -223,8 +300,9 @@
 
 <script>
 import * as apiatlas from '@/api/datax-metadata-atlas'
+import { translater, translaterMaster } from '../utils/dictionary'
 export default {
-  name: 'RightPanelDetails',
+  name: 'SubPageDetails',
   filters: {
     formatDate(val) {
       const date = new Date(val);
@@ -259,6 +337,7 @@ export default {
     }
   },
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     detailsRequest: Object
   },
   data() {
@@ -268,15 +347,12 @@ export default {
         value: '',
         label: '全部'
       }],
-      activeCollapse1: 'collapse1',
-      activeCollapse2: 'collapse2',
-      activeCollapse3: 'collapse3',
-      activeCollapse4: 'collapse4',
+      propertiesCollapseActive: ['properties0', 'properties1', 'properties2', 'properties3'],
       classificationsValue: '',
       properties: [], // 保存属性返回值
-      techProp: [],
-      techPropShow: false, // 技术特性collapse显示空值
-      custProp: [],
+      techProp: [], // 技术属性Tab
+      techPropShow: false, // 技术属性collapse显示空值
+      custProp: [], // 自定属性Tab
       audits: [], // 保存审核返回值
       lineage: [], // 保存系谱返回值
       classifications: [], // 表格 分类
@@ -289,7 +365,8 @@ export default {
       relationshipList: [],
       relationshipShow: [],
       graphTable: true, // 表格或图表 false-Graph true-Table
-      showEmptyRelationships: false // 显示空值
+      showEmptyRelationships: false, // 显示空值
+      detailsCollapseActive: ['details0', 'details1', 'details2', 'details3']
     }
   },
   computed: {
@@ -308,7 +385,7 @@ export default {
     },
     // 处理details
     transformObject() {
-      return (row) => {
+      return row => {
         var tempStr = row.details
         switch (row.action) {
           case 'LABEL_ADD': // 添加Label
@@ -332,17 +409,111 @@ export default {
         return temp
       }
     },
+    // 展示attributes
     hasAttributes() {
-      return false
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('attributes')) {
+          return true
+        }
+        return false
+      }
     },
+    // 展示relationshipAttributes
     hasRelationshipAttributes() {
-      return false
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('relationshipAttributes')) {
+          return true
+        }
+        return false
+      }
     },
+    // 展示customAttributes
     hasCustomAttributes() {
-      return false
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('customAttributes')) {
+          return true
+        }
+        return false
+      }
     },
+    // 展示term
     hasTerm() {
-      return false
+      return details => {
+        if (Object.keys(details)[0].indexOf('term') > -1) {
+          return true
+        }
+        return false
+      }
+    },
+    // details技术属性
+    detailsAttributes() {
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('attributes')) {
+          var temp = []
+          for (var i in details[Object.keys(details)[0]].attributes) {
+            temp.push({
+              key: i,
+              value: details[Object.keys(details)[0]].attributes[i] === null ? 'N/A' : details[Object.keys(details)[0]].attributes[i]
+            })
+          }
+          return temp
+        }
+        return []
+      }
+    },
+    // details关系属性
+    detailsRelationshipAttributes() {
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('relationshipAttributes')) {
+          var temp = []
+          for (var i in details[Object.keys(details)[0]].relationshipAttributes) {
+            temp.push({
+              key: i,
+              value: details[Object.keys(details)[0]].relationshipAttributes[i] === null ? 'N/A' : details[Object.keys(details)[0]].relationshipAttributes[i]
+            })
+          }
+          return temp
+        }
+        return []
+      }
+    },
+    // details自定义属性
+    detailsCustomAttributes() {
+      return details => {
+        if (details[Object.keys(details)[0]].hasOwnProperty('customAttributes')) {
+          var temp = []
+          for (var i in details[Object.keys(details)[0]].customAttributes) {
+            temp.push({
+              key: i,
+              value: details[Object.keys(details)[0]].customAttributes[i] === null ? 'N/A' : details[Object.keys(details)[0]].customAttributes[i]
+            })
+          }
+          return temp
+        }
+        return []
+      }
+    },
+    // details属性
+    detailsTerm() {
+      return details => {
+        if (Object.keys(details)[0].indexOf('term') > -1) {
+          var temp = []
+          for (var i in details[Object.keys(details)[0]]) {
+            temp.push({
+              key: i,
+              value: details[Object.keys(details)[0]][i] === null ? 'N/A' : details[Object.keys(details)[0]][i]
+            })
+          }
+          return temp
+        }
+        return []
+      }
+    },
+    translater() {
+      return str => translater(str)
+    },
+    translaterMaster(str) {
+      return str => translaterMaster(str)
     }
   },
   watch: {
@@ -456,7 +627,7 @@ export default {
       const res = await apiatlas.getDetailsProperties(this.detailsRequest.guid)
       if (res.status === 200 && res.statusText === 'OK') {
         this.properties = res.data
-        console.log(this.properties)
+        // console.log(this.properties)
       } else {
         this.$message({
           message: '获取详情信息-属性失败',
