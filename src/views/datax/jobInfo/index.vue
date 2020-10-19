@@ -13,7 +13,7 @@
                 v-for="item in options"
                 :key="item.id"
                 :label="item.name"
-                :value="item.name"
+                :value="item.id"
               />
             </el-select>
           </el-col>
@@ -485,8 +485,9 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response;
           this.List = content.data;
-          const firstElement = content.data[0];
+          const firstElement = content?.data[0] || {};
           const a = {};
+          
           a.title = firstElement.jobDesc;
           a.name = firstElement.jobDesc;
           a.content = firstElement;
@@ -504,7 +505,6 @@ export default {
     },
 
     fetchJobs(event) {
-      console.log(event);
       const listQuery = {
         current: 1,
         size: 10,
