@@ -43,7 +43,12 @@ const translate = {
   'add': '添加',
   'entity': '实体',
   'create': '创建',
-  'update': '修改'
+  'update': '修改',
+  'import': '导入',
+  'delete': '删除',
+  'purge': '清除',
+  'propagated': '已传播',
+  'attribute': '属性'
 }
 // export default translate
 
@@ -53,8 +58,9 @@ const translate = {
  * @return {type}
  */
 export function translater(str) {
-  if (translate.hasOwnProperty(str.trim().toLowerCase())) {
-    return translate[str.trim().toLowerCase()]
+  var temp = str.replace(/\ /g, '')
+  if (translate.hasOwnProperty(temp.toLowerCase())) {
+    return translate[temp.toLowerCase()]
   }
   return str
 }
@@ -76,6 +82,9 @@ export function translaterMaster(str) {
       result += list[i]
     }
   }
-  return result
+  if (result !== '') {
+    return result
+  }
+  return str
 }
 

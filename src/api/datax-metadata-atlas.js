@@ -2,13 +2,14 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-16 18:22:22
+ * @LastEditTime: 2020-10-19 17:54:15
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
 import axios from 'axios'
 import qs from 'qs'
+import request from '@/utils/request'
 
 /**
  * @description: 模拟登陆发送post
@@ -236,6 +237,93 @@ export async function addClassification(data) {
     url: '/atlasApi/v2/entity/bulk/classification',
     method: 'post',
     data
+  })
+  return res
+}
+
+/**
+ * @description: 根据guid获取该entity的所有版本信息集合，包括时间戳等
+ * @param {String} 参数guid
+ * @return {object} axios返回值
+ */
+export async function getVersionInfo(guid) {
+  const res = await request({
+    url: '/test/metadata/audit',
+    method: 'get',
+    params: {
+      guid
+    },
+    withCredentials: true
+  })
+  return res
+}
+
+/**
+ * @description: 获取两个版本数据对比结果
+ * @param {String} 参数guid
+ * @param {object} timestamps 时间(版本号)
+ * @return {object} axios返回值
+ */
+export async function getCompareResult(guid, timestamps) {
+  const res = await request({
+    url: '/test/metadata/contrast',
+    method: 'post',
+    data: {
+      'guid': guid,
+      'timestamp': [
+        timestamps.baselineTime,
+        timestamps.toTime
+      ]
+    },
+    withCredentials: true
+  })
+  return res
+}
+
+/**
+ * @description: 获取所有版本比对记录
+ * @param {type} 
+ * @return {object} axios返回值
+ */
+export async function getAllCompareRecord() {
+  const res = await request({
+    url: '/test/metadata/contrast/all',
+    method: 'get',
+    withCredentials: true
+  })
+  return res
+}
+
+/**
+ * @description: 获取单个版本比对记录
+ * @param {String} guid
+ * @return {object} axios返回值
+ */
+export async function getOneCompareRecord(id) {
+  const res = await request({
+    url: '/test/metadata/contrast/record',
+    method: 'get',
+    params: {
+      id
+    },
+    withCredentials: true
+  })
+  return res
+}
+
+/**
+ * @description: 获取guid下所有比对记录
+ * @param {String} guid
+ * @return {object} axios返回值
+ */
+export async function getOneAllCompareRecord(guid) {
+  const res = await request({
+    url: '/test/metadata',
+    method: 'get',
+    params: {
+      guid
+    },
+    withCredentials: true
   })
   return res
 }
