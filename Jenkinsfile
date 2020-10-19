@@ -1,4 +1,6 @@
 pipeline {
+    agent any
+
     triggers {
         GenericTrigger(
         genericVariables: [
@@ -14,7 +16,6 @@ pipeline {
         regexpFilterExpression: 'refs/heads/dev'
         )
   }
-    agent any
 
     stages {
         stage('Build') {
