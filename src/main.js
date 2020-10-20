@@ -8,7 +8,7 @@ import './assets/css/reset.css'
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 import comButton from './components/Generic/button.vue' // 自定义按钮
 Vue.component('comButton', comButton)
 

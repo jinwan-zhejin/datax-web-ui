@@ -140,7 +140,7 @@
     <div class="rg">
       <el-tabs
         v-model="jobDetailIdx"
-        type="card"
+        type="border-card"
         closable
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
@@ -276,6 +276,7 @@ export default {
       jobTypeMap: "",
       jobDetailLoading: true,
       firstTime: true,
+      projectIds:''
     };
   },
   watch: {
@@ -471,7 +472,7 @@ export default {
         const { total } = response;
         this.total = total;
         this.options = records;
-        this.selectValue = this.options[0].name;
+        this.selectValue =  this.options[0].name;
         const listQuery = {
           current: 1,
           size: 10,
@@ -481,7 +482,7 @@ export default {
           jobDesc: "",
           glueType: "",
         };
-        listQuery.projectIds = this.options[0].id;
+        listQuery.projectIds = this.projectIds ? this.projectIds : this.options[0].id;
         job.getList(listQuery).then((response) => {
           const { content } = response;
           this.List = content.data;
@@ -514,6 +515,7 @@ export default {
         jobDesc: "",
         glueType: "",
       };
+      this.projectIds = event;
       listQuery.projectIds = event;
       job.getList(listQuery).then((response) => {
         const { content } = response;

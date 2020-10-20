@@ -92,13 +92,15 @@ module.exports = {
       //     ['^' + '/login']: '/login'
       //   }
       // },
-      // '/test': {
-      //   target: 'http://192.168.3.60:9000',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     ['^' + '/login']: '/login'
-      //   }
-      // },
+      '/test': {
+        ws: false,
+        // target: 'http://192.168.3.60:9000', // 韩家敏
+        target: 'http://192.168.3.74:7000', // 侯峰
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/test']: '/api'
+        }
+      },
       // Datains接口
       // '/welcome': {
       //   target: 'http://47.103.79.104:8080',

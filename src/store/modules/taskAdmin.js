@@ -6,13 +6,17 @@ const state = {
         'SQLJOB': 'SQL任务',
     },
     tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB'],
-    tabType: ''
+    tabType: '',
+    tableData: [],
   }
   
 const mutations = {
-SET_TAB_TYPE: (state, type) => {
-    state.tabType = type
-},
+    SET_TAB_TYPE: (state, type) => {
+        state.tabType = type
+    },
+    SET_TABLEDATA: (state, arr) => {
+        state.tableData = arr
+    }
 }
 
 const actions = {
