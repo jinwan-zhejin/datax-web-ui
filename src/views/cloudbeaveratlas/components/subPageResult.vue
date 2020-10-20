@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-16 16:00:54
+ * @LastEditTime: 2020-10-19 18:09:22
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -31,8 +31,8 @@
           <el-option
             v-for="item in tableColumns"
             :key="item.value"
-            :label="item.label"
-            :value="item"
+            :label="translateIt(item.label)"
+            :value="item.value"
           />
         </el-select>
       </el-col>
@@ -79,20 +79,12 @@
           </el-table-column>
           <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
-              <el-button-group style="width: 150px">
+              <el-button-group v-if="row.classifications.length > 1" style="width: 150px">
                 <el-tooltip :content="row.classifications[0].typeName">
                   <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
                 </el-tooltip>
                 <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
               </el-button-group>
-              <!-- <div v-for="classes in row.classifications" :key="classes">
-                <el-button-group style="width: 150px">
-                  <el-tooltip :content="classes.typeName">
-                    <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
-                  </el-tooltip>
-                  <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
-                </el-button-group>
-              </div> -->
               <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
                 <el-button type="success" plain size="mini">
                   <i class="el-icon-more" />
@@ -128,7 +120,7 @@
           </el-table-column> -->
           <el-table-column key="操作" label="操作" min-width="115">
             <template v-slot:default="{ row }">
-              <el-button type="primary" plain size="mini" @click="metaCompare(row)">元数据比对</el-button>
+              <el-button type="primary" plain size="mini" @click="metaCompare(row.guid)">元数据比对</el-button>
             </template>
           </el-table-column>
           <el-table-column v-for="item in tableColumnsSelected" :key="item.value" :label="item.label" :prop="item.value" />
@@ -145,22 +137,26 @@
         /> -->
       </el-col>
     </el-row>
-    <el-dialog title="元数据比对" :visible.sync="metaCompareVisible">
-      <el-form :model="compareParams" label-position="left">
+    <el-dialog title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="false">
+      <el-form ref="compareParams" :model="compareParams" label-position="left">
         <el-form-item>
           <el-radio v-model="compareType" label="time">时间版本比对</el-radio>
           <el-radio v-model="compareType" label="dimen">空间版本比对</el-radio>
         </el-form-item>
-        <el-form-item v-if="compareType == 'time'" label="基线时间: ">
-          <el-select v-model="compareParams.baselineTime" placeholder="请选择比较基线时间点" />
+        <el-form-item v-if="compareType === 'time'" label="基线时间: " prop="baselineTime" :rules="{required: true, message: '请选择比较基线时间点', trigger: 'blur'}">
+          <el-select v-model="compareParams.baselineTime" placeholder="请选择比较基线时间点" clearable>
+            <el-option v-for="(item,index) in versionListLite(compareParams.toTime)" :key="index" :label="formatDate(item.timestamp)" :value="item.timestamp" />
+          </el-select>
         </el-form-item>
-        <el-form-item v-if="compareType == 'time'" label="待比较时间点: ">
-          <el-select v-model="compareParams.toTime" placeholder="请选择待比较时间点" />
+        <el-form-item v-if="compareType === 'time'" label="待比较时间点: " prop="toTime" :rules="{required: true, message: '请选择待比较时间点', trigger: 'blur'}">
+          <el-select v-model="compareParams.toTime" placeholder="请选择待比较时间点" clearable>
+            <el-option v-for="(item,index) in versionListLite(compareParams.baselineTime)" :key="index" :label="formatDate(item.timestamp)" :value="item.timestamp" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelCompareTask">取消</el-button>
-        <el-button type="primary" @click="submitCompareTask">提交</el-button>
+        <el-button type="primary" @click="submitCompareTask('compareParams')">提交</el-button>
       </div>
     </el-dialog>
     <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationShow=false" />
@@ -170,7 +166,8 @@
 <script>
 // import AddNewEntity from './addNewEntity'
 import AddClassification from './addClassification'
-import { getTableByItems } from '@/api/datax-metadata-atlas'
+import * as apiatlas from '@/api/datax-metadata-atlas'
+import { translater } from '../utils/dictionary'
 
 export default {
   name: 'SubPageResult',
@@ -188,41 +185,43 @@ export default {
     return {
       tableColumnsSelected: [],
       tableColumns: [
-        { label: '联系资料', value: 'contact_info' },
-        { label: '显示名称', value: 'displayName' },
-        { label: '输入到进程', value: 'inputToProcesses' },
-        { label: '实例', value: 'instance' },
-        { label: '意义', value: 'meanings' },
-        { label: '模型', value: 'model' },
-        { label: '进程输出', value: 'outputFromProcesses' },
-        { label: '管道', value: 'pipeline' },
-        { label: '产品或其他', value: 'prodOrOther' },
-        { label: '合格名称', value: 'qualifiedName' },
-        { label: '复制自', value: 'replicatedFrom' },
-        { label: '复制到', value: 'replicatedTo' },
-        { label: '架构图', value: 'schema' },
-        { label: '表', value: 'tables' },
-        { label: '用户说明', value: 'userDescription' },
-        { label: '创建时间', value: '__timestamp' },
-        { label: '最后修改时间', value: '__modificationTimestamp' },
-        { label: '最后修改者', value: '__modifiedBy' },
-        { label: '创建者', value: '__createdBy' },
-        { label: '状态', value: '__state' },
-        { label: '引导', value: '__guid' },
-        { label: '类型', value: '__typeName' },
-        { label: '不完整', value: '__isIncomplete' },
-        { label: '标签', value: '__labels' },
-        { label: '用户定义属性', value: '__customAttributes' }
+        { label: 'Contact_info', value: 'contact_info' },
+        { label: 'DisplayName', value: 'displayName' },
+        { label: 'InputToProcesses', value: 'inputToProcesses' },
+        { label: 'Instance', value: 'instance' },
+        { label: 'Meanings', value: 'meanings' },
+        { label: 'Model', value: 'model' },
+        { label: 'OutputFromProcesses', value: 'outputFromProcesses' },
+        { label: 'Pipeline', value: 'pipeline' },
+        { label: 'ProdOrOther', value: 'prodOrOther' },
+        { label: 'QualifiedName', value: 'qualifiedName' },
+        { label: 'ReplicatedFrom', value: 'replicatedFrom' },
+        { label: 'ReplicatedTo', value: 'replicatedTo' },
+        { label: 'Schema', value: 'schema' },
+        { label: 'Tables', value: 'tables' },
+        { label: 'UserDescription', value: 'userDescription' },
+        { label: 'Created Timestamp', value: '__timestamp' },
+        { label: 'Last Modified Timestamp', value: '__modificationTimestamp' },
+        { label: 'Last Modified User', value: '__modifiedBy' },
+        { label: 'Created By User', value: '__createdBy' },
+        { label: 'Status', value: '__state' },
+        { label: 'Guid', value: '__guid' },
+        { label: 'Type Name', value: '__typeName' },
+        { label: 'IsIncomplete', value: '__isIncomplete' },
+        { label: 'Label(s)', value: '__labels' },
+        { label: 'User-defined Properties', value: '__customAttributes' }
       ],
       tableColumnsPlus: [], // 除固定显示的列，额外显示的列项
       tableData: [], // 表数据
       tableTotal: 0, // 总数
-      metaCompareVisible: false,
+      metaCompareVisible: false, // 版本比较dialog可见
+      // 比较参数
       compareParams: {
-        baselineTime: '2020-09-10 12:31:31',
-        toTime: '2020-09-19 14:31:09'
+        baselineTime: '',
+        toTime: ''
       },
-      compareType: 'time',
+      versionList: [], // 所有版本列表
+      compareType: 'time', // 选择比较方式 time dimen
       addClassificationShow: false, // 打开添加分类面板
       classificationInfo: {} // 为该条添加分类（guid，typeName）
     }
@@ -260,6 +259,28 @@ export default {
       }
       console.log(temp)
       return temp
+    },
+    formatDate() {
+      return timestamp => {
+        const date = new Date(timestamp)
+        const y = date.getFullYear()
+        let MM = date.getMonth() + 1
+        MM = MM < 10 ? ('0' + MM) : MM
+        let d = date.getDate()
+        d = d < 10 ? ('0' + d) : d
+        let h = date.getHours()
+        h = h < 10 ? ('0' + h) : h
+        let m = date.getMinutes()
+        m = m < 10 ? ('0' + m) : m
+        let s = date.getSeconds()
+        s = s < 10 ? ('0' + s) : s
+        return y + '/' + MM + '/' + d + ' ' + h + ':' + m + ':' + s
+      }
+    },
+    versionListLite() {
+      return rmItem => {
+        return this.versionList.filter(item => item.timestamp !== rmItem)
+      }
     }
   },
   watch: {
@@ -283,21 +304,37 @@ export default {
     test(info) {
       console.log(info)
     },
-    metaCompare(row) {
-      console.log(row)
-      this.metaCompareVisible = true
+    async metaCompare(guid) {
+      // console.log(guid)
+      const res = await apiatlas.getVersionInfo(guid)
+      // console.log(res)
+      if (res.code === 200) {
+        this.metaCompareVisible = true
+        this.versionList = res.content
+        console.log(this.versionList)
+      } else {
+        this.$message({
+          message: '获取版本数据出错',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      }
     },
-    submitCompareTask() {
-      this.metaCompareVisible = false
-      // 调用比较接口，成功后提示成功信息；失败后需要提示失败及相关错误信息
-      this.$notify({
-        title: '成功',
-        message: "元数据比对任务提交成功, 请到'元数据比对'模块查看比对进度及结果详情！",
-        type: 'success',
-        duration: 3000
+    submitCompareTask(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 调用比较接口，成功后提示成功信息；失败后需要提示失败及相关错误信息
+          this.getCompareResult()
+          this.resetCompare()
+          this.metaCompareVisible = false
+        } else {
+          return false
+        }
       })
     },
     cancelCompareTask() {
+      this.resetCompare()
       this.metaCompareVisible = false
       this.$notify({
         title: '取消比对任务',
@@ -340,7 +377,7 @@ export default {
           console.log('渲染businessmetadata')
         }
       } else {
-        const res = await getTableByItems(this.searchRequest.params)
+        const res = await apiatlas.getTableByItems(this.searchRequest.params)
         console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
           this.tableData = res.data.entities
@@ -389,6 +426,34 @@ export default {
     addClassification(row) {
       this.classificationInfo = row
       this.addClassificationShow = true
+    },
+    /**
+     * @description: 翻译
+     * @param {String} 待翻译文本
+     * @return {String} 翻译文本
+     */
+    translateIt(str) {
+      return translater(str)
+    },
+    async getCompareResult() {
+      const res = await apiatlas.getCompareResult(this.versionList[0].entityId, this.compareParams)
+      console.log(res);
+      // if (res.code === 200) {
+      this.$notify({
+        title: '成功',
+        message: "元数据比对任务提交成功, 请到'元数据比对'模块查看比对进度及结果详情！",
+        type: 'success',
+        duration: 3000
+      })
+      // }
+    },
+    initCompare(done) {
+      this.compareParams.baselineTime = ''
+      this.compareParams.toTime = ''
+      done()
+    },
+    resetCompare() {
+      this.$refs['compareParams'].resetFields()
     }
   }
 }
