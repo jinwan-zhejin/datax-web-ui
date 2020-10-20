@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    triggers {
+    // triggers {
         // GenericTrigger(
         // genericVariables: [
         // [key: 'ref', value: '$.ref']
@@ -15,7 +15,7 @@ pipeline {
         // regexpFilterText: '$ref',
         // regexpFilterExpression: 'refs/heads/dev'
         // )
-  }
+//   }
 
     stages {
         stage('Build') {
