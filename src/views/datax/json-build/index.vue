@@ -2,15 +2,17 @@
   <div class="app-container">
     <div class="build-container">
       <el-steps :active="active" finish-status="success">
-        <el-step title="步骤 1" description="新建任务">1</el-step>
-        <el-step title="步骤 2" description="构建reader">2</el-step>
-        <el-step title="步骤 3" description="构建writer">3</el-step>
-        <el-step title="步骤 4" description="字段映射">4</el-step>
-        <el-step title="步骤 5" description="构建">5</el-step>
+        <el-step title="新建任务" description="">1</el-step>
+        <el-step title="构建reader" description="">2</el-step>
+        <el-step title="构建writer" description="">3</el-step>
+        <el-step title="字段映射" description="">4</el-step>
+        <el-step title="构建" description="">5</el-step>
       </el-steps>
 
       <div v-show="active===1" class="step0">
-        <Create v-on="$listeners"  :Fjson='configJson' ref="create" />
+        <div style="padding-left:150px;">
+          <Create v-on="$listeners"  :Fjson='configJson' ref="create" />
+        </div>
       </div>
       <div v-show="active===2" class="step1">
         <Reader ref="reader" />
@@ -22,49 +24,144 @@
         <Mapper ref="mapper" />
       </div>
       <div v-show="active===5" class="step4">
-        <el-button type="info" @click="handleCopy(inputData,$event)">复制json</el-button>
-        (步骤：构建->选择模板->下一步)
-        <el-drawer
-          ref="jobTemplateSelectDrawer"
-          title="选择模板"
-          :visible.sync="jobTemplateSelectDrawer"
-          direction="rtl"
-          size="50%"
-        >
-          <el-table
-            v-loading="listLoading"
-            :data="list"
-            element-loading-text="Loading"
-            border
-            fit
-            highlight-current-row
-            destroy-on-close="true"
-            @current-change="handleCurrentChange"
-          >
-            <el-table-column align="center" label="任务ID" width="80">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
-            </el-table-column>
-            <el-table-column label="任务描述" align="center">
-              <template slot-scope="scope">{{ scope.row.jobDesc }}</template>
-            </el-table-column>
-            <el-table-column label="所属项目" align="center" width="120">
-              <template slot-scope="scope">{{ scope.row.projectName }}</template>
-            </el-table-column>
-            <el-table-column label="Cron" align="center">
-              <template slot-scope="scope"><span>{{ scope.row.jobCron }}</span></template>
-            </el-table-column>
-            <el-table-column label="路由策略" align="center">
-              <template slot-scope="scope"> {{ routeStrategies.find(t => t.value === scope.row.executorRouteStrategy).label }}</template>
-            </el-table-column>
-          </el-table>
-          <pagination v-show="total>0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="fetchData" />
-        </el-drawer>
-        <div style="margin-bottom: 20px;" />
-        <json-editor v-show="active===4" ref="jsonEditor" v-model="configJson" />
-      </div>
+        <div style="margin-top:20px;">
+          <p>1.新建任务</p>
+          <div class="step5content">
+            <div>
+              <span class="step5content_key">执行器：</span>
+              <span>{{$refs.create && $refs.create.temp.jobGroup}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">所属项目：</span>
+              <span>{{$refs.create && $refs.create.temp.projectId}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">路由策略：</span>
+              <span>{{$refs.create && $refs.create.temp.executorRouteStrategy}}</span>
+            </div>
+            <div>
+              <span class="step5content_key">子项目：</span>
+              <span>{{$refs.create && $refs.create.temp.childJobIdArr}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">阻塞处理：</span>
+              <span>{{$refs.create && $refs.create.temp.executorBlockStrategy}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">任务名称：</span>
+              <span>{{$refs.create && $refs.create.temp.jobDesc}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">任务类型：</span>
+              <span>{{$refs.create && $refs.create.temp.glueType}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">Cron：</span>
+              <span>{{$refs.create && $refs.create.temp.jobCron}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">报警邮件：</span>
+              <span>{{$refs.create && $refs.create.temp.alarmEmail}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">失败重试次数：</span>
+              <span>{{$refs.create && $refs.create.temp.executorFailRetryCount}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">超时时间：</span>
+              <span>{{$refs.create && $refs.create.temp.executorTimeout}}</span>
+            </div>
+          </div>
+        </div>
 
-      <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
-      <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;" @click="next">{{active === 5 ?'提交':'下一步'}}</el-button>
+        <div>
+          <p>2.构建reader</p>
+          <div class="step5content">
+            <div>
+              <span class="step5content_key">数据库源：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.datasourceId}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">切分字段：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">数据库表名：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName}}</span>
+            </div>
+            <div>
+              <span class="step5content_key">SQL语句：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.querySql}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">表所有字段：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">Where条件：</span>
+              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.where}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p>3.构建writer</p>
+          <div class="step5content">
+            <div>
+              <span class="step5content_key">数据库源：</span>
+              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.datasourceId}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">数据库表名：</span>
+              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.ifCreateTable}}</span>
+            </div>
+            <div>
+              <span class="step5content_key">字段：</span>
+              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">postSql：</span>
+              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql}}</span>
+            </div>
+            <div>
+              <span  class="step5content_key">前置Sql语句：</span>
+              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p>4.字段映射</p>
+          <div>
+            <el-table
+            :data="tableData"
+            stripe
+            style="width: 100%">
+              <el-table-column
+                prop="sourceField"
+                label="数据源库"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="clearRule"
+                label="清洗规则"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="targetField"
+                label="目标字段">
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+
+
+      </div>
+      <div style="width:200px;float:right;">
+        <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
+        <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{active === 5 ?'提交':'下一步'}}</el-button>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -188,23 +285,10 @@ export default {
               )
             }
           }
-
           this.buildJson();
-
         }
         if (this.active === 5) {
           console.log('eeee');
-          // this.temp.jobJson = this.configJson
-          // job.createJob(this.temp).then(() => {
-          //   this.$notify({
-          //     title: 'Success',
-          //     message: 'Created Successfully',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          //   // 切回第一步
-          //   this.active = 1
-          // })
           this.$refs.create.createTask()
         } else {
           this.active++
@@ -316,10 +400,28 @@ export default {
       this.$refs.jobTemplateSelectDrawer.closeDrawer()
       this.jobTemplate = val.id + '(' + val.jobDesc + ')'
     }
+  },
+  computed:{
+    tableData(){
+      return this.$store.state.taskAdmin.tableData
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.step5content {
+  background: #F8F8FA;
+  overflow: hidden;
+  margin: 22px 0;
+  padding: 16px;
+}
+.step5content_key {
+  color: rgba(153, 153, 153, 1);
+}
+.step5content > div {
+  width: 50%;
+  float: left;
+  padding: 8px;
+}
 </style>
