@@ -311,7 +311,7 @@
       >
         <el-tab-pane label="所有类型" name="first">
           <ul>
-            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
+            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
               <a>
                 <img :src="item.url" :alt="item.name">
                 <p>{{ item.name }}</p>
@@ -321,36 +321,30 @@
         </el-tab-pane>
         <el-tab-pane label="常用类型" name="second">
           <ul>
-            <li @click="getInfo">
+            <li v-for="item in CommonType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
               <a>
-                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
-                <p>MYSQL</p>
-              </a>
-            </li>
-            <li @click="getInfo">
-              <a>
-                <img src="@/assets/dataSourceIcon/postgresql_icon_big@2x.png" alt="">
-                <p>postgresql</p>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="SQL" name="third">
           <ul>
-            <li @click="getInfo">
+            <li v-for="item in SQLType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
               <a>
-                <img src="@/assets/dataSourceIcon/mysql_icon_big@2x.png" alt="">
-                <p>MYSQL</p>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
               </a>
             </li>
           </ul>
         </el-tab-pane>
         <el-tab-pane label="分析型" name="fourth">
           <ul>
-            <li @click="getInfo">
+            <li v-for="item in AssType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
               <a>
-                <img src="@/assets/dataSourceIcon/hive_icon_big@2x.png" alt="">
-                <p>hive</p>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
               </a>
             </li>
           </ul>
@@ -358,57 +352,97 @@
       </el-tabs>
       <!-- 第二步表单 -->
       <!-- SQL Server连接设置表单 -->
-      <el-form
-        v-show="sqlserver"
-        ref="ruleForm"
-        :model="ruleForm"
-        :rules="rules"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="数据源名称">
-          <el-input
-            v-model="ruleForm.dataSourceNamed"
-            placeholder="请输入"
-          />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            v-model="ruleForm.comments"
-            placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用"
-          />
-        </el-form-item>
-        <el-form-item label="数据源分组">
-          <el-input
-            v-model="ruleForm.group"
-            placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用"
-          />
-        </el-form-item>
-        <el-form-item label="主机" prop="master">
-          <el-input
-            v-model="ruleForm.master"
-            placeholder="PS:目前由于接口参数不同，未曾改动，暂时将此属性当作数据源名称使用"
-          />
-        </el-form-item>
-        <el-form-item label="数据库架构">
-          <el-input
-            v-model="ruleForm.sql"
-            placeholder="当前属性同上原因,暂时不起任何作用"
-          />
-        </el-form-item>
-        <el-form-item label="认证" prop="authentication">
-          <el-select v-model="ruleForm.authentication" placeholder="请选择">
-            <el-option label="master" value="master" />
-            <el-option label="master1" value="master1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="ruleForm.username" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="ruleForm.password" />
-        </el-form-item>
-      </el-form>
+      <div class="sqlserForm">
+        <el-form
+          v-show="sqlserver"
+          ref="ruleForm"
+          :model="ruleForm"
+          :rules="rules"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="数据源名称:">
+            <el-input
+              v-model="ruleForm.datasourceName"
+              placeholder="请输入数据源名称"
+            />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input
+              v-model="ruleForm.comments"
+              placeholder="请输入备注"
+            />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input
+              v-model="ruleForm.datasourceGroup"
+            />
+          </el-form-item>
+          <el-form-item label="主机:">
+            <el-input
+              v-model="ruleForm.master"
+            />
+          </el-form-item>
+          <el-form-item label="数据库架构:">
+            <el-input
+              v-model="ruleForm.database"
+            />
+          </el-form-item>
+          <el-form-item label="认证:">
+            <el-select v-model="ruleForm.authentication" style="width: 100%;" placeholder="请选择">
+              <el-option label="master" value="master" />
+              <el-option label="master1" value="master1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="用户名:">
+            <el-input v-model="ruleForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input v-model="ruleForm.password" type="password" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- MongoDB 连接设置表单 -->
+      <div v-show="Mdb" class="sqlserForm">
+        <el-form
+          :model="MdbForm"
+          :rules="rules"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="数据源名称:">
+            <el-input
+              v-model="MdbForm.datasourceName"
+              placeholder="请输入数据源名称"
+            />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input
+              v-model="MdbForm.comments"
+              placeholder="请输入备注"
+            />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input
+              v-model="MdbForm.datasourceGroup"
+            />
+          </el-form-item>
+          <el-form-item label="地址:">
+            <el-input
+              v-model="MdbForm.serverUrl"
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]"
+            />
+          </el-form-item>
+          <el-form-item label="用户名:">
+            <el-input v-model="MdbForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input v-model="MdbForm.password" type="password" />
+          </el-form-item>
+        </el-form>
+      </div>
       <!-- MariaDB MYSQL连接设置表单 -->
       <div v-show="mm" class="set">
         <p>基本信息</p>
@@ -581,119 +615,133 @@
       <!-- oracle连接设置表单 -->
       <div v-show="oracle" class="set">
         <p>基本信息</p>
-        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
-          <el-form-item label="数据源名称:">
-            <el-input v-model="OracleForm.master" />
-          </el-form-item>
-          <el-form-item label="数据源分组:">
-            <el-input v-model="OracleForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="备注:">
-            <el-input v-model="OracleForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="OracleForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="OracleForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="OracleForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>连接类型</p>
-        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
-          <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="OracleForm.master" />
-          </el-form-item>
-          <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="OracleForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="Database:">
-            <el-select
-              v-model="OracleForm.database"
-              placeholder="ORCL"
-              style="width: 55%; float: left"
-            >
-              <el-option
-                v-for="item in roleList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-            <el-select
-              v-model="OracleForm.role"
-              placeholder="ORCL"
-              style="width: 40%; float: right"
-            >
-              <el-option
-                v-for="item in roleList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="OracleForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="OracleForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="Database:">
+              <el-select
+                v-model="OracleForm.database"
+                style="width: 100%"
+                placeholder="ORCL"
+              >
+                <el-option
+                  v-for="item in roleList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select
+                v-model="OracleForm.role"
+                style="width: 100%"
+                placeholder="ORCL"
+              >
+                <el-option
+                  v-for="item in roleList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="OracleForm" label-width="100px" class="bgcForm">
-          <el-form-item label="认证:" style="width: 50%">
-            <el-select v-model="OracleForm.advanced" placeholder="请选择认证">
-              <el-option
-                v-for="item in roleList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="用户名:" style="width: 50%; float: left">
-            <el-input v-model="OracleForm.username" />
-          </el-form-item>
-          <el-form-item label="角色:" style="width: 50%; float: right">
-            <el-select v-model="OracleForm.role" placeholder="请选择角色">
-              <el-option
-                v-for="item in roleList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="OracleForm.password" />
-            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="认证:">
+              <el-select v-model="OracleForm.advanced" style="width: 100%" placeholder="请选择认证">
+                <el-option
+                  v-for="item in roleList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="用户名:">
+              <el-input v-model="OracleForm.username" />
+            </el-form-item>
+            <el-form-item label="角色:">
+              <el-select v-model="OracleForm.role" style="width: 100%" placeholder="请选择角色">
+                <el-option
+                  v-for="item in roleList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="OracleForm.password" type="password" />
+              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- DB2 LUW 连接设置表单 -->
       <div v-show="DB2" class="set">
         <p>基本信息</p>
-        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
-          <el-form-item label="数据源名称:">
-            <el-input v-model="DB2Form.master" />
-          </el-form-item>
-          <el-form-item label="数据源分组:">
-            <el-input v-model="DB2Form.serverPort" />
-          </el-form-item>
-          <el-form-item label="备注:">
-            <el-input v-model="DB2Form.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="DB2Form.master" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="DB2Form.serverPort" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="DB2Form.database" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>数据库</p>
-        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
-          <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="DB2Form.master" />
-          </el-form-item>
-          <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="DB2Form.port" />
-          </el-form-item>
-          <el-form-item label="数据库:" prop="username">
-            <el-input v-model="DB2Form.sql" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="DB2Form.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="DB2Form.port" />
+            </el-form-item>
+            <el-form-item label="数据库:" prop="username">
+              <el-input v-model="DB2Form.sql" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="DB2Form" label-width="100px" class="bgcForm">
-          <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="DB2Form.username" />
-          </el-form-item>
-          <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="DB2Form.password" />
-            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="DB2Form.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="DB2Form.password" />
+              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- ClickHouse HBase 连接设置表单 -->
       <div v-show="ch" class="set">
@@ -750,8 +798,6 @@ import { parseTime } from '@/utils';
 import Pagination from '@/components/Pagination';
 import * as meta from '@/api/metadata-query';
 
-const time = null
-
 export default {
   name: 'JdbcDatasource',
   components: { Pagination },
@@ -783,52 +829,133 @@ export default {
         {
           name: 'MySQL',
           url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'MongoDB',
           url: require('@/assets/dataSourceIcon/MongoDB.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'Greenplum',
           url: require('@/assets/dataSourceIcon/GREEN.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
-        {
-          name: 'Hive',
-          url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
-          selected: 0
-        },
+        // {
+        //   name: 'Hive',
+        //   url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
+        //   selected: 0
+        // },
         {
           name: 'Sql Server',
           url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'PostgreSQL',
           url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'Oracle',
           url: require('@/assets/dataSourceIcon/oracle.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'ClickHouse',
           url: require('@/assets/dataSourceIcon/clickhouse.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'HBase',
           url: require('@/assets/dataSourceIcon/hbase.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
         },
         {
           name: 'DB2',
           url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
-          selected: 0
+          selected: 0,
+          type: 'all'
+        }
+      ],
+      CommonType: [
+        {
+          name: 'MySQL',
+          url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+          selected: 0,
+          type: 'Common'
+        },
+        {
+          name: 'MongoDB',
+          url: require('@/assets/dataSourceIcon/MongoDB.png'),
+          selected: 0,
+          type: 'Common'
+        },
+        {
+          name: 'Oracle',
+          url: require('@/assets/dataSourceIcon/oracle.png'),
+          selected: 0,
+          type: 'Common'
+        }
+      ],
+      SQLType: [
+        {
+          name: 'MySQL',
+          url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+          selected: 0,
+          type: 'SQL'
+        },
+        {
+          name: 'Greenplum',
+          url: require('@/assets/dataSourceIcon/GREEN.png'),
+          selected: 0,
+          type: 'SQL'
+        },
+        {
+          name: 'Sql Server',
+          url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
+          selected: 0,
+          type: 'SQL'
+        },
+        {
+          name: 'PostgreSQL',
+          url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
+          selected: 0,
+          type: 'SQL'
+        },
+        {
+          name: 'Oracle',
+          url: require('@/assets/dataSourceIcon/oracle.png'),
+          selected: 0,
+          type: 'SQL'
+        },
+        {
+          name: 'DB2',
+          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          selected: 0,
+          type: 'SQL'
+        }
+      ],
+      AssType: [
+        {
+          name: 'Greenplum',
+          url: require('@/assets/dataSourceIcon/GREEN.png'),
+          selected: 0,
+          type: 'ass'
+        },
+        {
+          name: 'ClickHouse',
+          url: require('@/assets/dataSourceIcon/clickhouse.png'),
+          selected: 0,
+          type: 'ass'
         }
       ],
       roleList: [
@@ -918,24 +1045,8 @@ export default {
       OracleForm: {}, // oracle
       DB2Form: {}, // OracleForm
       CHForm: {}, // ClickHouse HBase
+      MdbForm: {}, // MongoDB
       userForm: {},
-      // rules: {
-      //   master: [
-      //     { required: true, message: '请输入主机名称', trigger: 'blur' }
-      //   ],
-      //   sql: [
-      //     { required: true, message: '请输入数据库/架构名称', trigger: 'blur' }
-      //   ],
-      //   username: [
-      //     { required: true, message: '请输入用户名', trigger: 'blur' }
-      //   ],
-      //   password: [
-      //     { required: true, message: '请输入密码', trigger: 'blur' }
-      //   ],
-      //   driver: [
-      //     { required: true, message: '请输入驱动名称', trigger: 'blur' }
-      //   ]
-      // },
       sqlName: '',
       params: {
         comments: '',
@@ -948,7 +1059,9 @@ export default {
         jdbcUsername: ''
       },
       lastSelect: '',
-      currentSelect: ''
+      currentSelect: '',
+      tabType: 'all',
+      typeArr: []
     }
   },
   // 计算属性
@@ -994,19 +1107,27 @@ export default {
     // sqlserver
     sqlserver() {
       return (
-        (this.sqlName === 'Sql Server' || this.sqlName === 'MongoDB') &&
+        (this.sqlName === 'Sql Server') &&
+        this.currentStep === 2
+      );
+    },
+    // MongoDB
+    Mdb() {
+      return (
+        (this.sqlName === 'MongoDB') &&
         this.currentStep === 2
       );
     }
   },
   watch: {
     sqlName: function(val) {
-      console.log(val);
+      console.log(val.replace(/\s*/g, ''));
       console.log(this.params, '----------');
       if (val === 'MYSQL') {
         this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
         console.log(this.params.jdbcUrl);
-      } else if (val === 'oracle') {
+      } else if (val.toLowerCase() === 'oracle') {
+        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
       } else if (val === 'postgresql') {
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
@@ -1014,13 +1135,16 @@ export default {
       } else if (val === 'greenplum') {
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.ruleForm.driver = 'org.postgresql.Driver';
-      } else if (val === 'sqlserver') {
-        this.params.jdbcUrl =
-          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+      } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
+        this.isBanAdd = false
+        this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
       } else if (val === 'clickhouse') {
         this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
       } else if (val === 'hive') {
         this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+      } else if (val.toLowerCase() === 'mongodb') {
+        this.isBanAdd = false
+        this.MdbForm.serverUrl = 'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
       }
     }
   },
@@ -1060,13 +1184,14 @@ export default {
           });
         });
     },
+    // 搜索数据源类型
     searchSQL() {
-      for (let i = 0; i < this.iconTXT.length; i++) {
-        console.log(this.iconTXT[i].name.indexOf(this.input3))
-        if (this.iconTXT[i].name.toLowerCase().indexOf(this.input3.toLowerCase()) === 0) {
-          document.getElementById(this.iconTXT[i].name).style.display = 'block'
+      for (let i = 0; i < this.typeArr.length; i++) {
+        console.log(this.typeArr[i].name.indexOf(this.input3))
+        if (this.typeArr[i].name.toLowerCase().indexOf(this.input3.toLowerCase()) === 0) {
+          document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'block'
         } else {
-          document.getElementById(this.iconTXT[i].name).style.display = 'none'
+          document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'none'
         }
       }
     },
@@ -1105,6 +1230,7 @@ export default {
     },
     // 显示添加对话框
     showAdd() {
+      this.currentStep = 1
       this.dialogVisible = true;
       this.MySQLForm.serverTime = 'Asia/Shanghai'
     },
@@ -1116,9 +1242,10 @@ export default {
       if (this.sqlName !== this.lastSelect) {
         this.currentSelect = this.sqlName
         if (this.lastSelect !== '') {
-          document.getElementById(this.lastSelect).style.backgroundColor = '#fff'
+          document.getElementById(this.tabType + this.lastSelect).style.backgroundColor = '#fff'
+          console.log(document.getElementById(this.tabType + this.lastSelect), '-------------')
         }
-        document.getElementById(this.currentSelect).style.backgroundColor = '#C4CFFF'
+        document.getElementById(this.tabType + this.currentSelect).style.backgroundColor = '#C4CFFF'
         this.lastSelect = this.sqlName
       }
       console.log(this.sqlName)
@@ -1126,15 +1253,91 @@ export default {
     },
     // tabs标签页方法
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(tab.label);
+      console.log(tab.index);
+      if (tab.index === '3') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        this.tabType = 'ass'
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        this.typeArr = this.AssType
+      } else if (tab.index === '2') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'SQL'
+        this.typeArr = this.SQLType
+      } else if (tab.index === '1') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'Common'
+        this.typeArr = this.CommonType
+      } else if (tab.index === '0') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'all'
+        this.typeArr = this.iconTXT
+      }
     },
     // 取消
     cancel() {
       this.dialogVisible = false;
-      this.$refs[this.ruleForm].resetFields();
       this.currentStep = 1;
       console.log(this.currentStep, '1111111111111111111111');
-      this.ruleForm = {};
+      this.MySQLForm = {}
+      this.OracleForm = {}
+      this.MdbForm = {}
+      this.sqlName = ''
+      for (let i = 0; i < this.SQLType.length; i++) {
+        document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.iconTXT.length; i++) {
+        document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.CommonType.length; i++) {
+        document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.AssType.length; i++) {
+        document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+      }
     },
     // 下一步
     nextStep() {
@@ -1197,12 +1400,30 @@ export default {
       if (this.sqlName === 'MySQL') {
         obj.datasourceName = this.MySQLForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
-        obj.jdbcUrl = ' jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
         obj.userName = this.MySQLForm.username;
         obj.password = this.MySQLForm.password;
         obj.datasourceGroup = this.MySQLForm.datasourceGroup;
         obj.comments = this.MySQLForm.comments;
         obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      } else if (this.sqlName === 'Oracle') {
+        obj.datasourceName = this.OracleForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
+        obj.userName = this.OracleForm.username;
+        obj.password = this.OracleForm.password;
+        obj.datasourceGroup = this.OracleForm.datasourceGroup;
+        obj.comments = this.OracleForm.comments;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'MongoDB') {
+        obj.datasourceName = this.MdbForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = this.MdbForm.serverUrl;
+        obj.userName = this.MdbForm.username;
+        obj.password = this.MdbForm.password;
+        obj.datasourceGroup = this.MdbForm.datasourceGroup;
+        obj.comments = this.MdbForm.comments;
+        obj.jdbcDriverClass = '';
       }
       datasourceApi.created(obj).then(() => {
         this.fetchData();
@@ -1214,6 +1435,8 @@ export default {
           duration: 2000
         })
         this.MySQLForm = {}
+        this.OracleForm = {}
+        this.MdbForm = {}
       })
     },
     // 测试连接
@@ -1228,6 +1451,15 @@ export default {
         obj1.datasourceGroup = this.MySQLForm.datasourceGroup;
         obj1.comments = this.MySQLForm.comments;
         obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      } else if (this.sqlName === 'Oracle') {
+        obj1.datasourceName = this.OracleForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
+        obj1.jdbcUsername = this.OracleForm.username;
+        obj1.jdbcPassword = this.OracleForm.password;
+        obj1.datasourceGroup = this.OracleForm.datasourceGroup;
+        obj1.comments = this.OracleForm.comments;
+        obj1.jdbcDriverClass = 'com.oracle.jdbc.Driver';
       }
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
@@ -1506,9 +1738,21 @@ export default {
     }
     .el-dialog__body {
       padding: 10px 20px;
-      .el-form {
-        overflow: hidden;
-        border-radius: 6px;
+      .bgcForm {
+        .el-form {
+          overflow: hidden;
+          border-radius: 6px;
+          width: 60%;
+          margin: 0px auto;
+        }
+      }
+      .sqlserForm {
+        .el-form {
+          overflow: hidden;
+          border-radius: 6px;
+          width: 60%;
+          margin: 0px auto;
+        }
       }
     }
     .el-dialog__footer {
