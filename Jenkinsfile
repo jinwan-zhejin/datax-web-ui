@@ -1,26 +1,22 @@
 pipeline {
     agent any
 
-    // triggers {
-        // GenericTrigger(
-        // genericVariables: [
-        // [key: 'ref', value: '$.ref']
-        // ],
-        // causeString: 'Triggered on $ref',
-        // token: 'dataEdit-CI/CD-workflow',
-        // tokenCredentialId: '',
-        // printContributedVariables: true,
-        // printPostContent: true,
-        // silentResponse: false,
-        // regexpFilterText: '$ref',
-        // regexpFilterExpression: 'refs/heads/dev'
-        // )
-//   }
+    environment {
+        HOST_TEST = 'root@121.41.16.183'
+        HOST_ONLINE = ''
+        SOURCE_DIR = 'dist/*'
+        TARGET_DIR = ''
+    }
 
     stages {
-        stage('Build') {
+        stage('打包') {
             steps {
-                echo 'Building..'
+                // nodejs('nodejs-12.16') {
+                //     echo '开始安装依赖'
+                //     sh 'npm i'
+                //     echo '开始打包'
+                //     sh 'npm run build'
+                // }
             }
         }
         stage('Test') {

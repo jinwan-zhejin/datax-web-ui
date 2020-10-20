@@ -1,26 +1,36 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.searchVal"
-        clearable
-        placeholder="项目名称"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
-        搜索
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        添加
-      </el-button>
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">项目管理</div>
+          <div class="right">
+            <el-input
+              v-model="listQuery.searchVal"
+              clearable
+              placeholder="项目名称"
+              style="width: 268px"
+              class="filter-item"
+              @keyup.enter.native="handleFilter"
+            >
+              <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
+            </el-input>
+            <el-button class="filter-item" style="margin-left: 30px;" type="goon" size="small" icon="el-icon-plus" @click="handleCreate">
+              添加
+            </el-button>
+            <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+              reviewer
+            </el-checkbox> -->
+          </div>
+        </div>
+      </el-card>
     </div>
+    <div class="main">
     <el-table
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
+      :header-cell-style="{ background: '#FAFAFC' }"
       fit
       highlight-current-row
     >
@@ -42,42 +52,56 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button v-if="row.status!=='deleted'" size="mini" type="danger" @click="handleDelete(row)">
-            删除
-          </el-button>
+           <a
+              style="color: #3d5fff; margin: 0px 6px"
+              @click="handleUpdate(row)"
+            >编辑</a>
+            <span
+              style="
+                width: 1px;
+                height: 12px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <a
+              v-if="row.status!=='deleted'"
+              style="color: #fe4646; margin: 0px 6px"
+              @click="handleDelete(row)"
+            >删除</a>
         </template>
       </el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
       :total="total"
+      style="float: right"
       :page.sync="listQuery.pageNo"
       :limit.sync="listQuery.pageSize"
+      layout="total, prev, pager, next, sizes"
       @pagination="fetchData"
     />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px">
+    </div>
+    <el-dialog :visible.sync="dialogFormVisible" width="624px">
+      <p slot="title" class="dialog_title">{{textMap[dialogStatus]}}</p>
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="128px">
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="temp.name" placeholder="项目名称" style="width: 40%" />
+          <el-input v-model="temp.name" placeholder="项目名称" style="width: 256px" />
         </el-form-item>
         <el-form-item label="项目描述" prop="description">
-          <el-input v-model="temp.description" placeholder="项目描述" style="width: 40%" />
+          <el-input v-model="temp.description" placeholder="项目描述" style="width: 256px" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="small" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
+        <el-button size="small" class="dialog_ok_btn" type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          完成
         </el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="dialogPluginVisible" title="Reading statistics">
+    <el-dialog :visible.sync="dialogPluginVisible" title="Reading statistics" width="624px">
       <el-table :data="pluginData" border fit highlight-current-row style="width: 100%">
         <el-table-column prop="key" label="Channel" />
         <el-table-column prop="pv" label="Pv" />
@@ -124,8 +148,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '+添加'
       },
       rules: {
         name: [{ required: true, message: 'this is required', trigger: 'blur' }],
@@ -226,3 +250,157 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" >
+.app-container {
+  .filter-container {
+    overflow: hidden;
+    // line-height: 56px;
+    background-color: #ffffff;
+    padding: 0px;
+    // border-radius: 5px 5px 0px 0px;
+    // box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
+    .el-card {
+      .left {
+        float: left;
+        width: 120px;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+            width: 60px;
+            padding: 0px 15px;
+            text-align: center;
+            color: #fff;
+            background-color: #3d5fff;
+          }
+        }
+      }
+    }
+  }
+  .main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .topSelect {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+    .el-input {
+      .el-input__inner {
+        height: 32px;
+      }
+      .el-button {
+        .el-button--default {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  .el-tabs {
+    margin-top: 20px;
+    .el-tab-pane {
+      ul {
+        overflow: hidden;
+        li {
+          list-style: none;
+          float: left;
+          width: 12.5%;
+          a {
+            text-align: center;
+            img {
+              display: block;
+              margin: 0 auto;
+              margin-top: 10px;
+              width: 64px;
+            }
+            p {
+              height: 40px;
+              font-size: 14px;
+              font-family: PingFangHK-Regular, PingFangHK;
+              font-weight: 400;
+              color: #333333;
+              line-height: 20px;
+              margin-top: 10px;
+            }
+          }
+          p {
+            font-size: 16px;
+            margin-top: 20px;
+          }
+        }
+        li:hover {
+          background-color: #e9e9f5 !important;
+        }
+        li:active {
+          background-color: #C4CFFF;
+        }
+        li:visited {
+          background-color: #C4CFFF;
+        }
+      }
+    }
+  }
+  .set {
+    p {
+      font-size: 18px;
+      margin: 20px 0px 16px 0;
+      font-family: PingFangHK-Medium, PingFangHK;
+    }
+    .bgcForm {
+      background-color: #f5f6fa;
+      padding: 24px 16px;
+      overflow: hidden;
+    }
+  }
+  .el-dialog {
+    border-radius: 8px;
+    .el-dialog__header {
+      font-size: 24px;
+      .p_tit {
+        font-size: 16px;
+        color: #cccccc;
+        margin-top: 20px;
+      }
+    }
+    .el-dialog__body {
+      padding: 10px 20px;
+      .el-form {
+        overflow: hidden;
+        border-radius: 6px;
+      }
+    }
+    .el-dialog__footer {
+      border-top: 1px solid #F3F3F3;
+      padding: 20px;
+    }
+  }
+}
+.dialog_title {
+font-size: 24px;
+font-family: PingFangHK-Medium, PingFangHK;
+font-weight: 500;
+color: #333333;
+line-height: 33px;
+}
+.dialog_ok_btn {
+  background: #3d5fff;
+}
+</style>
