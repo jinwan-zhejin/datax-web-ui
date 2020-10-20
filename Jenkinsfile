@@ -17,6 +17,7 @@ pipeline {
                 //     echo '开始打包'
                 //     sh 'npm run build'
                 // }
+                echo 'Building'
             }
         }
         stage('Test') {
