@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-19 12:18:01
+ * @LastEditTime: 2020-10-20 18:50:37
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -27,17 +27,17 @@
         <el-col>
           <!-- {{ properties.entity.classifications }} -->
           分类：
-          <el-button-group v-for="classifiy in properties.entity.classifications" :key="classifiy.typeName">
+          <span v-for="classifiy in properties.entity.classifications" :key="classifiy.typeName">
             <el-button type="primary" plain size="mini">
               {{ classifiy.typeName }}
             </el-button>
-            <el-tooltip content="删除分类" placement="bottom">
+            <!-- <el-tooltip content="删除分类" placement="bottom">
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
-            </el-tooltip>
-          </el-button-group>
-          <el-tooltip content="添加分类" placement="bottom">
+            </el-tooltip> -->
+          </span>
+          <!-- <el-tooltip content="添加分类" placement="bottom">
             <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
-          </el-tooltip>
+          </el-tooltip> -->
         </el-col>
         <!-- <el-col>
           术语：<el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />

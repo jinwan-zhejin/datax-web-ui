@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-19 17:54:15
+ * @LastEditTime: 2020-10-20 17:36:17
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -236,7 +236,23 @@ export async function addClassification(data) {
   const res = await axios({
     url: '/atlasApi/v2/entity/bulk/classification',
     method: 'post',
-    data
+    data,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
+  }).catch(res => console.log(res))
+  return res
+}
+
+export async function deleteClassification(guid, classification) {
+  const res = await axios({
+    url: '/atlasApi/v2/entity/guid/'.concat(guid).concat('/classification/').concat(classification),
+    method: 'delete',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
   })
   return res
 }
@@ -316,7 +332,7 @@ export async function getOneCompareRecord(id) {
  * @param {String} guid
  * @return {object} axios返回值
  */
-export async function getOneAllCompareRecord(guid) {
+export async function getGuidAllCompareRecord(guid) {
   const res = await request({
     url: '/test/metadata',
     method: 'get',

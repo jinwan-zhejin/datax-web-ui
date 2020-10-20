@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-19 18:09:22
+ * @LastEditTime: 2020-10-20 17:57:52
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -83,7 +83,7 @@
                 <el-tooltip :content="row.classifications[0].typeName">
                   <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
                 </el-tooltip>
-                <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(row.guid, row.classifications[0].typeName, row.attributes.name)" />
               </el-button-group>
               <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
                 <el-button type="success" plain size="mini">
@@ -96,7 +96,7 @@
                         <el-tooltip :content="classes.typeName">
                           <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
                         </el-tooltip>
-                        <el-button plain size="mini" style="width:12px;" icon="el-icon-close" />
+                        <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(classes.entityGuid, classes.typeName, row.attributes.name)" />
                       </el-button-group>
                     </div>
                   </el-dropdown-item>
@@ -141,7 +141,7 @@
       <el-form ref="compareParams" :model="compareParams" label-position="left">
         <el-form-item>
           <el-radio v-model="compareType" label="time">时间版本比对</el-radio>
-          <el-radio v-model="compareType" label="dimen">空间版本比对</el-radio>
+          <!-- <el-radio v-model="compareType" label="dimen">空间版本比对</el-radio> -->
         </el-form-item>
         <el-form-item v-if="compareType === 'time'" label="基线时间: " prop="baselineTime" :rules="{required: true, message: '请选择比较基线时间点', trigger: 'blur'}">
           <el-select v-model="compareParams.baselineTime" placeholder="请选择比较基线时间点" clearable>
@@ -159,7 +159,14 @@
         <el-button type="primary" @click="submitCompareTask('compareParams')">提交</el-button>
       </div>
     </el-dialog>
-    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationShow=false" />
+    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
+    <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
+      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
+        <el-button type="primary" @click="handledeleteClassification">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -223,7 +230,11 @@ export default {
       versionList: [], // 所有版本列表
       compareType: 'time', // 选择比较方式 time dimen
       addClassificationShow: false, // 打开添加分类面板
-      classificationInfo: {} // 为该条添加分类（guid，typeName）
+      classificationInfo: {}, // 为该条添加分类（guid，typeName）
+      deleteClassificationFlag: false,
+      deleteGuid: '',
+      deleteClass: '',
+      deleteTypeName: ''
     }
   },
   computed: {
@@ -305,11 +316,12 @@ export default {
       console.log(info)
     },
     async metaCompare(guid) {
+      this.metaCompareVisible = true
       // console.log(guid)
       const res = await apiatlas.getVersionInfo(guid)
       // console.log(res)
       if (res.code === 200) {
-        this.metaCompareVisible = true
+        // this.metaCompareVisible = true
         this.versionList = res.content
         console.log(this.versionList)
       } else {
@@ -454,6 +466,38 @@ export default {
     },
     resetCompare() {
       this.$refs['compareParams'].resetFields()
+    },
+    addClassificationClose() {
+      this.addClassificationShow = false
+      this.refreshList()
+    },
+    deleteClassification(guid, classification, typeName) {
+      // console.log(guid, classification, typeName)
+      this.deleteGuid = guid
+      this.deleteClass = classification
+      this.deleteTypeName = typeName
+      this.deleteClassificationFlag = true
+    },
+    async handledeleteClassification() {
+      const res = await apiatlas.deleteClassification(this.deleteGuid, this.deleteClass)
+      console.log(res)
+      if (res.status === 204) {
+        this.deleteClassificationFlag = false
+        this.$message({
+          message: '删除分类成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        })
+        this.refreshList()
+      } else {
+        this.$message({
+          message: '删除分类失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      }
     }
   }
 }
