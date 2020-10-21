@@ -23,84 +23,79 @@
             <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
-                <el-dropdown-item icon="el-icon-receiving" command="NORMAL"
-                  >普通任务</el-dropdown-item
+                <el-dropdown-item icon="el-icon-receiving" command="NORMAL">
+                  普通任务</el-dropdown-item
                 >
                 <el-dropdown-item icon="el-icon-collection" command="IMPORT"
                   >引入任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-files" command="EXPORT"
-                  >导出任务</el-dropdown-item
+                <el-dropdown-item command="EXPORT"
+                  >
+                    <img class="task_icon" src="./taskAdmin_png/export.png">导出任务
+                  </el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-notebook-1"
                   command="COMPUTE"
                   disabled
-                  >计算任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/computed.png">计算任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-present" command="SQLJOB"
-                  >SQL任务</el-dropdown-item
+                <el-dropdown-item command="SQLJOB"
+                  ><img class="task_icon" src="./taskAdmin_png/sql.png">SQL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-s-goods" command="SPARK"
-                  >SPARK任务</el-dropdown-item
+                <el-dropdown-item command="SPARK"
+                  ><img class="task_icon" src="./taskAdmin_png/spark.png">SPARK任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-sell" command="DQCJOB"
-                  >质量任务</el-dropdown-item
+                <el-dropdown-item command="DQCJOB"
+                  ><img class="task_icon" src="./taskAdmin_png/质量.png">质量任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-brush"
                   command="METACOLLECT"
                   divided
-                  >元数据采集任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/元数据采集.png">元数据采集任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-brush" command="METACOMPARE"
-                  >元数据比较任务</el-dropdown-item
+                <el-dropdown-item command="METACOMPARE"
+                  ><img class="task_icon" src="./taskAdmin_png/元数据比较.png">元数据比较任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided
-                  >SHELL任务</el-dropdown-item
+                <el-dropdown-item command="SHELL" divided
+                  ><img class="task_icon" src="./taskAdmin_png/shell.png">SHELL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL"
-                  >POWERSHELL任务</el-dropdown-item
+                <el-dropdown-item command="POWERSHELL"
+                  ><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item
                 >
                 <el-dropdown-item icon="el-icon-box" command="PYTHON"
-                  >PYTHON任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="VJOB"
                   divided
-                  >虚任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/虚.png">虚任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="JAVA"
                   divided
                   disabled
-                  >Java任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/java.png">Java任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="SCALA"
                   disabled
-                  >Scala任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/scala.png">Scala任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="PYSPARK"
                   disabled
-                  >PySpark任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/pyspark.png">PySpark任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-bank-card" command="R" disabled
-                  >R任务</el-dropdown-item
+                <el-dropdown-item command="R" disabled
+                  ><img class="task_icon" src="./taskAdmin_png/R.png">R任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-copy-document"
                   command="BATCH"
                   divided
-                  >任务批量构建</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/任务批量构建.png">任务批量构建</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-brush" command="TEMPLATE"
-                  >普通任务模板</el-dropdown-item
+                <el-dropdown-item command="TEMPLATE"
+                  ><img class="task_icon" src="./taskAdmin_png/普通任务模板.png">普通任务模板</el-dropdown-item
                 >
               </el-dropdown-menu>
             </el-dropdown>
@@ -472,6 +467,7 @@ export default {
         this.total = total;
         this.options = records;
         this.selectValue =  this.options[0].name;
+        this.$store.commit('SET_PROJECT_ID',this.options[0].id)
         const listQuery = {
           current: 1,
           size: 10,
@@ -505,6 +501,7 @@ export default {
     },
 
     fetchJobs(event) {
+      this.$store.commit('SET_PROJECT_ID',event)
       const listQuery = {
         current: 1,
         size: 10,
@@ -601,5 +598,11 @@ export default {
   .input_serach >.el-input__prefix > .el-input__icon {
     line-height: 35px !important;
   }
+  
 }
+.task_icon {
+    width: 16px;
+    float: left;
+    margin-top: 9px;
+  }
 </style>

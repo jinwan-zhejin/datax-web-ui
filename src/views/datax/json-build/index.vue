@@ -82,7 +82,7 @@
           <div class="step5content">
             <div>
               <span class="step5content_key">数据库源：</span>
-              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.datasourceId || '-'}}</span>
+              <span class="step5content_value">{{datasourceName1 || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">切分字段：</span>
@@ -112,7 +112,7 @@
           <div class="step5content">
             <div>
               <span class="step5content_key">数据库源：</span>
-              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.datasourceId || '-'}}</span>
+              <span class="step5content_value">{{datasourceName2 || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">数据库表名：</span>
@@ -244,7 +244,9 @@ export default {
         replaceParam: '',
         jvmParam: '',
         incStartTime: ''
-      }
+      },
+      datasourceName1: '',
+      datasourceName2: ''
     }
   },
   methods: {
@@ -405,7 +407,33 @@ export default {
   computed:{
     tableData(){
       return this.$store.state.taskAdmin.tableData
+    },
+
+    datasourceID1() {
+      return this.$store.state.taskAdmin.readerDataSourceID
+    },
+
+    datasourceID2() {
+      return this.$store.state.taskAdmin.writerDataSourceID
     }
+  },
+
+  watch: {
+    datasourceID1(newval){
+      this.$store.state.taskAdmin.dataSourceList.forEach(element => {
+        if(newval == element.id){
+          this.datasourceName1 = element.datasourceName
+        }
+      });
+    },
+
+    datasourceID2(newval){
+      this.$store.state.taskAdmin.dataSourceList.forEach(element => {
+        if(newval == element.id){
+          this.datasourceName2 = element.datasourceName
+        }
+      });
+    },
   }
 }
 </script>

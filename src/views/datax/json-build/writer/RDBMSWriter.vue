@@ -160,6 +160,7 @@ export default {
       this.getTables('rdbmsWriter')
     },
     wDsChange(e) {
+      this.$store.commit('SET_WRITER_DATASOURCE_ID', e)
       // 清空
       this.writerForm.tableName = ''
       this.writerForm.datasourceId = e

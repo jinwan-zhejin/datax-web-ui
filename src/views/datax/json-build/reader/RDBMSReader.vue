@@ -114,6 +114,7 @@ export default {
         const { records } = response
         this.rDsList = records
         this.loading = false
+        this.$store.commit('SET_DATASOURCE', this.rDsList)
       })
     },
     // 获取表名
@@ -144,6 +145,7 @@ export default {
       }
       dsQueryApi.getTableSchema(obj).then(response => {
         this.schemaList = response
+        
       })
     },
     // schema 切换
@@ -154,6 +156,7 @@ export default {
     },
     // reader 数据源切换
     rDsChange(e) {
+      this.$store.commit('SET_READER_DATASOURCE_ID', e)
       // 清空
       this.readerForm.tableName = ''
       this.readerForm.datasourceId = e
