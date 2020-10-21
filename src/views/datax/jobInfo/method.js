@@ -13,8 +13,8 @@ export function handlerExecute(row) {
     param.executorParam = row.executorParam;
     job.triggerJob(param).then(response => {
       this.$notify({
-        title: "Success",
-        message: "Execute Successfully",
+        title: "成功",
+        message: "执行成功",
         type: "success",
         duration: 2000
       });

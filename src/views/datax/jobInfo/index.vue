@@ -23,84 +23,79 @@
             <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
-                <el-dropdown-item icon="el-icon-receiving" command="NORMAL"
-                  >普通任务</el-dropdown-item
+                <el-dropdown-item icon="el-icon-receiving" command="NORMAL">
+                  普通任务</el-dropdown-item
                 >
                 <el-dropdown-item icon="el-icon-collection" command="IMPORT"
                   >引入任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-files" command="EXPORT"
-                  >导出任务</el-dropdown-item
+                <el-dropdown-item command="EXPORT"
+                  >
+                    <img class="task_icon" src="./taskAdmin_png/export.png">导出任务
+                  </el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-notebook-1"
                   command="COMPUTE"
                   disabled
-                  >计算任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/computed.png">计算任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-present" command="SQLJOB"
-                  >SQL任务</el-dropdown-item
+                <el-dropdown-item command="SQLJOB"
+                  ><img class="task_icon" src="./taskAdmin_png/sql.png">SQL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-s-goods" command="SPARK"
-                  >SPARK任务</el-dropdown-item
+                <el-dropdown-item command="SPARK"
+                  ><img class="task_icon" src="./taskAdmin_png/spark.png">SPARK任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-sell" command="DQCJOB"
-                  >质量任务</el-dropdown-item
+                <el-dropdown-item command="DQCJOB"
+                  ><img class="task_icon" src="./taskAdmin_png/质量.png">质量任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-brush"
                   command="METACOLLECT"
                   divided
-                  >元数据采集任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/元数据采集.png">元数据采集任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-brush" command="METACOMPARE"
-                  >元数据比较任务</el-dropdown-item
+                <el-dropdown-item command="METACOMPARE"
+                  ><img class="task_icon" src="./taskAdmin_png/元数据比较.png">元数据比较任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-wallet" command="SHELL" divided
-                  >SHELL任务</el-dropdown-item
+                <el-dropdown-item command="SHELL" divided
+                  ><img class="task_icon" src="./taskAdmin_png/shell.png">SHELL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-cpu" command="POWERSHELL"
-                  >POWERSHELL任务</el-dropdown-item
+                <el-dropdown-item command="POWERSHELL"
+                  ><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-box" command="PYTHON"
-                  >PYTHON任务</el-dropdown-item
+                <el-dropdown-item command="PYTHON"
+                  ><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="VJOB"
                   divided
-                  >虚任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/虚.png">虚任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="JAVA"
                   divided
                   disabled
-                  >Java任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/java.png">Java任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="SCALA"
                   disabled
-                  >Scala任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/scala.png">Scala任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-bank-card"
                   command="PYSPARK"
                   disabled
-                  >PySpark任务</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/pyspark.png">PySpark任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-bank-card" command="R" disabled
-                  >R任务</el-dropdown-item
+                <el-dropdown-item command="R" disabled
+                  ><img class="task_icon" src="./taskAdmin_png/R.png">R任务</el-dropdown-item
                 >
                 <el-dropdown-item
-                  icon="el-icon-copy-document"
                   command="BATCH"
                   divided
-                  >任务批量构建</el-dropdown-item
+                  ><img class="task_icon" src="./taskAdmin_png/任务批量构建.png">任务批量构建</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-brush" command="TEMPLATE"
-                  >普通任务模板</el-dropdown-item
+                <el-dropdown-item command="TEMPLATE"
+                  ><img class="task_icon" src="./taskAdmin_png/普通任务模板.png">普通任务模板</el-dropdown-item
                 >
               </el-dropdown-menu>
             </el-dropdown>
@@ -108,12 +103,12 @@
         </el-row>
       </div>
       <div class="bottom">
-        <div class="title">任务</div>
         <div class="body">
           <el-input
+            class="input_serach"
             v-model="search"
             prefix-icon="el-icon-search"
-            placeholder="请输入内容"
+            placeholder="任务名称/ID/代码"
           >
             <!-- <template slot="append">我的</template> -->
           </el-input>
@@ -124,13 +119,12 @@
                 :key="item.id"
                 @click="getJobDetail(item)"
               >
-                <!--  -->
+                <i class="el-icon-date" style="color:rgb(144,206,100);"></i>
+                <i class="el-icon-tickets" style="color: rgba(102, 102, 102, 1)"></i>
                 <a
+                style="color: rgba(102, 102, 102, 1)"
                   >{{ item.jobDesc }}
-                  <span style="color: #ff5500">{{
-                    item.glueType.replace("GLUE_", "").toLowerCase()
-                  }}</span></a
-                >
+                </a>
               </li>
             </ul>
           </div>
@@ -473,6 +467,7 @@ export default {
         this.total = total;
         this.options = records;
         this.selectValue =  this.options[0].name;
+        this.$store.commit('SET_PROJECT_ID',this.options[0].id)
         const listQuery = {
           current: 1,
           size: 10,
@@ -506,6 +501,7 @@ export default {
     },
 
     fetchJobs(event) {
+      this.$store.commit('SET_PROJECT_ID',event)
       const listQuery = {
         current: 1,
         size: 10,
@@ -536,13 +532,20 @@ export default {
 <style lang="scss">
 .Management {
   display: flex;
-  height: 100%;
+  min-height: 700px;
+  margin: 24px;
+  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   .lt {
     width: 280px;
-    height: 100%;
+    min-height: 700px;
+    padding: 10px;
+    background: #F0F0F2;
     .top {
-      height: 60px;
+      height: 74px;
       line-height: 60px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       .el-row {
         .el-col {
           i {
@@ -559,15 +562,9 @@ export default {
     }
     .bottom {
       height: 100%;
-      .title {
-        border-top: 1px solid #f8f8f8;
-        height: 35px;
-        line-height: 35px;
-        text-align: center;
-      }
       .body {
         border-top: 1px solid #f8f8f8;
-        padding: 20px;
+        
         .list {
           ul {
             padding: 0px;
@@ -577,12 +574,9 @@ export default {
               // background-color: rgb(218, 243, 253);
               text-align: left;
               list-style: none;
-              text-indent: 2rem;
+              text-indent: 1rem;
               margin: 5px 0px;
               cursor: pointer;
-              a {
-                color: rgb(199, 199, 199);
-              }
             }
           }
         }
@@ -593,11 +587,23 @@ export default {
     width: 100%;
     height: 100%;
     flex: 1;
+    min-height:630px;
     .el-tabs {
       .el-tab-pane {
-        padding: 10px;
+        // padding: 10px;
       }
     }
   }
+
+  .input_serach >.el-input__prefix > .el-input__icon {
+    line-height: 35px !important;
+  }
+  
 }
+.task_icon {
+    width: 16px;
+    float: left;
+    margin-top: 10px;
+    margin-right: 8px;
+  }
 </style>

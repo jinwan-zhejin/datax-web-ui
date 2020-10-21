@@ -56,10 +56,10 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="前置sql语句：">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" style="width: 500px" />
+        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" style="width: 500px" />
       </el-form-item>
-      <el-form-item label="postSql">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" style="width: 500px" />
+      <el-form-item label="postSql：">
+        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" style="width: 500px" />
       </el-form-item>
     </el-form>
   </div>
@@ -160,6 +160,7 @@ export default {
       this.getTables('rdbmsWriter')
     },
     wDsChange(e) {
+      this.$store.commit('SET_WRITER_DATASOURCE_ID', e)
       // 清空
       this.writerForm.tableName = ''
       this.writerForm.datasourceId = e

@@ -44,7 +44,7 @@ export default {
       // readOnly: 'nocursor'
       readOnly:this.caniEdit
     })
-
+    this.jsonEditor.setSize('auto','300px')
     this.jsonEditor.setValue(`${this.value}`)
     this.jsonEditor.on('change', cm => {
       this.$emit('changed', cm.getValue())
@@ -54,6 +54,10 @@ export default {
   methods: {
     getValue() {
       return this.jsonEditor.getValue()
+    },
+
+    setEditorHeight(height){
+      this.jsonEditor.setSize('auto',height)
     }
   }
 }
@@ -74,4 +78,5 @@ export default {
 .json-editor >>> .cm-s-rubyblue span.cm-string {
   color: #F08047;
 }
+
 </style>

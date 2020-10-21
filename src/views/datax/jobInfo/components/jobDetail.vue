@@ -369,12 +369,21 @@
         </el-col>
       </el-row>
     </el-form>
+    <div class="log_title">
+      <span>查看json</span>
+      <span @click="jsonshow = !jsonshow" class="unflod">
+        <i v-if="!jsonshow" class="el-icon-sort-up"></i>
+        <i v-else class="el-icon-sort-down"></i>
+      </span>
+    </div>
+    <transition name="fadejson">
     <json-editor
-      v-if="temp.glueType === 'BEAN'"
+      v-if="jsonshow"
       ref="jsonEditor"
       v-model="temp.jobJson"
       caniEdit='nocursor'
     />
+    </transition>
     <div slot="footer" class="dialog-footer ">
       <div >
         <div class="log_title">
@@ -655,6 +664,7 @@ export default {
       callback();
     };
     return {
+      jsonshow: false,
       newstlogContent: '',
       jobId:'',
       logview:false,
@@ -857,6 +867,7 @@ export default {
       handlerExecute.call(this, temp)
       .then(() => {
         this.logList();
+        this.showLog = true;
       }) 
     },
 
@@ -1099,5 +1110,12 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   height: 0;
+}
+
+.fadejson-enter-active, .fadejson-leave-active {
+  transition: opacity .5s;
+}
+.fadejson-enter, .fadejson-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
