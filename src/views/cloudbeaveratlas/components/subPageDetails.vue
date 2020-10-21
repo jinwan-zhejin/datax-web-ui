@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-20 18:50:37
+ * @LastEditTime: 2020-10-21 18:29:36
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -35,9 +35,9 @@
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
             </el-tooltip> -->
           </span>
-          <!-- <el-tooltip content="添加分类" placement="bottom">
-            <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
-          </el-tooltip> -->
+          <el-tooltip content="添加分类" placement="bottom">
+            <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassificationShow = true" />
+          </el-tooltip>
         </el-col>
         <!-- <el-col>
           术语：<el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
@@ -295,14 +295,19 @@
         </el-col>
       </el-row>
     </div>
+    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
   </div>
 </template>
 
 <script>
+import AddClassification from './addClassification'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import { translater, translaterMaster } from '../utils/dictionary'
 export default {
   name: 'SubPageDetails',
+  components: {
+    AddClassification
+  },
   filters: {
     formatDate(val) {
       const date = new Date(val);
@@ -338,7 +343,9 @@ export default {
   },
   props: {
     // eslint-disable-next-line vue/require-default-prop
-    detailsRequest: Object
+    detailsRequest: Object,
+    // eslint-disable-next-line vue/require-default-prop
+    classificationList: Array // 分类有值列表
   },
   data() {
     return {
@@ -366,7 +373,9 @@ export default {
       relationshipShow: [],
       graphTable: true, // 表格或图表 false-Graph true-Table
       showEmptyRelationships: false, // 显示空值
-      detailsCollapseActive: ['details0', 'details1', 'details2', 'details3']
+      detailsCollapseActive: ['details0', 'details1', 'details2', 'details3'],
+      addClassificationShow: false, // 打开添加分类面板
+      classificationInfo: {} // 为该条添加分类（guid，typeName）
     }
   },
   computed: {
@@ -453,7 +462,9 @@ export default {
           for (var i in details[Object.keys(details)[0]].attributes) {
             temp.push({
               key: i,
-              value: details[Object.keys(details)[0]].attributes[i] === null ? 'N/A' : details[Object.keys(details)[0]].attributes[i]
+              value: details[Object.keys(details)[0]].attributes[i] === null
+                ? 'N/A'
+                : details[Object.keys(details)[0]].attributes[i]
             })
           }
           return temp
@@ -692,6 +703,9 @@ export default {
      */
     bracketFormat(str) {
       return '{' + str + '}'
+    },
+    addClassificationClose() {
+      this.addClassificationShow = false
     }
   }
 }
@@ -751,7 +765,7 @@ export default {
   margin: 5px;
 }
 ::v-deep .el-collapse-item__header {
-  color: #409EFF;
+  color: #3D5FFF;
   font-size: 15px;
   flex: 1 0 auto;
   order: -1;

@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-20 17:47:17
+ * @LastEditTime: 2020-10-21 18:49:31
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -19,7 +19,7 @@
           <!-- <el-input v-model="listQuery.entityName" placeholder="任务提交时间From" style="width: 200px" />
           <el-input v-model="listQuery.entityName" placeholder="任务提交时间To" style="width: 200px" /> -->
           <el-select v-model="queryList.guid" placeholder="选择guid">
-            <el-option v-for="item in queryList.guidList" :key="item" :label="item" :value="item" />
+            <el-option v-for="item in queryList.guidList" :key="item.value" :label="item.name.indexOf('null')>-1?item.value:item.name" :value="item.value" />
           </el-select>
           <el-button size="small" type="primary" icon="el-icon-search" @click="refreshTableGuid">
             搜索
@@ -30,8 +30,16 @@
         </div>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column prop="id" label="任务id" min-width="75" />
-          <!-- <el-table-column prop="entityName" label="Entity名称" width="160" />
-        <el-table-column prop="entityType" label="Entity类型" width="160" /> -->
+          <el-table-column label="Entity名称" min-width="100">
+            <template v-slot:default="{ row }">
+              {{ row.name===null?'Null':row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Entity类型" min-width="100">
+            <template v-slot:default="{ row }">
+              {{ row.typeName===null?'Null':row.typeName }}
+            </template>
+          </el-table-column>
           <el-table-column label="基线时间" min-width="160">
             <template v-slot:default="{ row }">
               {{ row.timestamp1 | formatDate }}
@@ -191,7 +199,10 @@ export default {
         console.log(this.tableData)
         this.queryList.guidList = []
         for (var i in this.tableData) {
-          this.queryList.guidList.push(this.tableData[i].guid)
+          this.queryList.guidList.push({
+            name: this.tableData[i].name === null ? 'null' : this.tableData[i].name + ' (' + this.tableData[i].typeName + ')',
+            value: this.tableData[i].guid
+          })
         }
       } else {
         this.$message({
@@ -277,7 +288,7 @@ export default {
         overflow-y: auto;
 
         ::v-deep .el-collapse-item__header {
-            color: #409EFF;
+            color: #3D5FFF;
             font-size: 15px;
             font-weight: bold;
             flex: 1 0 auto;
@@ -291,12 +302,12 @@ export default {
     }
 
     .el-button {
-        color: #409EFF;
+        color: #3D5FFF;
         right: 5px;
     }
 
     ::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-        background-color: #409EFF;
+        background-color: #3D5FFF;
         color: white;
     }
 
