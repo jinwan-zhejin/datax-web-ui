@@ -2,7 +2,7 @@
  * @Date: 2020-10-16 10:22:36
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-20 18:47:01
+ * @LastEditTime: 2020-10-21 18:32:39
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addClassification.vue
  * @Description: 添加分类
 -->
@@ -13,72 +13,6 @@
       <div slot="title" class="dialog-title">
         添加分类
       </div>
-      <!-- <el-row>
-        <el-col>
-          <el-select v-model="dataForm.classificationSelected" filterable placeholder="-- 从下拉列表中选择一个分类 --" clearable>
-            <el-option
-              v-for="item in classificationListFiltered"
-              :key="item.description"
-              :label="item.description"
-              :value="item.description"
-            />
-          </el-select>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-          <div class="box">
-            <div>
-              <el-checkbox v-model="propagate">传播</el-checkbox>
-            </div>
-            <div>
-              <el-checkbox v-model="removePropagation">当实体删除时移除传播</el-checkbox>
-            </div>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-          <el-checkbox v-model="isValidityPeriod">添加申请有效期</el-checkbox>
-        </el-col>
-      </el-row>
-      <el-row v-if="isValidityPeriod">
-        <el-col>
-          <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="addToTimeList">增加有效期</el-button>
-        </el-col>
-        <el-col>
-          <div class="box">
-            <el-row v-for="item in timeList" :key="item">
-              <el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
-                <span style="font-size: 18px;">有效期</span>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
-                <el-date-picker
-                  v-model="item.time"
-                  class="date-picker"
-                  format="yyyy/MM/dd HH:mm:ss"
-                  value-format="yyyy/MM/dd HH:mm:ss"
-                  type="datetimerange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :default-time="['00:00:00', '23:59:59']"
-                />
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
-                <el-button type="danger" size="mini" icon="el-icon-close" @click="removeFromTimeList(item.id)" />
-              </el-col>
-            </el-row>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row v-if="dataForm.classificationSelected.indexOf('CLASSIFIED') > -1">
-        <el-col>
-          <el-form>
-            <el-form-item ref="dataForm" :model="dataForm" :rules="[{ required: true, message: '请输入tag'}]" label="标签">
-              <el-input v-model="dataForm.tag" />
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row> -->
-
       <el-form ref="dataForm" :model="dataForm">
         <el-form-item prop="classificationSelected" :rules="[{ required: true, message: '请选择分类'}]" label="分类">
           <el-select v-model="dataForm.classificationSelected" filterable placeholder="-- 从下拉列表中选择一个分类 --" clearable>
@@ -92,13 +26,11 @@
         </el-form-item>
         <el-form-item>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-            <div class="box">
-              <div>
-                <el-checkbox v-model="propagate">传播</el-checkbox>
-              </div>
-              <div>
-                <el-checkbox v-model="removePropagation">当实体删除时移除传播</el-checkbox>
-              </div>
+            <div>
+              <el-checkbox v-model="propagate">传播</el-checkbox>
+            </div>
+            <div>
+              <el-checkbox v-model="removePropagation">当实体删除时移除传播</el-checkbox>
             </div>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -110,30 +42,29 @@
             <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="addToTimeList">增加有效期</el-button>
           </el-col>
         </el-form-item>
-        <el-form-item v-if="isValidityPeriod" >
-          <el-col>
-            <div class="box">
-              <el-row v-for="item in timeList" :key="item">
-                <el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
-                  <span style="font-size: 18px;">有效期</span>
-                </el-col>
-                <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
-                  <el-date-picker
-                    v-model="item.time"
-                    class="date-picker"
-                    format="yyyy/MM/dd HH:mm:ss"
-                    value-format="yyyy/MM/dd HH:mm:ss"
-                    type="datetimerange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :default-time="['00:00:00', '23:59:59']"
-                  />
-                </el-col>
-                <el-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
-                  <el-button type="danger" size="mini" icon="el-icon-close" @click="removeFromTimeList(item.id)" />
-                </el-col>
-              </el-row>
-            </div>
+        <el-form-item
+          v-for="(item, index) in dataForm.timeList"
+          :key="index"
+          :prop="'timeList.' + index + '.time'"
+          :rules="{ required: true, message: '添加有效期不能为空', trigger: 'blur' }"
+        >
+          <el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
+            <span>有效期</span>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
+            <el-date-picker
+              v-model="item.time"
+              class="date-picker"
+              format="yyyy/MM/dd HH:mm:ss"
+              value-format="yyyy/MM/dd HH:mm:ss"
+              type="datetimerange"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :default-time="['00:00:00', '23:59:59']"
+            />
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
+            <el-button type="danger" size="mini" icon="el-icon-close" @click="removeFromTimeList(item.id)" />
           </el-col>
         </el-form-item>
         <el-form-item
@@ -146,8 +77,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button plain type="primary" @click="cancelAdd">取 消</el-button>
-        <el-button plain type="primary" @click="submitAdd('dataForm')">确 定</el-button>
+        <el-button size="small" plain type="primary" @click="cancelAdd">取 消</el-button>
+        <el-button size="small" plain type="primary" @click="submitAdd('dataForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -167,12 +98,13 @@ export default {
   data() {
     return {
       validityPeriod: false, // 是否添加申请有效期
-      timeList: [],
       propagate: true, // 传播
       removePropagation: false, // 当实体删除时移除传播
+      // 表单验证
       dataForm: {
         classificationSelected: '', // 下拉列表选中值
-        tag: ''
+        tag: '',
+        timeList: []
       }
     }
   },
@@ -198,10 +130,10 @@ export default {
       }
     },
     timeListPlus() {
-      var temp = this.timeList
-      for (var i in this.timeList) {
-        temp[i].startTime = this.timeList[i].time[0]
-        temp[i].endTime = this.timeList[i].time[1]
+      var temp = this.dataForm.timeList
+      for (var i in this.dataForm.timeList) {
+        temp[i].startTime = this.dataForm.timeList[i].time[0]
+        temp[i].endTime = this.dataForm.timeList[i].time[1]
       }
       return temp
     }
@@ -214,7 +146,7 @@ export default {
       },
       deep: true
     },
-    timeList: {
+    'dataForm.timeList': {
       handler(val) {
         if (val.length <= 0) {
           this.validityPeriod = false
@@ -226,7 +158,7 @@ export default {
         if (oldVal === false) {
           this.addToTimeList()
         } else {
-          this.timeList = []
+          this.dataForm.timeList = []
         }
       }
     }
@@ -235,7 +167,7 @@ export default {
     // 打开重置
     this.dataForm.classificationSelected = ''
     this.validityPeriod = false
-    this.timeList = []
+    this.dataForm.timeList = []
     this.propagate = true
     this.removePropagation = false
     this.dataForm.tag = ''
@@ -247,7 +179,7 @@ export default {
     cancelAdd() {
       this.dataForm.classificationSelected = ''
       this.validityPeriod = false
-      this.timeList = []
+      this.dataForm.timeList = []
       this.propagate = true
       this.removePropagation = false
       this.dataForm.tag = ''
@@ -259,8 +191,8 @@ export default {
     submitAdd(dataForm) {
       this.$refs[dataForm].validate((valid) => {
         if (valid) {
-          // this.add()
-          console.log('asdasdasd')
+          this.add()
+          // console.log('asdasdasd')
         } else {
           return false
         }
@@ -270,17 +202,15 @@ export default {
      * @description: 添加到时间列表
      */
     addToTimeList() {
-      this.timeList.push({
-        // id: new Date().getTime(), startTime: '', endTime: '', timeZone: ''
-        // id: new Date().getTime(), startTime: new Date(new Date(new Date().toLocaleDateString()).getTime()), endTime: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1), timeZone: ''
-        id: new Date().getTime(), time: [new Date(new Date(new Date().toLocaleDateString()).getTime()), new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)], startTime: '', endTime: '', timeZone: ''
+      this.dataForm.timeList.push({
+        id: new Date().getTime(), time: null, startTime: '', endTime: '', timeZone: ''
       })
     },
     /**
      * @description: 从时间列表移除
      */
     removeFromTimeList(delId) {
-      this.timeList = this.timeList.filter(item => item.id.toString() !== delId.toString())
+      this.dataForm.timeList = this.dataForm.timeList.filter(item => item.id.toString() !== delId.toString())
     },
     /**
      * @description: 添加分类

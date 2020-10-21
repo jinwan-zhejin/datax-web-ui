@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-20 17:57:52
+ * @LastEditTime: 2020-10-21 18:30:33
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -513,11 +513,11 @@ export default {
         .el-select {
           margin: 0 0 0 10px;
           ::v-deep .el-input__inner {
-            background: #ECF5FF;
-            border-color: #b1d7fd;
+            background: #ECEFFF;
+            border-color: #b1bfff;
             height: 30px;
             &::placeholder {
-              color: #409eff;
+              color: #3D5FFF;
             }
           }
         }
@@ -529,7 +529,7 @@ export default {
     .el-col {
         span {
             position: relative;
-            // color: #409eff;
+            // color: #3D5FFF;
             color: #686868;
             font-weight: bold;
             i {
@@ -546,7 +546,7 @@ export default {
               display: inline-block;
               height: 1.9em;
               line-height: 1.9em;
-              border: 1px solid #409eff;
+              border: 1px solid #3D5FFF;
               border-radius: 1.9em;
               .capsuleView {
                 padding: 5px;
@@ -555,7 +555,7 @@ export default {
                   font-size: 0.8rem;
                 }
                 .value {
-                  color: #409eff;
+                  color: #3D5FFF;
                   font-size: 0.9rem;
                 }
               }
