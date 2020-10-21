@@ -1,18 +1,21 @@
 <template>
   <div class="app-container">
     <div class="build-container">
-      <el-steps :active="active" finish-status="success">
-        <el-step title="新建任务" description="">1</el-step>
-        <el-step title="构建reader" description="">2</el-step>
-        <el-step title="构建writer" description="">3</el-step>
-        <el-step title="字段映射" description="">4</el-step>
-        <el-step title="构建" description="">5</el-step>
-      </el-steps>
+      <div style="width:100%;border-bottom:1px solid rgba(240, 240, 242, 1);margin-bottom:20px;padding:20px 0;">
+        <div style="width:80%;margin:0 auto;">
+          <el-steps :active="active" >
+            <el-step title="新建任务" description="">1</el-step>
+            <el-step title="构建reader" description="">2</el-step>
+            <el-step title="构建writer" description="">3</el-step>
+            <el-step title="字段映射" description="">4</el-step>
+            <el-step title="构建" description="">5</el-step>
+          </el-steps>
+        </div>
+      </div>
+      
 
       <div v-show="active===1" class="step0">
-        <div style="padding-left:150px;">
-          <Create v-on="$listeners"  :Fjson='configJson' ref="create" />
-        </div>
+        <Create v-on="$listeners"  :Fjson='configJson' ref="create" />
       </div>
       <div v-show="active===2" class="step1">
         <Reader ref="reader" />
@@ -29,47 +32,47 @@
           <div class="step5content">
             <div>
               <span class="step5content_key">执行器：</span>
-              <span>{{$refs.create && $refs.create.temp.jobGroup}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.jobGroup || '-'}}</span>
             </div>
             <div>
-              <span  class="step5content_key">所属项目：</span>
-              <span>{{$refs.create && $refs.create.temp.projectId}}</span>
+              <span class="step5content_key">所属项目：</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.projectId || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">路由策略：</span>
-              <span>{{$refs.create && $refs.create.temp.executorRouteStrategy}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.executorRouteStrategy || '-'}}</span>
             </div>
             <div>
               <span class="step5content_key">子项目：</span>
-              <span>{{$refs.create && $refs.create.temp.childJobIdArr}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.childJobIdArr || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">阻塞处理：</span>
-              <span>{{$refs.create && $refs.create.temp.executorBlockStrategy}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.executorBlockStrategy || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">任务名称：</span>
-              <span>{{$refs.create && $refs.create.temp.jobDesc}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.jobDesc || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">任务类型：</span>
-              <span>{{$refs.create && $refs.create.temp.glueType}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.glueType || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">Cron：</span>
-              <span>{{$refs.create && $refs.create.temp.jobCron}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.jobCron || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">报警邮件：</span>
-              <span>{{$refs.create && $refs.create.temp.alarmEmail}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.alarmEmail || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">失败重试次数：</span>
-              <span>{{$refs.create && $refs.create.temp.executorFailRetryCount}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.executorFailRetryCount || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">超时时间：</span>
-              <span>{{$refs.create && $refs.create.temp.executorTimeout}}</span>
+              <span class="step5content_value">{{$refs.create && $refs.create.temp.executorTimeout || '-'}}</span>
             </div>
           </div>
         </div>
@@ -79,27 +82,27 @@
           <div class="step5content">
             <div>
               <span class="step5content_key">数据库源：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.datasourceId}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.datasourceId || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">切分字段：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">数据库表名：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName || '-'}}</span>
             </div>
             <div>
               <span class="step5content_key">SQL语句：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.querySql}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.querySql || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">表所有字段：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">Where条件：</span>
-              <span>{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.where}}</span>
+              <span class="step5content_value">{{$refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.where || '-'}}</span>
             </div>
           </div>
         </div>
@@ -109,33 +112,34 @@
           <div class="step5content">
             <div>
               <span class="step5content_key">数据库源：</span>
-              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.datasourceId}}</span>
+              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.datasourceId || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">数据库表名：</span>
-              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.ifCreateTable}}</span>
+              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.ifCreateTable || '-'}}</span>
             </div>
             <div>
               <span class="step5content_key">字段：</span>
-              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns}}</span>
+              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">postSql：</span>
-              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql}}</span>
+              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql || '-'}}</span>
             </div>
             <div>
               <span  class="step5content_key">前置Sql语句：</span>
-              <span>{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql}}</span>
+              <span class="step5content_value">{{$refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || '-'}}</span>
             </div>
           </div>
         </div>
 
-        <div>
-          <p>4.字段映射</p>
-          <div>
+        <div style="margin-top:20px;">
+          <p style="margin: 20px 0;">4.字段映射</p>
+          <div style="border: 1px solid #F3F3F3;">
             <el-table
             :data="tableData"
             stripe
+            :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
             style="width: 100%">
               <el-table-column
                 prop="sourceField"
@@ -242,9 +246,6 @@ export default {
         incStartTime: ''
       }
     }
-  },
-  created() {
-    // this.getJdbcDs()
   },
   methods: {
     next() {
@@ -423,5 +424,15 @@ export default {
   width: 50%;
   float: left;
   padding: 8px;
+}
+.step5content_value {
+  line-height: 20px;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  color: #333333;
+}
+.app-container {
+  padding: 0;
 }
 </style>
