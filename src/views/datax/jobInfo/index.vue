@@ -62,7 +62,7 @@
                 <el-dropdown-item command="POWERSHELL"
                   ><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-box" command="PYTHON"
+                <el-dropdown-item command="PYTHON"
                   ><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -603,6 +603,7 @@ export default {
 .task_icon {
     width: 16px;
     float: left;
-    margin-top: 9px;
+    margin-top: 10px;
+    margin-right: 8px;
   }
 </style>
