@@ -383,7 +383,12 @@
               v-model="ruleForm.master"
             />
           </el-form-item>
-          <el-form-item label="数据库架构:">
+          <el-form-item label="端口:">
+            <el-input
+              v-model="ruleForm.serverPort"
+            />
+          </el-form-item>
+          <el-form-item label="数据库/架构:">
             <el-input
               v-model="ruleForm.database"
             />
@@ -435,11 +440,8 @@
               placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]"
             />
           </el-form-item>
-          <el-form-item label="用户名:">
-            <el-input v-model="MdbForm.username" />
-          </el-form-item>
-          <el-form-item label="密码:">
-            <el-input v-model="MdbForm.password" type="password" />
+          <el-form-item label="数据库:">
+            <el-input v-model="MdbForm.database" />
           </el-form-item>
         </el-form>
       </div>
@@ -529,48 +531,56 @@
       <!-- Greenplum PostqreSQL连接设置表单 -->
       <div v-show="gp" class="set">
         <p>基本信息</p>
-        <el-form :model="GPForm" label-width="100px" class="bgcForm">
-          <el-form-item label="数据源名称:">
-            <el-input v-model="GPForm.master" />
-          </el-form-item>
-          <el-form-item label="数据源分组:">
-            <el-input v-model="GPForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="备注:">
-            <el-input v-model="GPForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="GPForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="GPForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="GPForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>服务器</p>
-        <el-form :model="GPForm" label-width="100px" class="bgcForm">
-          <el-form-item label="主机:">
-            <el-input v-model="GPForm.master" />
-          </el-form-item>
-          <el-form-item label="端口:">
-            <el-input v-model="GPForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="数据库:">
-            <el-input v-model="GPForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="主机:">
+              <el-input v-model="GPForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="GPForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="GPForm.database" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="GPForm" label-width="100px" class="bgcForm">
-          <el-form-item label="用户名:">
-            <el-input v-model="GPForm.username" />
-          </el-form-item>
-          <el-form-item label="密码:">
-            <el-input v-model="GPForm.password" />
-            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户名:">
+              <el-input v-model="GPForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="GPForm.password" type="password" />
+              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </div>
         <p>高级</p>
-        <el-form :model="GPForm" label-width="100px" class="bgcForm">
-          <el-form-item label="用户角色:" style="width: 50%; float: left">
-            <el-input v-model="GPForm.userRole" />
-          </el-form-item>
-          <el-form-item label="本地客户端:" style="width: 50%; float: right">
-            <el-input v-model="GPForm.client" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户角色:">
+              <el-input v-model="GPForm.userRole" />
+            </el-form-item>
+            <el-form-item label="本地客户端:">
+              <el-input v-model="GPForm.client" />
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
       <div v-show="threeSQL" class="set">
@@ -644,7 +654,7 @@
                 placeholder="ORCL"
               >
                 <el-option
-                  v-for="item in roleList"
+                  v-for="item in roclData"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -706,13 +716,13 @@
         <div class="bgcForm">
           <el-form :model="DB2Form" label-width="100px">
             <el-form-item label="数据源名称:">
-              <el-input v-model="DB2Form.master" />
+              <el-input v-model="DB2Form.datasourceName" />
             </el-form-item>
             <el-form-item label="数据源分组:">
-              <el-input v-model="DB2Form.serverPort" />
+              <el-input v-model="DB2Form.datasourceGroup" />
             </el-form-item>
             <el-form-item label="备注:">
-              <el-input v-model="DB2Form.database" />
+              <el-input v-model="DB2Form.comments" />
             </el-form-item>
           </el-form>
         </div>
@@ -723,10 +733,10 @@
               <el-input v-model="DB2Form.master" />
             </el-form-item>
             <el-form-item label="端口:">
-              <el-input v-model="DB2Form.port" />
+              <el-input v-model="DB2Form.serverPort" />
             </el-form-item>
             <el-form-item label="数据库:" prop="username">
-              <el-input v-model="DB2Form.sql" />
+              <el-input v-model="DB2Form.database" />
             </el-form-item>
           </el-form>
         </div>
@@ -737,7 +747,7 @@
               <el-input v-model="DB2Form.username" />
             </el-form-item>
             <el-form-item label="密码:">
-              <el-input v-model="DB2Form.password" />
+              <el-input v-model="DB2Form.password" type="password" />
               <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
@@ -746,39 +756,45 @@
       <!-- ClickHouse HBase 连接设置表单 -->
       <div v-show="ch" class="set">
         <p>基本信息</p>
-        <el-form :model="CHForm" label-width="100px" class="bgcForm">
-          <el-form-item label="数据源名称:">
-            <el-input v-model="CHForm.master" />
-          </el-form-item>
-          <el-form-item label="数据源分组:">
-            <el-input v-model="CHForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="备注:">
-            <el-input v-model="CHForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="CHForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="CHForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="CHForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>一般</p>
-        <el-form :model="CHForm" label-width="100px" class="bgcForm">
-          <el-form-item label="JDBC URL:" style="width: 50%">
-            <el-input v-model="CHForm.jdbcUrl" />
-          </el-form-item>
-          <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="CHForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="主机:" style="width: 50%">
-            <el-input v-model="CHForm.master" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="CHForm.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="CHForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="CHForm.serverPort" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="CHForm" label-width="100px" class="bgcForm">
-          <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="CHForm.username" />
-          </el-form-item>
-          <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="CHForm.password" />
-            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="CHForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="CHForm.password" type="password" />
+              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button v-show="currentStep === 2" size="small" style="float: left;" @click="testLink">测试连接...</el-button>
@@ -958,6 +974,16 @@ export default {
           type: 'ass'
         }
       ],
+      roclData: [
+        {
+          name: 'orcl',
+          value: 'orcl'
+        },
+        {
+          name: 'helowin',
+          value: 'helowin'
+        }
+      ],
       roleList: [
         {
           value: '123',
@@ -1045,7 +1071,9 @@ export default {
       OracleForm: {}, // oracle
       DB2Form: {}, // OracleForm
       CHForm: {}, // ClickHouse HBase
-      MdbForm: {}, // MongoDB
+      MdbForm: {
+        serverUrl: ''
+      }, // MongoDB
       userForm: {},
       sqlName: '',
       params: {
@@ -1127,25 +1155,53 @@ export default {
         this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
         console.log(this.params.jdbcUrl);
       } else if (val.toLowerCase() === 'oracle') {
-        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
-      } else if (val === 'postgresql') {
+      } else if (val.toLowerCase() === 'postgresql') {
+        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.ruleForm.driver = 'org.postgresql.Driver';
-      } else if (val === 'greenplum') {
+      } else if (val.toLowerCase() === 'greenplum') {
+        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.ruleForm.driver = 'org.postgresql.Driver';
       } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
         this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
-      } else if (val === 'clickhouse') {
+      } else if (val.toLowerCase() === 'clickhouse') {
+        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
       } else if (val === 'hive') {
         this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
       } else if (val.toLowerCase() === 'mongodb') {
         this.isBanAdd = false
         this.MdbForm.serverUrl = 'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
+      } else {
+        this.isBanAdd = false
       }
+    },
+    'CHForm.master': {
+      handler(val) {
+        if (val) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
+        } else {
+          this.CHForm.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'CHForm.serverPort': {
+      handler(val) {
+        if (val && this.CHForm.master) {
+          if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.CHForm.master) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
     }
   },
   created() {
@@ -1419,17 +1475,57 @@ export default {
         obj.datasourceName = this.MdbForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = this.MdbForm.serverUrl;
-        obj.userName = this.MdbForm.username;
-        obj.password = this.MdbForm.password;
         obj.datasourceGroup = this.MdbForm.datasourceGroup;
         obj.comments = this.MdbForm.comments;
+        obj.databaseName = this.MdbForm.database;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
+        console.log(this.GPForm)
+        obj.datasourceName = this.GPForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
+        obj.userName = this.GPForm.username;
+        obj.password = this.GPForm.password;
+        obj.datasourceGroup = this.GPForm.datasourceGroup;
+        obj.comments = this.GPForm.comments;
+        if (this.sqlName === 'PostgreSQL') {
+          obj.jdbcDriverClass = 'org.postgresql.Driver';
+        } else {
+          obj.jdbcDriverClass = ''
+        }
+      } else if (this.sqlName === 'Sql Server') {
+        obj.datasourceName = this.ruleForm.datasourceName;
+        obj.datasourceGroup = this.ruleForm.datasourceGroup;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
+        obj.userName = this.ruleForm.username;
+        obj.password = this.ruleForm.password;
+        obj.comments = this.ruleForm.comments;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
+        obj.datasourceName = this.CHForm.datasourceName;
+        obj.datasourceGroup = this.CHForm.datasourceGroup;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = this.CHForm.jdbcUrl
+        obj.userName = this.CHForm.username;
+        obj.password = this.CHForm.password;
+        obj.comments = this.CHForm.comments;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'DB2') {
+        obj.datasourceName = this.DB2Form.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
+        obj.userName = this.DB2Form.username;
+        obj.password = this.DB2Form.password;
+        obj.datasourceGroup = this.DB2Form.datasourceGroup;
+        obj.comments = this.DB2Form.comments;
         obj.jdbcDriverClass = '';
       }
       datasourceApi.created(obj).then(() => {
         this.fetchData();
         this.dialogVisible = false;
         this.$notify({
-          title: '成功',
+          title: '提示',
           message: '数据源添加成功',
           type: 'success',
           duration: 2000
@@ -1437,6 +1533,21 @@ export default {
         this.MySQLForm = {}
         this.OracleForm = {}
         this.MdbForm = {}
+        this.ruleForm = {}
+        this.CHForm = {}
+        this.GPForm = {}
+        this.DB2Form = {}
+        this.currentStep = 1
+        this.isBanAdd = true
+      }).catch(err => {
+        if (err) {
+          this.$notify({
+            title: '提示',
+            message: '数据源添加失败',
+            type: 'fail',
+            duration: 2000
+          })
+        }
       })
     },
     // 测试连接
@@ -1459,19 +1570,26 @@ export default {
         obj1.jdbcPassword = this.OracleForm.password;
         obj1.datasourceGroup = this.OracleForm.datasourceGroup;
         obj1.comments = this.OracleForm.comments;
-        obj1.jdbcDriverClass = 'com.oracle.jdbc.Driver';
+        obj1.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
+      } else if (this.sqlName === 'MongoDB') {
+        obj1.datasourceName = this.MdbForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = this.MdbForm.serverUrl;
+        obj1.datasourceGroup = this.MdbForm.datasourceGroup;
+        obj1.comments = this.MdbForm.comments;
+        obj1.jdbcDriverClass = '';
       }
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
           this.$notify({
-            title: 'Fail',
+            title: '提示',
             message: response.data.msg,
             type: 'fail',
             duration: 2000
           });
         } else {
           this.$notify({
-            title: '成功',
+            title: '提示',
             message: '数据库测试连接成功',
             type: 'success',
             duration: 2000
@@ -1571,8 +1689,8 @@ export default {
         .then((response) => {
           this.fetchData();
           this.$notify({
-            title: 'Success',
-            message: 'Delete Successfully',
+            title: '提示',
+            message: '删除成功',
             type: 'success',
             duration: 2000
           });
@@ -1787,4 +1905,12 @@ export default {
 .last_input {
   margin-bottom: 0;
 }
+
+.el-form-item {
+  margin-bottom: 16px;
+  .el-form-item__label {
+    padding: 0 16px 0 0;
+  }
+}
+
 </style>
