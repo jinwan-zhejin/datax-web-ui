@@ -23,11 +23,11 @@
             <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
-                <el-dropdown-item icon="el-icon-receiving" command="NORMAL">
-                  普通任务</el-dropdown-item
+                <el-dropdown-item command="NORMAL">
+                  <img class="task_icon" src="./taskAdmin_png/normal.png">普通任务</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-collection" command="IMPORT"
-                  >引入任务</el-dropdown-item
+                <el-dropdown-item command="IMPORT"
+                  ><img class="task_icon" src="./taskAdmin_png/import.png">引入任务</el-dropdown-item
                 >
                 <el-dropdown-item command="EXPORT"
                   >
@@ -163,6 +163,9 @@
           <div v-if="jobType === 'SQLJOB'" class="rg">
             <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
           </div>
+          <div v-if="jobType === 'SPARK'" class="rg">
+            <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
+          </div>
         </el-tab-pane>
 
       </el-tabs>
@@ -205,9 +208,6 @@
     </div>
     <div v-if="jobType === 'PYTHON'" class="rg">
       <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
-    </div>
-    <div v-if="jobType === 'SPARK'" class="rg">
-      <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
     </div>
     <div v-if="jobType === 'METACOMPARE'" class="rg">
       <MetaCompare />

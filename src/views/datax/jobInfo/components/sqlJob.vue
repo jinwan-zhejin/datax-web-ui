@@ -5,313 +5,121 @@
       ref="dataForm"
       :rules="rules"
       :model="temp"
-      label-position="left"
+      label-position="right"
       label-width="110px"
+      class="input_from"
     >
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="任务类型" prop="glueType">
-            <!-- <el-select v-model="temp.glueType" placeholder="任务脚本类型">
-                <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select> -->
-            {{ this.jobTypeLabel }}
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="任务名称" prop="jobDesc">
-            <el-input
-              v-model="temp.jobDesc"
-              size="medium"
-              placeholder="请输入任务描述"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-dialog
-            title="提示"
-            :visible.sync="showCronBox"
-            width="60%"
-            append-to-body
+      <el-form-item label="任务类型：" prop="glueType">
+        {{ this.jobTypeLabel }}
+      </el-form-item>
+
+      <el-form-item label="任务名称：" prop="jobDesc">
+        <el-input
+          v-model="temp.jobDesc"
+          size="medium"
+          placeholder="请输入任务描述"
+          style="width: 300px"
+        />
+      </el-form-item>
+      <el-dialog
+        title="提示"
+        :visible.sync="showCronBox"
+        width="60%"
+        append-to-body
+      >
+        <cron v-model="temp.jobCron" />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="showCronBox = false">关闭</el-button>
+          <el-button type="primary" @click="showCronBox = false"
+            >确 定</el-button
           >
-            <cron v-model="temp.jobCron" />
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="showCronBox = false">关闭</el-button>
-              <el-button type="primary" @click="showCronBox = false"
-                >确 定</el-button
-              >
-            </span>
-          </el-dialog>
-          <el-form-item label="Cron" prop="jobCron">
-            <el-input
-              v-model="temp.jobCron"
-              auto-complete="off"
-              placeholder="请输入Cron表达式"
-            >
-              <el-button
-                v-if="!showCronBox"
-                slot="append"
-                icon="el-icon-turn-off"
-                title="打开图形配置"
-                @click="showCronBox = true"
-              />
-              <el-button
-                v-else
-                slot="append"
-                icon="el-icon-open"
-                title="关闭图形配置"
-                @click="showCronBox = false"
-              />
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="数据源连接" prop="dataSourceId">
-            <el-select
-              v-model="temp.dataSourceId"
-              placeholder="请选择数据源连接"
-            >
-              <el-option
-                v-for="item in blockStrategies"
-                :key="item.id"
-                :label="item.datasourceName"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="Schema">
-            <el-select
-              v-model="temp.schema"
-              placeholder="请选择schema"
-            >
-              <el-option
-                v-for="item in schemaList"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <!--          <el-col :span="12">
-            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
-        <el-col :span="12">
-          <el-form-item label="报警邮件">
-            <el-input
-              v-model="temp.alarmEmail"
-              placeholder="请输入报警邮件，多个用逗号分隔"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="失败重试次数">
-            <el-input-number
-              v-model="temp.executorFailRetryCount"
-              :min="0"
-              :max="20"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="子任务">
-            <el-select
-              v-model="temp.childJobId"
-              multiple
-              placeholder="子任务"
-              value-key="id"
-            >
-              <el-option
-                v-for="item in jobIdList"
-                :key="item.id"
-                :label="item.jobDesc"
-                :value="item"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" />
-      </el-row>
-      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="辅助参数" prop="incrementType">
-            <el-select
-              v-model="temp.incrementType"
-              placeholder="请选择参数类型"
-              value=""
-            >
-              <el-option
-                v-for="item in incrementTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row
-        v-if="temp.glueType === 'BEAN' && temp.incrementType === 1"
-        :gutter="20"
-      >
-        <el-col :span="12">
-          <el-form-item label="增量主键开始ID" prop="incStartId">
-            <el-input
-              v-model="temp.incStartId"
-              placeholder="首次增量使用"
-              style="width: 56%"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="ID增量参数" prop="replaceParam">
-            <el-input
-              v-model="temp.replaceParam"
-              placeholder="-DstartId='%s' -DendId='%s'"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="reader数据源" prop="datasourceId">
-            <el-select
-              v-model="temp.datasourceId"
-              placeholder="reader数据源"
-              class="filter-item"
-            >
-              <el-option
-                v-for="item in dataSourceList"
-                :key="item.id"
-                :label="item.datasourceName"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="reader表" prop="readerTable">
-            <el-input v-model="temp.readerTable" placeholder="读表的表名" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="5">
-          <el-form-item label="主键" label-width="40px" prop="primaryKey">
-            <el-input
-              v-model="temp.primaryKey"
-              placeholder="请填写主键字段名"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row
-        v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
-        :gutter="20"
-      >
-        <el-col :span="12">
-          <el-form-item label="增量开始时间" prop="incStartTime">
-            <el-date-picker
-              v-model="temp.incStartTime"
-              type="datetime"
-              placeholder="首次增量使用"
-              format="yyyy-MM-dd HH:mm:ss"
-              style="width: 57%"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="增量时间字段" prop="replaceParam">
-            <el-input
-              v-model="temp.replaceParam"
-              placeholder="-DlastTime='%s' -DcurrentTime='%s'"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="增量时间格式" prop="replaceParamType">
-            <el-select
-              v-model="temp.replaceParamType"
-              placeholder="增量时间格式"
-              @change="incStartTimeFormat"
-            >
-              <el-option
-                v-for="item in replaceFormatTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row
-        v-if="temp.glueType === 'BEAN' && temp.incrementType === 3"
-        :gutter="20"
-      >
-        <el-col :span="12">
-          <el-form-item label="分区字段" prop="partitionField">
-            <el-input
-              v-model="partitionField"
-              placeholder="请输入分区字段"
-              style="width: 56%"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="分区时间">
-            <el-select v-model="timeFormatType" placeholder="分区时间格式">
-              <el-option
-                v-for="item in timeFormatTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="5">
-          <el-input-number
-            v-model="timeOffset"
-            :min="-20"
-            :max="0"
-            style="width: 65%"
+        </span>
+      </el-dialog>
+      <el-form-item label="Cron：" prop="jobCron">
+        <el-input
+          v-model="temp.jobCron"
+          auto-complete="off"
+          placeholder="请输入Cron表达式"
+          style="width: 300px"
+        >
+          <el-button
+            v-if="!showCronBox"
+            slot="append"
+            icon="el-icon-turn-off"
+            title="打开图形配置"
+            @click="showCronBox = true"
           />
-        </el-col>
-      </el-row>
-      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
-        <el-col :span="24">
-          <el-form-item label="JVM启动参数">
-            <el-input
-              v-model="temp.jvmParam"
-              placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="SQL脚本">
-            <el-radio v-model="radio" label="1">数据开发保存任务</el-radio>
-            <el-radio v-model="radio" label="2">本地导入</el-radio>
-            <el-radio v-model="radio" label="3">自定义</el-radio>
-          </el-form-item>
-        </el-col>
-      </el-row>
+          <el-button
+            v-else
+            slot="append"
+            icon="el-icon-open"
+            title="关闭图形配置"
+            @click="showCronBox = false"
+          />
+        </el-input>
+      </el-form-item>
 
-      <el-select
+      <el-form-item label="数据源连接：" prop="dataSourceId">
+        <el-select v-model="temp.dataSourceId" placeholder="请选择数据源连接">
+          <el-option
+            v-for="item in blockStrategies"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="Schema：">
+        <el-select v-model="temp.schema" placeholder="请选择schema">
+          <el-option
+            v-for="item in schemaList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="报警邮件：">
+        <el-input
+          v-model="temp.alarmEmail"
+          placeholder="请输入报警邮件，多个用逗号分隔"
+        />
+      </el-form-item>
+
+      <el-form-item label="失败重试次数：">
+        <el-input-number
+          v-model="temp.executorFailRetryCount"
+          size="small"
+          :min="0"
+          :max="20"
+        />
+      </el-form-item>
+
+      <el-form-item label="子任务：">
+        <el-select
+          v-model="temp.childJobId"
+          multiple
+          placeholder="子任务"
+          value-key="id"
+        >
+          <el-option
+            v-for="item in jobIdList"
+            :key="item.id"
+            :label="item.jobDesc"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="SQL脚本：">
+        <el-radio v-model="radio" label="1">数据开发保存任务</el-radio>
+        <el-radio v-model="radio" label="2">本地导入</el-radio>
+        <el-radio v-model="radio" label="3">自定义</el-radio>
+      </el-form-item>
+      <el-form-item>
+        <el-select
         v-if="radio === '1'"
         v-model="temp.SQLScript"
         placeholder="选择SQL脚本"
@@ -322,37 +130,37 @@
           :label="item.label"
           :value="item.value"
         />
-      </el-select>
+        </el-select>
+        <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          multiple
+          :limit="3"
+          :on-exceed="handleExceed"
+          :file-list="fileList"
+          :on-success="successFile"
+          v-if="radio === '2'"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
 
-      <el-upload
-        class="upload-demo"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        multiple
-        :limit="3"
-        :on-exceed="handleExceed"
-        :file-list="fileList"
-        :on-success="successFile"
-        v-if="radio === '2'"
-      >
-        <el-button size="small" type="primary">点击上传</el-button>
-      </el-upload>
-
-
+      <el-form-item>
+        <div class="scriptJson">
+          <textarea v-model="jsonContent" ref="mycode" class="codesql"></textarea>
+        </div>
+      </el-form-item>
     </el-form>
-    <div class="scriptJson">
-      <textarea v-model="jsonContent"  ref="mycode" class="codesql" ></textarea>
-    </div>
-    <div>
+    
+    <div class="from_btn">
       <el-button @click="dialogFormVisible = false"> 取消 </el-button>
       <el-button type="primary" @click="createData()">
-        <!-- <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()"> -->
         确定
       </el-button>
     </div>
-    <!-- </el-dialog> -->
   </div>
 </template>
 
@@ -369,7 +177,6 @@ import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
 import { getTableSchema } from "@/api/metadata-query";
-
 
 import "codemirror/theme/ambiance.css";
 import "codemirror/lib/codemirror.css";
@@ -418,7 +225,7 @@ export default {
     };
     return {
       schemaList: [],
-      jsonContent: '',
+      jsonContent: "",
       fileList: [],
       radio: "1",
       projectIds: "",
@@ -871,8 +678,7 @@ export default {
       });
     },
 
-
-//上传文件
+    //上传文件
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -889,37 +695,38 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    successFile(response, file, fileList){
-      const _this = this
+    successFile(response, file, fileList) {
+      const _this = this;
       //FileReader读取文件内容
       let reader = new FileReader();
-      reader.readAsText(file.raw, 'UTF-8');
+      reader.readAsText(file.raw, "UTF-8");
       reader.onload = function (e) {
-          // urlData就是对应的文件内容
-          let urlData = this.result;
-          _this.jsonContent = urlData;
-          _this.$options.editor.getDoc().setValue(urlData)
+        // urlData就是对应的文件内容
+        let urlData = this.result;
+        _this.jsonContent = urlData;
+        _this.$options.editor.getDoc().setValue(urlData);
       };
     },
 
     //数据源列表
-  fetchSourceData() {
-      datasourceApi.list({current: 1,size: 1000}).then(response => {
-        const { records } = response
-        const { total } = response
-        this.blockStrategies = records
-      })
+    fetchSourceData() {
+      datasourceApi.list({ current: 1, size: 1000 }).then((response) => {
+        const { records } = response;
+        const { total } = response;
+        this.blockStrategies = records;
+      });
     },
     //schema列表
     async getSchemaList() {
-      let schemaList = await getTableSchema({datasourceId:this.temp.dataSourceId});
+      let schemaList = await getTableSchema({
+        datasourceId: this.temp.dataSourceId,
+      });
       console.log(schemaList);
-      this.schemaList = schemaList
-
+      this.schemaList = schemaList;
     },
 
-  //初始化sql编辑器
-   mountCodeMirror() {
+    //初始化sql编辑器
+    mountCodeMirror() {
       let mime = "text/x-sql";
       let theme = "ambiance"; //设置主题，不设置的会使用默认主题
       const _this = this;
@@ -929,7 +736,7 @@ export default {
         smartIndent: true,
         lineNumbers: true,
         matchBrackets: true,
-        gutters:['CodeMirror-linenumbers'],
+        gutters: ["CodeMirror-linenumbers"],
         // theme: theme,
         // autofocus: true,
         // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
@@ -949,26 +756,22 @@ export default {
   },
 
   computed: {
-    dataSourceIdSchema(){
-      return this.temp.dataSourceId
-    }
+    dataSourceIdSchema() {
+      return this.temp.dataSourceId;
+    },
   },
 
   watch: {
-    dataSourceIdSchema(){
-      this.getSchemaList()
-    }
+    dataSourceIdSchema() {
+      this.getSchemaList();
+    },
   },
 
-
-
-  editor:null,
-
-  
+  editor: null,
 };
 </script>
 
-<style>
+<style scoped>
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
@@ -979,7 +782,28 @@ export default {
 .scriptJson {
   margin-top: 20px;
 }
-.CodeMirror-linenumbers {
-  background: rgb(23, 31, 71);
+ 
+.input_from >>> .el-form-item {
+  margin-bottom: 8px;
 }
+.input_from >>> .el-form-item__error {
+  padding-top: 0;
+  top:90%
+}
+.from_btn {
+  text-align: right;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid rgb(233, 230, 230);
+}
+</style>
+
+<style>
+.CodeMirror {
+  border: 1px solid #D9D9D9;
+}
+.CodeMirror-linenumbers {
+  background: rgba(240, 240, 242, 1);
+}
+
 </style>
