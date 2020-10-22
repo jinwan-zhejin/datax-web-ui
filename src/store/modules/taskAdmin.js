@@ -4,8 +4,9 @@ const state = {
         'IMPORT': '引入任务',
         'EXPORT': '导出任务',
         'SQLJOB': 'SQL任务',
+        'SPARK': 'SPARK任务'
     },
-    tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB'],
+    tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB', 'SPARK'],
     tabType: '',
     tableData: [], //新建时的表格类型
     projectId: '',//选择项目的id
