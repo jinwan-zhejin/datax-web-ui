@@ -2,14 +2,15 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 18:30:33
+ * @LastEditTime: 2020-10-22 18:22:50
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
 
 <template>
-  <div>
+  <div :key="timer">
     <el-row class="top-buttons">
+      <!-- <el-button @click="test2">123</el-button> -->
       <el-col>
         <el-tooltip content="刷新搜索结果" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-refresh" @click="refreshList" />
@@ -26,11 +27,11 @@
           multiple
           collapse-tags
           placeholder="其他列项"
-          @change="test2"
+          @change="test"
         >
           <el-option
-            v-for="item in tableColumns"
-            :key="item.value"
+            v-for="(item, index) in tableColumns"
+            :key="index"
             :label="translateIt(item.label)"
             :value="item.value"
           />
@@ -38,28 +39,22 @@
       </el-col>
     </el-row>
     <el-row class="typeAndClassifications">
-      <el-col v-if="searchRequestItem.length > 0" :span="24">
+      <el-col v-if="searchParams.length > 0" :span="24">
         <span class="searchResult">
-          <span v-for="(item, index) in searchRequestItem" :key="item+index" class="filterQuery">
+          <span v-for="(item, index) in searchParams" :key="index" class="filterQuery">
             <span>(</span>
             <span class="group">
               <span class="capsuleView">
                 <span class="key">{{ item.key }}</span>
                 <span> : </span>
                 <span class="value">{{ item.value }}</span>
-                <i class="el-icon-error" @click="deleteFilterItem(item)" />
+                <i class="el-icon-error" @click="deleteFilterItem(index, item.name)" />
               </span>
             </span>
             <span>)</span>
-            <span v-if="index !== (searchRequestItem.length - 1)">AND</span>
+            <span v-if="index !== (searchParams.length - 1)">AND</span>
           </span>
         </span>
-        <!-- <div v-for="(item, index) in searchRequestItem" :key="item+index">
-          <span>{{ index === 0 ? '(&nbsp;' : '' }}</span>
-          <span>{{ item.key }}: {{ item.value }}<i class="el-icon-error" @click="deleteThisRequest(item)" /></span>
-          {{ index !== (searchRequestItem.length - 1) ? '&nbsp;And&nbsp;' : '' }}
-          <span>{{ index === (searchRequestItem.length - 1) ? ')&nbsp;' : '' }}</span>
-        </div> -->
       </el-col>
     </el-row>
     <el-row>
@@ -74,14 +69,14 @@
           <el-table-column key="描述" label="描述" min-width="110" prop="attributes.description" />
           <el-table-column key="类型" label="类型" prop="typeName">
             <template v-slot:default="{row}">
-              <a class="tableItemLink" @click="gotoNextResult('entity',row.typeName)">{{ row.typeName }}</a>
+              <a class="tableItemLink" @click="researchEntity(row.typeName)">{{ row.typeName }}</a>
             </template>
           </el-table-column>
           <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
               <el-button-group v-if="row.classifications.length > 1" style="width: 150px">
                 <el-tooltip :content="row.classifications[0].typeName">
-                  <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
+                  <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="researchClassification(row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
                 </el-tooltip>
                 <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(row.guid, row.classifications[0].typeName, row.attributes.name)" />
               </el-button-group>
@@ -91,10 +86,10 @@
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                    <div v-for="(classes, index) in row.classifications" :key="classes">
+                    <div v-for="(classes, index) in row.classifications" :key="index">
                       <el-button-group v-if="index !== 0" style="width: 150px">
                         <el-tooltip :content="classes.typeName">
-                          <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoNextResult('classification',classes.typeName)">{{ classes.typeName }}</el-button>
+                          <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="researchClassification(classes.typeName)">{{ classes.typeName }}</el-button>
                         </el-tooltip>
                         <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(classes.entityGuid, classes.typeName, row.attributes.name)" />
                       </el-button-group>
@@ -123,7 +118,7 @@
               <el-button type="primary" plain size="mini" @click="metaCompare(row.guid)">元数据比对</el-button>
             </template>
           </el-table-column>
-          <el-table-column v-for="item in tableColumnsSelected" :key="item.value" :label="item.label" :prop="item.value" />
+          <el-table-column v-for="(item, index) in tableColumnsSelected" :key="index" :label="item.label" :prop="item.value" />
         </el-table>
         <!-- <el-pagination
           background
@@ -181,12 +176,8 @@ export default {
   components: {
     AddClassification
   },
-  // searchRequest 对象，存entity type和classifications
   props: {
-    // eslint-disable-next-line vue/require-default-prop
-    searchRequest: Object,
-    // eslint-disable-next-line vue/require-default-prop
-    classificationList: Array // 分类有值列表
+    classificationList: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -234,42 +225,37 @@ export default {
       deleteClassificationFlag: false,
       deleteGuid: '',
       deleteClass: '',
-      deleteTypeName: ''
+      deleteTypeName: '',
+      resultQuery: '', // 存储从路由读到的参数
+      timer: ''
     }
   },
   computed: {
-    searchRequestItem() {
-      const temp = []
-      if (this.searchRequest['params'].typeName !== null) {
+    // 显示查询参数
+    searchParams() {
+      var temp = []
+      for (var i in this.resultQuery) {
+        if (i === 'attributes') {
+          continue
+        }
         temp.push({
-          key: '类型',
-          name: 'typeName',
-          value: this.searchRequest['params'].typeName
+          key: this.translateIt(i),
+          name: i,
+          value: this.resultQuery[i]
         })
       }
-      if (this.searchRequest['params'].classification !== null) {
-        temp.push({
-          key: '分类',
-          name: 'classification',
-          value: this.searchRequest['params'].classification
-        })
-      }
-      if (this.searchRequest['params'].termName !== null) {
-        temp.push({
-          key: '术语',
-          name: 'termName',
-          value: this.searchRequest['params'].termName
-        })
-      }
-      if (this.searchRequest['params'].query !== null) {
-        temp.push({
-          key: '查询',
-          name: 'query',
-          value: this.searchRequest['params'].query
-        })
-      }
-      console.log(temp)
       return temp
+    },
+    searchParamsAttributes() {
+      const arr = []
+      if (this.resultQuery.hasOwnProperty('attributes')) {
+        const temp = decodeURIComponent(this.resultQuery.attributes).split(',')
+        for (let i = 0; i < temp.length; i++) {
+          arr.push(temp[i])
+        }
+        return arr
+      }
+      return arr
     },
     formatDate() {
       return timestamp => {
@@ -295,22 +281,39 @@ export default {
     }
   },
   watch: {
-    // 深度监控父组件传值searchRequest是否改变
-    searchRequest: {
-      handler: function(val) {
+    '$route.query': {
+      handler(val, oldVal) {
+        this.resultQuery = val
         this.refreshList()
+        console.log('query changed');
+      },
+      deep: true
+    },
+    resultQuery: {
+      handler(val, oldVal) {
+        console.log('resultQuery changed');
+        if (!val.hasOwnProperty('type') && !val.hasOwnProperty('term') && !val.hasOwnProperty('tag') && !val.hasOwnProperty('query')) {
+          this.backToSearch()
+        }
       },
       deep: true
     }
   },
+  created() {
+    this.resultQuery = this.$route.query
+    this.refreshList()
+  },
   mounted() {
-    this.$nextTick(function() {
-      this.refreshList()
-    })
+    // this.$nextTick(function() {
+    //   this.refreshList()
+    // })
   },
   methods: {
     test2() {
-      console.log(this.tableColumnsSelected)
+      this.$router.replace({
+        name: 'atlasSearch',
+        query: {}
+      })
     },
     test(info) {
       console.log(info)
@@ -359,37 +362,42 @@ export default {
          * @description: 初始化页面并返回到Search界面
          */
     backToSearch() {
-      // console.log('通知父组件切页面')
-      this.initSearchRequest()
-      this.$emit('changepage', 'atlasSearch')
+      this.$router.replace({
+        name: 'atlasSearch'
+      })
     },
     /**
          * @description: 通知父组件跳转到details界面
          */
     goToDetails(row) {
-      this.$emit('changedetail', JSON.stringify(row))
+      this.$router.replace({
+        name: 'atlasDetails',
+        params: {
+          guid: row.guid
+        },
+        query: this.$route.query
+      })
     },
     /**
          * @description: 重新获取表信息
          */
     async refreshList() {
       // console.log('父组件传值改变重新获取数据')
-      if (this.searchRequest.params.typeName === null && this.searchRequest.params.termName === null && this.searchRequest.params.classification === null && this.searchRequest.params.query === null) {
-        if (this.searchRequest.businessMetadata === null) {
-          // 全空报错
-          // this.$message({
-          //   message: '未选择实体、分类、业务元数据、词汇表、自定义过滤器',
-          //   showClose: true,
-          //   type: 'error',
-          //   duration: 4000
-          // })
-          this.backToSearch()
-        } else {
-          // 执行渲染businessmetadata
-          console.log('渲染businessmetadata')
-        }
+      console.log(this.resultQuery);
+      if (!this.resultQuery.hasOwnProperty('type') && !this.resultQuery.hasOwnProperty('term') && !this.resultQuery.hasOwnProperty('tag') && !this.resultQuery.hasOwnProperty('query')) {
+        this.backToSearch()
       } else {
-        const res = await apiatlas.getTableByItems(this.searchRequest.params)
+        const res = await apiatlas.getTableByItems({
+          attributes: this.searchParamsAttributes,
+          classification: this.resultQuery.hasOwnProperty('tag') ? this.resultQuery.tag : null,
+          excludeDeletedEntities: true,
+          includeClassificationAttributes: true,
+          includeSubClassifications: true,
+          includeSubTypes: true,
+          limit: 25,
+          offset: 0,
+          typeName: this.resultQuery.hasOwnProperty('type') ? this.resultQuery.type : null
+        })
         console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
           this.tableData = res.data.entities
@@ -403,12 +411,6 @@ export default {
           })
         }
       }
-    },
-    /**
-         * @description: 通知父组件初始化查找条件
-         */
-    initSearchRequest() {
-      this.$emit('changepage', 'initSearchByListItem')
     },
     /**
          * @description: 保存为自定义过滤器
@@ -425,12 +427,35 @@ export default {
     /**
          * @description: 删除筛选条件
          */
-    deleteFilterItem(item) {
+    deleteFilterItem(index, name) {
       // console.log('删除查询搜索条件')
-      this.$emit('deletefilteritem', JSON.stringify(item))
+      this.$delete(this.resultQuery, name)
+      var temp = JSON.parse(JSON.stringify(this.resultQuery))
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {}
+      })
+      this.$router.replace({
+        name: 'atlasResult',
+        query: temp
+      })
+      console.log(this.$route.query);
     },
-    gotoNextResult(type, param) {
-      this.$emit('changeresult', type.concat('?').concat(param))
+    researchClassification(param) {
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {
+          tag: param
+        }
+      })
+    },
+    researchEntity(param) {
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {
+          type: param
+        }
+      })
     },
     /**
      * @description: 打开添加分类面板

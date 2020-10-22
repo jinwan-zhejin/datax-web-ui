@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 11:09:13
+ * @LastEditTime: 2020-10-22 18:07:57
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -96,6 +96,19 @@ export async function getItemsNotEmpty() {
 /**
  * @description: mysql数据类型的列表
  * @param {object} data 请求数据
+ *                attributes: ["额外显示的列"]，
+                  classification: "分类"，
+                  entityFilters: "实体过滤器"，
+                  excludeDeletedEntities: true，
+                  includeClassificationAttributes: true，
+                  includeSubClassifications: true，
+                  includeSubTypes: true，
+                  limit: 25页面显示条数，
+                  offset: 0偏移，
+                  query: null，
+                  tagFilters: "分类过滤器"，
+                  termName: "术语名"，
+                  typeName: "实体名"
  * @return {object} axios返回值
  */
 export async function getTableByItems(data) {
@@ -137,6 +150,24 @@ export async function getCustomFilters() {
     method: 'get',
     params: {
       _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 重命名自定义过滤器
+ * @param {object} data参数
+ * @return {object} axios返回值
+ */
+export async function setCustomFilters(data) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/saved',
+    method: 'put',
+    data,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
     }
   })
   return res

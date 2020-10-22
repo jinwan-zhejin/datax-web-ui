@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 18:28:43
+ * @LastEditTime: 2020-10-22 18:18:00
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -73,7 +73,7 @@
                   <!-- 显示的文字 -->
                   <span>{{ node.label }}</span>
                   <span>
-                    <el-button v-show="searchByListItem.params.classification === node.label.split(' (')[0]" type="text">
+                    <el-button v-show="resultQuery.tag === node.label.split(' (')[0]" type="text">
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
                         <span class="el-dropdown-link">
                           <i class="el-icon-more" />
@@ -88,7 +88,7 @@
                           <el-dropdown-item @click.stop.native="">
                             <i class="el-icon-delete" style="color:#3D5FFF;" />删除
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="handleNodeClickClassificationsMini(data)">
+                          <el-dropdown-item @click.stop.native="searchClassifications(data)">
                             <i class="el-icon-search" style="color:#3D5FFF;" />查找
                           </el-dropdown-item>
                         </el-dropdown-menu>
@@ -203,7 +203,7 @@
                   <span>
                     <el-button
                       v-if="node.label !== '高级搜索' && node.label !== '普通搜索'"
-                      v-show="searchByListItem.params.typeName === data.searchParameters.typeName && searchByListItem.params.classification === data.searchParameters.classification"
+                      v-show="resultQuery.type === data.searchParameters.typeName && resultQuery.tag === data.searchParameters.classification"
                       type="text"
                     >
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
@@ -211,7 +211,7 @@
                           <i class="el-icon-more" />
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item @click.stop.native="">
+                          <el-dropdown-item @click.stop.native="filterRename(node.label, data)">
                             <i class="el-icon-edit" style="color:#3D5FFF;" />重命名
                           </el-dropdown-item>
                           <el-dropdown-item @click.stop.native="">
@@ -230,145 +230,30 @@
       <el-container>
         <el-header>
           <el-tooltip content="统计数据" placement="bottom-start">
-            <el-button style="position: absolute; right: 30px; z-index: 999; font-size: 22px;" type="text" icon="el-icon-s-data" @click="openStatistics" />
+            <el-button style="position: absolute; right: 30px; z-index: 999; font-size: 22px;" type="text" icon="el-icon-s-data" @click="statisticsShow=true" />
           </el-tooltip>
-          <Search v-if="['atlasResult','atlasDetails'].indexOf(this.$route.name) > -1" style="margin-top: 20px" :entities="entity.data" @changedetail="changeDetail" @changeresult="changeResult" />
+          <Search v-if="['atlasResult','atlasDetails'].indexOf(this.$route.name) > -1" style="margin-top: 20px" :entities="entity.data" />
         </el-header>
         <el-main class="right-container">
           <router-view
             :key="timer"
             name="atlas"
-            :search-request="searchByListItem"
-            :details-request="searchByName"
-            :entities="entity.data"
-            :classification-list="classifications.data"
+            :classification-list="classifications.hasVal"
             replace
-            @changepage="changePage"
-            @changedetail="changeDetail"
-            @changeresult="changeResult"
-            @deletefilteritem="deleteFilterItem"
           />
         </el-main>
       </el-container>
     </el-container>
-    <el-dialog :visible.sync="statistics.show" title="统计数据" width="80%">
-      <el-button style="position: absolute;right: 55px;top: 15px;" size="mini" plain type="primary" icon="el-icon-refresh-left" @click="getStatistics" />
-      <el-collapse v-model="statistics.activeCollapse">
-        <el-collapse-item name="entity">
-          <div slot="title" class="collapse-title">
-            实体 ({{ statistics.entity.count }})
-          </div>
-          <el-table :data="statistics.entity.table" :default-sort="{prop: 'key'}">
-            <el-table-column label="实体类型" prop="key" />
-            <el-table-column :label="'有效 (' + statistics.entity.active + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-blue':row.active>0}">{{ row.active }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column :label="'已删除 (' + statistics.entity.deleted + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-red':row.deleted>0}">{{ row.deleted }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column :label="'Shell (' + statistics.entity.shell + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-red':row.shell>0}">{{ row.shell }}</a>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <el-collapse-item name="classification">
-          <div slot="title" class="collapse-title">
-            分类 ({{ statistics.classification.count }})
-          </div>
-          <el-table :data="statistics.classification.table" :default-sort="{prop: 'key'}">
-            <el-table-column label="名称" prop="key" />
-            <el-table-column :label="'数量 (' + statistics.classification.count + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-blue':row.count>0}">{{ row.count }}</a>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <el-collapse-item name="server">
-          <div slot="title" class="collapse-title">
-            服务器统计
-          </div>
-          <el-col>
-            <el-table :data="statistics.server.server" :default-sort="{prop: 'key'}">
-              <el-table-column label="服务器详细信息" prop="key">
-                <template v-slot:default="{row}">
-                  {{ translater(row.key) }}
-                </template>
-              </el-table-column>
-              <el-table-column label="" prop="value" />
-            </el-table>
-          </el-col>
-          <el-col>
-            <br>
-            通知详情
-            <el-table>
-              <el-table-column label="Kafka主题分区" />
-              <el-table-column label="开始偏移" />
-              <el-table-column label="当前偏移" />
-              <el-table-column label="处理" />
-              <el-table-column label="失败" />
-              <el-table-column label="最后消息处理时间" />
-            </el-table>
-          </el-col>
-          <el-col>
-            <el-table :data="statistics.server.notification.table2" :default-sort="{prop: 'key'}">
-              <el-table-column label="期" prop="key" />
-              <el-table-column label="计数" prop="count" />
-              <el-table-column label="平均时间（毫秒）" prop="avg" />
-              <el-table-column label="创建" prop="creates" />
-              <el-table-column label="更新" prop="updates" />
-              <el-table-column label="删除" prop="deletes" />
-              <el-table-column label="失败" prop="failed" />
-            </el-table>
-          </el-col>
-        </el-collapse-item>
-        <el-collapse-item name="system">
-          <div slot="title" class="collapse-title">
-            系统详情
-          </div>
-          <el-table :data="statistics.system.os" :default-sort="{prop: 'key'}">
-            <el-table-column label="OS" prop="key">
-              <template v-slot:default="{row}">
-                {{ translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="" prop="value" />
-          </el-table>
-          <el-table :data="statistics.system.runtime" :default-sort="{prop: 'key'}">
-            <el-table-column label="运行环境" prop="key">
-              <template v-slot:default="{row}">
-                {{ translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="" prop="value" />
-          </el-table>
-          <el-table :data="statistics.system.memory" :default-sort="{prop: 'key'}">
-            <el-table-column label="内存" prop="key">
-              <template v-slot:default="{row}">
-                {{ row.key.indexOf('_')>-1 ? translaterMaster(row.key):translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="">
-              <template v-slot:default="{row}">
-                <!-- {{ (row.key==='memory_pool_usages'||row.key==='nonHeapMax') ? row.value : computeSize(row.value).concat(' MB') }} -->
-                <span v-if="row.key==='nonHeapMax'">{{ row.value }}</span>
-                <span v-else-if="row.key==='memory_pool_usages'">
-                  <json-viewer :value="row.value" :expand-depth="2" expanded :copyable="false" boxed sort />
-                </span>
-                <span v-else>{{ computeSize(row.value).concat(' MB') }}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-      </el-collapse>
+    <Statistics :statistics-show="statisticsShow" @closestatistics="statisticsShow=false" />
+    <el-dialog :visible.sync="filterRenameShow" title="重命名自定义过滤器" @close="()=>{this.$refs.filterInfo.resetFields()}">
+      <el-form ref="filterInfo" :model="filterInfo">
+        <el-form-item label="名称" prop="filterName" :rules="{ required: true, message: '请输入过滤器名称', trigger: 'blur' }">
+          <el-input v-model="filterInfo.filterName" />
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="primary" @click="statistics.show=false">关 闭</el-button>
+        <el-button size="small" type="primary" @click="filterRenameShow=false">关 闭</el-button>
+        <el-button size="small" type="primary" @click="submitFilterName('filterInfo')">更 新</el-button>
       </div>
     </el-dialog>
   </div>
@@ -379,12 +264,9 @@ import SubPageSearch from './components/subPageSearch'
 import SubPageResult from './components/subPageResult'
 import SubPageDetails from './components/subPageDetails'
 import Search from './components/search'
+import Statistics from './components/statistics'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import Router from 'vue-router'
-import Vue from 'vue'
-import JsonViewer from 'vue-json-viewer'
-Vue.use(JsonViewer)
-import { translater, translaterMaster } from './utils/dictionary'
 
 const router = new Router({
   // mode: 'history',
@@ -405,7 +287,7 @@ const router = new Router({
       }
     },
     {
-      path: '/cloudbeaveratlas/management/details',
+      path: '/cloudbeaveratlas/management/details/:guid',
       name: 'atlasDetails',
       components: {
         atlas: SubPageDetails
@@ -424,7 +306,8 @@ const router = new Router({
 export default {
   name: 'DbeaverAltas',
   components: {
-    Search
+    Search,
+    Statistics
   },
   router, // 私有路由
   data() {
@@ -434,30 +317,6 @@ export default {
       collapseExistName: ['entity', 'classifications', 'customFilter'],
       createDialogShow: false, // 创建实体dialog显示
       leftLoading: ['entity', 'classifications', 'customFilter'],
-      /* 存点选的实体和分类列表项 - 查询atlasResult
-             * typeName 实体类型
-             * classification 分类
-             * termName 术语
-             * businessmetadata 业务元数据
-             */
-      searchByListItem: {
-        params: {
-          excludeDeletedEntities: true,
-          includeSubClassifications: true,
-          includeSubTypes: true,
-          includeClassificationAttributes: true,
-          entityFilters: null,
-          tagFilters: null,
-          attributes: [],
-          limit: 25,
-          offset: 0,
-          query: null,
-          typeName: null,
-          classification: null,
-          termName: null
-        },
-        businessMetadata: null
-      },
       searchByName: {}, // 查询atlasDetails
       /* 折叠面板项
              * collapseName 面板名（EN）
@@ -544,41 +403,18 @@ export default {
       businessMetadataHighlight: false,
       glossariesHighlight: false,
       customFilterHighlight: false,
-      // 统计
-      statistics: {
-        show: false, // dialog显示
-        data: {}, // 统计数据
-        activeCollapse: ['classification', 'server'],
-        entity: {
-          count: 0, // 总数
-          active: 0, // 有效
-          deleted: 0, // 已删除
-          shell: 0,
-          table: []
-        },
-        classification: {
-          count: 0, // 总数
-          table: []
-        },
-        server: {
-          server: [],
-          notification: {
-            table1: [],
-            table2: []
-          }
-        },
-        system: {
-          os: [],
-          runtime: [],
-          memory: []
-        }
-      }
-    }
-  },
-  computed: {
-    computeSize() {
-      return rowdata => {
-        return (parseInt(rowdata) / 1048576).toFixed(2)
+      // 统计dialog显示
+      statisticsShow: false,
+      resultQuery: {
+        // searchType: 'basic', // 搜索方式
+        type: null, // 实体名
+        tag: null, // 分类名
+        attributes: null
+      },
+      filterRenameShow: false,
+      filterInfo: {
+        filterName: '',
+        filterInfos: ''
       }
     }
   },
@@ -639,23 +475,36 @@ export default {
         }
       }
     },
-    'searchByListItem.params.typeName'(val, oldVal) {
-      if (val === null) {
-        this.$refs.entity.setCurrentKey(null)
-        this.entityHighlight = false
-      } else {
-        this.$refs.entity.setCurrentKey(val)
-        this.entityHighlight = true
-      }
-    },
-    'searchByListItem.params.classification'(val, oldVal) {
-      if (val === null) {
-        this.$refs.classifications.setCurrentKey(null)
-        this.classificationsHighlight = false
-      } else {
-        this.$refs.classifications.setCurrentKey(val)
-        this.classificationsHighlight = true
-      }
+    // '$route.query.type'(val, oldVal) {
+    //   if (val === null) {
+    //     this.resultQuery.type = val
+    //     this.$refs.entity.setCurrentKey(null)
+    //     this.entityHighlight = false
+    //   } else {
+    //     this.$refs.entity.setCurrentKey(val)
+    //     this.entityHighlight = true
+    //   }
+    // },
+    // '$route.query.tag'(val, oldVal) {
+    //   if (val === null) {
+    //     this.resultQuery.type = val
+    //     this.$refs.classifications.setCurrentKey(null)
+    //     this.classificationsHighlight = false
+    //   } else {
+    //     this.$refs.classifications.setCurrentKey(val)
+    //     this.classificationsHighlight = true
+    //   }
+    // },
+    '$route.query': {
+      handler(val, oldVal) {
+        this.resultQuery.type = val.hasOwnProperty('type') ? val.type : null
+        this.resultQuery.tag = val.hasOwnProperty('tag') ? val.tag : null
+        this.$refs.entity.setCurrentKey(this.resultQuery.type)
+        this.entityHighlight = (this.resultQuery.type !== null)
+        this.$refs.classifications.setCurrentKey(this.resultQuery.tag)
+        this.classificationsHighlight = (this.resultQuery.tag !== null)
+      },
+      deep: true
     }
   },
   mounted() {
@@ -698,73 +547,88 @@ export default {
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickEntity(data) {
-      this.searchByListItem.params.typeName =
-        (this.searchByListItem.params.typeName === data.name.split(' (')[0])
-          ? null : data.name.split(' (')[0]
-      this.searchByListItem.businessMetadata = null
+      this.resultQuery.type = (this.resultQuery.type === data.name.split(' (')[0]) ? null : data.name.split(' (')[0]
+      this.resultQuery.attributes = null
+      var tempQuery = {}
+      for (var i in this.resultQuery) {
+        if (this.resultQuery[i] !== null) {
+          tempQuery[i] = this.resultQuery[i]
+        }
+      }
       this.$router.replace({
-        name: 'atlasResult'
+        name: 'atlasResult',
+        query: tempQuery
       })
     },
     /**
-     * @description: entity el-tree节点点击事件
+     * @description: classifications el-tree节点点击事件
      */
     handleNodeClickClassifications(data) {
-      // console.log(this.classifications.toShow);
-      this.searchByListItem.params.classification =
-        (this.searchByListItem.params.classification === data.name.split(' (')[0])
-          ? null : data.name.split(' (')[0]
-      this.searchByListItem.businessMetadata = null
+      this.resultQuery.tag = (this.resultQuery.tag === data.name.split(' (')[0]) ? null : data.name.split(' (')[0]
+      this.resultQuery.attributes = null
+      var tempQuery = {}
+      for (var i in this.resultQuery) {
+        if (this.resultQuery[i] !== null) {
+          tempQuery[i] = this.resultQuery[i]
+        }
+      }
       this.$router.replace({
-        name: 'atlasResult'
+        name: 'atlasResult',
+        query: tempQuery
       })
     },
-    handleNodeClickClassificationsMini(data) {
-      this.searchByListItem.params.classification = data.name.split(' (')[0]
-      this.searchByListItem.businessMetadata = null
-      this.searchByListItem.params.typeName = null
-      this.searchByListItem.params.termName = null
+    /**
+     * @description: 分类 - 每项 - 更多选项 - 查找
+     */
+    searchClassifications(data) {
       this.$router.replace({
-        name: 'atlasResult'
+        name: 'atlasResult',
+        query: {
+          searchType: 'basic',
+          tag: data.name.split(' (')[0]
+        }
       })
     },
     /**
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickBusinessMetadata(data) {
-      this.$router.replace({
-        name: 'atlasResult'
-      })
-      this.searchByListItem.params.typeName = null
-      this.searchByListItem.params.classification = null
-      this.searchByListItem.params.termName = null
-      this.searchByListItem.businessMetadata = data
     },
     /**
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickGlossaries(data) {
-      this.$router.replace({
-        name: 'atlasResult'
-      })
-      this.searchByListItem.businessMetadata = null
-      this.searchByListItem.params.termName = data.name.concat('@').concat(data.fathername)
     },
     /**
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickCustomFilter(data) {
-      if (this.searchByListItem.params.typeName === data.searchParameters.typeName && this.searchByListItem.params.classification === data.searchParameters.classification) {
-        this.searchByListItem.params.typeName = null
-        this.searchByListItem.params.classification = null
+      if (this.resultQuery.type === data.searchParameters.typeName && this.resultQuery.tag === data.searchParameters.classification) {
+        this.resultQuery.type = null
+        this.resultQuery.tag = null
       } else {
-        this.searchByListItem.params.typeName = data.searchParameters.typeName
-        this.searchByListItem.params.classification = data.searchParameters.classification
+        this.resultQuery.type = data.searchParameters.typeName
+        this.resultQuery.tag = data.searchParameters.classification
       }
-      this.searchByListItem.params.termName = null
-      this.searchByListItem.businessMetadata = null
+      for (var i = 0; i < data.searchParameters.attributes.length; i++) {
+        if (this.resultQuery.attributes === null) {
+          this.resultQuery.attributes = ''
+        }
+        this.resultQuery.attributes += data.searchParameters.attributes[i]
+        if (i !== data.searchParameters.attributes.length - 1) {
+          this.resultQuery.attributes += encodeURIComponent(',')
+        }
+      }
+      var tempQuery = {}
+      // eslint-disable-next-line no-redeclare
+      for (var i in this.resultQuery) {
+        if (this.resultQuery[i] !== null) {
+          tempQuery[i] = this.resultQuery[i]
+        }
+      }
       this.$router.replace({
-        name: 'atlasResult'
+        name: 'atlasResult',
+        query: tempQuery
       })
     },
     /**
@@ -873,7 +737,12 @@ export default {
         )
         this.classifications.toShow = this.classifications.hasVal
         for (var i in this.classifications.toShow) {
-          this.classifications.toShow[i].name = this.classifications.toShow[i].name + ' (' + this.notEmptyList.tag.tagEntities[this.classifications.toShow[i].name].toString() + ')'
+          if (this.classifications.toShow[i].name === '_ALL_CLASSIFICATION_TYPES' ||
+              this.classifications.toShow[i].name === '_CLASSIFIED' ||
+              this.classifications.toShow[i].name === '_NOT_CLASSIFIED') {
+            continue
+          }
+          this.classifications.toShow[i].name = this.classifications.toShow[i].name + ' (' + this.notEmptyList.tag.tagEntities[this.classifications.toShow[i].name] + ')'
         }
       } else {
         this.$message({
@@ -975,306 +844,49 @@ export default {
       }
     },
     /**
-         * @description: 切换子组件组件,不带参数
-         * @param {String} routerName 路由Name
-         */
-    changePage(routerName) {
-      if (routerName === 'initSearchByListItem') {
-        this.initSearchByListItem()
-      // } else if (isNaN(routerName) === false) { // 返回上一页有问题×
-      //   this.$router.go(parseInt(routerName))
-      } else {
-        this.timer = new Date().getTime()
-        this.$router.replace({
-          name: routerName
-        })
-      }
+     * @description: 重命名
+     */
+    filterRename(name, data) {
+      this.filterInfo.filterName = name
+      this.filterInfo.filterInfos = data
+      this.filterRenameShow = true
     },
     /**
-         * @description: 同detail页面切换数据
-         * @param {String} param数据(string)
-         */
-    changeDetail(objectJson) {
-      if (JSON.parse(objectJson).hasOwnProperty('guid')) {
-        this.searchByName.guid = JSON.parse(objectJson).guid
-        this.searchByName.typeName = JSON.parse(objectJson).typeName
-      }
-      console.log(this.searchByName);
-      this.timer = new Date().getTime()
-      this.$router.replace({
-        name: 'atlasDetails'
+     * @description: 提交修改
+     */
+    submitFilterName(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.filterInfo.filterInfos.name = this.filterInfo.filterName
+          // console.log(this.filterInfo.filterInfos.name);
+          this.setFilterName()
+        } else {
+          return false
+        }
       })
     },
     /**
-     * @description: 同result页面切换数据
-     * @param {String} string：类型？数据（string）
+     * @description: 重命名
      */
-    changeResult(string) {
-      switch (string.split('?')[0]) {
-        case 'entity':
-          this.searchByListItem.params.classification = null
-          this.searchByListItem.params.typeName = string.split('?')[1]
-          this.searchByListItem.params.termName = null
-          this.searchByListItem.businessMetadata = null
-          this.searchByListItem.params.query = null
-          break
-        case 'classification':
-          this.searchByListItem.params.classification = string.split('?')[1]
-          this.searchByListItem.params.typeName = null
-          this.searchByListItem.params.termName = null
-          this.searchByListItem.businessMetadata = null
-          this.searchByListItem.params.query = null
-          break
-        case 'query':
-          this.searchByListItem.params.classification = null
-          this.searchByListItem.params.typeName = null
-          this.searchByListItem.params.termName = null
-          this.searchByListItem.businessMetadata = null
-          this.searchByListItem.params.query = string.split('?')[1]
-      }
-      this.timer = new Date().getTime()
-      this.$router.replace({
-        name: 'atlasResult'
-      })
-    },
-    initSearchByListItem() {
-      this.searchByListItem = {
-        params: {
-          excludeDeletedEntities: true,
-          includeSubClassifications: true,
-          includeSubTypes: true,
-          includeClassificationAttributes: true,
-          entityFilters: null,
-          tagFilters: null,
-          attributes: [],
-          limit: 25,
-          offset: 0,
-          query: null,
-          typeName: null,
-          classification: null,
-          termName: null
-        },
-        businessMetadata: null
-      }
-    },
-    /**
-     * @description: 删除指定searchByListItem中的项, 过滤result
-     */
-    deleteFilterItem(item) {
-      this.searchByListItem.params[JSON.parse(item).name] = null
-    },
-    /**
-     * @description: 打开统计数据dialog
-     */
-    openStatistics() {
-      this.statistics.show = true
-      this.getStatistics()
-    },
-    /**
-     * @description: 获取统计数据
-     */
-    async getStatistics() {
-      const res = await apiatlas.getItemsNotEmpty()
+    async setFilterName() {
+      const res = await apiatlas.setCustomFilters(this.filterInfo.filterInfos)
       if (res.status === 200 && res.statusText === 'OK') {
-        this.initStatistics()
-        this.statistics.data = res.data.data
-        this.statistics.entity.count = this.statistics.data.general.entityCount
-        // 处理entity表格
-        for (var i in this.statistics.data.entity.entityActive) {
-          this.statistics.entity.active += this.statistics.data.entity.entityActive[i]
-          this.statistics.entity.table.push({
-            key: i,
-            active: this.statistics.data.entity.entityActive[i],
-            deleted: this.statistics.data.entity.entityDeleted.hasOwnProperty(i) ? this.statistics.data.entity.entityDeleted[i] : 0,
-            shell: this.statistics.data.entity.entityShell.hasOwnProperty(i) ? this.statistics.data.entity.entityShell[i] : 0
-          })
-        }
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.entity.entityDeleted) {
-          this.statistics.entity.deleted += this.statistics.data.entity.entityDeleted[i]
-          if (!this.statistics.data.entity.entityActive.hasOwnProperty(i)) {
-            this.statistics.entity.table.push({
-              key: i,
-              active: 0,
-              deleted: this.statistics.data.entity.entityDeleted[i],
-              shell: this.statistics.data.entity.entityShell.hasOwnProperty(i) ? this.statistics.data.entity.entityShell[i] : 0
-            })
-          }
-        }
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.entity.entityShell) {
-          this.statistics.entity.shell += this.statistics.data.entity.entityShell[i]
-          if (!this.statistics.data.entity.entityActive.hasOwnProperty(i) && !this.statistics.data.entity.entityDeleted.hasOwnProperty(i)) {
-            this.statistics.entity.table.push({
-              key: i,
-              active: 0,
-              deleted: 0,
-              shell: this.statistics.data.entity.entityShell[i]
-            })
-          }
-        }
-        // 处理classification表格
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.tag.tagEntities) {
-          this.statistics.classification.count += this.statistics.data.tag.tagEntities[i]
-          this.statistics.classification.table.push({
-            key: i,
-            count: this.statistics.data.tag.tagEntities[i]
-          })
-        }
-        // 处理server表格
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.general.stats) {
-          if (i.indexOf('Server:') > -1) {
-            // Server Details
-            this.statistics.server.server.push({
-              key: i.replace('Server:', ''),
-              value: (i.replace('Server:', '') === 'activeTimeStamp' || i.replace('Server:', '') === 'startTimeStamp') ? this.formatDate(this.statistics.data.general.stats[i]) : this.statistics.data.general.stats[i]
-            })
-          } else if (i.indexOf('Notification:') > -1) {
-            // Notification Details
-            if (i.replace('Notification:', '') === 'total') {
-              this.statistics.server.notification.table2.push({
-                key: this.translater(i.replace('Notification:', '')).concat(' (开始于').concat(this.formatDate(this.statistics.data.general.stats['Server:startTimeStamp']).concat(')')),
-                count: this.statistics.data.general.stats[i],
-                avg: this.statistics.data.general.stats[i.concat('AvgTime')],
-                creates: this.statistics.data.general.stats[i.concat('Creates')],
-                updates: this.statistics.data.general.stats[i.concat('Updates')],
-                deletes: this.statistics.data.general.stats[i.concat('Deletes')],
-                failed: this.statistics.data.general.stats[i.concat('Failed')]
-              })
-            } else if (i.replace('Notification:', '') === 'currentHour') {
-              this.statistics.server.notification.table2.push({
-                key: this.translater(i.replace('Notification:', '')).concat(' (开始于').concat(this.formatDate(this.statistics.data.general.stats[i.concat('StartTime')]).concat(')')),
-                count: this.statistics.data.general.stats[i],
-                avg: this.statistics.data.general.stats[i.concat('AvgTime')],
-                creates: this.statistics.data.general.stats[i.concat('EntityCreates')],
-                updates: this.statistics.data.general.stats[i.concat('EntityUpdates')],
-                deletes: this.statistics.data.general.stats[i.concat('EntityDeletes')],
-                failed: this.statistics.data.general.stats[i.concat('Failed')]
-              })
-            } else if (i.replace('Notification:', '') === 'currentDay') {
-              this.statistics.server.notification.table2.push({
-                key: this.translater(i.replace('Notification:', '')).concat(' (开始于').concat(this.formatDate(this.statistics.data.general.stats[i.concat('StartTime')]).concat(')')),
-                count: this.statistics.data.general.stats[i],
-                avg: this.statistics.data.general.stats[i.concat('AvgTime')],
-                creates: this.statistics.data.general.stats[i.concat('EntityCreates')],
-                updates: this.statistics.data.general.stats[i.concat('EntityUpdates')],
-                deletes: this.statistics.data.general.stats[i.concat('EntityDeletes')],
-                failed: this.statistics.data.general.stats[i.concat('Failed')]
-              })
-            } else if (i.replace('Notification:', '') === 'previousHour') {
-              this.statistics.server.notification.table2.push({
-                key: this.translater(i.replace('Notification:', '')),
-                count: this.statistics.data.general.stats[i],
-                avg: this.statistics.data.general.stats[i.concat('AvgTime')],
-                creates: this.statistics.data.general.stats[i.concat('EntityCreates')],
-                updates: this.statistics.data.general.stats[i.concat('EntityUpdates')],
-                deletes: this.statistics.data.general.stats[i.concat('EntityDeletes')],
-                failed: this.statistics.data.general.stats[i.concat('Failed')]
-              })
-            } else if (i.replace('Notification:', '') === 'previousDay') {
-              this.statistics.server.notification.table2.push({
-                key: this.translater(i.replace('Notification:', '')),
-                count: this.statistics.data.general.stats[i],
-                avg: this.statistics.data.general.stats[i.concat('AvgTime')],
-                creates: this.statistics.data.general.stats[i.concat('EntityCreates')],
-                updates: this.statistics.data.general.stats[i.concat('EntityUpdates')],
-                deletes: this.statistics.data.general.stats[i.concat('EntityDeletes')],
-                failed: this.statistics.data.general.stats[i.concat('Failed')]
-              })
-            }
-          }
-        }
-        this.statistics.server.server.push({
-          key: 'collectionTime',
-          value: this.formatDate(this.statistics.data.general.collectionTime)
+        this.$message({
+          message: '重命名成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
         })
-        // 处理system表格
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.system.os) {
-          this.statistics.system.os.push({
-            key: i,
-            value: this.statistics.data.system.os[i]
-          })
-        }
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.system.runtime) {
-          this.statistics.system.runtime.push({
-            key: i,
-            value: this.statistics.data.system.runtime[i]
-          })
-        }
-        // eslint-disable-next-line no-redeclare
-        for (var i in this.statistics.data.system.memory) {
-          // 大小单位转换
-          if (i === 'memory_pool_usages') {
-            for (var k in this.statistics.data.system.memory[i]) {
-              for (var j in this.statistics.data.system.memory[i][k]) {
-                this.statistics.data.system.memory[i][k][j] = (this.statistics.data.system.memory[i][k][j] / 1024 / 1024).toFixed(2).concat(' MB')
-              }
-            }
-          }
-          this.statistics.system.memory.push({
-            key: i,
-            value: this.statistics.data.system.memory[i]
-          })
-        }
+        this.loadListCustomFilters()
+        this.filterRenameShow = false
+      } else {
+        this.$message({
+          message: '重命名失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
       }
-    },
-    /**
-     * @description: 初始化统计数据
-     */
-    initStatistics() {
-      this.statistics.entity = {
-        count: 0, // 总数
-        active: 0, // 有效
-        deleted: 0, // 已删除
-        shell: 0,
-        table: []
-      }
-      this.statistics.classification = {
-        count: 0, // 总数
-        table: []
-      }
-      this.statistics.server = {
-        server: [],
-        notification: {
-          table1: [],
-          table2: []
-        }
-      }
-      this.statistics.system = {
-        os: [],
-        runtime: [],
-        memory: []
-      }
-    },
-    /**
-     * @description: 格式化时间
-     */
-    formatDate(val) {
-      const date = new Date(val);
-      const y = date.getFullYear();
-      let MM = date.getMonth() + 1;
-      MM = MM < 10 ? ('0' + MM) : MM;
-      let d = date.getDate();
-      d = d < 10 ? ('0' + d) : d;
-      let h = date.getHours();
-      // h = h < 10 ? ('0' + h) : h;
-      const ampm = h > 12 ? 'PM' : 'AM'
-      h = h > 12 ? (h - 12) : h
-      let m = date.getMinutes();
-      m = m < 10 ? ('0' + m) : m;
-      // let s = date.getSeconds();
-      // s = s < 10 ? ('0' + s) : s;
-      return y + '/' + MM + '/' + d + ' ' + h + ':' + m + ' ' + ampm + ' (CST)';
-    },
-    translater(str) {
-      return translater(str)
-    },
-    translaterMaster(str) {
-      return translaterMaster(str)
     }
   }
 };
@@ -1386,16 +998,6 @@ export default {
     border-radius: 20px;
     // border:3px solid rgba(201, 201, 201, 0.7);
     border-color: rgba(201, 201, 201, 0.7);
-}
-
-.alink-blue {
-  color: #3D5FFF;
-}
-.alink-red {
-  color: #b43d1f;
-}
-.alink:hover,.alink-red:hover {
-  text-decoration:underline
 }
 
 </style>

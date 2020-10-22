@@ -37,6 +37,7 @@ const translate = {
   'schema': '概要',
   'type': '类型',
   'term': '术语',
+  'tag': '分类',
   'classification': '分类',
   'classifications': '分类',
   'model': '模型',

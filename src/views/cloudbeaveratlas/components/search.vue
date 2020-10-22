@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-16 16:07:20
+ * @LastEditTime: 2020-10-22 10:40:59
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -37,8 +37,8 @@
                 <el-col :span="24">
                   <el-select v-model="entityType" size="small" filterable placeholder="请选择实体" clearable>
                     <el-option
-                      v-for="item in entities"
-                      :key="item.name"
+                      v-for="(item, index) in entities"
+                      :key="index"
                       :label="item.name"
                       :value="item.name"
                     />
@@ -137,8 +137,7 @@ import * as apiatlas from '@/api/datax-metadata-atlas'
 export default {
   name: 'Search',
   props: {
-    // eslint-disable-next-line vue/require-default-prop
-    entities: Object
+    entities: { type: Array, default: () => ([]) }
   },
   data() {
     return {

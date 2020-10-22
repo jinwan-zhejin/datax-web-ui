@@ -2,13 +2,13 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 18:29:36
+ * @LastEditTime: 2020-10-22 17:43:34
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
 
 <template>
-  <div>
+  <div :key="timer">
     <div class="container">
       <el-row>
         <el-col class="topBar" :span="4">
@@ -343,8 +343,6 @@ export default {
   },
   props: {
     // eslint-disable-next-line vue/require-default-prop
-    detailsRequest: Object,
-    // eslint-disable-next-line vue/require-default-prop
     classificationList: Array // 分类有值列表
   },
   data() {
@@ -375,7 +373,9 @@ export default {
       showEmptyRelationships: false, // 显示空值
       detailsCollapseActive: ['details0', 'details1', 'details2', 'details3'],
       addClassificationShow: false, // 打开添加分类面板
-      classificationInfo: {} // 为该条添加分类（guid，typeName）
+      classificationInfo: {}, // 为该条添加分类（guid，typeName）
+      resultGuid: '', // router params传值guid
+      timer: ''
     }
   },
   computed: {
@@ -539,70 +539,81 @@ export default {
     }
   },
   created() {
-    this.getProperties().then(() => {
-      if (this.properties.entity.hasOwnProperty('classifications')) {
-        for (var i in this.properties.entity.classifications) {
-          this.classificationsOptions.push({
-            value: this.properties.entity.classifications[i].typeName,
-            label: this.properties.entity.classifications[i].typeName
-          })
-        }
-      }
-      for (var j in this.properties.entity.attributes) {
-        if (j === 'tables' || j === 'instance') {
-          this.techProp.push({
-            key: j,
-            value: this.properties.entity.relationshipAttributes[j] === null ? 'N/A' : this.properties.entity.relationshipAttributes[j]
-          })
-        // } else if (j === 'databases') {
-        //   this.techProp.push({
-        //     key: j,
-        //     value: this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes === null ? 'N/A' : this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes
-        //   })
-        } else {
-          this.techProp.push({
-            key: j,
-            value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
-          })
-        }
-      }
-      for (var f in this.properties.entity.customAttributes) {
-        this.custProp.push({
-          key: f,
-          value: this.properties.entity.customAttributes[f] === null ? 'N/A' : this.properties.entity.customAttributes[f]
-        })
-      }
-      this.classifications = this.classificationsOptions.filter(item => item.value !== '')
-      for (var k in this.properties.entity.relationshipAttributes) {
-        // console.log(k + this.properties.entity.relationshipAttributes[k].length);
-        this.relationshipList.push({
-          key: k.concat((this.properties.entity.relationshipAttributes[k].length !== undefined && this.properties.entity.relationshipAttributes[k].length > 0) ? '(' + this.properties.entity.relationshipAttributes[k].length + ')' : ''),
-          value: this.properties.entity.relationshipAttributes[k].length === undefined
-            ? this.properties.entity.relationshipAttributes[k].displayText
-            : this.properties.entity.relationshipAttributes[k].length > 0
-              ? this.properties.entity.relationshipAttributes[k][0].displayText
-              : 'N/A'
-        })
-      }
-      if (this.showEmptyRelationships) {
-        this.relationshipShow = this.relationshipList
-      } else {
-        this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
-      }
-      // console.log(this.relationshipList)
-    })
-    this.getAudits()
-    this.getLineage()
+    this.resultGuid = this.$route.params.guid
+    this.init()
   },
   methods: {
     test(info) {
       console.log(info)
     },
+    init() {
+      this.getProperties().then(() => {
+        this.classificationsOptions = []
+        this.techProp = []
+        this.custProp = []
+        this.relationshipList = []
+        if (this.properties.entity.hasOwnProperty('classifications')) {
+          for (var i in this.properties.entity.classifications) {
+            this.classificationsOptions.push({
+              value: this.properties.entity.classifications[i].typeName,
+              label: this.properties.entity.classifications[i].typeName
+            })
+          }
+        }
+        for (var j in this.properties.entity.attributes) {
+          if (j === 'tables' || j === 'instance') {
+            this.techProp.push({
+              key: j,
+              value: this.properties.entity.relationshipAttributes[j] === null ? 'N/A' : this.properties.entity.relationshipAttributes[j]
+            })
+            // } else if (j === 'databases') {
+            //   this.techProp.push({
+            //     key: j,
+            //     value: this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes === null ? 'N/A' : this.properties.referredEntities[this.properties.entity.attributes.databases.guid].attributes
+            //   })
+          } else {
+            this.techProp.push({
+              key: j,
+              value: this.properties.entity.attributes[j] === null ? 'N/A' : this.properties.entity.attributes[j]
+            })
+          }
+        }
+        for (var f in this.properties.entity.customAttributes) {
+          this.custProp.push({
+            key: f,
+            value: this.properties.entity.customAttributes[f] === null ? 'N/A' : this.properties.entity.customAttributes[f]
+          })
+        }
+        this.classifications = this.classificationsOptions.filter(item => item.value !== '')
+        for (var k in this.properties.entity.relationshipAttributes) {
+        // console.log(k + this.properties.entity.relationshipAttributes[k].length);
+          this.relationshipList.push({
+            key: k.concat((this.properties.entity.relationshipAttributes[k].length !== undefined && this.properties.entity.relationshipAttributes[k].length > 0) ? '(' + this.properties.entity.relationshipAttributes[k].length + ')' : ''),
+            value: this.properties.entity.relationshipAttributes[k].length === undefined
+              ? this.properties.entity.relationshipAttributes[k].displayText
+              : this.properties.entity.relationshipAttributes[k].length > 0
+                ? this.properties.entity.relationshipAttributes[k][0].displayText
+                : 'N/A'
+          })
+        }
+        if (this.showEmptyRelationships) {
+          this.relationshipShow = this.relationshipList
+        } else {
+          this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
+        }
+      // console.log(this.relationshipList)
+      })
+      this.getAudits()
+      this.getLineage()
+    },
     /**
      * @description: 回到Result页面
      */
     backToResult() {
-      this.$emit('changepage', 'atlasResult')
+      this.$router.replace({
+        name: 'atlasResult',
+        query: this.$route.query
+      })
     },
     /**
      * @description: Tab点击处理函数
@@ -616,7 +627,15 @@ export default {
      * @description: 切换到另一张详情
      */
     gotoNextDetails(details) {
-      this.$emit('changedetail', JSON.stringify(details))
+      this.$router.replace({
+        name: 'atlasDetails',
+        params: {
+          guid: details.guid
+        },
+        query: this.$route.query
+      })
+      this.init()
+      this.timer = new Date().getTime()
     },
     /**
      * @description: 下拉菜单选择分类
@@ -635,7 +654,7 @@ export default {
      * @description: 获取属性
      */
     async getProperties() {
-      const res = await apiatlas.getDetailsProperties(this.detailsRequest.guid)
+      const res = await apiatlas.getDetailsProperties(this.resultGuid)
       if (res.status === 200 && res.statusText === 'OK') {
         this.properties = res.data
         // console.log(this.properties)
@@ -652,7 +671,7 @@ export default {
      * @description: 获取审核
      */
     async getAudits() {
-      const res = await apiatlas.getDetailsAudits(this.detailsRequest.guid)
+      const res = await apiatlas.getDetailsAudits(this.resultGuid)
       if (res.status === 200 && res.statusText === 'OK') {
         this.audits = res.data
         console.log(this.audits)
@@ -669,10 +688,10 @@ export default {
      * @description: 获取系谱
      */
     async getLineage() {
-      const res = await apiatlas.getDetailsLineage(this.detailsRequest.guid)
+      const res = await apiatlas.getDetailsLineage(this.resultGuid)
       if (res.status === 200 && res.statusText === 'OK') {
         this.lineage = res.data
-        console.log(this.lineage)
+        // console.log(this.lineage)
       } else {
         this.$message({
           message: '获取详情信息-系谱失败',

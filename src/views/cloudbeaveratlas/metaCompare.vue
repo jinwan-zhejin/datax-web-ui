@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 18:49:31
+ * @LastEditTime: 2020-10-22 09:49:37
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -50,7 +50,11 @@
               {{ row.timestamp2 | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="任务提交时间" min-width="160" sortable />
+          <el-table-column label="任务提交时间" min-width="160" sortable>
+            <template v-slot:default="{ row }">
+              {{ row.createTime===null?'Null':row.createTime }}
+            </template>
+          </el-table-column>
           <!-- <el-table-column prop="progress" label="比较进度" width="120" sortable align="center" /> -->
           <el-table-column label="操作" min-width="100">
             <template v-slot:default="{ row }">

@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-21 11:02:58
+ * @LastEditTime: 2020-10-22 11:35:56
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageSearch.vue
  * @Description: 右半部分查找 子组件
 -->
@@ -27,8 +27,7 @@ export default {
     Search
   },
   props: {
-    // eslint-disable-next-line vue/require-default-prop
-    entities: Object
+    entities: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -76,6 +75,9 @@ export default {
         }
       }
     }
+  },
+  created() {
+
   },
   methods: {
     test(info) {
