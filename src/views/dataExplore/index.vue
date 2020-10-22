@@ -55,6 +55,7 @@
           <i class="el-icon-close" @click="closeDialog" />
           <div class="top">
             <!-- <el-input v-model="dia_search" /> -->
+            <span style="fontSize: 24px;">添加</span>
           </div>
           <!-- 文件上传 -->
           <!-- <div v-if="isUpload" class="action">
@@ -309,6 +310,8 @@ export default {
         console.log(response)
         this.list = response.content.data
         this.listLoading = false
+      }).catch(err => {
+        console.log(err)
       })
     },
     // 获取全部数据
@@ -485,12 +488,15 @@ export default {
 .explore {
   &-container {
     margin: 30px;
+    background-color: #fff;
     .filter-container {
       margin-bottom: 20px;
       border: 1px solid #ccc;
       overflow: hidden;
+      line-height: 46px;
       border-radius: 4px;
       padding: 2px;
+      // background-color: #f5f6fa;
       .el-input {
         .el-input__inner {
           border: none;
@@ -532,13 +538,13 @@ export default {
             width: 60%;
             float: left;
             .main_tit {
+              margin-top: 20px;
               h5 {
-                margin: 10px 0px;
                 text-indent: 10px;
               }
               p {
+                margin-top: 5px 0px;
                 font-size: 14px;
-                margin: 5px 0px;
                 i {
                   margin: 0px 10px;
                 }
@@ -609,7 +615,7 @@ export default {
           padding-bottom: 60px;
           .top {
             padding: 23px;
-            // border-bottom: 1px solid #ccc;
+            box-shadow: -0px 0px 10px -6px #ccc inset;
             .el-input {
               width: 90%;
             }
@@ -666,7 +672,6 @@ export default {
             padding: 0px 20px;
             padding-bottom: 60px;
             overflow: auto;
-            // overflow: hidden;
             .el-form {
               margin-top: 20px;
               .el-select {
@@ -684,8 +689,12 @@ export default {
                 }
               }
               .el-form-item {
-                .explore-container ul {
-                  border: none;
+                .el-form-item__content {
+                  .upload-demo {
+                    ul {
+                      border: none;
+                    }
+                  }
                 }
               }
             }

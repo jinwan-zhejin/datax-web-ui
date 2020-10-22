@@ -448,85 +448,55 @@
       <!-- MariaDB MYSQL连接设置表单 -->
       <div v-show="mm" class="set">
         <p>基本信息</p>
-        <el-form :model="MySQLForm" class="bgcForm">
-          <div class="from_item_input float_input">
-            <span class="input_label">数据源名称:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.datasourceName" size="small" />
-            </div>
-          </div>
-
-          <div class="from_item_input float_input">
-            <span class="input_label">数据源分组:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.datasourceGroup" size="small" />
-            </div>
-          </div>
-
-          <div class="from_item_input float_input">
-            <span class="input_label">备注:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.comments" size="small" />
-            </div>
-          </div>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="MySQLForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="MySQLForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="MySQLForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>服务器</p>
-        <el-form :model="MySQLForm" class="bgcForm">
-          <div class="from_item_input float_input">
-            <span class="input_label">服务器地址:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.serverUrl" size="small" />
-            </div>
-          </div>
-
-          <div class="from_item_input float_input">
-            <span class="input_label">端口:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.serverPort" size="small" />
-            </div>
-          </div>
-
-          <div class="from_item_input float_input last_input">
-            <span class="input_label">数据库:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.database" size="small" />
-            </div>
-          </div>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="服务器地址:">
+              <el-input v-model="MySQLForm.serverUrl" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="MySQLForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="MySQLForm.database" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="MySQLForm" class="bgcForm">
-          <div class="from_item_input">
-            <span class="input_label">用户名:</span>
-            <div class="input_content">
-              <el-input v-model="MySQLForm.username" size="small" />
-            </div>
-          </div>
-
-          <div class="from_item_input">
-            <span class="input_label">密码:</span>
-            <div class="input_content">
-              <el-input
-                v-model="MySQLForm.password"
-                size="small"
-                type="password"
-              />
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="MySQLForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="MySQLForm.password" type="password" />
               <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-            </div>
-          </div>
-        </el-form>
+            </el-form-item>
+          </el-form>
+        </div>
         <p>高级</p>
-        <el-form :model="MySQLForm" class="bgcForm">
-
-          <div class="from_item_input last_input">
-            <span class="input_label">服务器时区:</span>
-            <div class="input_content">
-              <!-- <el-input v-model="MySQLForm.serverTime" size="small" /> -->
-              <el-select v-model="MySQLForm.serverTime" style="height: 32px;" placeholder="请选择服务器时区">
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="服务器时区:">
+              <el-select v-model="MySQLForm.serverTime" style="height: 32px;width: 100%;" placeholder="请选择服务器时区">
                 <el-option label="Asia/Shanghai" value="shanghai" />
               </el-select>
-            </div>
-          </div>
-        </el-form>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- Greenplum PostqreSQL连接设置表单 -->
       <div v-show="gp" class="set">
@@ -780,6 +750,9 @@
             </el-form-item>
             <el-form-item label="端口:">
               <el-input v-model="CHForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="CHForm.database" />
             </el-form-item>
           </el-form>
         </div>
@@ -1157,18 +1130,14 @@ export default {
       } else if (val.toLowerCase() === 'oracle') {
         this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
       } else if (val.toLowerCase() === 'postgresql') {
-        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.ruleForm.driver = 'org.postgresql.Driver';
       } else if (val.toLowerCase() === 'greenplum') {
-        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.ruleForm.driver = 'org.postgresql.Driver';
       } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
-        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
       } else if (val.toLowerCase() === 'clickhouse') {
-        this.isBanAdd = false
         this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
       } else if (val === 'hive') {
         this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
@@ -1199,6 +1168,20 @@ export default {
           }
         } else if (!val && this.CHForm.master) {
           this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'CHForm.database': {
+      handler(val) {
+        if (val && this.CHForm.master && this.CHForm.serverPort) {
+          if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.CHForm.serverPort + '/' + val
+          } else {
+            this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.CHForm.master && this.CHForm.serverPort) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.master + ':' + this.CHForm.serverPort
         }
       },
       deep: true
@@ -1263,8 +1246,7 @@ export default {
         this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
         this.temp.jdbcDriverClass = 'org.postgresql.Driver';
       } else if (datasource === 'sqlserver') {
-        this.temp.jdbcUrl =
-          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+        this.temp.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
       } else if (datasource === 'clickhouse') {
         this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
       } else if (datasource === 'hive') {
@@ -1488,11 +1470,7 @@ export default {
         obj.password = this.GPForm.password;
         obj.datasourceGroup = this.GPForm.datasourceGroup;
         obj.comments = this.GPForm.comments;
-        if (this.sqlName === 'PostgreSQL') {
-          obj.jdbcDriverClass = 'org.postgresql.Driver';
-        } else {
-          obj.jdbcDriverClass = ''
-        }
+        obj.jdbcDriverClass = 'org.postgresql.Driver';
       } else if (this.sqlName === 'Sql Server') {
         obj.datasourceName = this.ruleForm.datasourceName;
         obj.datasourceGroup = this.ruleForm.datasourceGroup;
@@ -1506,11 +1484,11 @@ export default {
         obj.datasourceName = this.CHForm.datasourceName;
         obj.datasourceGroup = this.CHForm.datasourceGroup;
         obj.datasource = this.sqlName.toLowerCase();
-        obj.jdbcUrl = this.CHForm.jdbcUrl
+        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.zkAdress = this.CHForm.master + ':' + this.CHForm.serverPort
         obj.userName = this.CHForm.username;
         obj.password = this.CHForm.password;
         obj.comments = this.CHForm.comments;
-        obj.jdbcDriverClass = '';
+        this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = ''
       } else if (this.sqlName === 'DB2') {
         obj.datasourceName = this.DB2Form.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
@@ -1578,6 +1556,34 @@ export default {
         obj1.datasourceGroup = this.MdbForm.datasourceGroup;
         obj1.comments = this.MdbForm.comments;
         obj1.jdbcDriverClass = '';
+      } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
+        console.log(this.GPForm)
+        obj1.datasourceName = this.GPForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:postgresql' + '://' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
+        obj1.jdbcUsername = this.GPForm.username;
+        obj1.jdbcPassword = this.GPForm.password;
+        obj1.datasourceGroup = this.GPForm.datasourceGroup;
+        obj1.comments = this.GPForm.comments;
+        obj1.jdbcDriverClass = 'org.postgresql.Driver'
+      } else if (this.sqlName === 'Sql Server') {
+        obj1.datasourceName = this.ruleForm.datasourceName;
+        obj1.datasourceGroup = this.ruleForm.datasourceGroup;
+        obj1.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
+        obj1.jdbcUsername = this.ruleForm.username;
+        obj1.jdbcPassword = this.ruleForm.password;
+        obj1.comments = this.ruleForm.comments;
+        obj1.jdbcDriverClass = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
+      } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
+        obj1.datasourceName = this.CHForm.datasourceName;
+        obj1.datasourceGroup = this.CHForm.datasourceGroup;
+        obj1.datasource = this.sqlName.toLowerCase();
+        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl + '/' + this.CHForm.database : obj1.zkAdress = this.CHForm.jdbcUrl
+        obj1.jdbcUsername = this.CHForm.username;
+        obj1.jdbcPassword = this.CHForm.password;
+        obj1.comments = this.CHForm.comments;
+        this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = ''
       }
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
@@ -1598,6 +1604,7 @@ export default {
         }
       })
     },
+    // 编辑测试连接
     testDataSource() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -1611,8 +1618,8 @@ export default {
               });
             } else {
               this.$notify({
-                title: 'Success',
-                message: 'Tested Successfully',
+                title: '成功',
+                message: '测试连接成功',
                 type: 'success',
                 duration: 2000
               });
@@ -1638,8 +1645,8 @@ export default {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '编辑数据成功',
               type: 'success',
               duration: 2000
             });

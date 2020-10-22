@@ -401,6 +401,7 @@ export default {
 <style lang="scss">
 .details {
   padding: 50px;
+  background-color: #fff;
   .top {
     border: 1px solid #cccccc;
     margin-bottom: 20px;
