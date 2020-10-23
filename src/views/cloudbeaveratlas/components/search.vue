@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 10:40:59
+ * @LastEditTime: 2020-10-23 18:45:25
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -258,7 +258,13 @@ export default {
     gotoDetails(item) {
       this.showSearchCard = false
       this.showResultCard = false
-      this.$emit('changedetail', JSON.stringify(item))
+      this.$router.replace({
+        name: 'atlasDetails',
+        query: this.$route.query,
+        params: {
+          guid: item.guid
+        }
+      })
     },
     /**
      * @description: 向上一级组件发送数据
@@ -267,7 +273,14 @@ export default {
     gotoResult(suggest) {
       this.showSearchCard = false
       this.showResultCard = false
-      this.$emit('changeresult', 'query'.concat('?').concat(suggest))
+      // this.$emit('changeresult', 'query'.concat('?').concat(suggest))
+      console.log(suggest);
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {
+          query: suggest
+        }
+      })
     },
     /**
      * @description: 处理dialog关闭事件

@@ -1,95 +1,56 @@
 <template>
   <div class="app-container">
-    <el-form label-position="left" label-width="80px" :model="readerForm">
-      <el-row :gutter="10">
-        <el-col :span="8" style="text-align:center;">
-          <a>源端字段</a>
-        </el-col>
-        <!-- <el-col :span="6" style="text-align:center;">
-          <a>清洗规则</a>
-        </el-col> -->
-        <el-col :span="8" style="text-align:center;">
-          <a>目标字段</a>
-        </el-col>
-        <el-col :span="4" style="text-align:center;">bnpm
-          <a>操作</a>
-        </el-col>
-      </el-row>
-      <div style="margin: 15px 0;" />
-      <el-row :gutter="10">
-        <el-col :span="8" style="text-align:center;">
-          <div
-            v-for="(item,index) in fromColumnsListChecked"
-            :key="index"
-            class="itemContainer"
-            style="margin:0 0 5px 0;"
-          >
+     <div style="border: 1px solid #F3F3F3;">
+      <el-table
+      :data="tableData"
+      stripe
+      :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
+      style="width: 100%">
+        <el-table-column
+          label="源字段"
+          width="280">
+          <template slot-scope="scope">
             <el-select
-              v-model="readerForm.lcolumns[index]"
+              v-model="readerForm.lcolumns[scope.row.index]"
               placeholder="请选择"
               filterable
               value-key="index"
-              @change="lHandleSelect(index,$event)"
+              @change="lHandleSelect(scope.row.index,$event)"
             >
               <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
             </el-select>
-          </div>
-        </el-col>
-        <!-- <el-col :span="6" style="text-align:center;">
-          <div
-            v-for="(item,index) in fromColumnsListChecked"
-            :key="index"
-            class="itemContainer"
-            style="margin:0 0 5px 0;"
-          >
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="目标字段"
+          width="280">
+          <template slot-scope="scope">
             <el-select
-              v-model="readerForm.rules[index]"
-              placeholder="请选择"
-              filterable
-              clearable
-              value-key="index"
-              @change="cHandleSelect(index,$event)"
-            >
-              <el-option v-for="tmp in ruleSettings" :key="tmp" :label="tmp" :value="tmp" />
-            </el-select>
-          </div>
-        </el-col> -->
-        <el-col :span="8" style="text-align:center;">
-          <div
-            v-for="(item,index) in fromColumnsListChecked"
-            :key="index"
-            class="itemContainer"
-            style="margin:0 0 5px 0;"
-          >
-            <el-select
-              v-model="readerForm.rcolumns[index]"
+              v-model="readerForm.rcolumns[scope.row.index]"
               placeholder="请选择"
               filterable
               value-key="index"
-              @change="rHandleSelect(index,$event)"
+              @change="rHandleSelect(scope.row.index,$event)"
             >
               <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
             </el-select>
-          </div>
-        </el-col>
-        <el-col :span="4" style="text-align:center;">
-          <div
-            v-for="(item,index) in fromColumnsListChecked"
-            :key="index"
-            class="itemContainer"
-            style="margin:0 0 5px 0;"
-          >
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作">
+          <template slot-scope="scope">
             <el-button
               type="infor"
               icon="el-icon-delete"
               circle
+              size="small"
               value-key="index"
-              @click="bHandleClick(index,$event)"
+              @click="bHandleClick(scope.row.index,$event)"
             />
-          </div>
-        </el-col>
-      </el-row>
-    </el-form>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -154,6 +115,28 @@ export default {
     getRules() {
       return this.readerForm.rules
     }
+  },
+  computed: {
+    tableData(){
+      return this.$store.state.taskAdmin.tableData 
+    }
+  },
+  watch: {
+    fromColumnsListChecked(newval){
+      let arr = []
+      newval.forEach((element,index) => {
+        let obj = {
+          sourceField: this.readerForm.lcolumns[index],
+          clearRule: this.readerForm.rules[index],
+          targetField: this.readerForm.rcolumns[index],
+          index:index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
+      console.log(this.tableData);
+    },
+
   }
 }
 </script>

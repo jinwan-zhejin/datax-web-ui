@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <RDBMSReader v-show="dataSource!=='hive' && dataSource!=='hbase' && dataSource!=='mongodb'" ref="rdbmsreader" @selectDataSource="showDataSource" />
-    <HiveReader v-show="dataSource==='hive'" ref="hivereader" @selectDataSource="showDataSource" />
+    <RDBMSReader ref="rdbmsreader" @selectDataSource="showDataSource" />
+    <!-- <HiveReader v-show="dataSource==='hive'" ref="hivereader" @selectDataSource="showDataSource" />
     <HBaseReader v-show="dataSource==='hbase'" ref="hbasereader" @selectDataSource="showDataSource" />
-    <MongoDBReader v-show="dataSource==='mongodb'" ref="mongodbreader" @selectDataSource="showDataSource" />
+    <MongoDBReader v-show="dataSource==='mongodb'" ref="mongodbreader" @selectDataSource="showDataSource" /> -->
   </div>
 </template>
 

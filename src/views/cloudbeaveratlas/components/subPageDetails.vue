@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 17:43:34
+ * @LastEditTime: 2020-10-23 18:36:14
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -35,9 +35,9 @@
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
             </el-tooltip> -->
           </span>
-          <el-tooltip content="添加分类" placement="bottom">
+          <!-- <el-tooltip content="添加分类" placement="bottom">
             <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassificationShow = true" />
-          </el-tooltip>
+          </el-tooltip> -->
         </el-col>
         <!-- <el-col>
           术语：<el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
@@ -102,7 +102,8 @@
                 </el-col>
               </el-row>
             </el-tab-pane>
-            <el-tab-pane label="血缘" name="lineage">血缘关系</el-tab-pane>
+            <!-- 待完成 -->
+            <!-- <el-tab-pane label="血缘" name="lineage">血缘关系</el-tab-pane> -->
             <el-tab-pane label="关系" name="relationships">
               <el-row style="margin-bottom: 10px;">
                 <el-col :span="8">
@@ -144,16 +145,16 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <el-pagination
+              <!-- <el-pagination
                 background
-                :current-page="classificationsCurrent"
+                :current-page="tagCurrent"
                 layout="total, sizes, prev, pager, next, jumper"
                 :page-sizes="[25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]"
-                :page-size="25"
-                :total="classificationsTotal"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-              />
+                :page-size="tagSize"
+                :total="tagTotal"
+                @size-change="handleTagSizeChange"
+                @current-change="handleTagCurrentChange"
+              /> -->
             </el-tab-pane>
             <el-tab-pane label="审计" name="audits">
               <el-table :data="audits">
@@ -260,7 +261,7 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <el-pagination
+              <!-- <el-pagination
                 background
                 :current-page="auditsCurrent"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -269,7 +270,7 @@
                 :total="auditsTotal"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-              />
+              /> -->
             </el-tab-pane>
             <el-tab-pane v-if="properties.entity.typeName.split('_')[properties.entity.typeName.split('_').length-1] === 'table'" label="Schema" name="schema">
               <el-table>
@@ -280,7 +281,7 @@
                 <el-table-column label="评论" />
                 <el-table-column label="分类" />
               </el-table>
-              <el-pagination
+              <!-- <el-pagination
                 background
                 :current-page="schemaCurrent"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -289,13 +290,13 @@
                 :total="schemaTotal"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-              />
+              /> -->
             </el-tab-pane>
           </el-tabs>
         </el-col>
       </el-row>
     </div>
-    <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
+    <!-- <AddClassification :add-classification-show="addClassificationShow" :classification-info="properties" :classification-list="classificationList" @addclassificationclose="addClassificationClose" /> -->
   </div>
 </template>
 
@@ -306,6 +307,7 @@ import { translater, translaterMaster } from '../utils/dictionary'
 export default {
   name: 'SubPageDetails',
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     AddClassification
   },
   filters: {
@@ -342,8 +344,7 @@ export default {
     }
   },
   props: {
-    // eslint-disable-next-line vue/require-default-prop
-    classificationList: Array // 分类有值列表
+    classificationList: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -361,12 +362,15 @@ export default {
       audits: [], // 保存审核返回值
       lineage: [], // 保存系谱返回值
       classifications: [], // 表格 分类
-      classificationsTotal: 0,
-      classificationsCurrent: 1,
-      auditsTotal: 0,
+      tagTotal: 0, // 分类
+      tagCurrent: 1,
+      tagSize: 25,
+      auditsTotal: 0, // 审计
       auditsCurrent: 1,
-      schemaTotal: 0,
+      auditsSize: 25,
+      schemaTotal: 0, // schema
       schemaCurrent: 1,
+      schemaSize: 25,
       relationshipList: [],
       relationshipShow: [],
       graphTable: true, // 表格或图表 false-Graph true-Table
@@ -536,6 +540,13 @@ export default {
           this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
         }
       }
+    },
+    '$route.params': {
+      handler(val, oldVal) {
+        this.resultGuid = val.guid
+        this.init()
+      },
+      deep: true
     }
   },
   created() {
@@ -627,14 +638,19 @@ export default {
      * @description: 切换到另一张详情
      */
     gotoNextDetails(details) {
+      const query = this.$route.query
+      this.$router.replace({
+        name: 'atlasDetails',
+        params: {},
+        query: {}
+      })
       this.$router.replace({
         name: 'atlasDetails',
         params: {
           guid: details.guid
         },
-        query: this.$route.query
+        query: query
       })
-      this.init()
       this.timer = new Date().getTime()
     },
     /**
@@ -674,7 +690,7 @@ export default {
       const res = await apiatlas.getDetailsAudits(this.resultGuid)
       if (res.status === 200 && res.statusText === 'OK') {
         this.audits = res.data
-        console.log(this.audits)
+        // console.log(this.audits)
       } else {
         this.$message({
           message: '获取详情信息-审核失败',
@@ -726,6 +742,16 @@ export default {
     addClassificationClose() {
       this.addClassificationShow = false
     }
+    /**
+     * @description: 分页
+     */
+    // handleTagSizeChange(val) {
+    //   this.tagSize = val
+    //   this.tagCurrent = val
+    // },
+    // handleTagCurrentChange(val) {
+    //   this.tagCurrent = val
+    // }
   }
 }
 </script>

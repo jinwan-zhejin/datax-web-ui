@@ -139,13 +139,13 @@
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
       >
-        <el-tab-pane v-if="!jobDetailTabs.length" label="欢迎" name="欢迎">
+        <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
           欢迎
         </el-tab-pane>
         
         <el-tab-pane
           :key="item.content.id"
-          v-for="item in jobDetailTabs"
+          v-for="item in $store.state.taskAdmin.taskDetailList"
           :label="item.title"
           :name="item.content.id + ''"
         >
@@ -160,11 +160,17 @@
           <div  v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  class="rg">
             <JsonBuild @refresh="freshItem" />
           </div>
+
           <div v-if="jobType === 'SQLJOB'" class="rg">
             <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
           </div>
+
           <div v-if="jobType === 'SPARK'" class="rg">
             <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
+          </div>
+
+          <div v-if="jobType === 'DQCJOB'" class="rg">
+            <JsonQuality />
           </div>
         </el-tab-pane>
 
@@ -191,9 +197,7 @@
       </el-tabs>
     </div>
 
-    <div v-if="jobType === 'DQCJOB'" class="rg">
-      <JsonQuality />
-    </div>
+    
     <div v-if="jobType === 'BATCH'" class="rg">
       <BatchBuild />
     </div>
@@ -254,7 +258,7 @@ export default {
           name: "1",
         },
       ],
-      jobDetailTabs: [],
+      // $store.state.taskAdmin.taskDetailList: [],
       tabIndex: 1,
       options: "",
       selectValue: "",
@@ -291,20 +295,20 @@ export default {
   methods: {
     removeJobTab(name) {
       const removeIndex = _.findIndex(
-        this.jobDetailTabs,
+        this.$store.state.taskAdmin.taskDetailList,
         (ele) => ele.content.id == name
       );
       if (this.jobDetailIdx === name) {
         this.jobDetailIdx =
-          (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
-            this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
+          (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content?.id ||
+            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + "";
       }
       if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name)!= -1) {
         this.jobType = "";
         this.$store.commit('SET_TAB_TYPE', '')
       } else {
-        this.jobDetailTabs.splice(removeIndex, 1);
-        if (this.jobDetailTabs.length === 0) {
+        this.$store.commit('DELETE_TASKDETAIL', removeIndex)
+        if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
           this.jobDetailIdx = "欢迎";
         }
       }
@@ -316,13 +320,13 @@ export default {
 
     clearJobTab(name) {
       const removeIndex = _.findIndex(
-        this.jobDetailTabs,
+        this.$store.state.taskAdmin.taskDetailList,
         (ele) => ele.content.id == name
       );
       this.jobDetailIdx =
-          (this.jobDetailTabs[removeIndex + 1]?.content?.id ||
-            this.jobDetailTabs[removeIndex - 1]?.content?.id) + "";
-      this.jobDetailTabs.splice(removeIndex, 1);
+          (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content?.id ||
+            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + "";
+      this.$store.commit('DELETE_TASKDETAIL', removeIndex)
     },
 
     freshItem() {
@@ -423,8 +427,8 @@ export default {
       a.name = data.jobDesc;
       a.content = data;
       
-      if (_.findIndex(this.jobDetailTabs, (tab)=>tab.content.id == data.id) === -1) {
-        this.jobDetailTabs.push(a);
+      if (_.findIndex(this.$store.state.taskAdmin.taskDetailList, (tab)=>tab.content.id == data.id) === -1) {
+        this.$store.state.taskAdmin.taskDetailList.push(a);
         this.jobDetailIdx = a.content.id + "";
       } else {
         this.jobDetailIdx = a.content.id + "";
@@ -489,7 +493,8 @@ export default {
           a.content = firstElement;
           if (!this.firstTime) {
             if(!del){
-              this.jobDetailTabs.push(a);
+              // this.$store.state.taskAdmin.taskDetailList.push(a);
+              this.$store.commit('ADD_TASKDETAIL',a)
               this.jobDetailIdx = a.content.id + "";
             }
           } else {
@@ -526,6 +531,26 @@ export default {
       this.jobDetailIdx = command;
     },
   },
+  computed:{
+    taskList(){ //任务列表
+      return this.$store.state.taskAdmin.taskList
+    },
+
+    taskDetailID() {
+      return this.$store.state.taskAdmin.taskDetailID
+    }
+  },
+
+  watch: {
+    taskList(val) {
+      this.List = val
+    },
+
+    taskDetailID(val) {
+      this.jobDetailIdx = val
+    }
+
+  }
 };
 </script>
 

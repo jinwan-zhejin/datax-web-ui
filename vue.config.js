@@ -43,7 +43,7 @@ module.exports = {
         // target: 'http://192.168.3.83:8080', // 曹海生
         target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:9090', // 刘向前
-        // target: 'http://192.168.3.74:7000', // 侯峰
+        target: 'http://192.168.3.74:7000', // 侯峰
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
@@ -95,7 +95,8 @@ module.exports = {
       '/test': {
         ws: false,
         // target: 'http://192.168.3.60:9000', // 韩家敏
-        target: 'http://192.168.3.74:7000', // 侯峰
+        // target: 'http://192.168.3.74:7000', // 侯峰
+        target: 'http://47.103.79.104:9528',
         changeOrigin: true,
         pathRewrite: {
           ['^' + '/test']: '/api'
