@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules">
+    <el-form class="input_from" label-position="right" label-width="150px" :model="writerForm" :rules="rules">
       <el-form-item label="数据库源:" prop="datasourceId">
         <el-select
           v-model="writerForm.datasourceId"
@@ -229,3 +229,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.input_from >>> .el-form-item {
+  margin-bottom: 15px;
+}
+</style>

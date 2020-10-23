@@ -120,16 +120,16 @@
       </el-form-item>
       <el-form-item>
         <el-select
-        v-if="radio === '1'"
-        v-model="temp.SQLScript"
-        placeholder="选择SQL脚本"
-      >
-        <el-option
-          v-for="item in timeFormatTypes"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
+          v-if="radio === '1'"
+          v-model="temp.SQLScript"
+          placeholder="选择SQL脚本"
+        >
+          <el-option
+            v-for="item in timeFormatTypes"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
         <el-upload
           class="upload-demo"
@@ -150,16 +150,18 @@
 
       <el-form-item>
         <div class="scriptJson">
-          <textarea v-model="jsonContent" ref="mycode" class="codesql"></textarea>
+          <textarea
+            v-model="jsonContent"
+            ref="mycode"
+            class="codesql"
+          ></textarea>
         </div>
       </el-form-item>
     </el-form>
-    
+
     <div class="from_btn">
       <el-button @click="dialogFormVisible = false"> 取消 </el-button>
-      <el-button type="primary" @click="createData()">
-        确定
-      </el-button>
+      <el-button type="primary" @click="createData()"> 确定 </el-button>
     </div>
   </div>
 </template>
@@ -224,6 +226,7 @@ export default {
       callback();
     };
     return {
+      firstTime:true,
       schemaList: [],
       jsonContent: "",
       fileList: [],
@@ -236,7 +239,7 @@ export default {
       listQuery: {
         current: 1,
         size: 10,
-        jobGroup: 0,
+        jobGroup: 1,
         projectIds: "",
         triggerStatus: -1,
         jobDesc: "",
@@ -309,19 +312,19 @@ export default {
       },
       temp: {
         id: undefined,
-        jobGroup: "",
+        jobGroup: 1,
         jobCron: "",
         jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
+        executorRouteStrategy: "FIRST",
+        executorBlockStrategy: "SERIAL_EXECUTION",
         childJobId: "",
         executorFailRetryCount: "",
         alarmEmail: "",
         executorTimeout: "",
         userId: 0,
         jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
+        executorHandler: "sqlJobHandler",
+        glueType: "BEAN",
         glueSource: "",
         jobJson: "",
         executorParam: "",
@@ -409,7 +412,7 @@ export default {
     this.getJobProject();
     this.getDataSourceList(), console.log(this.jobType);
     this.fetchSourceData();
-    this.temp.glueType = this.jobType;
+    
   },
 
   mounted() {
@@ -446,18 +449,33 @@ export default {
         this.dataSourceList = response;
       });
     },
-    fetchData() {
+    async fetchData() {
       this.listLoading = true;
       if (this.projectIds) {
         this.listQuery.projectIds = this.projectIds.toString();
       }
 
-      job.getList(this.listQuery).then((response) => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
-      });
+      let response = await job.getList(this.listQuery);
+      const { content } = response;
+      this.total = content.recordsTotal;
+      this.list = content.data;
+      this.listLoading = false;
+
+      const firstElement = content?.data[0] || {};
+          const a = {};
+          
+      a.title = firstElement.jobDesc;
+      a.name = firstElement.jobDesc;
+      a.content = firstElement;
+      if (!this.firstTime) {
+        // if(!del){
+          this.$store.commit('ADD_TASKDETAIL',a)
+        // }
+      } else {
+        this.firstTime = false;
+      }
+
+      this.$store.commit('SET_TASKLIST', this.list)
     },
     incStartTimeFormat(vData) {},
     handleCreate() {
@@ -469,15 +487,16 @@ export default {
       });
     },
     createData() {
-      if (this.temp.glueType === "BEAN" && !isJSON(this.jobJson)) {
-        this.$notify({
-          title: "Fail",
-          message: "json格式错误",
-          type: "error",
-          duration: 2000,
-        });
-        return;
-      }
+      // if (!isJSON(this.jobJson)) {
+      //   this.$notify({
+      //     title: "Fail",
+      //     message: "json格式错误",
+      //     type: "error",
+      //     duration: 2000,
+      //   });
+      //   return;
+      // }
+      this.jobJson = this.$options.editor.getValue() || "{}";
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
@@ -487,27 +506,49 @@ export default {
             }
             this.temp.childJobId = auth.toString();
           }
-          this.temp.jobJson = this.jobJson;
-          this.temp.glueSource = this.glueSource;
-          this.temp.executorHandler =
-            this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
-          if (this.partitionField)
-            this.temp.partitionInfo =
-              this.partitionField +
-              "," +
-              this.timeOffset +
-              "," +
-              this.timeFormatType;
-          job.createJob(this.temp).then(() => {
-            this.fetchData();
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
+
+          job
+            .getDataSourceDetail(this.temp.dataSourceId)
+            .then((res) => {
+              console.log("dafa", res);
+              let jsonObj = Object.assign({sqlScript:JSON.parse(this.jobJson)}, { jobDatasource: res });
+              this.jobJson = JSON.stringify(jsonObj, null, 2);
+            })
+            .then(() => {
+              this.temp.jobJson = this.jobJson;
+              this.temp.glueSource = this.glueSource;
+              this.temp.projectId = this.$store.state.taskAdmin.projectId;
+              if (this.partitionField) {
+                this.temp.partitionInfo =
+                  this.partitionField +
+                  "," +
+                  this.timeOffset +
+                  "," +
+                  this.timeFormatType;
+              }
+              job.createJob(this.temp).then((res) => {
+                this.fetchData()
+                this.$store.commit('SET_TAB_TYPE', '');
+                this.$store.commit('SET_TASKDETAIL_ID', res.content);
+
+                // setTimeout(()=>{
+                //   console.log(this.list[0]);
+                //   this.$store.commit('ADD_TASKDETAIL',
+                //   {
+                //     title:this.list[0].jobDesc,
+                //     name:this.list[0].jobDesc,
+                //     content:this.list[0],
+                //   })
+                // })
+                this.dialogFormVisible = false;
+                this.$notify({
+                  title: "Success",
+                  message: "Created Successfully",
+                  type: "success",
+                  duration: 2000,
+                });
+              });
             });
-          });
         }
       });
     },
@@ -584,7 +625,7 @@ export default {
               "," +
               this.timeFormatType;
           job.updateJob(this.temp).then(() => {
-            this.fetchData();
+             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
               title: "Success",
@@ -782,13 +823,13 @@ export default {
 .scriptJson {
   margin-top: 20px;
 }
- 
+
 .input_from >>> .el-form-item {
   margin-bottom: 8px;
 }
 .input_from >>> .el-form-item__error {
   padding-top: 0;
-  top:90%
+  top: 90%;
 }
 .from_btn {
   text-align: right;
@@ -800,10 +841,9 @@ export default {
 
 <style>
 .CodeMirror {
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
 }
 .CodeMirror-linenumbers {
   background: rgba(240, 240, 242, 1);
 }
-
 </style>

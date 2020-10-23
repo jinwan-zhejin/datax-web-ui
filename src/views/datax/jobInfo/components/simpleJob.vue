@@ -5,9 +5,6 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="任务类型" prop="glueType">
-              <!-- <el-select v-model="temp.glueType" placeholder="任务脚本类型">
-                <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select> -->
               {{ this.jobTypeLabel }}
             </el-form-item>
           </el-col>
