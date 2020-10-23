@@ -95,7 +95,8 @@ module.exports = {
       '/test': {
         ws: false,
         // target: 'http://192.168.3.60:9000', // 韩家敏
-        target: 'http://192.168.3.74:7000', // 侯峰
+        // target: 'http://192.168.3.74:7000', // 侯峰
+        target: 'http://47.103.79.104:9528',
         changeOrigin: true,
         pathRewrite: {
           ['^' + '/test']: '/api'

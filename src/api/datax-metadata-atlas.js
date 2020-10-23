@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 18:07:57
+ * @LastEditTime: 2020-10-23 09:54:10
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -329,7 +329,6 @@ export async function getCompareResult(guid, timestamps) {
 
 /**
  * @description: 获取所有版本比对记录
- * @param {type} 
  * @return {object} axios返回值
  */
 export async function getAllCompareRecord() {

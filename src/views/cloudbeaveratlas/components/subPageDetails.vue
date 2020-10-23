@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 17:43:34
+ * @LastEditTime: 2020-10-22 18:35:14
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -536,6 +536,13 @@ export default {
           this.relationshipShow = this.relationshipList.filter(item => item.value !== 'N/A')
         }
       }
+    },
+    '$route.params': {
+      handler(val, oldVal) {
+        this.resultGuid = val.guid
+        this.init()
+      },
+      deep: true
     }
   },
   created() {
@@ -627,14 +634,19 @@ export default {
      * @description: 切换到另一张详情
      */
     gotoNextDetails(details) {
+      const query = this.$route.query
+      this.$router.replace({
+        name: 'atlasDetails',
+        params: {},
+        query: {}
+      })
       this.$router.replace({
         name: 'atlasDetails',
         params: {
           guid: details.guid
         },
-        query: this.$route.query
+        query: query
       })
-      this.init()
       this.timer = new Date().getTime()
     },
     /**
