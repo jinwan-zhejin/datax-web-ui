@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 18:22:50
+ * @LastEditTime: 2020-10-23 10:12:34
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -285,13 +285,13 @@ export default {
       handler(val, oldVal) {
         this.resultQuery = val
         this.refreshList()
-        console.log('query changed');
+        // console.log('query changed');
       },
       deep: true
     },
     resultQuery: {
       handler(val, oldVal) {
-        console.log('resultQuery changed');
+        // console.log('resultQuery changed');
         if (!val.hasOwnProperty('type') && !val.hasOwnProperty('term') && !val.hasOwnProperty('tag') && !val.hasOwnProperty('query')) {
           this.backToSearch()
         }
@@ -383,7 +383,7 @@ export default {
          */
     async refreshList() {
       // console.log('父组件传值改变重新获取数据')
-      console.log(this.resultQuery);
+      // console.log(this.resultQuery);
       if (!this.resultQuery.hasOwnProperty('type') && !this.resultQuery.hasOwnProperty('term') && !this.resultQuery.hasOwnProperty('tag') && !this.resultQuery.hasOwnProperty('query')) {
         this.backToSearch()
       } else {
@@ -398,7 +398,7 @@ export default {
           offset: 0,
           typeName: this.resultQuery.hasOwnProperty('type') ? this.resultQuery.type : null
         })
-        console.log(res)
+        // console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
           this.tableData = res.data.entities
           this.tableTotal = res.data.approximateCount
@@ -439,7 +439,7 @@ export default {
         name: 'atlasResult',
         query: temp
       })
-      console.log(this.$route.query);
+      // console.log(this.$route.query);
     },
     researchClassification(param) {
       this.$router.replace({
@@ -505,7 +505,7 @@ export default {
     },
     async handledeleteClassification() {
       const res = await apiatlas.deleteClassification(this.deleteGuid, this.deleteClass)
-      console.log(res)
+      // console.log(res)
       if (res.status === 204) {
         this.deleteClassificationFlag = false
         this.$message({
