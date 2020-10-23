@@ -1,304 +1,261 @@
 <template>
   <div class="details">
-    <!-- 选项卡及上图 -->
-    <div class="top">
-      <div class="img">
-        <h2>{{ obj.taskName }}</h2>
-        <p class="p1">{{ obj.intro }}</p>
-        <div class="user">
-          <a>
-            <i class="el-icon-user" />
-            {{ userName }}
-          </a>
+    <div class="main">
+      <!-- 条件查询和操作 -->
+      <div class="box-card">
+        <div class="text">
+          <div class="left">{{ obj.taskName }}</div>
+          <p><i class="el-icon-tickets" /><span>{{ obj.tableName }}</span></p>
         </div>
       </div>
-      <div class="tabs">
-        <!-- 导航选项 -->
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="1">数据</el-menu-item>
-          <!-- <el-menu-item index="2">Tasks</el-menu-item>
-          <el-menu-item index="3">Notebooks</el-menu-item>
-          <el-menu-item index="4">Discussion</el-menu-item>
-          <el-menu-item index="5">Activity</el-menu-item>
-          <el-menu-item index="6">Metadata</el-menu-item> -->
-        </el-menu>
-        <!-- 下载 -->
-        <!-- <div class="down">
-          <el-button type="default" round>Download</el-button>
-          <el-button type="info" round>New Notebook</el-button>
-        </div> -->
-      </div>
-    </div>
-    <!-- tags标签栏 -->
-    <div v-show="isTags" class="tags">
-      <el-row>
-        <el-col :span="4">
-          <el-popover
-            placement="bottom"
-            title="标题"
-            width="200"
-            trigger="hover"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-          >
-            <span slot="reference">
-              <i class="el-icon-s-cooperation" />
-              <strong>Usability</strong>
-            </span>
-          </el-popover>
-        </el-col>
-        <el-col :span="10">
-          <i class="el-icon-s-flag" /><strong>License</strong>
-        </el-col>
-        <el-col :span="10">
-          <i class="el-icon-collection-tag" /><strong>Tags</strong>
-        </el-col>
-      </el-row>
-    </div>
-    <!-- 描述折叠框 -->
-    <div class="folding">
-      <div class="tit">
-        描述
-      </div>
-      <!-- 折叠内容 -->
-      <div class="content">
-        <el-collapse v-model="activeDesc">
-          <el-collapse-item title="详细描述" name="1">
-            <div style="text-indent:2rem;">&nbsp;&nbsp;{{ obj.description }}</div>
-          </el-collapse-item>
-        </el-collapse>
-      </div>
-    </div>
-    <!-- 描述折叠框 -->
-    <div class="folding">
-      <div class="tit">
-        概括
-      </div>
-      <!-- 折叠内容 -->
-      <div class="content">
-        <el-collapse v-model="activeSummary">
-          <el-collapse-item title="Summary" name="1">
-            <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
-          </el-collapse-item>
-        </el-collapse>
-      </div>
-    </div>
-    <!-- 下方图标结构内容 -->
-    <div class="charts">
-      <!-- <div class="left">
-        <h4>
-          Data Explorer
-        </h4>
-        <p class="dataSize">64.07 MB</p>
-        <a><i class="el-icon-document" />data.csv</a>
-        <div class="lt_tree">
-          <h4>
-            Summary
-          </h4>
-          <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
-        </div>
-      </div> -->
-      <div class="right">
-        <!-- 选项卡 -->
-        <div class="choose">
-          <div class="ch_top">
-            <div class="lt">
-              <span style="fontSize:16px;fontWeight:700;">{{ obj.tableName }}</span>
-              <span style="fontSize:16px;">{{ obj.size }}</span>
-            </div>
-            <div class="rg">
-              <a><i class="el-icon-download" /></a>
-            </div>
-          </div>
-          <el-tabs v-model="activeName">
-            <el-tab-pane label="数据详情" name="first">
-              <!-- 表格 -->
-              <template>
-                <el-table
-                  :data="tableData"
-                  border
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    prop="date"
-                    width="180"
-                    align="center"
+      <div class="line" />
+      <!-- 下方图标结构内容 -->
+      <div class="charts">
+        <div class="right">
+          <!-- 选项卡 -->
+          <div class="choose">
+            <el-tabs v-model="activeName" type="card">
+              <el-tab-pane label="数据详情" name="first">
+                <!-- 表格 -->
+                <template>
+                  <el-table
+                    :data="tableData"
+                    border
+                    style="width: 100%"
                   >
-                    <template slot="header" slot-scope="scope">
-                      <div class="t_header_01">
-                        <el-popover
-                          placement="bottom"
-                          width="200"
-                          height="250"
-                          trigger="click"
-                        >
-                          <p><i class="el-icon-top" /><span>升序</span></p>
-                          <p><i class="el-icon-bottom" /><span>降序</span></p>
-                          <div class="block" style="padding:20px">
-                            <el-slider
-                              v-model="range"
-                              range
-                              :marks="marks"
-                            />
-                          </div>
-                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
-                          <el-button type="primary">应用</el-button>
-                          <span slot="reference">
-                            <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
-                            <span style="marginLeft:10px">日期</span>
-                            <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
-                          </span>
-                        </el-popover>
-                      </div>
-                      <div class="t_header_02">
-                        <span>{{ obj.rows }}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="name"
-                    width="180"
-                    align="center"
+                    <el-table-column
+                      prop="date"
+                      width="180"
+                      align="center"
+                    >
+                      <template slot="header" slot-scope="scope">
+                        <div class="t_header_01">
+                          <el-popover
+                            placement="bottom"
+                            width="200"
+                            height="250"
+                            trigger="click"
+                          >
+                            <p><i class="el-icon-top" /><span>升序</span></p>
+                            <p><i class="el-icon-bottom" /><span>降序</span></p>
+                            <div class="block" style="padding:20px">
+                              <el-slider
+                                v-model="range"
+                                range
+                                :marks="marks"
+                              />
+                            </div>
+                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                            <el-button type="primary">应用</el-button>
+                            <span slot="reference">
+                              <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
+                              <span style="marginLeft:10px">日期</span>
+                              <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
+                            </span>
+                          </el-popover>
+                        </div>
+                        <div class="t_header_02">
+                          <span>{{ obj.rows }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      width="180"
+                      align="center"
+                    >
+                      <template slot="header" slot-scope="scope">
+                        <div class="t_header_01">
+                          <el-popover
+                            placement="bottom"
+                            width="200"
+                            height="250"
+                            trigger="click"
+                          >
+                            <p><i class="el-icon-top" /><span>升序</span></p>
+                            <p><i class="el-icon-bottom" /><span>降序</span></p>
+                            <div class="block" style="padding:20px">
+                              <el-slider
+                                v-model="range"
+                                range
+                                :marks="marks"
+                              />
+                            </div>
+                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                            <el-button type="primary">应用</el-button>
+                            <span slot="reference">
+                              <i style="float:left;" class="el-icon-s-order" />
+                              <span style="marginLeft:10px">姓名</span>
+                              <i style="float:right;" class="el-icon-s-data" />
+                            </span>
+                          </el-popover>
+                        </div>
+                        <div class="t_header_02">
+                          <span>{{ obj.number }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="address"
+                      align="center"
+                    >
+                      <template slot="header" slot-scope="scope">
+                        <div class="t_header_01">
+                          <el-popover
+                            placement="bottom"
+                            width="200"
+                            height="250"
+                            trigger="click"
+                          >
+                            <p><i class="el-icon-top" /><span>升序</span></p>
+                            <p><i class="el-icon-bottom" /><span>降序</span></p>
+                            <div class="block" style="padding:20px">
+                              <el-slider
+                                v-model="range"
+                                range
+                                :marks="marks"
+                              />
+                            </div>
+                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                            <el-button type="primary">应用</el-button>
+                            <span slot="reference">
+                              <i style="float:left;" class="el-icon-s-order" />
+                              <span style="marginLeft:10px">地址</span>
+                              <i style="float:right;" class="el-icon-s-data" />
+                            </span>
+                          </el-popover>
+                        </div>
+                        <div class="t_header_02">
+                          <span>{{ obj.number }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-tab-pane>
+              <el-tab-pane label="协议" name="second">
+                <!-- 表格 -->
+                <!-- <template>
+                  <el-table
+                    :data="tableData"
+                    border
+                    style="width: 100%"
                   >
-                    <template slot="header" slot-scope="scope">
-                      <div class="t_header_01">
-                        <el-popover
-                          placement="bottom"
-                          width="200"
-                          height="250"
-                          trigger="click"
-                        >
-                          <p><i class="el-icon-top" /><span>升序</span></p>
-                          <p><i class="el-icon-bottom" /><span>降序</span></p>
-                          <div class="block" style="padding:20px">
-                            <el-slider
-                              v-model="range"
-                              range
-                              :marks="marks"
-                            />
+                    <el-table-column
+                      v-for="item in tableData"
+                      :key="item"
+                      width="180"
+                      :prop="item"
+                      align="center"
+                    >
+                      <template slot="header" slot-scope="scope">
+                        <div class="t_header_01">
+                          <el-popover
+                            placement="bottom"
+                            width="200"
+                            height="250"
+                            trigger="click"
+                          >
+                            <p><i class="el-icon-top" /><span>升序</span></p>
+                            <p><i class="el-icon-bottom" /><span>降序</span></p>
+                            <div class="block" style="padding:20px">
+                              <el-slider
+                                v-model="range"
+                                range
+                                :marks="marks"
+                              />
+                            </div>
+                            <div class="btn">
+                              <el-button type="primary" size="mini" style="marginRight: 20px;float: left;">清除</el-button>
+                              <el-button type="primary" size="mini" style="float: right;">应用</el-button>
+                            </div>
+                            <span slot="reference">
+                              <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
+                              <span style="marginLeft:10px">日期</span>
+                              <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
+                            </span>
+                          </el-popover>
+                        </div>
+                        <div class="t_header_02">
+                          <span>{{ obj.rows }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template> -->
+              </el-tab-pane>
+              <el-tab-pane label="字段" name="third">
+                <ul>
+                  <li>
+                    <div class="title">
+                      <i class="el-icon-key" /><strong style="marginLeft:10px">Id</strong>
+                      <p>Post Id</p>
+                    </div>
+                    <div class="body">
+                      <div class="lt" />
+                      <div class="rg">
+                        <div class="band" />
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Valid</span>
                           </div>
-                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
-                          <el-button type="primary">应用</el-button>
-                          <span slot="reference">
-                            <i style="float:left;" class="el-icon-s-order" />
-                            <span style="marginLeft:10px">姓名</span>
-                            <i style="float:right;" class="el-icon-s-data" />
-                          </span>
-                        </el-popover>
-                      </div>
-                      <div class="t_header_02">
-                        <span>{{ obj.number }}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="address"
-                    align="center"
-                  >
-                    <template slot="header" slot-scope="scope">
-                      <div class="t_header_01">
-                        <el-popover
-                          placement="bottom"
-                          width="200"
-                          height="250"
-                          trigger="click"
-                        >
-                          <p><i class="el-icon-top" /><span>升序</span></p>
-                          <p><i class="el-icon-bottom" /><span>降序</span></p>
-                          <div class="block" style="padding:20px">
-                            <el-slider
-                              v-model="range"
-                              range
-                              :marks="marks"
-                            />
+                          <div class="txt_rg">
+                            <span>60.0k</span>
+                            <span style="color:#ccc;">100%</span>
                           </div>
-                          <el-button type="primary" style="marginRight: 20px;">清除</el-button>
-                          <el-button type="primary">应用</el-button>
-                          <span slot="reference">
-                            <i style="float:left;" class="el-icon-s-order" />
-                            <span style="marginLeft:10px">地址</span>
-                            <i style="float:right;" class="el-icon-s-data" />
-                          </span>
-                        </el-popover>
-                      </div>
-                      <div class="t_header_02">
-                        <span>{{ obj.number }}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </template>
-            </el-tab-pane>
-            <el-tab-pane label="字段" name="third">
-              <ul>
-                <li>
-                  <div class="title">
-                    <i class="el-icon-key" /><strong style="marginLeft:10px">Id</strong>
-                    <p>Post Id</p>
-                  </div>
-                  <div class="body">
-                    <div class="lt" />
-                    <div class="rg">
-                      <div class="band" />
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Valid</span>
                         </div>
-                        <div class="txt_rg">
-                          <span>60.0k</span>
-                          <span style="color:#ccc;">100%</span>
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Mismatched</span>
+                          </div>
+                          <div class="txt_rg">
+                            <span>0</span>
+                            <span style="color:#ccc;">0%</span>
+                          </div>
                         </div>
-                      </div>
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Mismatched</span>
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Missing</span>
+                          </div>
+                          <div class="txt_rg">
+                            <span>0</span>
+                            <span style="color:#ccc;">0%</span>
+                          </div>
                         </div>
-                        <div class="txt_rg">
-                          <span>0</span>
-                          <span style="color:#ccc;">0%</span>
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Mean</span>
+                          </div>
+                          <div class="txt_rg">
+                            <span>45.8m</span>
+                            <span style="color:#ccc;" />
+                          </div>
                         </div>
-                      </div>
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Missing</span>
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Std. Deviation</span>
+                          </div>
+                          <div class="txt_rg">
+                            <span>7.12m</span>
+                            <span style="color:#ccc;" />
+                          </div>
                         </div>
-                        <div class="txt_rg">
-                          <span>0</span>
-                          <span style="color:#ccc;">0%</span>
-                        </div>
-                      </div>
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Mean</span>
-                        </div>
-                        <div class="txt_rg">
-                          <span>45.8m</span>
-                          <span style="color:#ccc;" />
-                        </div>
-                      </div>
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Std. Deviation</span>
-                        </div>
-                        <div class="txt_rg">
-                          <span>7.12m</span>
-                          <span style="color:#ccc;" />
-                        </div>
-                      </div>
-                      <div class="txt">
-                        <div class="txt_lt">
-                          <span>Quantiles</span>
-                        </div>
-                        <div class="txt_rg">
-                          <span>34.6m</span>
-                          <span style="color:#ccc;">Min</span>
+                        <div class="txt">
+                          <div class="txt_lt">
+                            <span>Quantiles</span>
+                          </div>
+                          <div class="txt_rg">
+                            <span>34.6m</span>
+                            <span style="color:#ccc;">Min</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-              </ul>
-            </el-tab-pane>
-          </el-tabs>
+                  </li>
+                </ul>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
         </div>
       </div>
     </div>
@@ -306,6 +263,7 @@
 </template>
 
 <script>
+import * as explore from '@/api/data-explore'
 export default {
   data() {
     return {
@@ -347,6 +305,8 @@ export default {
           tag: '公司'
         }
       ],
+      Compact: [
+      ],
       activeName: 'first',
       visible: false,
       defaultProps: {
@@ -378,7 +338,8 @@ export default {
         0: '34.6m',
         100: '60.5m'
       },
-      userName: ''
+      userName: '',
+      activeIndex: '1'
     }
   },
   created() {
@@ -389,10 +350,48 @@ export default {
       console.log(this.obj)
     }
     console.log('1231242314')
+    this.getTableData()
+    this.getOtherData()
   },
   methods: {
     indexMethod(index) {
       return index
+    },
+    handleSelect(val) {
+      console.log(val)
+    },
+    handleClick(val) {
+      console.log(val)
+    },
+    // 获取表格数据
+    getTableData() {
+      const params = {
+        datasourceId: this.obj.jdbcDatasourceId,
+        tableName: this.obj.tableName
+      }
+      explore.getTableData(params).then(res => {
+        const arr = [].concat.apply([], res.data)
+        console.log(arr)
+        if (res.code === 0) {
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i]
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 获取其他表格数据
+    getOtherData() {
+      const params = {
+        datasourceId: this.obj.jdbcDatasourceId,
+        tableName: this.obj.tableName
+      }
+      explore.getTwoData(params).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }
@@ -400,259 +399,201 @@ export default {
 
 <style lang="scss">
 .details {
-  padding: 50px;
-  background-color: #fff;
-  .top {
-    border: 1px solid #cccccc;
-    margin-bottom: 20px;
-    .img {
-      width: 100%;
-      height: 300px;
-      background: url('../../assets/dataset-cover.png');
-      background-size: 100%;
-      padding: 0px 20px;
-      padding-top: 100px;
-      position: relative;
-      h2 {
-        margin: 0px;
-        color: #ffffff;
-        // text-indent: 20px;
-      }
-      .p1 {
-        font-size: 20px;
-        color: #fff;
-      }
-      .user {
-        width: 100%;
-        height: 60px;
-        line-height: 60px;
-        position: absolute;
-        bottom: 0;
-        a {
-          color: #fff;
-        }
-      }
-    }
-    .tabs {
-      overflow: hidden;
-      .el-menu {
-        float: left;
-        border: none;
-        width: 60%;
-        box-shadow: -10px 0px 20px -10px #ccc inset;
-      }
-      .down {
-        float: right;
-        width: 40%;
-        height: 60px;
-        line-height: 60px;
-        .el-button {
-          margin-left: 20px;
-        }
-      }
-    }
-  }
-  .tags {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 10px 0px;
-    .el-row {
-      .el-col {
-        text-align: center;
-        i {
-          margin-right: 20px;
-          color: #002000;
-        }
-      }
-    }
-  }
-  .folding {
-    width: 100%;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    .tit {
-      height: 60px;
-      line-height: 60px;
-      text-indent: 20px;
-    }
-    .content {
-      padding-bottom: 10px;
-      .el-collapse {
-        .el-collapse-item {
-          .el-collapse-item__header {
-            text-indent: 20px;
-          }
-        }
-      }
-    }
-  }
-  .charts {
-    width: 100%;
-    height: 600px;
+  padding: 20px;
+  .main {
+    background-color: #fff;
     overflow: hidden;
-    position: relative;
-    margin-top: 20px;
-    .left {
-      width: 30%;
-      float: left;
-      .dataSize {
-        font-size: 16px;
-      }
-      a {
-        color: skyblue;
-        i {
-          margin-right: 10px;
+    border-radius: 8px;
+    .box-card {
+      overflow: hidden;
+      height: 84px;
+      border-radius: 4px;
+      padding: 0px;
+      .text {
+        margin-left: 24px;
+        .left {
+          font-size: 24px;
+          font-family: PingFangHK-Medium, PingFangHK;
+          font-weight: 500;
+          color: #333333;
+          margin-top: 24px;
         }
-      }
-      .lt_tree {
-        width: 25%;
-        position: absolute;
-        bottom: 0px;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        .el-tree {
-          margin: 10px 0px;
+        p {
+          font-size: 14px;
+          margin-top: 10px;
+          i {
+            margin-right: 8px;
+          }
         }
       }
     }
-    .right {
+    .line {
+      height: 1px;
+      background: #F3F3F3;
+    }
+    .charts {
       width: 100%;
-      float: right;
-      height: 100%;
-      overflow-y: auto;
-      .choose {
-        border: 1px solid #cccccc;
-        border-radius: 5px;
-        height: 100%;
-        padding: 20px;
-        .ch_top {
-          height: 60px;
-          line-height: 60px;
-          overflow: hidden;
-          .lt {
-            float: left;
-            span {
-              margin: 0px 10px;
-            }
-          }
-          .rg {
-            float: right;
-            a {
-              margin: 0px 20px;
-            }
+      height: 600px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 20px;
+      .left {
+        width: 30%;
+        float: left;
+        .dataSize {
+          font-size: 16px;
+        }
+        a {
+          color: skyblue;
+          i {
+            margin-right: 10px;
           }
         }
-        .el-tabs {
-          .el-tab-pane {
-            .sort {
-              width: 100%;
-              height: 80px;
-              h2 {
-                font-size: 20px;
-                color: skyblue;
-                margin: 10px;
+        .lt_tree {
+          width: 25%;
+          position: absolute;
+          bottom: 0px;
+          border-top: 1px solid #ccc;
+          border-bottom: 1px solid #ccc;
+          .el-tree {
+            margin: 10px 0px;
+          }
+        }
+      }
+      .right {
+        width: 100%;
+        float: right;
+        height: 100%;
+        overflow-y: auto;
+        .choose {
+          border-radius: 5px;
+          height: 100%;
+          padding: 20px;
+          .ch_top {
+            height: 60px;
+            line-height: 60px;
+            overflow: hidden;
+            .lt {
+              float: left;
+              span {
+                margin: 0px 10px;
               }
-              p {
-                margin: 5px;
-                padding: 0px;
-                a {
+            }
+            .rg {
+              float: right;
+              a {
+                margin: 0px 20px;
+              }
+            }
+          }
+          .el-tabs {
+            .el-tab-pane {
+              .sort {
+                width: 100%;
+                height: 80px;
+                h2 {
+                  font-size: 20px;
                   color: skyblue;
+                  margin: 10px;
                 }
-              }
-            }
-            .el-table {
-              margin-top: 10px;
-              .el-table__header-wrapper {
-                .cell {
+                p {
+                  margin: 5px;
                   padding: 0px;
-                  .t_header_01 {
-                    width: 100%;
-                    height: 100px;
-                    line-height: 100px;
-                    border-bottom: 1px solid rgb(230, 230, 230);
-                    padding-bottom: 10px;
-                    padding: 0px 10px;
-                    cursor: pointer;
-                    .el-popover {
-                      p {
-                        i {
-                          margin-right: 20px;
+                  a {
+                    color: skyblue;
+                  }
+                }
+              }
+              .el-table {
+                margin-top: 10px;
+                .el-table__header-wrapper {
+                  .cell {
+                    padding: 0px;
+                    .t_header_01 {
+                      width: 100%;
+                      height: 100px;
+                      line-height: 100px;
+                      border-bottom: 1px solid rgb(230, 230, 230);
+                      padding-bottom: 10px;
+                      padding: 0px 10px;
+                      cursor: pointer;
+                      .el-popover {
+                        p {
+                          i {
+                            margin-right: 20px;
+                          }
                         }
                       }
+                      i {
+                        margin-top:50px;
+                        transform: translateY(-50%);
+                        cursor: pointer;
+                      }
                     }
-                    i {
-                      margin-top:50px;
-                      transform: translateY(-50%);
-                      cursor: pointer;
-                    }
-                  }
-                  .t_header_02 {
-                    height: 100px;
-                    line-height: 100px;
-                    padding: 0px 10px;
-                    span {
-                      font-weight: 700px;
-                      color: skyblue;
-                      font-size: 24px;
-                    }
-                    p {
-                      height: 20px;
-                      font-size: 16px;
-                      padding: 0px;
-                      margin: 0px;
+                    .t_header_02 {
+                      height: 100px;
+                      line-height: 100px;
+                      padding: 0px 10px;
+                      span {
+                        font-weight: 700px;
+                        color: skyblue;
+                        font-size: 24px;
+                      }
+                      p {
+                        height: 20px;
+                        font-size: 16px;
+                        padding: 0px;
+                        margin: 0px;
+                      }
                     }
                   }
                 }
               }
-            }
-            ul {
-              padding: 0px;
-              li {
-                list-style: none;
-                border-bottom: 1px solid #cccccc;
-                margin-bottom: 10px;
-                .title {
-                  p {
-                    font-size: 14px;
-                  }
-                }
-                .body {
-                  overflow: hidden;
-                  .lt {
-                    float: left;
-                    width: 40%;
-                    height: 200px;
-                    // background-color: skyblue;
-                  }
-                  .rg {
-                    float: right;
-                    width: 60%;
-                    height: 200px;
-                    .band {
-                      width: 100%;
-                      height: 8px;
-                      background-color: rgb(113, 223, 186);
+              ul {
+                padding: 0px;
+                li {
+                  list-style: none;
+                  border-bottom: 1px solid #cccccc;
+                  margin-bottom: 10px;
+                  .title {
+                    p {
+                      font-size: 14px;
                     }
-                    .txt {
-                      overflow: hidden;
-                      height: 20px;
-                      line-height: 20px;
-                      .txt_lt {
-                        float: left;
-                        text-indent: 10px;
-                        span {
-                          font-size: 14px;
-                        }
+                  }
+                  .body {
+                    overflow: hidden;
+                    .lt {
+                      float: left;
+                      width: 40%;
+                      height: 200px;
+                      // background-color: skyblue;
+                    }
+                    .rg {
+                      float: right;
+                      width: 60%;
+                      height: 200px;
+                      .band {
+                        width: 100%;
+                        height: 8px;
+                        background-color: rgb(113, 223, 186);
                       }
-                      .txt_rg {
-                        float: right;
-                        span {
-                          font-size: 14px;
-                          margin: 0px 10px;
+                      .txt {
+                        overflow: hidden;
+                        height: 20px;
+                        line-height: 20px;
+                        .txt_lt {
+                          float: left;
+                          text-indent: 10px;
+                          span {
+                            font-size: 14px;
+                          }
+                        }
+                        .txt_rg {
+                          float: right;
+                          span {
+                            font-size: 14px;
+                            margin: 0px 10px;
+                          }
                         }
                       }
                     }
@@ -664,13 +605,13 @@ export default {
         }
       }
     }
-  }
-  .el-popover {
-    padding: 20px;
-    .block {
+    .el-popover {
       padding: 20px;
-      .el-slider__marks-text {
-        width: 40px;
+      .block {
+        padding: 20px;
+        .el-slider__marks-text {
+          width: 40px;
+        }
       }
     }
   }
