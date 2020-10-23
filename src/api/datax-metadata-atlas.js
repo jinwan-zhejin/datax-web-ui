@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 09:54:10
+ * @LastEditTime: 2020-10-23 16:23:20
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -56,6 +56,42 @@ export async function getList(type) {
     params: {
       type: type,
       _: new Date().getTime()
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 添加分类
+ * @param {object} 添加分类参数
+ * @return {object} axios返回值
+ */
+export async function addNewClassification(data) {
+  var tempClass = []
+  tempClass.push(data)
+  const res = await axios({
+    url: '/atlasApi/v2/types/typedefs?type=classification',
+    method: 'post',
+    data: {
+      entityDefs: [],
+      enumDefs: [],
+      structDefs: [],
+      classificationDefs: tempClass
+    },
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
+  })
+  return res
+}
+export async function deleteNewClassification(name) {
+  const res = await axios({
+    url: '/atlasApi/v2/types/typedef/name/'.concat(name),
+    method: 'delete',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
     }
   })
   return res
@@ -165,6 +201,41 @@ export async function setCustomFilters(data) {
     url: '/atlasApi/v2/search/saved',
     method: 'put',
     data,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 新增自定义过滤器
+ * @param {object} data参数
+ * @return {object} axios返回值
+ */
+export async function addCustomFilters(data) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/saved',
+    method: 'post',
+    data,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 新增自定义过滤器
+ * @param {object} data参数
+ * @return {object} axios返回值
+ */
+export async function deleteCustomFilters(guid) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/saved/'.concat(guid),
+    method: 'delete',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'X-XSRF-HEADER': '""'

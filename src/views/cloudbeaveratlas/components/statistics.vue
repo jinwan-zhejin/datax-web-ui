@@ -2,7 +2,7 @@
  * @Date: 2020-10-22 10:21:05
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 17:42:52
+ * @LastEditTime: 2020-10-23 10:59:38
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\statistics.vue
  * @Description: 统计
 -->

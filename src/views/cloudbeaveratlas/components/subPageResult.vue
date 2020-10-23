@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 10:12:34
+ * @LastEditTime: 2020-10-23 18:51:14
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -120,16 +120,16 @@
           </el-table-column>
           <el-table-column v-for="(item, index) in tableColumnsSelected" :key="index" :label="item.label" :prop="item.value" />
         </el-table>
-        <!-- <el-pagination
+        <el-pagination
           background
-          :current-page="current"
+          :current-page="currentPage"
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]"
-          :page-size="25"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        /> -->
+          :page-size="pageSize"
+          :total="tableTotal"
+          @size-change="handlePageSizeChange"
+          @current-change="handlePageCurrentChange"
+        />
       </el-col>
     </el-row>
     <el-dialog title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="false">
@@ -162,6 +162,7 @@
         <el-button type="primary" @click="handledeleteClassification">提交</el-button>
       </div>
     </el-dialog>
+    <AddCustomFilter :add-custom-filter-show="addCustomFilterShow" @closeaddcustomfilter="addCustomFilterShow=false" />
   </div>
 </template>
 
@@ -170,11 +171,13 @@
 import AddClassification from './addClassification'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import { translater } from '../utils/dictionary'
+import AddCustomFilter from './addCustomFilter'
 
 export default {
   name: 'SubPageResult',
   components: {
-    AddClassification
+    AddClassification,
+    AddCustomFilter
   },
   props: {
     classificationList: { type: Array, default: () => ([]) }
@@ -211,7 +214,6 @@ export default {
       ],
       tableColumnsPlus: [], // 除固定显示的列，额外显示的列项
       tableData: [], // 表数据
-      tableTotal: 0, // 总数
       metaCompareVisible: false, // 版本比较dialog可见
       // 比较参数
       compareParams: {
@@ -227,7 +229,11 @@ export default {
       deleteClass: '',
       deleteTypeName: '',
       resultQuery: '', // 存储从路由读到的参数
-      timer: ''
+      timer: '',
+      addCustomFilterShow: false,
+      currentPage: 1,
+      pageSize: 25,
+      tableTotal: 0 // 总数
     }
   },
   computed: {
@@ -283,6 +289,9 @@ export default {
   watch: {
     '$route.query': {
       handler(val, oldVal) {
+        this.currentPage = 1
+        this.pageSize = 25
+        this.tableTotal = 0 // 总数
         this.resultQuery = val
         this.refreshList()
         // console.log('query changed');
@@ -297,6 +306,11 @@ export default {
         }
       },
       deep: true
+    },
+    addCustomFilterShow(val) {
+      if (!val) {
+        this.$emit('refreshcustomlist')
+      }
     }
   },
   created() {
@@ -394,8 +408,9 @@ export default {
           includeClassificationAttributes: true,
           includeSubClassifications: true,
           includeSubTypes: true,
-          limit: 25,
-          offset: 0,
+          query: this.resultQuery.hasOwnProperty('query') ? this.resultQuery.query : null,
+          limit: this.pageSize,
+          offset: this.pageSize * (this.currentPage - 1),
           typeName: this.resultQuery.hasOwnProperty('type') ? this.resultQuery.type : null
         })
         // console.log(res)
@@ -416,7 +431,7 @@ export default {
          * @description: 保存为自定义过滤器
          */
     saveAsCustomFilter() {
-      console.log('保存为自定义过滤器')
+      this.addCustomFilterShow = true
     },
     /**
          * @description: 新建实体
@@ -523,6 +538,18 @@ export default {
           duration: 4000
         })
       }
+    },
+    /**
+     * @description: 分页
+     */
+    handlePageSizeChange(val) {
+      this.pageSize = val
+      this.currentPage = 1
+      this.refreshList()
+    },
+    handlePageCurrentChange(val) {
+      this.currentPage = val
+      this.refreshList()
     }
   }
 }
