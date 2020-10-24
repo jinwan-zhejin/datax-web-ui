@@ -7,6 +7,7 @@ import Cookies from 'js-cookie'
 import './assets/css/reset.css'
 
 import Element from 'element-ui'
+import V_Charts from 'vue-echarts'
 import './styles/element-variables.scss'
 // import 'element-ui/lib/theme-chalk/index.css'
 import comButton from './components/Generic/button.vue' // 自定义按钮
@@ -33,6 +34,8 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import echarts from 'echarts'
 
+Vue.component('v-chart', V_Charts)
+
 Vue.prototype.$echarts = echarts
 Vue.prototype.go = gojs
 
@@ -54,7 +57,7 @@ Vue.prototype.$axios = axios
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 
 Vue.use(Element, {
-  size: Cookies.get('size')  // set element-ui default size
+  size: Cookies.get('size') // set element-ui default size
 })
 
 // register global utility filters
