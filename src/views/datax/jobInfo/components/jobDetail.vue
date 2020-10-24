@@ -51,7 +51,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务类型" prop="glueType">
-            {{ this.temp.glueType }}
+            {{ this.temp.jobType }}
           </el-form-item>
         </el-col>
       </el-row>
