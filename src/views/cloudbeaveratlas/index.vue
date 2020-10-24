@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 18:18:00
+ * @LastEditTime: 2020-10-23 18:12:19
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -48,7 +48,7 @@
                         <i class="el-icon-more" style="font-size:18px;-moz-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);color:#3D5FFF;" />
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
+                        <el-dropdown-item @click.stop.native="addNewClassificationShow=true">
                           <i class="el-icon-plus" style="color:#3D5FFF;font-weight:bold;" />创建新分类
                         </el-dropdown-item>
                       </el-dropdown-menu>
@@ -68,7 +68,7 @@
               </div>
             </div>
             <div style="overflow-y:hidden;">
-              <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.toShow" node-key="description" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
+              <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:classifications.hasVal" node-key="description" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
                   <span>{{ node.label }}</span>
@@ -85,7 +85,7 @@
                           <el-dropdown-item @click.stop.native="">
                             <i class="el-icon-edit" style="color:#3D5FFF;" />查看/编辑
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="">
+                          <el-dropdown-item @click.stop.native="openDeleteClassification(data)">
                             <i class="el-icon-delete" style="color:#3D5FFF;" />删除
                           </el-dropdown-item>
                           <el-dropdown-item @click.stop.native="searchClassifications(data)">
@@ -183,12 +183,12 @@
             <div slot="title" class="collapse-title">
               <div style="min-width: 222px;">
                 {{ customFilter.collapseNameCN }}
-                <el-tooltip style="position: relative;float:right;margin-right:50px;" content="'显示所有':'显示类型'" placement="top">
+                <!-- <el-tooltip style="position: relative;float:right;margin-right:50px;" content="'显示所有':'显示类型'" placement="top">
                   <el-button type="text" plain size="medium" @click="test(customFilter.collapseName)">
                     <i class="el-icon-turn-off" style="font-size:20px;" />
                   </el-button>
-                </el-tooltip>
-                <el-tooltip style="position: relative;float:right;margin-right:10px;" content="刷新" placement="top">
+                </el-tooltip> -->
+                <el-tooltip style="position: relative;float:right;margin-right:50px;" content="刷新" placement="top">
                   <el-button type="text" plain size="medium" @click.stop.native="customFilter.refreshFun">
                     <i class="el-icon-refresh" style="font-size:18px;" />
                   </el-button>
@@ -203,7 +203,7 @@
                   <span>
                     <el-button
                       v-if="node.label !== '高级搜索' && node.label !== '普通搜索'"
-                      v-show="resultQuery.type === data.searchParameters.typeName && resultQuery.tag === data.searchParameters.classification"
+                      v-show="validateTypeNameClassification(data)"
                       type="text"
                     >
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
@@ -214,7 +214,7 @@
                           <el-dropdown-item @click.stop.native="filterRename(node.label, data)">
                             <i class="el-icon-edit" style="color:#3D5FFF;" />重命名
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="">
+                          <el-dropdown-item @click.stop.native="filterDelete(node.label, data)">
                             <i class="el-icon-delete" style="color:#3D5FFF;" />删除
                           </el-dropdown-item>
                         </el-dropdown-menu>
@@ -240,6 +240,7 @@
             name="atlas"
             :classification-list="classifications.hasVal"
             replace
+            @refreshcustomlist="loadListCustomFilters"
           />
         </el-main>
       </el-container>
@@ -253,7 +254,27 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="filterRenameShow=false">关 闭</el-button>
-        <el-button size="small" type="primary" @click="submitFilterName('filterInfo')">更 新</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="submitFilterName('filterInfo')">更 新</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :visible.sync="filterDeleteShow" title="删除自定义过滤器" @close="filterDeleteShow=false">
+      删除自定义过滤器 {{ filterInfo.filterName }} ?
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="primary" @click="filterDeleteShow=false">关 闭</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="submitDeleteFilter">删 除</el-button>
+      </div>
+    </el-dialog>
+    <AddNewClassification
+      :all-classification="classifications.data"
+      :add-new-classification-show="addNewClassificationShow"
+      @closeaddnewclassification="addNewClassificationShow=false"
+      @refreshclassification="loadListClassifications"
+    />
+    <el-dialog :visible.sync="classificationDeleteShow" title="删除分类" @close="classificationDeleteShow=false">
+      删除该分类 {{ classificationToDelete.description }} ?
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="primary" @click="classificationDeleteShow=false">关 闭</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="deleteNewClassification">删 除</el-button>
       </div>
     </el-dialog>
   </div>
@@ -267,6 +288,7 @@ import Search from './components/search'
 import Statistics from './components/statistics'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import Router from 'vue-router'
+import AddNewClassification from './components/addNewClassification'
 
 const router = new Router({
   // mode: 'history',
@@ -307,7 +329,8 @@ export default {
   name: 'DbeaverAltas',
   components: {
     Search,
-    Statistics
+    Statistics,
+    AddNewClassification
   },
   router, // 私有路由
   data() {
@@ -347,7 +370,7 @@ export default {
         toShow: [],
         showFlat: true,
         refreshFun: this.loadListClassifications,
-        switchStatus: false
+        switchStatus: true
       },
       businessMetadata: {
         collapseName: 'Business Metadata',
@@ -415,6 +438,24 @@ export default {
       filterInfo: {
         filterName: '',
         filterInfos: ''
+      },
+      filterDeleteShow: false,
+      addNewClassificationShow: false,
+      classificationDeleteShow: false,
+      classificationToDelete: '', // 待删除
+      isLoading: false
+    }
+  },
+  computed: {
+    validateTypeNameClassification() {
+      return data => {
+        var valid1 = false
+        var valid2 = false
+        valid1 = data.searchParameters.hasOwnProperty('typeName')
+          ? (this.resultQuery.type === data.searchParameters.typeName) : true
+        valid2 = data.searchParameters.hasOwnProperty('classification')
+          ? (valid2 = this.resultQuery.tag === data.searchParameters.classification) : true
+        return (valid1 === true && valid2 === true)
       }
     }
   },
@@ -535,6 +576,7 @@ export default {
     // 展开项name
     this.collapseActiveName = this.collapseExistName // 'businessMetadata', 'glossaries',
     // this.leftLoading = this.collapseExistName
+    this.isLoading = false
   },
   methods: {
     test(info) {
@@ -584,7 +626,7 @@ export default {
       this.$router.replace({
         name: 'atlasResult',
         query: {
-          searchType: 'basic',
+          // searchType: 'basic',
           tag: data.name.split(' (')[0]
         }
       })
@@ -603,13 +645,12 @@ export default {
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickCustomFilter(data) {
-      if (this.resultQuery.type === data.searchParameters.typeName && this.resultQuery.tag === data.searchParameters.classification) {
-        this.resultQuery.type = null
-        this.resultQuery.tag = null
-      } else {
-        this.resultQuery.type = data.searchParameters.typeName
-        this.resultQuery.tag = data.searchParameters.classification
-      }
+      this.resultQuery.type = (!data.searchParameters.hasOwnProperty('typeName'))
+        ? null : (this.resultQuery.type = this.resultQuery.type === data.searchParameters.typeName
+          ? null : data.searchParameters.typeName)
+      this.resultQuery.tag = (!data.searchParameters.hasOwnProperty('classification'))
+        ? null : (this.resultQuery.tag = this.resultQuery.tag === data.searchParameters.classification
+          ? null : data.searchParameters.classification)
       for (var i = 0; i < data.searchParameters.attributes.length; i++) {
         if (this.resultQuery.attributes === null) {
           this.resultQuery.attributes = ''
@@ -630,6 +671,8 @@ export default {
         name: 'atlasResult',
         query: tempQuery
       })
+      console.log(this.$route.query);
+      console.log(data);
     },
     /**
          * @description: 搜索左边栏el-tree节点
@@ -851,6 +894,11 @@ export default {
       this.filterInfo.filterInfos = data
       this.filterRenameShow = true
     },
+    filterDelete(name, data) {
+      this.filterInfo.filterName = name
+      this.filterInfo.filterInfos = data.guid
+      this.filterDeleteShow = true
+    },
     /**
      * @description: 提交修改
      */
@@ -865,10 +913,14 @@ export default {
         }
       })
     },
+    submitDeleteFilter() {
+      this.deleteFilter()
+    },
     /**
      * @description: 重命名
      */
     async setFilterName() {
+      this.isLoading = true
       const res = await apiatlas.setCustomFilters(this.filterInfo.filterInfos)
       if (res.status === 200 && res.statusText === 'OK') {
         this.$message({
@@ -879,6 +931,7 @@ export default {
         })
         this.loadListCustomFilters()
         this.filterRenameShow = false
+        this.isLoading = false
       } else {
         this.$message({
           message: '重命名失败',
@@ -886,6 +939,63 @@ export default {
           type: 'error',
           duration: 4000
         })
+        this.isLoading = false
+      }
+    },
+    async deleteFilter() {
+      this.isLoading = true
+      const res = await apiatlas.deleteCustomFilters(this.filterInfo.filterInfos)
+      // console.log(res);
+      if (res.status === 204) {
+        this.$message({
+          message: '删除成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        })
+        this.loadListCustomFilters()
+        this.filterDeleteShow = false
+        this.isLoading = false
+      } else {
+        this.$message({
+          message: '删除失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+        this.isLoading = false
+      }
+    },
+    openDeleteClassification(data) {
+      this.classificationToDelete = data
+      this.classificationDeleteShow = true
+    },
+    async deleteNewClassification() {
+      this.isLoading = true
+      const res = await apiatlas.deleteNewClassification(this.classificationToDelete.description)
+      if (res.status === 204) {
+        this.$message({
+          message: '删除成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        })
+        this.loadListClassifications()
+        this.$router.replace({
+          name: 'atlasSearch',
+          query: {}
+        })
+        this.classificationDeleteShow = false
+        this.classificationToDelete = ''
+        this.isLoading = false
+      } else {
+        this.$message({
+          message: '删除失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+        this.isLoading = false
       }
     }
   }

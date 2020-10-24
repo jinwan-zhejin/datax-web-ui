@@ -1,43 +1,66 @@
 <template>
   <div class="explore-container">
     <div class="app-container">
-      <!-- 条件查询和操作 -->
       <div class="filter-container">
-        <el-input v-model="search" prefix-icon="el-icon-search" style="width:40%;border:none;" placeholder="请输入关键字" @input="Search" />
-        <el-button class="filter-item" style="float:right;" round type="primary" icon="el-icon-plus" @click="AddList">
-          添加
-        </el-button>
+        <!-- 条件查询和操作 -->
+        <div class="box-card">
+          <div class="text item">
+            <div class="left">数据探查</div>
+            <div class="right">
+              <el-input
+                v-model="search"
+                clearable
+                placeholder="数据探查名称"
+                style="width: 268px"
+                class="filter-item"
+                @keyup.enter.native="handleFilter"
+              >
+                <el-button slot="append" size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="getAllData">搜索</el-button>
+              </el-input>
+              <el-button class="filter-item" style="margin-left: 30px;" type="goon" size="small" icon="el-icon-plus" @click="AddList">
+                添加
+              </el-button>
+              <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+                reviewer
+              </el-checkbox> -->
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="line" />
       <!-- 列表 -->
       <ul>
         <li v-for="item in ObjList" :key="item.id">
-          <a @click="gotoDetail(item)">
-            <div class="img">
-              <img src="../../assets/dataset-cover.png" alt="">
-              <!-- <img :src="item.imageUrl" alt=""> -->
-            </div>
+          <a>
+            <!-- <div class="img">
+              <img src="../../assets/dataSourceIcon/bigquery_icon_big@2x.png" alt="">
+            </div> -->
             <div class="main">
-              <div class="main_tit">
-                <h5>{{ item.taskName }}</h5>
+              <div class="txtInfo">
+                <div class="p1">{{ item.taskName }}</div>
                 <p>
                   <span><i class="el-icon-user-solid" />{{ userName }}</span>
-                  <!-- <span><i class="el-icon-link" />Link</span> -->
                 </p>
                 <p>
                   <span><i class="el-icon-present" />{{ item.tableName }}</span>
-                  <!-- <span><i class="el-icon-coin" />item</span> -->
-                  <span><i class="el-icon-suitcase" />{{ item.rows }}</span>
-                  <!-- <span><i class="el-icon-tickets" />task</span> -->
+                  <span><i class="el-icon-coin" />{{ item.size }}</span>
                 </p>
               </div>
             </div>
-            <!-- <div class="rg_btn">
-              <el-button style="margin:0px;marginTop；14px;" plain @click.stop="like(item)"><i class="el-icon-arrow-up" /></el-button>
-              <el-button style="marginLeft: 0px;" plain>{{ item.number }}</el-button>
-            </div> -->
+            <el-button class="startE" plain size="small" @click="gotoDetail(item)">开始探查</el-button>
+            <i class="deleteIcon el-icon-close" @click="open(item.id)" />
           </a>
         </li>
       </ul>
+      <el-pagination
+        :current-page="pageNum"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
       <!-- 添加列表对话框 -->
       <el-dialog
         title="添加列表"
@@ -123,7 +146,7 @@
               <el-form-item label="描述">
                 <el-input v-model="form.desc" type="textarea" autosize />
               </el-form-item>
-              <el-form-item label="图片上传">
+              <!-- <el-form-item label="图片上传">
                 <el-upload
                   ref="uploaddemo"
                   class="upload-demo"
@@ -137,7 +160,7 @@
                 >
                   <el-button size="small" type="primary" round>点击上传</el-button>
                 </el-upload>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
           <!-- githubURL -->
@@ -209,7 +232,7 @@
 import { mapGetters } from 'vuex'
 import { getList } from '@/api/datax-user'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
-import { addList, getAllList } from '@/api/data-explore'
+import { addList, getAllList, deleteData } from '@/api/data-explore'
 // import { list } from '@/api/datax-jdbcDatasource'
 import * as dsQueryApi from '@/api/metadata-query'
 
@@ -290,7 +313,10 @@ export default {
       isLink: true,
       isGitHub: false,
       isList: false,
-      isSet: false
+      isSet: false,
+      pageNum: 1,
+      pageSize: 10,
+      total: 0
     }
   },
   created() {
@@ -302,6 +328,7 @@ export default {
         this.ObjList = JSON.parse(localStorage.getItem('newData'))
       }
     }
+    console.log(document.getElementsByClassName('el-pagination__total'))
   },
   methods: {
     fetchData() {
@@ -316,10 +343,16 @@ export default {
     },
     // 获取全部数据
     getAllData() {
-      getAllList().then((res) => {
+      const obj = {
+        keyword: this.search,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      getAllList(obj).then((res) => {
         console.log(res)
         if (res.code === 200) {
           this.ObjList = res.content
+          this.total = res.content.length
         }
       }).catch((err) => {
         console.log(err)
@@ -337,9 +370,6 @@ export default {
       this.getJdbcDs()
       this.form.name = localStorage.getItem('roles').split('_')[1].split('"')[0]
       this.dialogAddVisible = true
-    },
-    Search() {
-      console.log(this.search)
     },
     closeDialog() {
       this.dialogAddVisible = false
@@ -380,6 +410,15 @@ export default {
       this.isGitHub = false
       this.isList = false
       this.isSet = true
+    },
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.pageNum = 1
+      this.getAllData()
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+      this.getAllData()
     },
     // 创建
     create() {
@@ -479,6 +518,34 @@ export default {
       console.log(file)
       file.name = file.file.name
       this.fileList.push(file)
+    },
+    del(id) {
+      deleteData(id).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.getAllData()
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    open(id) {
+      this.$confirm('您确定要删除该条探查任务?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.del(id)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
@@ -489,81 +556,123 @@ export default {
   &-container {
     margin: 30px;
     background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
     .filter-container {
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
+      background-color: #ffffff;
       overflow: hidden;
-      line-height: 46px;
       border-radius: 4px;
-      padding: 2px;
-      // background-color: #f5f6fa;
-      .el-input {
-        .el-input__inner {
-          border: none;
+      padding: 0px;
+      margin: 10px 0px;
+      .box-card {
+        .left {
+          float: left;
+          width: 120px;
+          font-size: 24px;
+          font-family: PingFangHK-Medium, PingFangHK;
+          font-weight: 500;
+          color: #333333;
+          margin-left: 24px;
+        }
+        .right {
+          float: right;
+          margin-right: 20px;
+          .el-input {
+            overflow: hidden;
+            .el-input__inner {
+              float: left;
+              width: 200px;
+              height: 32px;
+              line-height: 32px;
+              padding-right: 15px;
+            }
+            .el-input-group__append {
+              float: left;
+              width: 60px;
+              padding: 0px 15px;
+              text-align: center;
+              color: #fff;
+              background-color: #3d5fff;
+            }
+          }
         }
       }
-      .el-button {
-        margin: 0px 20px;
-      }
     }
-    .filter-container:hover {
-      border: 1px solid skyblue;
+    .line {
+      height: 1px;
+      background: #F3F3F3;
     }
     ul {
-      border: 1px solid #cccccc;
       border-radius: 2px;
       padding-left: 0px;
       border-bottom: none;
       li {
         width: 100%;
-        height: 88px;
+        height: 144px;
         list-style: none;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #F3F3F3;
         a {
           width: 100%;
-          height: 88px;
+          height: 144px;
           display: block;
           overflow: hidden;
-          .img {
-            width: 60px;
-            height: 60px;
-            margin: 14px;
-            float: left;
-            img {
-              width: 100%;
-              height: 100%;
-            }
-          }
+          position: relative;
+          cursor: default;
           .main {
             width: 60%;
             float: left;
-            .main_tit {
-              margin-top: 20px;
-              h5 {
-                text-indent: 10px;
+            padding-top: 26px;
+            .txtInfo {
+              margin-left: 20px;
+              .p1 {
+                height: 25px;
+                font-size: 18px;
+                font-family: PingFangHK-Medium, PingFangHK;
+                font-weight: 500;
+                color: #333333;
+                line-height: 25px;
               }
               p {
-                margin-top: 5px 0px;
-                font-size: 14px;
-                i {
-                  margin: 0px 10px;
-                }
+                margin-top: 10px;
+                color: #666666;
                 span {
+                  font-size: 14px;
+                  font-family: PingFangHK-Regular, PingFangHK;
+                  font-weight: 400;
                   cursor: pointer;
-                  margin: 20px 0px;
+                  margin-right: 30px;
+                  i {
+                    margin-right: 8px;
+                  }
                 }
                 span:hover {
-                  color: skyblue;
+                  color: steelblue;
                 }
               }
             }
           }
-          .rg_btn {
-            float: right;
-            margin: 14px;
+          .startE {
+            position: absolute;
+            right: 24px;
+            bottom: 25px;
+          }
+          .deleteIcon {
+            position: absolute;
+            right: 24px;
+            top: 26px;
+            cursor: pointer;
+          }
+          .deleteIcon:hover {
+            color: tomato;
           }
         }
       }
+    }
+    .el-pagination {
+      float: right;
+      height: 30px;
+      line-height: 30px;
+      margin: 25px;
     }
     .el-dialog {
       .el-dialog__header {
