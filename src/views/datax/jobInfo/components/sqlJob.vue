@@ -530,16 +530,6 @@ export default {
                 this.fetchData()
                 this.$store.commit('SET_TAB_TYPE', '');
                 this.$store.commit('SET_TASKDETAIL_ID', res.content);
-
-                // setTimeout(()=>{
-                //   console.log(this.list[0]);
-                //   this.$store.commit('ADD_TASKDETAIL',
-                //   {
-                //     title:this.list[0].jobDesc,
-                //     name:this.list[0].jobDesc,
-                //     content:this.list[0],
-                //   })
-                // })
                 this.dialogFormVisible = false;
                 this.$notify({
                   title: "Success",
