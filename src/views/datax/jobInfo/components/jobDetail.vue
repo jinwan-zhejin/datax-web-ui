@@ -876,7 +876,7 @@ export default {
       // handlerViewLog.call(this, temp);
       this.logview = true;
       this.jobId = temp.id;
-      this.$refs.jobLog?.fetchData()
+      this.$refs.jobLog?.fetchData();
     },
 
     //删除
@@ -927,8 +927,8 @@ export default {
         log.getList(param).then((response) => {
         const { content } = response;
         
-        let newestLog = content.data[0];
-        console.log(newestLog);
+        let newestLog = content.data[0] || {};
+        console.log('+++',content,newestLog);
         status = newestLog.handleCode;
         const triggerTime = Date.parse(newestLog?.triggerTime)
         log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)

@@ -496,7 +496,7 @@ export default {
       //   });
       //   return;
       // }
-      this.jobJson = this.$options.editor.getValue() || "{}";
+      this.jobJson = this.$options.editor.getValue() || "";
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
@@ -511,7 +511,7 @@ export default {
             .getDataSourceDetail(this.temp.dataSourceId)
             .then((res) => {
               console.log("dafa", res);
-              let jsonObj = Object.assign({sqlScript:JSON.parse(this.jobJson)}, { jobDatasource: res });
+              let jsonObj = Object.assign({sqlScript:this.jobJson}, { jobDatasource: res });
               this.jobJson = JSON.stringify(jsonObj, null, 2);
             })
             .then(() => {
