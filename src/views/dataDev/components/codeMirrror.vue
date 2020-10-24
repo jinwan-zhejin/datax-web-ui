@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :style="{height:`${sqlHeight}px !important`}" class="sqlArea">
+    <div :style="{height:`400px !important`}" class="sqlArea">
       <textarea @click.native="chooseSql" ref="mycode" class="codesql" v-model="code"></textarea>
     </div>
     <div class="btnContent">
@@ -80,6 +80,9 @@ export default {
           };
         },
       });
+
+      editor.setSize('auto','400px');
+
       // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
       editor.on("cursorActivity", function (ins) {
         editor.showHint();

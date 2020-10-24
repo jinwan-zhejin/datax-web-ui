@@ -20,6 +20,14 @@ export function getTableSchema(params) {
   })
 }
 
+export function getTableList(params) {
+  return request({
+    url: `/api/jobJdbcDatasource/tables`,
+    method: 'get',
+    params
+  })
+}
+
 // 获取字段
 export function getColumns(params) {
   return request({

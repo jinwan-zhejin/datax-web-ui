@@ -51,7 +51,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务类型" prop="glueType">
-            {{ this.temp.glueType }}
+            {{ this.temp.jobType }}
           </el-form-item>
         </el-col>
       </el-row>
@@ -106,7 +106,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="阻塞处理" prop="executorBlockStrategy">
             <el-select
               v-model="temp.executorBlockStrategy"
               placeholder="请选择阻塞处理策略"
@@ -131,7 +131,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="执行器" prop="jobGroup">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="执行器" prop="jobGroup">
             <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
               <el-option
                 v-for="item in executorList"
@@ -149,13 +149,14 @@
               v-model="temp.executorFailRetryCount"
               :min="0"
               :max="20"
+              size="small"
             />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="所属项目" prop="projectId">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="所属项目" prop="projectId">
             <el-select
               v-model="temp.projectId"
               placeholder="所属项目"
@@ -171,7 +172,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="超时时间(分钟)">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="超时时间(分钟)">
             <el-input-number
               v-model="temp.executorTimeout"
               :min="0"
@@ -182,7 +183,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="路由策略" prop="executorRouteStrategy">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="路由策略" prop="executorRouteStrategy">
             <el-select
               v-model="temp.executorRouteStrategy"
               placeholder="请选择路由策略"
@@ -197,12 +198,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="子任务">
+          <el-form-item  label="子任务">
             <el-select
               v-model="temp.childJobId"
               multiple
               placeholder="子任务"
               value-key="id"
+
             >
               <el-option
                 v-for="item in jobIdList"
@@ -215,30 +217,12 @@
         </el-col>
         <el-col :span="12" />
       </el-row>
-      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="辅助参数" prop="incrementType">
-            <el-select
-              v-model="temp.incrementType"
-              placeholder="请选择参数类型"
-              value=""
-            >
-              <el-option
-                v-for="item in incrementTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
       <el-row
-        v-if="temp.glueType === 'BEAN' && temp.incrementType === 1"
+        v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"
         :gutter="20"
       >
         <el-col :span="12">
-          <el-form-item label="增量主键开始ID" prop="incStartId">
+          <el-form-item label="增量主键ID" prop="incStartId">
             <el-input
               v-model="temp.incStartId"
               placeholder="首次增量使用"
@@ -255,7 +239,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="reader数据源" prop="datasourceId">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  label="reader数据源" prop="datasourceId">
             <el-select
               v-model="temp.datasourceId"
               placeholder="reader数据源"
@@ -271,18 +255,47 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="reader表" prop="readerTable">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="reader表" prop="readerTable">
             <el-input v-model="temp.readerTable" placeholder="读表的表名" />
           </el-form-item>
         </el-col>
-        <el-col :span="5">
-          <el-form-item label="主键" label-width="40px" prop="primaryKey">
+        <!-- <el-col :span="5">
+          <el-form-item  label="主键" label-width="40px" prop="primaryKey">
             <el-input
               v-model="temp.primaryKey"
               placeholder="请填写主键字段名"
             />
           </el-form-item>
-        </el-col>
+        </el-col> -->
+      </el-row>
+
+      <el-row>
+      <el-col :span="8">
+          <el-form-item v-if="jobType === 'SQLJOB'" label="数据源连接：" prop="dataSourceId">
+            <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
+              <el-option
+                v-for="item in dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+      </el-col>
+      </el-row>
+      <el-row>
+      <el-col :span="8">
+          <el-form-item v-if="jobType === 'SQLJOB'" label="schema：" prop="schema">
+            <el-select v-model="temp.dataSourceId" placeholder="请选择schema">
+              <el-option
+                v-for="item in schemaList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+      </el-col>
       </el-row>
       <el-row
         v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
@@ -358,7 +371,7 @@
           />
         </el-col>
       </el-row>
-      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
+      <el-row v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" :gutter="20">
         <el-col :span="24">
           <el-form-item label="JVM启动参数">
             <el-input
@@ -471,7 +484,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="失败重试次数">
-              <el-input-number v-model="temp.executorFailRetryCount" :min="0" :max="20" />
+              <el-input-number size="small" v-model="temp.executorFailRetryCount" :min="0" :max="20" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -510,7 +523,7 @@
         </el-row>
         <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
           <el-col :span="12">
-            <el-form-item label="增量主键开始ID" prop="incStartId">
+            <el-form-item label="增量主键ID" prop="incStartId">
               <el-input v-model="temp.incStartId" placeholder="首次增量使用" style="width: 56%" />
             </el-form-item>
           </el-col>
@@ -623,7 +636,8 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
-import jobLog from './jobLog'
+import jobLog from './jobLog';
+import { getTableSchema } from "@/api/metadata-query";
 
 import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
@@ -676,6 +690,7 @@ export default {
       list: null,
       listLoading: true,
       total: 0,
+      schemaList: [],
       // jobTypeLabel: '',
       listQuery: {
         current: 1,
@@ -857,8 +872,11 @@ export default {
     this.getJobIdList();
     this.getJobProject();
     this.getDataSourceList();
+    this.getSchemaList()
     this.temp = this.jobInfo;
-    
+    console.log(this.temp)
+
+    console.log('jobType',this.jobType);
   },
 
   methods: {
@@ -876,7 +894,7 @@ export default {
       // handlerViewLog.call(this, temp);
       this.logview = true;
       this.jobId = temp.id;
-      this.$refs.jobLog?.fetchData()
+      this.$refs.jobLog?.fetchData();
     },
 
     //删除
@@ -927,8 +945,8 @@ export default {
         log.getList(param).then((response) => {
         const { content } = response;
         
-        let newestLog = content.data[0];
-        console.log(newestLog);
+        let newestLog = content.data[0] || {};
+        console.log('+++',content,newestLog);
         status = newestLog.handleCode;
         const triggerTime = Date.parse(newestLog?.triggerTime)
         log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
@@ -943,6 +961,14 @@ export default {
         })
       });
 
+    },
+
+    //schema列表
+    async getSchemaList() {
+      let schemaList = await getTableSchema({
+        datasourceId: this.temp.dataSourceId,
+      });
+      this.schemaList = schemaList;
     },
 
 
@@ -987,6 +1013,7 @@ export default {
     getDataSourceList() {
       datasourceApi.getDataSourceList().then((response) => {
         this.dataSourceList = response;
+        console.log('this.dataSourceList', this.dataSourceList);
       });
     },
     fetchData() {
@@ -1064,6 +1091,12 @@ export default {
     
     
   },
+
+  computed: {
+    jobType(){
+      return this.jobInfo.jobType
+    }
+  }
 };
 </script>
 

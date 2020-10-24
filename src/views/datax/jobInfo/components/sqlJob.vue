@@ -59,8 +59,8 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="数据源连接：" prop="dataSourceId">
-        <el-select v-model="temp.dataSourceId" placeholder="请选择数据源连接">
+      <el-form-item label="数据源连接：" prop="datasourceId">
+        <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
           <el-option
             v-for="item in blockStrategies"
             :key="item.id"
@@ -410,7 +410,7 @@ export default {
     this.getExecutor();
     this.getJobIdList();
     this.getJobProject();
-    this.getDataSourceList(), console.log(this.jobType);
+    this.getDataSourceList(), 
     this.fetchSourceData();
     
   },
@@ -496,7 +496,7 @@ export default {
       //   });
       //   return;
       // }
-      this.jobJson = this.$options.editor.getValue() || "{}";
+      this.jobJson = this.$options.editor.getValue() || "";
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
@@ -508,10 +508,10 @@ export default {
           }
 
           job
-            .getDataSourceDetail(this.temp.dataSourceId)
+            .getDataSourceDetail(this.temp.datasourceId)
             .then((res) => {
               console.log("dafa", res);
-              let jsonObj = Object.assign({sqlScript:JSON.parse(this.jobJson)}, { jobDatasource: res });
+              let jsonObj = Object.assign({sqlScript:this.jobJson}, { jobDatasource: res });
               this.jobJson = JSON.stringify(jsonObj, null, 2);
             })
             .then(() => {
@@ -526,20 +526,13 @@ export default {
                   "," +
                   this.timeFormatType;
               }
+
+              this.temp.jobType = this.$store.state.taskAdmin.tabType;
+              
               job.createJob(this.temp).then((res) => {
                 this.fetchData()
                 this.$store.commit('SET_TAB_TYPE', '');
                 this.$store.commit('SET_TASKDETAIL_ID', res.content);
-
-                // setTimeout(()=>{
-                //   console.log(this.list[0]);
-                //   this.$store.commit('ADD_TASKDETAIL',
-                //   {
-                //     title:this.list[0].jobDesc,
-                //     name:this.list[0].jobDesc,
-                //     content:this.list[0],
-                //   })
-                // })
                 this.dialogFormVisible = false;
                 this.$notify({
                   title: "Success",
@@ -751,16 +744,16 @@ export default {
 
     //数据源列表
     fetchSourceData() {
-      datasourceApi.list({ current: 1, size: 1000 }).then((response) => {
+      datasourceApi.getDataSourceList().then((response) => {
         const { records } = response;
         const { total } = response;
-        this.blockStrategies = records;
+        this.blockStrategies = response;
       });
     },
     //schema列表
     async getSchemaList() {
       let schemaList = await getTableSchema({
-        datasourceId: this.temp.dataSourceId,
+        datasourceId: this.temp.datasourceId,
       });
       console.log(schemaList);
       this.schemaList = schemaList;
@@ -797,13 +790,13 @@ export default {
   },
 
   computed: {
-    dataSourceIdSchema() {
-      return this.temp.dataSourceId;
+    datasourceIdSchema() {
+      return this.temp.datasourceId;
     },
   },
 
   watch: {
-    dataSourceIdSchema() {
+    datasourceIdSchema() {
       this.getSchemaList();
     },
   },

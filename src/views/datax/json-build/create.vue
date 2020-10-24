@@ -311,6 +311,9 @@ export default {
         this.temp.glueType === "BEAN"
           ? "executorJobHandler"
           : "executorJobHandler";
+
+      this.temp.jobType = this.$store.state.taskAdmin.tabType;
+      
       job.createJob(this.temp).then(() => {
         this.$notify({
           title: "Success",

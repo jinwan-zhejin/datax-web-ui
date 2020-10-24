@@ -12,11 +12,12 @@
         </el-select>
         <el-select
           style="margin-top:10px;width:100%;"
-          v-model="tableId"
+          v-model="schemaId"
           clearable
-          placeholder="请选择表"
+          placeholder="请选择Schema"
+          @change='getTableList'
         >
-          <el-option v-for="item in tableList" :key="item" :label="item" :value="item"></el-option>
+          <el-option v-for="item in SchemaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <div class="table">
@@ -62,7 +63,7 @@
 </template>
 <script>
 import { list } from "@/api/datax-jdbcDatasource";
-import { getTables, getColumns } from "@/api/metadata-query";
+import { getTables, getColumns, getTableSchema, getTableList} from "@/api/metadata-query";
 import CodeMirror from "./codeMirrror";
 import TableDetail from "./tableDetail";
 export default {
@@ -76,13 +77,15 @@ export default {
       activeNames: [],
       dataBaseList: [],
       tableList: [],
+      SchemaList: [],
       columnList: [],
       dataBaseid: "",
-      tableId: "",
+      schemaId: "",
       tableName: "",
       dragging: false, //是否拖拽,
       sqlHeight: 200,
-      tableHeight:300
+      tableHeight:300,
+      tableId:''
     };
   },
   methods: {
@@ -91,15 +94,24 @@ export default {
       list({ current: 1, size: 100000 }).then((res) => {
         this.dataBaseList = res.records;
         this.dataBaseid = res.records[0].id;
-        this.getTablesList();
+        this.getSchema();
       });
     },
 
-    //获取表
-    getTablesList() {
-      getTables({ datasourceId: this.dataBaseid }).then((res) => {
-        this.tableList = res;
+    //获取schema
+    getSchema() {
+      getTableSchema({ datasourceId: this.dataBaseid }).then((res) => {
+        this.SchemaList = res;
       });
+    },
+
+    //getTableList
+    getTableList(){
+      getTableList({id: this.dataBaseid,schema:this.schemaId})
+      .then(res => {
+        console.log('res', res);
+        this.tableList = res;
+      })
     },
     //获取字段
     getClo() {
@@ -138,7 +150,7 @@ export default {
   },
   watch: {
     dataBaseid() {
-      this.getTablesList();
+      this.getSchema();
     },
   },
 };
@@ -147,6 +159,10 @@ export default {
 .contentLeft {
   background: white;
   padding: 0 2px 0 15px;
+  min-height: 630px;
+}
+.dataBase {
+  margin-top: 20px;
 }
 .dataBase,
 .table {
