@@ -168,6 +168,14 @@
                             <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
                             <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
                           </p>
+                          <p>
+                            <i>最大值</i>
+                            <i class="m_t">{{ item.indicator.maximum && item.indicator.maximum.value }}</i>
+                          </p>
+                          <p>
+                            <i>最小值</i>
+                            <i class="m_t">{{ item.indicator.minimum && item.indicator.minimum.value }}</i>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -659,8 +667,8 @@ export default {
                       margin-top: 20px;
                       .rg_txt {
                         p {
-                          height: 30px;
-                          line-height: 30px;
+                          height: 24px;
+                          line-height: 24px;
                           position: relative;
                           span {
                             margin-right: 10px;

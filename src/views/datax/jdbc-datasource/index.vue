@@ -555,42 +555,48 @@
       <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
       <div v-show="threeSQL" class="set">
         <p>基本信息</p>
-        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
-          <el-form-item label="数据源名称:">
-            <el-input v-model="SparkForm.master" />
-          </el-form-item>
-          <el-form-item label="数据源分组:">
-            <el-input v-model="SparkForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="备注:">
-            <el-input v-model="SparkForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="HiveForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="HiveForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="HiveForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>一般</p>
-        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
-          <el-form-item label="JDBC URL:" style="width: 50%">
-            <el-input v-model="SparkForm.jdbcUrl" />
-          </el-form-item>
-          <el-form-item label="主机:" style="width: 50%; float: left">
-            <el-input v-model="SparkForm.master" />
-          </el-form-item>
-          <el-form-item label="端口:" style="width: 50%; float: right">
-            <el-input v-model="SparkForm.serverPort" />
-          </el-form-item>
-          <el-form-item label="数据库/模式:" style="width: 50%">
-            <el-input v-model="SparkForm.database" />
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="HiveForm.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="HiveForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="HiveForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="HiveForm.database" />
+            </el-form-item>
+          </el-form>
+        </div>
         <p>认证</p>
-        <el-form :model="SparkForm" label-width="100px" class="bgcForm">
-          <el-form-item label="用户名:" style="width: 50%">
-            <el-input v-model="SparkForm.username" />
-          </el-form-item>
-          <el-form-item label="密码:" style="width: 50%">
-            <el-input v-model="SparkForm.password" />
-            <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
-          </el-form-item>
-        </el-form>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="HiveForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="HiveForm.password" type="password" />
+              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- oracle连接设置表单 -->
       <div v-show="oracle" class="set">
@@ -834,11 +840,6 @@ export default {
           type: 'all'
         },
         {
-          name: 'Hive',
-          url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
-          selected: 0
-        },
-        {
           name: 'Sql Server',
           url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
           selected: 0,
@@ -863,32 +864,38 @@ export default {
           type: 'all'
         },
         {
-          name: 'HBase',
-          url: require('@/assets/dataSourceIcon/hbase.png'),
-          selected: 0,
-          type: 'all'
-        },
-        {
           name: 'DB2',
           url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
           selected: 0,
           type: 'all'
         },
         {
+          name: 'HBase',
+          url: require('@/assets/dataSourceIcon/hbase.png'),
+          selected: 0,
+          type: 'all'
+        },
+        {
+          name: 'Hive',
+          url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
+          selected: 0,
+          type: 'all'
+        },
+        {
           name: 'Spark',
-          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          url: require('@/assets/dataSourceIcon/spark.png'),
           selected: 0,
           type: 'all'
         },
         {
           name: 'Impala',
-          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          url: require('@/assets/dataSourceIcon/Impala.png'),
           selected: 0,
           type: 'all'
         },
         {
           name: 'Flink',
-          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          url: require('@/assets/dataSourceIcon/Flink.png'),
           selected: 0,
           type: 'all'
         }
@@ -1058,7 +1065,7 @@ export default {
       AdvancedForm: {},
       MySQLForm: {},
       GPForm: {}, // greenplum, postgresql
-      SparkForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
+      HiveForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
       OracleForm: {}, // oracle
       DB2Form: {}, // OracleForm
       CHForm: {}, // ClickHouse HBase
@@ -1118,8 +1125,8 @@ export default {
     threeSQL() {
       return (
         (this.sqlName === 'Hive' ||
-          this.sqlName === 'ApacheSpark' ||
-          this.sqlName === 'ClouderaImpala') &&
+          this.sqlName === 'Spark' ||
+          this.sqlName === 'Impala' || this.sqlName === 'Flink') &&
         this.currentStep === 2
       );
     },

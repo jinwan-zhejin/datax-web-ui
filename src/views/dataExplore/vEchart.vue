@@ -49,14 +49,12 @@ export default {
     }
   },
   created() {
-    console.log(this.data, '123333333')
     if (this.data) {
       const newArr = []
       for (let i = 0; i < this.data.length; i++) {
         newArr.push(this.data[i].number)
       }
       this.polar.series[0].data = newArr
-      console.log(newArr, 'new')
     }
   }
 }
