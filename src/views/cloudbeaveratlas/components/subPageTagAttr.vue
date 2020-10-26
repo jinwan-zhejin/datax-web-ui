@@ -2,7 +2,7 @@
  * @Date: 2020-10-26 16:24:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 18:55:45
+ * @LastEditTime: 2020-10-26 19:29:55
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
  * @Description: 查看编辑页
 -->
@@ -16,7 +16,7 @@
           </el-tooltip>
         </el-col>
         <el-col :span="18">
-          <el-tooltip content="123" placement="top">
+          <el-tooltip :content="classification" placement="top">
             <span class="topBarText">{{ classification }}</span>
           </el-tooltip>
         </el-col>
@@ -56,23 +56,28 @@
           <el-table :data="tableData">
             <el-table-column label="名称" prop="attributes.name">
               <template v-slot:default="{row}">
-                <a class="tableItemLink" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
+                <a :class="[row.status==='DELETED'?'tableItemLinkRed':'tableItemLink']" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
+                <el-tooltip content="已删除" placement="bottom">
+                  <el-tag v-if="row.status==='DELETED'" type="danger" size="mini">
+                    <i class="el-icon-delete" />
+                  </el-tag>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column label="所有者" prop="attributes.owner" />
             <el-table-column label="描述" min-width="110" prop="attributes.description" />
             <el-table-column label="类型">
               <template v-slot:default="{row}">
-                <a class="tableItemLink" @click="gotoResult(row.typeName)">{{ row.typeName }}</a>
+                <a :class="tableItemLink" @click="gotoResult(row.typeName)">{{ row.typeName }}</a>
               </template>
             </el-table-column>
-            <el-table-column label="分类">
+            <el-table-column label="分类" width="150">
               <template v-slot:default="{ row }">
                 <el-button-group v-if="row.classifications.length > 1" style="width: 150px">
                   <el-tooltip :content="row.classifications[0].typeName">
-                    <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="researchClassification(row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
+                    <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoResultTag(row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
                   </el-tooltip>
-                  <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(row.guid, row.classifications[0].typeName, row.attributes.name)" />
+                  <el-button v-if="row.status!=='DELETED'" plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(row.guid, row.classifications[0].typeName, row.attributes.name)" />
                 </el-button-group>
                 <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
                   <el-button type="success" plain size="mini">
@@ -83,15 +88,15 @@
                       <div v-for="(classes, index) in row.classifications" :key="index">
                         <el-button-group v-if="index !== 0" style="width: 150px">
                           <el-tooltip :content="classes.typeName">
-                            <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="researchClassification(classes.typeName)">{{ classes.typeName }}</el-button>
+                            <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoResultTag(classes.typeName)">{{ classes.typeName }}</el-button>
                           </el-tooltip>
-                          <el-button plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(classes.entityGuid, classes.typeName, row.attributes.name)" />
+                          <el-button v-if="row.status!=='DELETED'" plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(classes.entityGuid, classes.typeName, row.attributes.name)" />
                         </el-button-group>
                       </div>
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassification(row)" />
+                <el-button v-if="row.status!=='DELETED'" type="success" plain size="mini" icon="el-icon-plus" @click="addClassification(row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -114,6 +119,13 @@
       :classification-list="classificationList"
       @addclassificationclose="addClassificationClose"
     />
+    <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
+      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
+        <el-button v-loading="isLoading" type="primary" @click="handledeleteClassification">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,7 +152,9 @@ export default {
       pageTotal: 0,
       pageCurrent: 1,
       pageSize: 25,
-      addClassificationShow: false
+      addClassificationShow: false,
+      deleteClassificationFlag: false,
+      isLoading: false
     }
   },
   computed: {
@@ -157,6 +171,12 @@ export default {
     '$route.params.name'(val) {
       this.timer = new Date().getTime()
       this.classification = this.$route.params.name
+      this.getList()
+    },
+    excludeSub(val) {
+      this.getList()
+    },
+    showHistorical(val) {
       this.getList()
     }
   },
@@ -182,9 +202,9 @@ export default {
     async getList() {
       const res = await apiatlas.getTableByItems({
         classification: this.$route.params.name,
-        excludeDeletedEntities: true,
+        excludeDeletedEntities: !this.showHistorical,
         includeClassificationAttributes: true,
-        includeSubClassifications: true,
+        includeSubClassifications: !this.excludeSub,
         includeSubTypes: true,
         limit: this.pageSize,
         offset: this.pageSize * (this.pageCurrent - 1),
@@ -218,13 +238,25 @@ export default {
       })
     },
     /**
-     * @description: 跳转到结果页面
+     * @description: 跳转到结果页面 实体
      */
     gotoResult(typeName) {
       this.$router.replace({
         name: 'atlasResult',
         query: {
           type: typeName
+        },
+        params: {}
+      })
+    },
+    /**
+     * @description: 跳转到结果页面 分类
+     */
+    gotoResultTag(tagName) {
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {
+          tag: tagName
         },
         params: {}
       })
@@ -240,6 +272,36 @@ export default {
         },
         query: this.$route.query
       })
+    },
+    deleteClassification(guid, classification, typeName) {
+      this.deleteGuid = guid
+      this.deleteClass = classification
+      this.deleteTypeName = typeName
+      this.deleteClassificationFlag = true
+    },
+    async handledeleteClassification() {
+      this.isLoading = true
+      const res = await apiatlas.deleteClassification(this.deleteGuid, this.deleteClass)
+      // console.log(res)
+      if (res.status === 204) {
+        this.deleteClassificationFlag = false
+        this.$message({
+          message: '删除分类成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        })
+        this.getList()
+        this.isLoading = true
+      } else {
+        this.$message({
+          message: '删除分类失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+        this.isLoading = true
+      }
     },
     /**
      * @description: 分页
@@ -315,6 +377,15 @@ export default {
   }
 }
 .tableItemLink:hover {
+    text-decoration: underline;
+}
+.tableItemLinkRed {
+  color: #853d13;
+  i {
+    font-weight: bold;
+  }
+}
+.tableItemLinkRed:hover {
     text-decoration: underline;
 }
 
