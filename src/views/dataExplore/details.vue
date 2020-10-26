@@ -23,6 +23,7 @@
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
+                    height="600"
                     style="width: 100%"
                   >
                     <el-table-column
@@ -124,7 +125,7 @@
                           <span>{{ item.name }}</span>
                         </p>
                         <div class="unique">
-                          <v-chart v-show="item.type === 'number'" style="width: 300px;height: 150px;margin: 10px auto 0px;" :options="polar" />
+                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
                           <div v-show="item.type === 'string'" class="value">
                             <p class="v_p1">
                               {{ item.statistics }}
@@ -137,36 +138,38 @@
                       </div>
                     </div>
                     <div class="rg">
-                      <div class="color" />
+                      <div class="color">
+                        <div :style="{width: item.indicator.valid.rate}" class="right" />
+                      </div>
                       <div class="c_main">
                         <div class="rg_txt">
                           <p>
                             <span style="backgroundColor: #00B600" />
                             <i>正确的</i>
-                            <i class="m_r_t">zzzzzzzzzzzz</i>
-                            <i class="m_t">100%</i>
+                            <i class="m_r_t">{{ item.indicator.valid.rate }}</i>
+                            <i class="m_t">{{ item.indicator.valid.value }}</i>
                           </p>
-                          <p>
+                          <!-- <p>
                             <span style="backgroundColor: #FFA215;" />
                             <i>错配</i>
-                            <i class="m_r_t">zzzzzzzzzzzz</i>
-                            <i class="m_t">100%</i>
-                          </p>
+                            <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
+                            <i class="m_t">{{ item.indicator.misssing.rate }}</i>
+                          </p> -->
                           <p>
                             <span style="backgroundColor: #FE4646;" />
                             <i>丢失</i>
-                            <i class="m_r_t">zzzzzzzzzzzz</i>
-                            <i class="m_t">100%</i>
+                            <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
+                            <i class="m_t">{{ item.indicator.misssing.value }}</i>
                           </p>
                           <p>
                             <i>唯一的</i>
-                            <i class="m_r_t">zzzzzzzzzzzz</i>
-                            <i class="m_t">100%</i>
+                            <i class="m_r_t">{{ item.indicator.unique.rate }}</i>
+                            <i class="m_t">{{ item.indicator.unique.value }}</i>
                           </p>
                           <p>
                             <i>最常用</i>
-                            <i class="m_r_t">zzzzzzzzzzzz</i>
-                            <i class="m_t">100%</i>
+                            <i class="m_r_t">{{ item.indicator.mostCommon.rate }}</i>
+                            <i class="m_t">{{ item.indicator.mostCommon.value }}</i>
                           </p>
                         </div>
                       </div>
@@ -648,6 +651,11 @@ export default {
                       height: 8px;
                       background: #FE4646;
                       border-radius: 0px 1px 1px 0px;
+                      .right {
+                        height: 8px;
+                        background-color: #00B600;
+                        border-radius: 0px 1px 1px 0px;
+                      }
                     }
                     .c_main {
                       margin-top: 10px;

@@ -390,9 +390,11 @@ export default {
           this.dialogAddVisible = false
           this.form = {}
           this.getAllData()
+          this.$message.success('添加成功')
         }
       }).catch(error => {
         console.log(error)
+        this.$message.error('添加失败')
       })
     },
     // 获取数据源
