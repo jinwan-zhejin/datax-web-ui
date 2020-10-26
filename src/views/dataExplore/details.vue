@@ -168,11 +168,11 @@
                             <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
                             <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
                           </p>
-                          <p>
+                          <p v-if="item.type === 'number'">
                             <i>最大值</i>
                             <i class="m_t">{{ item.indicator.maximum && item.indicator.maximum.value }}</i>
                           </p>
-                          <p>
+                          <p v-if="item.type === 'number'">
                             <i>最小值</i>
                             <i class="m_t">{{ item.indicator.minimum && item.indicator.minimum.value }}</i>
                           </p>
