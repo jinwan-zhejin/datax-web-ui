@@ -1233,12 +1233,16 @@ export default {
               type: 'success',
               message: '元数据采集成功'
             });
+            this.$router.push('/cloudbeaveratlas/management')
+            console.log('跳转成功')
           });
           this.gathering = true;
           this.$message({
             type: 'info',
             message: '采集任务开始!'
           });
+          this.$router.push('/cloudbeaveratlas/management')
+          console.log('跳转失败')
         })
         .catch(() => {
           this.$message({
