@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 18:51:14
+ * @LastEditTime: 2020-10-26 18:54:19
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -67,7 +67,7 @@
           </el-table-column>
           <el-table-column key="所有者" label="所有者" prop="attributes.owner" />
           <el-table-column key="描述" label="描述" min-width="110" prop="attributes.description" />
-          <el-table-column key="类型" label="类型" prop="typeName">
+          <el-table-column key="类型" label="类型">
             <template v-slot:default="{row}">
               <a class="tableItemLink" @click="researchEntity(row.typeName)">{{ row.typeName }}</a>
             </template>
@@ -102,7 +102,7 @@
           </el-table-column>
           <!-- <el-table-column key="术语" label="术语" width="150">
             <template v-slot:default="{ row }">
-              <div v-for="classes in row.meanings" :key="classes">
+              <div v-for="(classes,index) in row.meanings" :key="index">
                 <el-button-group style="width: 150px">
                   <el-tooltip :content="classes.displayText">
                     <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="test(classes)">{{ classes.displayText }}</el-button>

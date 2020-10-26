@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 18:12:19
+ * @LastEditTime: 2020-10-26 18:12:18
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -34,7 +34,12 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.toShow" node-key="description" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity" />
+              <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.switchStatus?entity.data:entity_Active" node-key="name" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity">
+                <span slot-scope="{ node, data }" class="custom-tree-node">
+                  <!-- 显示的文字 -->
+                  <span>{{ node.label }} {{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
+                </span>
+              </el-tree>
             </div>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('classifications') > -1" name="classifications">
@@ -48,7 +53,7 @@
                         <i class="el-icon-more" style="font-size:18px;-moz-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);color:#3D5FFF;" />
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.stop.native="addNewClassificationShow=true">
+                        <el-dropdown-item @click.stop.native="addNewClassification(undefined)">
                           <i class="el-icon-plus" style="color:#3D5FFF;font-weight:bold;" />创建新分类
                         </el-dropdown-item>
                       </el-dropdown-menu>
@@ -68,24 +73,24 @@
               </div>
             </div>
             <div style="overflow-y:hidden;">
-              <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:classifications.hasVal" node-key="description" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
+              <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:tag_Active" node-key="name" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
-                  <span>{{ node.label }}</span>
+                  <span>{{ node.label }}{{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
                   <span>
-                    <el-button v-show="resultQuery.tag === node.label.split(' (')[0]" type="text">
+                    <el-button v-show="resultQuery.tag === node.label" type="text">
                       <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
                         <span class="el-dropdown-link">
                           <i class="el-icon-more" />
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item @click.stop.native="">
+                          <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="addNewClassification(data)">
                             <i class="el-icon-plus" style="color:#3D5FFF;" />添加子分类
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="">
+                          <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="gotoViewEdit(data)">
                             <i class="el-icon-edit" style="color:#3D5FFF;" />查看/编辑
                           </el-dropdown-item>
-                          <el-dropdown-item @click.stop.native="openDeleteClassification(data)">
+                          <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="openDeleteClassification(data)">
                             <i class="el-icon-delete" style="color:#3D5FFF;" />删除
                           </el-dropdown-item>
                           <el-dropdown-item @click.stop.native="searchClassifications(data)">
@@ -196,7 +201,7 @@
               </div>
             </div>
             <div style="overflow-y:auto;">
-              <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.toShow" node-key="searchParameters" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
+              <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.data" node-key="searchParameters.guid" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
                   <span>{{ node.label }}</span>
@@ -238,7 +243,9 @@
           <router-view
             :key="timer"
             name="atlas"
-            :classification-list="classifications.hasVal"
+            :classification-list="tag_Active"
+            :entities="entity.data"
+            :tag-attribute="classifications.data"
             replace
             @refreshcustomlist="loadListCustomFilters"
           />
@@ -266,6 +273,7 @@
     </el-dialog>
     <AddNewClassification
       :all-classification="classifications.data"
+      :super-types="classifications.superTypes"
       :add-new-classification-show="addNewClassificationShow"
       @closeaddnewclassification="addNewClassificationShow=false"
       @refreshclassification="loadListClassifications"
@@ -289,6 +297,7 @@ import Statistics from './components/statistics'
 import * as apiatlas from '@/api/datax-metadata-atlas'
 import Router from 'vue-router'
 import AddNewClassification from './components/addNewClassification'
+import SubPageTagAttr from './components/subPageTagAttr'
 
 const router = new Router({
   // mode: 'history',
@@ -313,6 +322,13 @@ const router = new Router({
       name: 'atlasDetails',
       components: {
         atlas: SubPageDetails
+      }
+    },
+    {
+      path: '/cloudbeaveratlas/management/tagAttribute/:name',
+      name: 'atlasTagAttr',
+      components: {
+        atlas: SubPageTagAttr
       }
     },
     {
@@ -356,21 +372,20 @@ export default {
         collapseName: 'Entities',
         collapseNameCN: '实体',
         data: [],
-        hasVal: [],
-        toShow: [],
         showFlat: true,
         refreshFun: this.loadListEntities,
-        switchStatus: false
+        switchStatus: false,
+        entityActiveList: ''
       },
       classifications: {
         collapseName: 'Classifications',
         collapseNameCN: '分类',
         data: [],
-        hasVal: [],
-        toShow: [],
         showFlat: true,
         refreshFun: this.loadListClassifications,
-        switchStatus: true
+        switchStatus: true,
+        superTypes: '',
+        tagAttrData: ''
       },
       businessMetadata: {
         collapseName: 'Business Metadata',
@@ -394,14 +409,6 @@ export default {
         collapseName: 'Custom Filters',
         collapseNameCN: '自定义过滤器',
         data: [{
-          name: '高级搜索',
-          children: []
-        }, {
-          name: '普通搜索',
-          children: []
-        }],
-        hasVal: [],
-        toShow: [{
           name: '高级搜索',
           children: []
         }, {
@@ -457,6 +464,53 @@ export default {
           ? (valid2 = this.resultQuery.tag === data.searchParameters.classification) : true
         return (valid1 === true && valid2 === true)
       }
+    },
+    // entity有值项
+    entity_Active() {
+      return this.entity.data.filter(
+        item => {
+          if (this.entityActiveList.hasOwnProperty(item.name) && 'path type db column table instance'.indexOf(item.name.split('_')[item.name.split('_').length - 1]) > -1) {
+            item.countActive = this.entityActiveList[item.name]
+            return true
+          } else if (item.name.indexOf('TYPES') > -1) {
+            return true
+          }
+        }
+      )
+    },
+    tag_Active() {
+      return this.classifications.data.filter(
+        item => {
+          if (this.notEmptyList.tag.tagEntities.hasOwnProperty(item.name)) {
+            item.countActive = this.notEmptyList.tag.tagEntities[item.name]
+            return true
+          } else if (item.name.charAt(0) === '_') {
+            return true
+          }
+        }
+      )
+    },
+    tag_Tree() {
+      // 顶层
+      const tempTop = this.classifications.data.filter(item => {
+        if (item.superTypes.length === 0 && item.subTypes.length > 0) {
+          return true
+        }
+      })
+      // 叶子节点
+      const tempLeaf = this.classifications.data.filter(item => {
+        if (item.superTypes.length > 0 && item.subTypes.length === 0) {
+          return true
+        }
+      })
+      // 中间节点
+      const tempMiddle = this.classifications.data.filter(item => {
+        if (item.superTypes.length > 0 && item.subTypes.length > 0) {
+          return true
+        }
+      })
+      var temp = tempTop
+      return temp
     }
   },
   watch: {
@@ -467,28 +521,14 @@ export default {
       if (this.$refs.glossaries) this.$refs.glossaries.filter(val)
       if (this.$refs.customFilter) this.$refs.customFilter.filter(val)
     },
-    'entity.switchStatus'(val) {
-      if (val) {
-        this.entity.toShow = this.entity.data
-      } else {
-        this.entity.toShow = this.entity.hasVal
-      }
-    },
-    'classifications.switchStatus'(val) {
-      if (val) {
-        this.classifications.toShow = this.classifications.data
-      } else {
-        this.classifications.toShow = this.classifications.hasVal
-      }
-    },
-    'entity.toShow'(val) {
+    'entity.data'(val) {
       if (val !== []) {
         if (this.leftLoading.indexOf('entity') > -1) {
           delete this.leftLoading[this.leftLoading.indexOf('entity')]
         }
       }
     },
-    'classifications.toShow'(val) {
+    'classifications.data'(val) {
       if (val !== []) {
         if (this.leftLoading.indexOf('classifications') > -1) {
           delete this.leftLoading[this.leftLoading.indexOf('classifications')]
@@ -509,33 +549,16 @@ export default {
         }
       }
     },
-    'customFilter.toShow'(val) {
-      if (val !== []) {
-        if (this.leftLoading.indexOf('customFilter') > -1) {
-          delete this.leftLoading[this.leftLoading.indexOf('customFilter')]
+    'customFilter.data': {
+      handler(val, oldVal) {
+        if (val[0] !== [] || val[1] !== []) {
+          if (this.leftLoading.indexOf('customFilter') > -1) {
+            delete this.leftLoading[this.leftLoading.indexOf('customFilter')]
+          }
         }
-      }
+      },
+      deep: true
     },
-    // '$route.query.type'(val, oldVal) {
-    //   if (val === null) {
-    //     this.resultQuery.type = val
-    //     this.$refs.entity.setCurrentKey(null)
-    //     this.entityHighlight = false
-    //   } else {
-    //     this.$refs.entity.setCurrentKey(val)
-    //     this.entityHighlight = true
-    //   }
-    // },
-    // '$route.query.tag'(val, oldVal) {
-    //   if (val === null) {
-    //     this.resultQuery.type = val
-    //     this.$refs.classifications.setCurrentKey(null)
-    //     this.classificationsHighlight = false
-    //   } else {
-    //     this.$refs.classifications.setCurrentKey(val)
-    //     this.classificationsHighlight = true
-    //   }
-    // },
     '$route.query': {
       handler(val, oldVal) {
         this.resultQuery.type = val.hasOwnProperty('type') ? val.type : null
@@ -589,7 +612,7 @@ export default {
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickEntity(data) {
-      this.resultQuery.type = (this.resultQuery.type === data.name.split(' (')[0]) ? null : data.name.split(' (')[0]
+      this.resultQuery.type = (this.resultQuery.type === data.name) ? null : data.name
       this.resultQuery.attributes = null
       var tempQuery = {}
       for (var i in this.resultQuery) {
@@ -606,7 +629,7 @@ export default {
      * @description: classifications el-tree节点点击事件
      */
     handleNodeClickClassifications(data) {
-      this.resultQuery.tag = (this.resultQuery.tag === data.name.split(' (')[0]) ? null : data.name.split(' (')[0]
+      this.resultQuery.tag = (this.resultQuery.tag === data.name) ? null : data.name
       this.resultQuery.attributes = null
       var tempQuery = {}
       for (var i in this.resultQuery) {
@@ -627,7 +650,7 @@ export default {
         name: 'atlasResult',
         query: {
           // searchType: 'basic',
-          tag: data.name.split(' (')[0]
+          tag: data.name
         }
       })
     },
@@ -642,7 +665,7 @@ export default {
     handleNodeClickGlossaries(data) {
     },
     /**
-     * @description: entity el-tree节点点击事件
+     * @description: CustomFilter el-tree节点点击事件
      */
     handleNodeClickCustomFilter(data) {
       this.resultQuery.type = (!data.searchParameters.hasOwnProperty('typeName'))
@@ -671,8 +694,8 @@ export default {
         name: 'atlasResult',
         query: tempQuery
       })
-      console.log(this.$route.query);
-      console.log(data);
+      // console.log(this.$route.query);
+      // console.log(data);
     },
     /**
          * @description: 搜索左边栏el-tree节点
@@ -688,42 +711,20 @@ export default {
       const res = await apiatlas.getList('entity')
       if (res.status === 200 && res.statusText === 'OK') {
         this.entity.data = res.data.entityDefs
-        // 筛选有效项
-        var tempObject = {}
-        for (var item in this.notEmptyList.entity.entityActive) {
-          if (this.notEmptyList.entity.entityActive.hasOwnProperty(item) === true) {
-            tempObject[item] = this.notEmptyList.entity.entityActive[item]
-          }
-        }
-        for (var item2 in this.notEmptyList.entity.entityDeleted) {
-          if (this.notEmptyList.entity.entityDeleted.hasOwnProperty(item2) === true) {
-            // 已有相同项，相加
-            if (tempObject.hasOwnProperty(item2) === true) {
-              tempObject[item2] += this.notEmptyList.entity.entityDeleted[item2]
-            } else {
-              tempObject[item2] = this.notEmptyList.entity.entityDeleted[item2]
-            }
-          }
-        }
-        // 在原列表中筛选有值的项
-        this.entity.hasVal = this.entity.data.filter(
-          item => tempObject.hasOwnProperty(item.name) === true && 'path TYPES type db column table instance'.indexOf(item.name.split('_')[item.name.split('_').length - 1]) > -1)
         this.entity.data.push({
           category: 'ENTITY',
           name: '_ALL_ENTITY_TYPES',
           description: '_ALL_ENTITY_TYPES'
         })
-        this.entity.hasVal.push({
-          category: 'ENTITY',
-          name: '_ALL_ENTITY_TYPES',
-          description: '_ALL_ENTITY_TYPES'
-        })
-        this.entity.toShow = this.entity.hasVal
-        for (var i in this.entity.toShow) {
-          if (this.entity.toShow[i].name === '_ALL_ENTITY_TYPES') {
-            continue
-          }
-          this.entity.toShow[i].name = this.entity.toShow[i].name + ' (' + tempObject[this.entity.toShow[i].name] + ')'
+        // 筛选有效项, 合并统计所有数量
+        this.entityActiveList = this.notEmptyList.entity.entityActive
+        for (var i in this.notEmptyList.entity.entityDeleted) {
+          this.entityActiveList[i] = this.entityActiveList.hasOwnProperty(i)
+            ? (this.entityActiveList[i] + this.notEmptyList.entity.entityDeleted[i]) : this.notEmptyList.entity.entityDeleted[i]
+        }
+        for (i in this.notEmptyList.entity.entityShell) {
+          this.entityActiveList[i] = this.entityActiveList.hasOwnProperty(i)
+            ? (this.entityActiveList[i] + this.notEmptyList.entity.entityShell[i]) : this.notEmptyList.entity.entityShell[i]
         }
       } else {
         this.$message({
@@ -741,52 +742,30 @@ export default {
       const res = await apiatlas.getList('classification')
       if (res.status === 200 && res.statusText === 'OK') {
         this.classifications.data = res.data.classificationDefs
-        this.classifications.hasVal = this.classifications.data.filter(
-          item => this.notEmptyList.tag.tagEntities.hasOwnProperty(item.name) === true
-        )
+        console.log(this.tag_Tree);
         this.classifications.data.push(
           {
             category: 'CLASSIFICATION',
             name: '_ALL_CLASSIFICATION_TYPES',
-            description: '_ALL_CLASSIFICATION_TYPES'
+            description: '_ALL_CLASSIFICATION_TYPES',
+            subTypes: [],
+            superTypes: []
           },
           {
             category: 'CLASSIFICATION',
             name: '_CLASSIFIED',
-            description: '_CLASSIFIED'
+            description: '_CLASSIFIED',
+            subTypes: [],
+            superTypes: []
           },
           {
             category: 'CLASSIFICATION',
             name: '_NOT_CLASSIFIED',
-            description: '_NOT_CLASSIFIED'
+            description: '_NOT_CLASSIFIED',
+            subTypes: [],
+            superTypes: []
           }
         )
-        this.classifications.hasVal.push(
-          {
-            category: 'CLASSIFICATION',
-            name: '_ALL_CLASSIFICATION_TYPES',
-            description: '_ALL_CLASSIFICATION_TYPES'
-          },
-          {
-            category: 'CLASSIFICATION',
-            name: '_CLASSIFIED',
-            description: '_CLASSIFIED'
-          },
-          {
-            category: 'CLASSIFICATION',
-            name: '_NOT_CLASSIFIED',
-            description: '_NOT_CLASSIFIED'
-          }
-        )
-        this.classifications.toShow = this.classifications.hasVal
-        for (var i in this.classifications.toShow) {
-          if (this.classifications.toShow[i].name === '_ALL_CLASSIFICATION_TYPES' ||
-              this.classifications.toShow[i].name === '_CLASSIFIED' ||
-              this.classifications.toShow[i].name === '_NOT_CLASSIFIED') {
-            continue
-          }
-          this.classifications.toShow[i].name = this.classifications.toShow[i].name + ' (' + this.notEmptyList.tag.tagEntities[this.classifications.toShow[i].name] + ')'
-        }
       } else {
         this.$message({
           message: '获取分类列表失败',
@@ -843,13 +822,17 @@ export default {
     async loadListCustomFilters() {
       const res = await apiatlas.getCustomFilters()
       // console.log(res)
-      if (res !== '' || res !== undefined) {
+      if (res.status === 200 && res.statusText === 'OK') {
+        this.customFilter.data[0].children = []
         this.customFilter.data[1].children = []
         for (var i = 0; i < res.data.length; i++) {
-          this.customFilter.data[1].children.push(res.data[i])
+          if (res.data[i].searchType === 'BASIC') {
+            this.customFilter.data[1].children.push(res.data[i])
+          } else {
+            this.customFilter.data[0].children.push(res.data[i])
+          }
         }
-        this.customFilter.toShow = this.customFilter.data
-        // console.log(this.customFilter.toShow)
+        // console.log(this.customFilter.data);
       } else {
         this.$message({
           message: '获取自定义过滤器列表失败',
@@ -997,6 +980,32 @@ export default {
         })
         this.isLoading = false
       }
+    },
+    /**
+     * @description: 打开添加新分类/子分类面板
+     * @param {object} 参数
+     */
+    addNewClassification(data) {
+      if (data !== undefined) {
+        this.classifications.superTypes = data.name
+      } else {
+        this.classifications.superTypes = ''
+      }
+      this.addNewClassificationShow = true
+    },
+    /**
+     * @description: 转到查看编辑页面
+     */
+    gotoViewEdit(data) {
+      // console.log(data);
+      this.classifications.tagAttrData = data
+      this.$router.replace({
+        name: 'atlasTagAttr',
+        query: this.$route.query,
+        params: {
+          name: data.name
+        }
+      })
     }
   }
 };

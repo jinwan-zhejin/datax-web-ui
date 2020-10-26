@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 18:36:14
+ * @LastEditTime: 2020-10-26 13:57:46
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -27,7 +27,7 @@
         <el-col>
           <!-- {{ properties.entity.classifications }} -->
           分类：
-          <span v-for="classifiy in properties.entity.classifications" :key="classifiy.typeName">
+          <span v-for="(classifiy,index) in properties.entity.classifications" :key="index">
             <el-button type="primary" plain size="mini">
               {{ classifiy.typeName }}
             </el-button>
@@ -91,7 +91,7 @@
                         <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button>
                       </div>
                       <span v-if="properties.entity.labels.length <= 0">&nbsp;暂无数据</span>
-                      <el-tag v-for="(item, index) in properties.entity.labels" :key="item + index" style="margin: 2px;">{{ item }}</el-tag>
+                      <el-tag v-for="(item, index) in properties.entity.labels" :key="index" style="margin: 2px;">{{ item }}</el-tag>
                     </el-collapse-item>
                   </el-collapse>
                   <!-- <el-collapse v-model="propertiesCollapseActive[3]">
@@ -121,8 +121,8 @@
             <el-tab-pane label="分类" name="classifications">
               <el-select v-model="classificationsValue" style="margin-bottom: 10px;" filterable placeholder="请选择" clearable @change="handleSelectClass">
                 <el-option
-                  v-for="item in classificationsOptions"
-                  :key="item.value"
+                  v-for="(item,index) in classificationsOptions"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 />

@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 16:23:20
+ * @LastEditTime: 2020-10-26 17:22:08
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */

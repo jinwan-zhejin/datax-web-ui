@@ -2,13 +2,13 @@
  * @Date: 2020-10-23 14:05:25
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 16:55:20
+ * @LastEditTime: 2020-10-26 16:19:48
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
  * @Description: 添加新分类
 -->
 <template>
   <div>
-    <el-dialog :visible.sync="addNewClassificationShow" title="添加新分类" @close="closeAddNewClassification">
+    <el-dialog :visible.sync="addNewClassificationShow" :title="superTypes===''?'添加新分类':'添加子分类'" @close="closeAddNewClassification">
       <el-form ref="dataForm" :model="dataForm">
         <el-form-item label="名称" prop="name" :rules="[{ required: true, message: '输入名称', trigger: 'blur' }]">
           <el-input v-model="dataForm.name" placeholder="名称（必须）" clearable />
@@ -22,7 +22,7 @@
           </el-col>
           <el-col class="line-col">
             <el-select v-model="dataForm.superTypes" placeholder="搜索属性" multiple clearable>
-              <el-option v-for="(item, index) in myAllClassification" :key="index" :label="item.description" :value="item.description" />
+              <el-option v-for="(item, index) in myAllClassification" :key="index" :label="item.name" :value="item.name" />
             </el-select>
           </el-col>
         </el-form-item>
@@ -68,11 +68,9 @@ import { addNewClassification } from '@/api/datax-metadata-atlas'
 export default {
   name: 'AddNewClassification',
   props: {
-    allClassification: {
-      type: Array,
-      default: () => ([])
-    },
-    addNewClassificationShow: Boolean
+    allClassification: { type: Array, default: () => ([]) },
+    addNewClassificationShow: Boolean,
+    superTypes: { type: String, default: () => ('') }
   },
   data() {
     return {
@@ -96,7 +94,21 @@ export default {
   },
   computed: {
     myAllClassification() {
-      return this.allClassification.filter(item => item.description.charAt(0) !== '_')
+      return this.allClassification.filter(item => item.name.charAt(0) !== '_')
+    }
+  },
+  watch: {
+    'superTypes'(val) {
+      this.dataForm.superTypes = []
+      if (val !== '') {
+        this.dataForm.superTypes.push(val)
+      }
+    }
+  },
+  created() {
+    this.dataForm.superTypes = []
+    if (this.superTypes !== '') {
+      this.dataForm.superTypes.push(this.superTypes)
     }
   },
   methods: {

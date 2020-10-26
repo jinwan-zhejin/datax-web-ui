@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 11:35:56
+ * @LastEditTime: 2020-10-26 10:31:48
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageSearch.vue
  * @Description: 右半部分查找 子组件
 -->
@@ -177,8 +177,8 @@ export default {
   }
   .search {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 45%;
+    transform: translateY(-45%);
     width: 72%;
     ::v-deep .searchBar {
       .el-input__inner {
@@ -186,6 +186,10 @@ export default {
         height: 52px;
         line-height:52px;
       }
+    }
+    ::v-deep .searchBarCard {
+      height: calc(45vh);
+      overflow-y: auto;
     }
   }
 

@@ -2,7 +2,7 @@
  * @Date: 2020-09-27 16:38:14
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-16 14:36:29
+ * @LastEditTime: 2020-10-26 13:56:33
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewEntity.vue
  * @Description: 新建实体 模态框
 -->
@@ -17,8 +17,8 @@
         <el-col :span="24">
           <el-select v-model="entityType" size="small" filterable placeholder="请选择实体">
             <el-option
-              v-for="item in entityTypeOptions"
-              :key="item.value"
+              v-for="(item,index) in entityTypeOptions"
+              :key="index"
               :label="item.label"
               :value="item.value"
             />
@@ -38,7 +38,7 @@
         <el-col :span="24">
           <div id="attributes" class="form-ring">
             <el-form>
-              <el-form-item v-for="item in createEntityAttributes" :key="item.label" :label="item.label.concat(' (').concat(item.type).concat(')')">
+              <el-form-item v-for="(item,index) in createEntityAttributes" :key="index" :label="item.label.concat(' (').concat(item.type).concat(')')">
                 <el-input v-model="item.value" :placeholder="item.label" />
               </el-form-item>
             </el-form>
@@ -50,7 +50,7 @@
         <el-col :span="24">
           <div id="relationships" class="form-ring">
             <el-form>
-              <el-form-item v-for="item in createEntityRelationships" :key="item.label" :label="item.label.concat(' (').concat(item.type).concat(')')">
+              <el-form-item v-for="(item,index) in createEntityRelationships" :key="index" :label="item.label.concat(' (').concat(item.type).concat(')')">
                 <el-input v-model="item.value" :placeholder="item.label" />
               </el-form-item>
             </el-form>
