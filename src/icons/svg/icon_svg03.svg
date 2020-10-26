@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>画板</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="左边tab-icon" transform="translate(-20.000000, -168.000000)">
+            <g id="数据管理备份-3" transform="translate(20.000000, 168.000000)" filter="url(#filter-1)">
+                <g>
+                    <path d="M12.3480762,9.5669873 C12.5027767,9.4776709 12.6933757,9.4776709 12.8480762,9.5669873 L12.8480762,9.5669873 L14.4461524,10.489637 L14.6961524,12.7679492 C14.6961524,12.946582 14.600853,13.1116455 14.4461524,13.2009619 L14.4461524,13.2009619 L12.8480762,14.1236116 C12.6933757,14.212928 12.5027767,14.212928 12.3480762,14.1236116 L12.3480762,14.1236116 L10.75,13.2009619 L10.5,10.9226497 C10.5,10.7440169 10.5952995,10.5789534 10.75,10.489637 L10.75,10.489637 Z" id="多边形" stroke="#0F0F0F"></path>
+                    <path d="M12,2 C12.5522847,2 13,2.44771525 13,3 L13,7.5 C13,7.77614237 12.7761424,8 12.5,8 C12.2238576,8 12,7.77614237 12,7.5 L12,3 L12,3 L3,3 L3,13 L8.5,13 C8.77614237,13 9,13.2238576 9,13.5 C9,13.7761424 8.77614237,14 8.5,14 L3,14 L3,14 C2.44771525,14 2,13.5522847 2,13 L2,3 C2,2.44771525 2.44771525,2 3,2 L12,2 Z" id="路径" fill="#0F0F0F"></path>
+                    <rect id="矩形备份-6" fill="#0F0F0F" transform="translate(7.500000, 5.500000) rotate(-180.000000) translate(-7.500000, -5.500000) " x="5" y="5" width="5" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-7" fill="#0F0F0F" transform="translate(7.500000, 7.500000) rotate(-180.000000) translate(-7.500000, -7.500000) " x="5" y="7" width="5" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-8" fill="#0F0F0F" transform="translate(6.500000, 9.500000) rotate(-180.000000) translate(-6.500000, -9.500000) " x="5" y="9" width="3" height="1" rx="0.5"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

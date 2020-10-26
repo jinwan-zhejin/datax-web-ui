@@ -833,11 +833,11 @@ export default {
           selected: 0,
           type: 'all'
         },
-        // {
-        //   name: 'Hive',
-        //   url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
-        //   selected: 0
-        // },
+        {
+          name: 'Hive',
+          url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
+          selected: 0
+        },
         {
           name: 'Sql Server',
           url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),

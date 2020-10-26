@@ -75,7 +75,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    meta: { title: '运行报表', icon: 'excel' },
+    meta: { title: '运行报表', icon: 'icon_svg01' },
     children: [
       {
         path: 'dashboard',
@@ -148,13 +148,13 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/jobProject',
     name: 'datasource',
-    meta: { title: '项目管理', icon: 'excel' },
+    meta: { title: '项目管理', icon: 'icon_svg02' },
     children: [
       {
         path: 'jobProject',
         name: 'jobProject',
         component: () => import('@/views/datax/jobProject/index'),
-        meta: { title: '项目管理', icon: 'excel' }
+        meta: { title: '项目管理', icon: 'icon_svg02' }
       }
     ]
   },
@@ -163,19 +163,19 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/datasource',
     name: 'datasource',
-    meta: { title: '数据源管理', icon: 'cfg-datasouce' },
+    meta: { title: '数据源管理', icon: 'icon_svg03' },
     children: [
       {
         path: 'jdbcDatasource',
         name: 'JdbcDatasource',
         component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '普通数据源', icon: 'table' }
+        meta: { title: '普通数据源', icon: 'icon_svg05' }
       },
       {
         path: 'compute',
         name: 'compute',
         component: () => import('@/views/datax/jdbc-datasource/compute-datasource/index'),
-        meta: { title: '计算数据源', icon: 'tree-table' }
+        meta: { title: '计算数据源', icon: 'icon_svg06' }
       }
     ]
   },
@@ -196,7 +196,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/cloudbeaveratlas',
     name: 'cloudbeaveratlas',
-    meta: { title: '元数据管理', icon: 'cfg-datasouce' },
+    meta: { title: '元数据管理', icon: 'icon_svg04' },
     children: [
       {
         path: 'management',
@@ -230,7 +230,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/job',
     name: 'job',
-    meta: { title: '任务管理', icon: 'chuangjianyingyong' },
+    meta: { title: '任务管理', icon: 'icon_svg08' },
     children: [
 
       {
@@ -304,7 +304,7 @@ export const asyncRoutes = [
         path: '/dataDev',
         component: () => import('@/views/dataDev/dataDev'),
         name: 'dataDev',
-        meta: { title: '数据开发', icon: 'kaifajindu', keepAlive: true }
+        meta: { title: '数据开发', icon: 'icon_svg07', keepAlive: true }
       }
     ]
   },
@@ -315,7 +315,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/quality',
     name: 'quality',
-    meta: { title: '数据质量', icon: 'shujuzhiliang' },
+    meta: { title: '数据质量', icon: 'icon_svg09' },
     children: [
       // {
       //   path: 'techStandard',
@@ -404,7 +404,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/model',
     name: 'modeldesign',
-    meta: { title: '数据模型', icon: 'excel' },
+    meta: { title: '数据模型', icon: 'icon_svg10' },
     children: [
       {
         path: 'design',
@@ -444,7 +444,7 @@ export const asyncRoutes = [
         path: 'dataDiscovery',
         name: 'DataDiscovery',
         component: () => import('@/views/dataExplore/index.vue'),
-        meta: { title: '数据探查', icon: 'eye-open' }
+        meta: { title: '数据探查', icon: 'icon_svg11' }
       },
       {
         path: 'details',
@@ -473,7 +473,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/data',
     name: 'dataShare',
-    meta: { title: '数据共享', icon: 'work' },
+    meta: { title: '数据共享', icon: 'icon_svg12' },
     children: [
       {
         path: 'list',
@@ -515,13 +515,13 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/jobLog',
     name: 'log',
-    meta: { title: '日志管理', icon: 'work' },
+    meta: { title: '日志管理', icon: 'icon_svg13' },
     children: [
       {
         path: 'jobLog',
         name: 'JobLog',
         component: () => import('@/views/datax/jobLog/index'),
-        meta: { title: '日志管理', icon: 'documentation' }
+        meta: { title: '日志管理', icon: 'icon_svg13' }
       }
     ]
   },
@@ -544,13 +544,13 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/executor',
     name: 'executor',
-    meta: { title: '执行器管理', icon: 'work' },
+    meta: { title: '执行器管理', icon: 'icon_svg14' },
     children: [
       {
         path: 'executor',
         name: 'Executor',
         component: () => import('@/views/datax/executor/index'),
-        meta: { title: '执行器管理', icon: 'yun' }
+        meta: { title: '执行器管理', icon: 'icon_svg14' }
       }
     ]
   },
@@ -559,7 +559,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/user',
     name: 'user',
-    meta: { title: '用户管理', icon: 'work', roles: ['ROLE_ADMIN'] },
+    meta: { title: '用户管理', icon: 'user', roles: ['ROLE_ADMIN'] },
     children: [
       {
         path: 'user',

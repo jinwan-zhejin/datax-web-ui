@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>画板</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="左边tab-icon" transform="translate(-20.000000, -72.000000)">
+            <g id="数据管理备份-2" transform="translate(20.000000, 72.000000)" filter="url(#filter-1)">
+                <g>
+                    <path d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,10.5471258 13.6395627,12.7765044 11.6056689,14.0011551 L4.39433108,14.0011551 C2.36043727,12.7765044 1,10.5471258 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2 C4.6862915,2 2,4.6862915 2,8 C2,11.3137085 4.6862915,14 8,14 C11.3137085,14 14,11.3137085 14,8 C14,4.6862915 11.3137085,2 8,2 Z" id="形状结合" fill="#0F0F0F"></path>
+                    <polygon id="矩形备份-3" fill="#0F0F0F" points="4.44894627 13 11.5624156 13 11.5624156 14 4.44894627 14"></polygon>
+                    <circle id="椭圆形" fill="#0F0F0F" cx="8" cy="8" r="1"></circle>
+                    <rect id="矩形" fill="#0F0F0F" x="3" y="7.5024129" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-4" fill="#0F0F0F" x="12" y="7.5024129" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-7" fill="#0F0F0F" x="10.5" y="4.5" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-8" fill="#0F0F0F" x="4.5" y="4.5" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-10" fill="#0F0F0F" x="10.5" y="10.5" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-9" fill="#0F0F0F" x="4.5" y="10.5" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-5" fill="#0F0F0F" transform="translate(8.000000, 3.000000) rotate(-270.000000) translate(-8.000000, -3.000000) " x="7.5" y="2.5" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-6" fill="#0F0F0F" transform="translate(8.000000, 6.500000) rotate(-270.000000) translate(-8.000000, -6.500000) " x="6.5" y="6" width="3" height="1" rx="0.5"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

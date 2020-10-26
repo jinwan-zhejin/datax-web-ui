@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>画板</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="左边tab-icon" transform="translate(-20.000000, -648.000000)">
+            <g id="数据共享" transform="translate(20.000000, 648.000000)" filter="url(#filter-1)">
+                <g>
+                    <circle id="椭圆形" stroke="#333333" cx="4" cy="8" r="2"></circle>
+                    <path d="M8.30190765,5.13206157 L5.63593172,6.90937885 M5.87798732,8.70424524 L10.1308469,10.2990676" id="形状" stroke="#333333"></path>
+                    <circle id="椭圆形备份-2" stroke="#333333" cx="10" cy="4" r="2"></circle>
+                    <circle id="椭圆形备份" stroke="#333333" cx="12" cy="11" r="2"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

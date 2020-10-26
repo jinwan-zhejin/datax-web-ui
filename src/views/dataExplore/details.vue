@@ -125,7 +125,7 @@
                           <span>{{ item.name }}</span>
                         </p>
                         <div class="unique">
-                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
+                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 20px;" :data="item.statistics" />
                           <div v-show="item.type === 'string'" class="value">
                             <p class="v_p1">
                               {{ item.statistics }}
@@ -145,7 +145,7 @@
                         <div class="rg_txt">
                           <p>
                             <span style="backgroundColor: #00B600" />
-                            <i>正确的</i>
+                            <i>有效的</i>
                             <i class="m_r_t">{{ item.indicator.valid.rate }}</i>
                             <i class="m_t">{{ item.indicator.valid.value }}</i>
                           </p>
@@ -157,7 +157,7 @@
                           </p> -->
                           <p>
                             <span style="backgroundColor: #FE4646;" />
-                            <i>丢失</i>
+                            <i>空值数</i>
                             <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
                             <i class="m_t">{{ item.indicator.misssing.value }}</i>
                           </p>
@@ -627,6 +627,7 @@ export default {
                       height: 100%;
                       .value {
                         margin-top: 16px;
+                        margin-left: 22px;
                         .v_p1 {
                           font-size: 24px;
                           font-family: PingFangHK-Medium, PingFangHK;
@@ -658,7 +659,7 @@ export default {
                       }
                     }
                     .c_main {
-                      margin-top: 10px;
+                      margin-top: 20px;
                       .rg_txt {
                         p {
                           height: 30px;

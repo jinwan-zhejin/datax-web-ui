@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>画板</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="左边tab-icon" transform="translate(-20.000000, -744.000000)">
+            <g id="执行器" transform="translate(20.000000, 744.000000)" filter="url(#filter-1)">
+                <g>
+                    <circle id="椭圆形" stroke="#333333" cx="8" cy="8" r="6.5"></circle>
+                    <path d="M7.55307527,5.16686871 L10.6947506,7.25247389 C11.1548763,7.55792892 11.2802616,8.17855474 10.9748066,8.63868045 C10.9010595,8.74977017 10.8058403,8.8449894 10.6947506,8.91873646 L7.55307527,11.0043416 C7.09294957,11.3097967 6.47232375,11.1844113 6.16686871,10.7242856 C6.0580455,10.5603585 6,10.3679706 6,10.1712103 L6,6 C6,5.44771525 6.44771525,5 7,5 C7.19676022,5 7.38914817,5.0580455 7.55307527,5.16686871 Z" id="矩形" stroke="#333333" stroke-linejoin="round"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
