@@ -1167,7 +1167,6 @@ export default {
       } else if (val === 'hive') {
         this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
       } else if (val.toLowerCase() === 'mongodb') {
-        this.isBanAdd = false
         this.MdbForm.serverUrl = 'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
       } else {
         this.isBanAdd = false
@@ -1580,6 +1579,7 @@ export default {
         obj1.jdbcUrl = this.MdbForm.serverUrl;
         obj1.datasourceGroup = this.MdbForm.datasourceGroup;
         obj1.comments = this.MdbForm.comments;
+        obj1.databaseName = this.MdbForm.database;
         obj1.jdbcDriverClass = '';
       } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
         console.log(this.GPForm)

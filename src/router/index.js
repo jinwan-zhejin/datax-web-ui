@@ -237,7 +237,7 @@ export const asyncRoutes = [
         path: 'jobInfo',
         name: 'JobInfo',
         component: () => import('@/views/datax/jobInfo/index'),
-        meta: { title: '任务管理', icon: 'renwu' }
+        meta: { title: '任务管理', icon: 'icon_svg08' }
       },
       {
         path: 'jobInfo2',
@@ -410,7 +410,7 @@ export const asyncRoutes = [
         path: 'design',
         name: 'design',
         component: () => import('@/views/dataModel/dataModel.vue'),
-        meta: { title: '数据建模', icon: 'education' }
+        meta: { title: '数据建模', icon: 'icon_svg10' }
       }
       // {
       //   path: 'dataDictionary',
