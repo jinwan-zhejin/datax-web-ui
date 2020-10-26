@@ -115,7 +115,7 @@ export default {
         columeObj[ele] = [];
       });
       this.tips = Object.assign(this.tips, columeObj);
-      this.mountCodeMirror();
+      // this.mountCodeMirror();
     },
     tableList(val) {
       let tableObj = {};
@@ -123,7 +123,7 @@ export default {
         tableObj[ele] = [];
       });
       this.tips = Object.assign(this.tips, tableObj);
-      this.mountCodeMirror();
+      // this.mountCodeMirror();
     },
   },
 };

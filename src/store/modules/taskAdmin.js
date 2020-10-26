@@ -5,10 +5,23 @@ const state = {
         'EXPORT': '导出任务',
         'SQLJOB': 'SQL任务',
         'SPARK': 'SPARK任务',
-        'DQCJOB': '质量任务'
+        'DQCJOB': '质量任务',
+        'METACOLLECT': '元数据采集任务',
+        'METACOMPARE': '元数据比较任务',
+        'SHELL': 'SHELL任务',
+        'POWERSHELL': 'POWERSHELL任务',
+        'PYTHON': 'PYTHON任务',
+        'VJOB': '虚任务',
+        'JAVA': 'Java任务',
+        'SCALA': 'Scala任务',
+        'PYSPARK': 'PySpark任务',
+        'R': 'R任务',
+        'BATCH': '任务批量构建',
+        'TEMPLATE': '普通任务模板'
+
     },
 
-    tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB', 'SPARK','DQCJOB'],
+    tabTypeArr: ['NORMAL','IMPORT','EXPORT','SQLJOB', 'SPARK','DQCJOB','METACOLLECT','METACOMPARE','SHELL','POWERSHELL','PYTHON','VJOB','JAVA','SCALA','PYSPARK','R','BATCH','TEMPLATE'],
 
     tabType: '',
 

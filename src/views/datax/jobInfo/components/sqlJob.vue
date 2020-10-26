@@ -324,6 +324,7 @@ export default {
         userId: 0,
         jobConfigId: "",
         executorHandler: "sqlJobHandler",
+        
         glueType: "BEAN",
         glueSource: "",
         jobJson: "",

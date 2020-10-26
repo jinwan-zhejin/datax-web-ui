@@ -126,6 +126,7 @@ export default {
     selectTable(val) {
       this.tableName = val;
       this.getClo();
+      this.activeNames = ['1']
     },
     //拖拽设置表格高度
     setTableHeight(e) {
