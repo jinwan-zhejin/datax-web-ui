@@ -15,22 +15,28 @@
           <!-- 选项卡 -->
           <div class="choose">
             <el-tabs v-model="activeName" type="card">
-              <el-tab-pane label="数据详情" name="first">
+              <el-tab-pane label="详情" name="first">
                 <!-- 表格 -->
                 <template>
                   <el-table
+                    v-loading="loading"
                     :data="tableData"
+                    background-color="#F8F8FA"
                     border
+                    height="600"
                     style="width: 100%"
                   >
                     <el-table-column
-                      prop="date"
-                      width="180"
-                      align="center"
+                      v-for="item in tableData1"
+                      :key="item.name"
+                      width="200"
+                      :prop="item.name"
+                      align="left"
                     >
                       <template slot="header" slot-scope="scope">
                         <div class="t_header_01">
-                          <el-popover
+                          <!-- 弹出框 -->
+                          <!-- <el-popover
                             placement="bottom"
                             width="200"
                             height="250"
@@ -47,110 +53,42 @@
                             </div>
                             <el-button type="primary" style="marginRight: 20px;">清除</el-button>
                             <el-button type="primary">应用</el-button>
-                            <span slot="reference">
-                              <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
-                              <span style="marginLeft:10px">日期</span>
-                              <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
-                            </span>
-                          </el-popover>
+                          </el-popover> -->
+                          <svg-icon style="position: absolute;left: 5%;top:50%;transform: translateY(-50%);" icon-class="xql_1" @click="visible = !visible" />
+                          <span style="marginLeft:15%">{{ item.name }}</span>
+                          <svg-icon style="position: absolute;right: 5%;top:50%;transform: translateY(-50%);" icon-class="xqr_1" @click="visible = !visible" />
                         </div>
                         <div class="t_header_02">
-                          <span>{{ obj.rows }}</span>
-                        </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="name"
-                      width="180"
-                      align="center"
-                    >
-                      <template slot="header" slot-scope="scope">
-                        <div class="t_header_01">
-                          <el-popover
-                            placement="bottom"
-                            width="200"
-                            height="250"
-                            trigger="click"
-                          >
-                            <p><i class="el-icon-top" /><span>升序</span></p>
-                            <p><i class="el-icon-bottom" /><span>降序</span></p>
-                            <div class="block" style="padding:20px">
-                              <el-slider
-                                v-model="range"
-                                range
-                                :marks="marks"
-                              />
-                            </div>
-                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
-                            <el-button type="primary">应用</el-button>
-                            <span slot="reference">
-                              <i style="float:left;" class="el-icon-s-order" />
-                              <span style="marginLeft:10px">姓名</span>
-                              <i style="float:right;" class="el-icon-s-data" />
-                            </span>
-                          </el-popover>
-                        </div>
-                        <div class="t_header_02">
-                          <span>{{ obj.number }}</span>
-                        </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="address"
-                      align="center"
-                    >
-                      <template slot="header" slot-scope="scope">
-                        <div class="t_header_01">
-                          <el-popover
-                            placement="bottom"
-                            width="200"
-                            height="250"
-                            trigger="click"
-                          >
-                            <p><i class="el-icon-top" /><span>升序</span></p>
-                            <p><i class="el-icon-bottom" /><span>降序</span></p>
-                            <div class="block" style="padding:20px">
-                              <el-slider
-                                v-model="range"
-                                range
-                                :marks="marks"
-                              />
-                            </div>
-                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
-                            <el-button type="primary">应用</el-button>
-                            <span slot="reference">
-                              <i style="float:left;" class="el-icon-s-order" />
-                              <span style="marginLeft:10px">地址</span>
-                              <i style="float:right;" class="el-icon-s-data" />
-                            </span>
-                          </el-popover>
-                        </div>
-                        <div class="t_header_02">
-                          <span>{{ obj.number }}</span>
+                          <p v-show="item.type === 'string'" class="p1">{{ item.statistics }}</p>
+                          <p v-show="item.type === 'string'">唯一值</p>
+                          <!-- <v-chart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :options="polar" /> -->
+                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
                         </div>
                       </template>
                     </el-table-column>
                   </el-table>
                 </template>
               </el-tab-pane>
-              <el-tab-pane label="协议" name="second">
+              <el-tab-pane label="数据" name="second">
                 <!-- 表格 -->
-                <!-- <template>
+                <template>
                   <el-table
+                    v-loading="loading1"
                     :data="tableData"
+                    background-color="#F8F8FA"
                     border
                     style="width: 100%"
                   >
                     <el-table-column
-                      v-for="item in tableData"
-                      :key="item"
-                      width="180"
-                      :prop="item"
-                      align="center"
+                      v-for="item in tableData1"
+                      :key="item.name"
+                      width="200"
+                      :prop="item.name"
+                      align="left"
                     >
                       <template slot="header" slot-scope="scope">
-                        <div class="t_header_01">
-                          <el-popover
+                        <div class="t_header_01" style="border:none">
+                          <!-- <el-popover
                             placement="bottom"
                             width="200"
                             height="250"
@@ -165,89 +103,74 @@
                                 :marks="marks"
                               />
                             </div>
-                            <div class="btn">
-                              <el-button type="primary" size="mini" style="marginRight: 20px;float: left;">清除</el-button>
-                              <el-button type="primary" size="mini" style="float: right;">应用</el-button>
-                            </div>
-                            <span slot="reference">
-                              <i style="float:left;transform:rotate(90deg);marginTop:43px;" class="el-icon-key" @click="visible = !visible" />
-                              <span style="marginLeft:10px">日期</span>
-                              <i style="float:right;" class="el-icon-s-data" @click="visible = !visible" />
-                            </span>
-                          </el-popover>
-                        </div>
-                        <div class="t_header_02">
-                          <span>{{ obj.rows }}</span>
+                            <el-button type="primary" style="marginRight: 20px;">清除</el-button>
+                            <el-button type="primary">应用</el-button>
+                          </el-popover> -->
+                          <svg-icon style="position: absolute;left: 5%;top:50%;transform: translateY(-50%);" icon-class="xql_1" @click="visible = !visible" />
+                          <span style="marginLeft:15%">{{ item.name }}</span>
+                          <svg-icon style="position: absolute;right: 5%;top:50%;transform: translateY(-50%);" icon-class="xqr_1" @click="visible = !visible" />
                         </div>
                       </template>
                     </el-table-column>
                   </el-table>
-                </template> -->
+                </template>
               </el-tab-pane>
               <el-tab-pane label="字段" name="third">
                 <ul>
-                  <li>
-                    <div class="title">
-                      <i class="el-icon-key" /><strong style="marginLeft:10px">Id</strong>
-                      <p>Post Id</p>
+                  <li v-for="item in tableData1" :key="item.name">
+                    <div class="lt">
+                      <div class="title_lt">
+                        <p>
+                          <svg-icon icon-class="xql_1" />
+                          <span>{{ item.name }}</span>
+                        </p>
+                        <div class="unique">
+                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
+                          <div v-show="item.type === 'string'" class="value">
+                            <p class="v_p1">
+                              {{ item.statistics }}
+                            </p>
+                            <p class="v_p2">
+                              唯一值
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="body">
-                      <div class="lt" />
-                      <div class="rg">
-                        <div class="band" />
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Valid</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>60.0k</span>
-                            <span style="color:#ccc;">100%</span>
-                          </div>
-                        </div>
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Mismatched</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>0</span>
-                            <span style="color:#ccc;">0%</span>
-                          </div>
-                        </div>
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Missing</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>0</span>
-                            <span style="color:#ccc;">0%</span>
-                          </div>
-                        </div>
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Mean</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>45.8m</span>
-                            <span style="color:#ccc;" />
-                          </div>
-                        </div>
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Std. Deviation</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>7.12m</span>
-                            <span style="color:#ccc;" />
-                          </div>
-                        </div>
-                        <div class="txt">
-                          <div class="txt_lt">
-                            <span>Quantiles</span>
-                          </div>
-                          <div class="txt_rg">
-                            <span>34.6m</span>
-                            <span style="color:#ccc;">Min</span>
-                          </div>
+                    <div class="rg">
+                      <div class="color">
+                        <div :style="{width: item.indicator.valid.rate}" class="right" />
+                      </div>
+                      <div class="c_main">
+                        <div class="rg_txt">
+                          <p>
+                            <span style="backgroundColor: #00B600" />
+                            <i>正确的</i>
+                            <i class="m_r_t">{{ item.indicator.valid.rate }}</i>
+                            <i class="m_t">{{ item.indicator.valid.value }}</i>
+                          </p>
+                          <!-- <p>
+                            <span style="backgroundColor: #FFA215;" />
+                            <i>错配</i>
+                            <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
+                            <i class="m_t">{{ item.indicator.misssing.rate }}</i>
+                          </p> -->
+                          <p>
+                            <span style="backgroundColor: #FE4646;" />
+                            <i>丢失</i>
+                            <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
+                            <i class="m_t">{{ item.indicator.misssing.value }}</i>
+                          </p>
+                          <p>
+                            <i>唯一的</i>
+                            <i class="m_r_t">{{ item.indicator.unique.rate }}</i>
+                            <i class="m_t">{{ item.indicator.unique.value }}</i>
+                          </p>
+                          <p>
+                            <i>最常用</i>
+                            <i class="m_r_t">{{ item.indicator.mostCommon.rate }}</i>
+                            <i class="m_t">{{ item.indicator.mostCommon.value }}</i>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -264,49 +187,17 @@
 
 <script>
 import * as explore from '@/api/data-explore'
+import vechart from './vEchart.vue'
 export default {
+  components: {
+    vechart
+  },
   data() {
     return {
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333,
-          tag: '家'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333,
-          tag: '公司'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333,
-          tag: '家'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333,
-          tag: '公司'
-        }
-      ],
-      Compact: [
-      ],
+      tableData: [],
+      tableData1: [],
+      C_Name: [],
+      Compact: [],
       activeName: 'first',
       visible: false,
       defaultProps: {
@@ -330,6 +221,8 @@ export default {
         }
       ],
       isTags: false,
+      loading: true,
+      loading1: true,
       ibj: {},
       activeDesc: '1',
       activeSummary: '1',
@@ -339,7 +232,140 @@ export default {
         100: '60.5m'
       },
       userName: '',
-      activeIndex: '1'
+      activeIndex: '1',
+      polar: {
+        color: ['#3398DB'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          top: '8%',
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            axisTick: {
+              alignWithLabel: true,
+              show: false
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            barWidth: '96%',
+            data: [10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
+      },
+      dataTable: [
+        {
+          name: 'id',
+          value: 1,
+          title: 'ID',
+          arr: [
+            {
+              min: 1,
+              max: 5,
+              number: 4
+            },
+            {
+              min: 4,
+              max: 9,
+              number: 7
+            },
+            {
+              min: 16,
+              max: 35,
+              number: 29
+            },
+            {
+              min: 1,
+              max: 28,
+              number: 20
+            }
+          ]
+        },
+        {
+          name: 'name',
+          value: 1,
+          title: '名字',
+          arr: [
+            {
+              min: 1,
+              max: 5,
+              number: 8
+            },
+            {
+              min: 4,
+              max: 9,
+              number: 3
+            },
+            {
+              min: 16,
+              max: 35,
+              number: 34
+            },
+            {
+              min: 1,
+              max: 28,
+              number: 23
+            }
+          ]
+        },
+        {
+          name: 'age',
+          value: 1,
+          title: '年龄',
+          arr: [
+            {
+              min: 1,
+              max: 5,
+              number: 4
+            },
+            {
+              min: 4,
+              max: 9,
+              number: 7
+            },
+            {
+              min: 16,
+              max: 35,
+              number: 29
+            },
+            {
+              min: 1,
+              max: 28,
+              number: 20
+            }
+          ]
+        }
+      ],
+      ListData: [
+        {
+          name: '张三',
+          id: 3,
+          age: 19
+        },
+        {
+          name: '李四',
+          id: 4,
+          age: 19
+        }
+      ]
     }
   },
   created() {
@@ -349,7 +375,6 @@ export default {
       this.obj = this.$route.query
       console.log(this.obj)
     }
-    console.log('1231242314')
     this.getTableData()
     this.getOtherData()
   },
@@ -370,13 +395,24 @@ export default {
         tableName: this.obj.tableName
       }
       explore.getTableData(params).then(res => {
-        const arr = [].concat.apply([], res.data)
-        console.log(arr)
-        if (res.code === 0) {
-          for (let i = 0; i < res.data.length; i++) {
-            res.data[i]
+        const arr = []
+        console.log(res)
+        let obj = {}
+        let newObj = {}
+        for (let i = 0; i < res.length; i++) {
+          obj = {}
+          for (let j = 0; j < res[i].length; j++) {
+            obj = Object.assign(obj, res[i][j])
+            if (j === res[i].length - 1) {
+              newObj = obj
+            }
           }
+          arr.push(newObj)
         }
+        console.log(obj)
+        console.log(arr)
+        this.tableData = arr
+        this.loading = false
       }).catch(err => {
         console.log(err)
       })
@@ -389,6 +425,17 @@ export default {
       }
       explore.getTwoData(params).then(res => {
         console.log(res)
+        this.tableData1 = res
+        this.loading1 = false
+        // this.polar.series[0].data = []
+        // for (let i = 0; i < res.length; i++) {
+        //   if (res[i].type === 'number') {
+        //     for (let j = 0; j < res[i].statistics.length; j++) {
+        //       this.polar.series[0].data.push(res[i].statistics[j].number)
+        //     }
+        //   }
+        // }
+        console.log(this.polar.series[0].data)
       }).catch(err => {
         console.log(err)
       })
@@ -506,44 +553,51 @@ export default {
               }
               .el-table {
                 margin-top: 10px;
+                th {
+                  padding: 0px;
+                }
                 .el-table__header-wrapper {
                   .cell {
                     padding: 0px;
                     .t_header_01 {
                       width: 100%;
-                      height: 100px;
-                      line-height: 100px;
-                      border-bottom: 1px solid rgb(230, 230, 230);
+                      height: 48px;
+                      line-height: 48px;
+                      overflow: hidden;
+                      text-overflow: ellipsis; //超出部分以省略号显示
+                      white-space: nowrap;
+                      text-align: left;
+                      border: none;
+                      background-color: #F8F8FA;
                       padding-bottom: 10px;
                       padding: 0px 10px;
+                      position: relative;
                       cursor: pointer;
-                      .el-popover {
-                        p {
-                          i {
-                            margin-right: 20px;
-                          }
-                        }
-                      }
-                      i {
-                        margin-top:50px;
-                        transform: translateY(-50%);
-                        cursor: pointer;
+                      i::before {
+                        position: absolute;
                       }
                     }
                     .t_header_02 {
                       height: 100px;
-                      line-height: 100px;
                       padding: 0px 10px;
-                      span {
+                      position: relative;
+                      .p1 {
                         font-weight: 700px;
+                        position: absolute;
+                        top: 40px;
+                        transform: translateY(-50%);
                         color: skyblue;
                         font-size: 24px;
                       }
                       p {
                         height: 20px;
+                        text-align: left;
                         font-size: 16px;
+                        position: absolute;
+                        top: 70px;
+                        transform: translateY(-50%);
                         padding: 0px;
-                        margin: 0px;
+                        margin-left: 10px;
                       }
                     }
                   }
@@ -553,46 +607,84 @@ export default {
                 padding: 0px;
                 li {
                   list-style: none;
-                  border-bottom: 1px solid #cccccc;
+                  border-radius: 2px;
+                  border: 1px solid #E0E0E0;
                   margin-bottom: 10px;
-                  .title {
-                    p {
-                      font-size: 14px;
+                  width: 100%;
+                  height: 204px;
+                  padding: 20px;
+                  overflow: hidden;
+                  .lt {
+                    float: left;
+                    width: 40%;
+                    .title_lt {
+                      span {
+                        margin-left: 20px;
+                      }
+                    }
+                    .unique {
+                      width: 100%;
+                      height: 100%;
+                      .value {
+                        margin-top: 16px;
+                        .v_p1 {
+                          font-size: 24px;
+                          font-family: PingFangHK-Medium, PingFangHK;
+                          font-weight: 500;
+                          color: #1774FF;
+                          margin-bottom: 8px;
+                        }
+                        .v_p2 {
+                          font-size: 14px;
+                          font-family: PingFangHK-Regular, PingFangHK;
+                          font-weight: 400;
+                          color: #333333;
+                        }
+                      }
                     }
                   }
-                  .body {
-                    overflow: hidden;
-                    .lt {
-                      float: left;
-                      width: 40%;
-                      height: 200px;
-                      // background-color: skyblue;
-                    }
-                    .rg {
-                      float: right;
-                      width: 60%;
-                      height: 200px;
-                      .band {
-                        width: 100%;
+                  .rg {
+                    width: 50%;
+                    float: right;
+                    .color {
+                      width: 100%;
+                      height: 8px;
+                      background: #FE4646;
+                      border-radius: 0px 1px 1px 0px;
+                      .right {
                         height: 8px;
-                        background-color: rgb(113, 223, 186);
+                        background-color: #00B600;
+                        border-radius: 0px 1px 1px 0px;
                       }
-                      .txt {
-                        overflow: hidden;
-                        height: 20px;
-                        line-height: 20px;
-                        .txt_lt {
-                          float: left;
-                          text-indent: 10px;
+                    }
+                    .c_main {
+                      margin-top: 10px;
+                      .rg_txt {
+                        p {
+                          height: 30px;
+                          line-height: 30px;
+                          position: relative;
                           span {
-                            font-size: 14px;
+                            margin-right: 10px;
+                            width: 8px;
+                            height: 8px;
+                            display: inline-block;
                           }
-                        }
-                        .txt_rg {
-                          float: right;
-                          span {
-                            font-size: 14px;
-                            margin: 0px 10px;
+                          .m_t {
+                            width: 50px;
+                            position: absolute;
+                            right: 20%;
+                            overflow: hidden;
+                            text-overflow: ellipsis; //超出部分以省略号显示
+                            white-space: nowrap;
+                          }
+                          .m_r_t {
+                            width: 50px;
+                            overflow: hidden;
+                            text-overflow: ellipsis; //超出部分以省略号显示
+                            white-space: nowrap;
+                            position: absolute;
+                            right: 0;
                           }
                         }
                       }

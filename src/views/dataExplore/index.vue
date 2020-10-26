@@ -44,6 +44,7 @@
                 <p>
                   <span><i class="el-icon-present" />{{ item.tableName }}</span>
                   <span><i class="el-icon-coin" />{{ item.size }}</span>
+                  <span><i class="el-icon-reading" />{{ item.rows }}</span>
                 </p>
               </div>
             </div>
@@ -67,51 +68,19 @@
         :visible.sync="dialogAddVisible"
         width="50%"
       >
-        <!-- <div class="dia_lt">
-          <i class="el-icon-upload" @click="showUpload" />
-          <i class="el-icon-link" @click="showLink" />
-          <svg-icon icon-class="github" @click="showGitHub" />
-          <i class="el-icon-s-help" @click="showList" />
-          <svg-icon style="marginTop:150px;" icon-class="shezhi" @click="showSet" />
-        </div> -->
         <div class="dia_rg">
           <i class="el-icon-close" @click="closeDialog" />
           <div class="top">
             <!-- <el-input v-model="dia_search" /> -->
-            <span style="fontSize: 24px;">添加</span>
+            <span style="fontSize: 24px;">添加数据</span>
           </div>
-          <!-- 文件上传 -->
-          <!-- <div v-if="isUpload" class="action">
-            <p class="help">Drop your files and folders here</p>
-            <div class="box">
-              <svg-icon icon-class="clipboard" />
-            </div>
-            <p class="or">or</p>
-            <el-upload
-              ref="uploaddemo"
-              class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :limit="1"
-              :on-success="handleSuccess"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :http-request="uploadFile"
-              :file-list="fileList"
-            >
-              <el-button size="small" type="primary" round>点击上传</el-button>
-            </el-upload>
-          </div> -->
           <!-- link链接 -->
           <div v-if="isLink" class="Link">
-            <!-- <h2>Remote Files</h2>
-            <p>Create a dataset from remote URLs. URLs must point to a file.</p>
-            <el-input v-model="newURL" placeholder="Enter a URL to add a new file" />
-            <el-button round plain><i class="el-icon-plus" />Add remote file</el-button> -->
-            <el-form ref="form" label-position="left" :model="form" label-width="120px">
-              <el-form-item label="任务名">
+            <el-form ref="form" label-position="right" :model="form" label-width="100px">
+              <el-form-item label="任务名:">
                 <el-input v-model="form.taskName" />
               </el-form-item>
-              <el-form-item label="数据源">
+              <el-form-item label="数据源:">
                 <el-select v-model="form.sourceName" placeholder="请选择数据源" @change="schemaChange">
                   <el-option
                     v-for="item in sourceList"
@@ -121,7 +90,7 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="数据库表名">
+              <el-form-item label="数据库表名:">
                 <el-select v-model="form.tableName" placeholder="请选择数据库表名">
                   <el-option
                     v-for="item in tableList"
@@ -131,36 +100,15 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="简介">
+              <el-form-item label="简介:">
                 <el-input v-model="form.content" />
               </el-form-item>
-              <!-- <el-form-item label="Owner">
-                <el-select v-model="form.option2" placeholder="wh_dev7295">
-                  <el-option label="Public" value="Public" />
-                  <el-option label="Private" value="Private" />
-                </el-select>
-              </el-form-item> -->
-              <el-form-item label="创建人名字">
+              <el-form-item label="创建人名字:">
                 <el-input v-model="form.name" disabled />
               </el-form-item>
-              <el-form-item label="描述">
+              <el-form-item label="描述:">
                 <el-input v-model="form.desc" type="textarea" autosize />
               </el-form-item>
-              <!-- <el-form-item label="图片上传">
-                <el-upload
-                  ref="uploaddemo"
-                  class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :limit="1"
-                  :on-success="handleSuccess"
-                  :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :http-request="uploadFile"
-                  :file-list="fileList"
-                >
-                  <el-button size="small" type="primary" round>点击上传</el-button>
-                </el-upload>
-              </el-form-item> -->
             </el-form>
           </div>
           <!-- githubURL -->
@@ -442,9 +390,11 @@ export default {
           this.dialogAddVisible = false
           this.form = {}
           this.getAllData()
+          this.$message.success('添加成功')
         }
       }).catch(error => {
         console.log(error)
+        this.$message.error('添加失败')
       })
     },
     // 获取数据源
@@ -675,6 +625,7 @@ export default {
       margin: 25px;
     }
     .el-dialog {
+      border-radius: 8px;
       .el-dialog__header {
         display: none;
       }
@@ -684,7 +635,7 @@ export default {
       }
       .el-dialog__body {
         padding: 0px;
-        height: 400px;
+        height: 100%;
         overflow: hidden;
         .dia_lt {
           width: 10%;
@@ -724,7 +675,6 @@ export default {
           padding-bottom: 60px;
           .top {
             padding: 23px;
-            box-shadow: -0px 0px 10px -6px #ccc inset;
             .el-input {
               width: 90%;
             }
@@ -776,13 +726,13 @@ export default {
             }
           }
           .Link {
-            width: 100%;
+            width: 80%;
             height: 100%;
             padding: 0px 20px;
-            padding-bottom: 60px;
-            overflow: auto;
+            margin: 0px auto;
             .el-form {
               margin-top: 20px;
+              margin-right: 50px;
               .el-select {
                 width: 100%;
               }
@@ -889,10 +839,11 @@ export default {
             bottom: 0;
             height: 60px;
             padding: 10px;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid #F3F3F3;
             text-align: right;
             z-index: 999;
             background-color: #fff;
+            border-radius: 0px 0px 8px 8px;
           }
         }
       }
