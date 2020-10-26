@@ -299,7 +299,7 @@ export default {
       getAllList(obj).then((res) => {
         console.log(res)
         if (res.code === 200) {
-          this.ObjList = res.content
+          this.ObjList = res.content.reverse()
           this.total = res.content.length
         }
       }).catch((err) => {

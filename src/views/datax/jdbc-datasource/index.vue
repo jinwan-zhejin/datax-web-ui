@@ -873,6 +873,24 @@ export default {
           url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
           selected: 0,
           type: 'all'
+        },
+        {
+          name: 'Spark',
+          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          selected: 0,
+          type: 'all'
+        },
+        {
+          name: 'Impala',
+          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          selected: 0,
+          type: 'all'
+        },
+        {
+          name: 'Flink',
+          url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+          selected: 0,
+          type: 'all'
         }
       ],
       CommonType: [

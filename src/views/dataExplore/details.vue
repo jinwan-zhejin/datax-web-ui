@@ -1,5 +1,5 @@
 <template>
-  <div class="details">
+  <div v-loading="loading" class="details">
     <div class="main">
       <!-- 条件查询和操作 -->
       <div class="box-card">
@@ -19,11 +19,9 @@
                 <!-- 表格 -->
                 <template>
                   <el-table
-                    v-loading="loading"
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
-                    height="600"
                     style="width: 100%"
                   >
                     <el-table-column
@@ -73,7 +71,6 @@
                 <!-- 表格 -->
                 <template>
                   <el-table
-                    v-loading="loading1"
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
@@ -139,15 +136,15 @@
                     </div>
                     <div class="rg">
                       <div class="color">
-                        <div :style="{width: item.indicator.valid.rate}" class="right" />
+                        <div :style="{width:item.indicator.valid && item.indicator.valid.rate}" class="right" />
                       </div>
                       <div class="c_main">
                         <div class="rg_txt">
                           <p>
                             <span style="backgroundColor: #00B600" />
                             <i>有效的</i>
-                            <i class="m_r_t">{{ item.indicator.valid.rate }}</i>
-                            <i class="m_t">{{ item.indicator.valid.value }}</i>
+                            <i class="m_r_t">{{ item.indicator.valid && item.indicator.valid.rate }}</i>
+                            <i class="m_t">{{ item.indicator.valid && item.indicator.valid.rate }}</i>
                           </p>
                           <!-- <p>
                             <span style="backgroundColor: #FFA215;" />
@@ -158,18 +155,18 @@
                           <p>
                             <span style="backgroundColor: #FE4646;" />
                             <i>空值数</i>
-                            <i class="m_r_t">{{ item.indicator.misssing.rate }}</i>
-                            <i class="m_t">{{ item.indicator.misssing.value }}</i>
+                            <i class="m_r_t">{{ item.indicator.misssing && item.indicator.misssing.rate }}</i>
+                            <i class="m_t">{{ item.indicator.misssing && item.indicator.misssing.value }}</i>
                           </p>
                           <p>
                             <i>唯一的</i>
-                            <i class="m_r_t">{{ item.indicator.unique.rate }}</i>
-                            <i class="m_t">{{ item.indicator.unique.value }}</i>
+                            <i class="m_r_t">{{ item.indicator.unique && item.indicator.unique.rate }}</i>
+                            <i class="m_t">{{ item.indicator.unique && item.indicator.unique.value }}</i>
                           </p>
                           <p>
                             <i>最常用</i>
-                            <i class="m_r_t">{{ item.indicator.mostCommon.rate }}</i>
-                            <i class="m_t">{{ item.indicator.mostCommon.value }}</i>
+                            <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
+                            <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
                           </p>
                         </div>
                       </div>
@@ -410,7 +407,7 @@ export default {
           arr.push(newObj)
         }
         console.log(obj)
-        console.log(arr)
+        console.log(arr, '______')
         this.tableData = arr
         this.loading = false
       }).catch(err => {
