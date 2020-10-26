@@ -172,6 +172,24 @@
           <div v-if="jobType === 'DQCJOB'" class="rg">
             <JsonQuality />
           </div>
+          <div v-if="jobType === 'BATCH'" class="rg">
+            <BatchBuild />
+          </div>
+          <div v-if="jobType === 'TEMPLATE'" class="rg">
+            <JobTemplate />
+          </div>
+          <div v-if="jobType === 'SHELL'" class="rg">
+            <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+          </div>
+          <div v-if="jobType === 'POWERSHELL'" class="rg">
+            <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
+          </div>
+          <div v-if="jobType === 'PYTHON'" class="rg">
+            <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
+          </div>
+          <div v-if="jobType === 'METACOMPARE'" class="rg">
+            <MetaCompare />
+          </div>
         </el-tab-pane>
 
       </el-tabs>
@@ -195,26 +213,6 @@
           <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
         </el-tab-pane>
       </el-tabs>
-    </div>
-
-    
-    <div v-if="jobType === 'BATCH'" class="rg">
-      <BatchBuild />
-    </div>
-    <div v-if="jobType === 'TEMPLATE'" class="rg">
-      <JobTemplate />
-    </div>
-    <div v-if="jobType === 'SHELL'" class="rg">
-      <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
-    </div>
-    <div v-if="jobType === 'POWERSHELL'" class="rg">
-      <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
-    </div>
-    <div v-if="jobType === 'PYTHON'" class="rg">
-      <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
-    </div>
-    <div v-if="jobType === 'METACOMPARE'" class="rg">
-      <MetaCompare />
     </div>
   </div>
 </template>
