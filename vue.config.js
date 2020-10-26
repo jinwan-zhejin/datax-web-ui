@@ -10,7 +10,7 @@ const name = defaultSettings.title || 'DATAX-ADMIN' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
-const port = 8888 // dev port
+const port = 8080 // dev port
 // eslint-disable-next-line no-unused-vars
 const apiPort = 9527
 
@@ -39,11 +39,11 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         // ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        // target: 'http://47.103.79.104:9527',
+        target: 'http://47.103.79.104:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:9090', // 刘向前
-        target: 'http://192.168.3.74:7000', // 侯峰
+        // target: 'http://192.168.3.74:7000', // 侯峰
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
