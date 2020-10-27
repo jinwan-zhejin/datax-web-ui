@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 13:57:46
+ * @LastEditTime: 2020-10-27 16:29:21
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -27,6 +27,7 @@
         <el-col>
           <!-- {{ properties.entity.classifications }} -->
           分类：
+          <!-- {{properties.entity}} -->
           <span v-for="(classifiy,index) in properties.entity.classifications" :key="index">
             <el-button type="primary" plain size="mini">
               {{ classifiy.typeName }}
@@ -35,8 +36,9 @@
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
             </el-tooltip> -->
           </span>
+          <span v-if="!properties.entity.hasOwnProperty('classifications')">无</span>
           <!-- <el-tooltip content="添加分类" placement="bottom">
-            <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addClassificationShow = true" />
+            <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test2" />
           </el-tooltip> -->
         </el-col>
         <!-- <el-col>
@@ -296,7 +298,7 @@
         </el-col>
       </el-row>
     </div>
-    <!-- <AddClassification :add-classification-show="addClassificationShow" :classification-info="properties" :classification-list="classificationList" @addclassificationclose="addClassificationClose" /> -->
+    <AddClassification :add-classification-show="addClassificationShow" :classification-info="properties.entity" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
   </div>
 </template>
 
@@ -307,7 +309,6 @@ import { translater, translaterMaster } from '../utils/dictionary'
 export default {
   name: 'SubPageDetails',
   components: {
-    // eslint-disable-next-line vue/no-unused-components
     AddClassification
   },
   filters: {
@@ -557,8 +558,13 @@ export default {
     test(info) {
       console.log(info)
     },
+    test2() {
+      console.log(this.properties.entity);
+      this.addClassificationShow = true
+    },
     init() {
       this.getProperties().then(() => {
+        // console.log(this.properties);
         this.classificationsOptions = []
         this.techProp = []
         this.custProp = []
