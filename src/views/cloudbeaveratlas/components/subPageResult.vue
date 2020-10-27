@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 17:43:56
+ * @LastEditTime: 2020-10-27 18:47:22
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -15,8 +15,13 @@
         <el-tooltip content="刷新搜索结果" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-refresh" @click="refreshList" />
         </el-tooltip>
-        <el-button type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button>
-        <el-card v-show="openFilter" style="z-index: 999;position: absolute;width: 90%;margin: 5px;">
+        <!-- <el-button type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button> -->
+        <el-popover
+          placement="bottom"
+          width="80%"
+          trigger="click"
+        >
+          <el-button slot="reference" type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button>
           <el-collapse v-model="filterActiveName">
             <el-collapse-item name="includeexclude">
               <div slot="title" class="collapse-title">
@@ -49,7 +54,41 @@
             <el-button type="primary" plain size="small" @click="addOtherFilter">确认</el-button>
             <el-button type="primary" plain size="small" @click="openFilter=false">取消</el-button>
           </span>
-        </el-card>
+        </el-popover>
+        <!-- <el-card v-show="openFilter" style="z-index: 999;position: absolute;width: 90%;margin: 5px;">
+          <el-collapse v-model="filterActiveName">
+            <el-collapse-item name="includeexclude">
+              <div slot="title" class="collapse-title">
+                包含/排除
+              </div>
+              <el-col :span="12">
+                <el-switch
+                  v-model="showHistoricalEntities"
+                  active-text="显示历史实体"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubClassifications"
+                  active-text="排除子分类"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubTypes"
+                  active-text="排除子类型"
+                  inactive-text=""
+                />
+              </el-col>
+            </el-collapse-item>
+          </el-collapse>
+          <span style="margin-top: 15px;margin-bottom: 15px;position: relative;float: right;">
+            <el-button type="primary" plain size="small" @click="addOtherFilter">确认</el-button>
+            <el-button type="primary" plain size="small" @click="openFilter=false">取消</el-button>
+          </span>
+        </el-card> -->
         <el-button type="primary" size="mini" plain @click="backToSearch">清除</el-button>
         <el-tooltip content="保存为自定义筛选器" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
@@ -629,26 +668,43 @@ export default {
       this.currentPage = val
       this.refreshList()
     },
+    /**
+     * @description: 添加其他过滤器
+     */
     addOtherFilter() {
-      console.log(!this.showHistoricalEntities, !this.excludeSubClassifications, !this.excludeSubTypes);
+      // console.log(!this.showHistoricalEntities, !this.excludeSubClassifications, !this.excludeSubTypes);
       var temp = {}
+      var temp2 = this.$route.query
       if (this.showHistoricalEntities) {
         temp.includeDE = true
+      } else {
+        if (temp2.hasOwnProperty('includeDE')) {
+          delete temp2.includeDE
+        }
       }
       if (this.excludeSubClassifications) {
         temp.excludeSC = true
+      } else {
+        if (temp2.hasOwnProperty('excludeSC')) {
+          delete temp2.excludeSC
+        }
       }
       if (this.excludeSubTypes) {
         temp.excludeST = true
+      } else {
+        if (temp2.hasOwnProperty('excludeST')) {
+          delete temp2.excludeST
+        }
       }
-      console.log(this.$route.query);
-      Object.assign(temp, this.$route.query);
+      Object.assign(temp, temp2);
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {}
+      })
       this.$router.replace({
         name: 'atlasResult',
         query: temp
       })
-      // console.log(temp2);
-      // this.refreshList()
     }
   }
 }
