@@ -2,13 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.username" placeholder="用户名" style="width: 200px;" class="filter-item" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
+      <el-button v-waves class="filter-item" type="goon" size="small" icon="el-icon-search" @click="fetchData">
         搜索
       </el-button>
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
+        type="goon"
+        size="small"
         icon="el-icon-edit"
         @click="handleCreate"
       >
@@ -39,7 +40,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="goon" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button v-if="row.status!=='deleted'" size="mini" type="danger" @click="handleDelete(row)">
@@ -78,10 +79,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="small" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="goon" size="small" @click="dialogStatus==='create'?createData():updateData()">
           确定
         </el-button>
       </div>
@@ -227,3 +228,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.app-container {
+  .pagination {
+    margin-top: 0px;
+  }
+}
+</style>

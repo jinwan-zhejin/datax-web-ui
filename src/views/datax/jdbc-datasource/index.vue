@@ -1209,6 +1209,44 @@ export default {
         }
       },
       deep: true
+    },
+    'HiveForm.master': {
+      handler(val) {
+        if (val) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
+        } else {
+          this.HiveForm.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'HiveForm.serverPort': {
+      handler(val) {
+        if (val && this.HiveForm.master) {
+          if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.HiveForm.master) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'HiveForm.database': {
+      handler(val) {
+        if (val && this.HiveForm.master && this.HiveForm.serverPort) {
+          if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.HiveForm.serverPort + '/' + val
+          } else {
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.HiveForm.master && this.HiveForm.serverPort) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort
+        }
+      },
+      deep: true
     }
   },
   created() {
@@ -1387,7 +1425,6 @@ export default {
     cancel() {
       this.dialogVisible = false;
       this.currentStep = 1;
-      console.log(this.currentStep, '1111111111111111111111');
       this.MySQLForm = {}
       this.OracleForm = {}
       this.MdbForm = {}
@@ -1512,11 +1549,11 @@ export default {
         obj.datasourceName = this.CHForm.datasourceName;
         obj.datasourceGroup = this.CHForm.datasourceGroup;
         obj.datasource = this.sqlName.toLowerCase();
-        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.zkAdress = this.CHForm.master + ':' + this.CHForm.serverPort
+        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.jdbcUrl = 'jdbc:phoenix://' + this.CHForm.master + ':' + this.CHForm.serverPort
         obj.userName = this.CHForm.username;
         obj.password = this.CHForm.password;
         obj.comments = this.CHForm.comments;
-        this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = ''
+        this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
       } else if (this.sqlName === 'DB2') {
         obj.datasourceName = this.DB2Form.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
@@ -1526,6 +1563,15 @@ export default {
         obj.datasourceGroup = this.DB2Form.datasourceGroup;
         obj.comments = this.DB2Form.comments;
         obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'Hive') {
+        obj.datasourceName = this.HiveForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj.userName = this.HiveForm.username;
+        obj.password = this.HiveForm.password;
+        obj.datasourceGroup = this.HiveForm.datasourceGroup;
+        obj.comments = this.HiveForm.comments;
+        obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
       }
       datasourceApi.created(obj).then(() => {
         this.fetchData();
@@ -1608,11 +1654,20 @@ export default {
         obj1.datasourceName = this.CHForm.datasourceName;
         obj1.datasourceGroup = this.CHForm.datasourceGroup;
         obj1.datasource = this.sqlName.toLowerCase();
-        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl + '/' + this.CHForm.database : obj1.zkAdress = this.CHForm.jdbcUrl
+        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl + '/' + this.CHForm.database : obj1.jdbcUrl = 'jdbc:phoenix://' + this.CHForm.master + ':' + this.CHForm.serverPort
         obj1.jdbcUsername = this.CHForm.username;
         obj1.jdbcPassword = this.CHForm.password;
         obj1.comments = this.CHForm.comments;
-        this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = ''
+        this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
+      } else if (this.sqlName === 'Hive') {
+        obj1.datasourceName = this.HiveForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj1.jdbcUsername = this.HiveForm.username;
+        obj1.jdbcPassword = this.HiveForm.password;
+        obj1.datasourceGroup = this.HiveForm.datasourceGroup;
+        obj1.comments = this.HiveForm.comments;
+        obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
       }
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
