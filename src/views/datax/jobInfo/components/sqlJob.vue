@@ -473,9 +473,7 @@ export default {
       a.name = firstElement.jobDesc;
       a.content = firstElement;
       if (!this.firstTime) {
-        // if(!del){
           this.$store.commit('ADD_TASKDETAIL',a)
-        // }
       } else {
         this.firstTime = false;
       }
@@ -539,8 +537,8 @@ export default {
                 this.$store.commit('SET_TASKDETAIL_ID', res.content);
                 this.dialogFormVisible = false;
                 this.$notify({
-                  title: "Success",
-                  message: "Created Successfully",
+                  title: "成功",
+                  message: "新建成功",
                   type: "success",
                   duration: 2000,
                 });
