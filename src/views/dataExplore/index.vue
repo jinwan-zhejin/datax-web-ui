@@ -45,6 +45,7 @@
                   <span><i class="el-icon-present" />{{ item.tableName }}</span>
                   <span><i class="el-icon-coin" />{{ item.size }}</span>
                   <span><i class="el-icon-reading" />{{ item.rows }}</span>
+                  <span><i class="el-icon-s-grid" />{{ item.cols }}</span>
                 </p>
               </div>
             </div>

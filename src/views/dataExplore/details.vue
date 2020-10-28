@@ -5,7 +5,10 @@
       <div class="box-card">
         <div class="text">
           <div class="left">{{ obj.taskName }}</div>
-          <p><i class="el-icon-tickets" /><span>{{ obj.tableName }}</span></p>
+          <p>
+            <i class="el-icon-tickets" /><span>{{ obj.tableName }}</span>
+            <i class="el-icon-s-grid" /><span>{{ obj.cols }}行</span>
+          </p>
         </div>
       </div>
       <div class="line" />
@@ -59,6 +62,8 @@
                         <div class="t_header_02">
                           <p v-show="item.type === 'string'" class="p1">{{ item.statistics }}</p>
                           <p v-show="item.type === 'string'">唯一值</p>
+                          <p v-show="item.type === 'date'" class="p2">{{ item.statistics }}</p>
+                          <p v-show="item.type === 'date'">更新时间</p>
                           <!-- <v-chart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :options="polar" /> -->
                           <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
                         </div>
@@ -474,7 +479,10 @@ export default {
           font-size: 14px;
           margin-top: 10px;
           i {
-            margin-right: 8px;
+            margin-right: 15px;
+          }
+          span {
+            padding-right: 10px;
           }
         }
       }
@@ -593,6 +601,14 @@ export default {
                         transform: translateY(-50%);
                         color: skyblue;
                         font-size: 24px;
+                      }
+                      .p2 {
+                        font-weight: 700px;
+                        position: absolute;
+                        top: 40px;
+                        transform: translateY(-50%);
+                        color: skyblue;
+                        font-size: 16px;
                       }
                       p {
                         height: 20px;
