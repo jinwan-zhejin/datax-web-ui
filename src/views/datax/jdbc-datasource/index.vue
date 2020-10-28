@@ -38,7 +38,7 @@
           <template slot-scope="scope">{{ scope.$index }}</template>
         </el-table-column> -->
         <el-table-column label="数据源" width="100" align="center">
-          <template slot-scope="scope">{{ scope.row.datasource }}</template>
+          <template slot-scope="scope">{{ scope.row.datasource === 'phoenix' ? 'hbase' : scope.row.datasource }}</template>
         </el-table-column>
         <el-table-column label="数据源名称" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
@@ -1504,8 +1504,8 @@ export default {
         obj.datasourceName = this.MySQLForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
-        obj.userName = this.MySQLForm.username;
-        obj.password = this.MySQLForm.password;
+        obj.jdbcUsername = this.MySQLForm.username;
+        obj.jdbcPassword = this.MySQLForm.password;
         obj.datasourceGroup = this.MySQLForm.datasourceGroup;
         obj.comments = this.MySQLForm.comments;
         obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
@@ -1513,8 +1513,8 @@ export default {
         obj.datasourceName = this.OracleForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
-        obj.userName = this.OracleForm.username;
-        obj.password = this.OracleForm.password;
+        obj.jdbcUsername = this.OracleForm.username;
+        obj.jdbcPassword = this.OracleForm.password;
         obj.datasourceGroup = this.OracleForm.datasourceGroup;
         obj.comments = this.OracleForm.comments;
         obj.jdbcDriverClass = '';
@@ -1531,8 +1531,8 @@ export default {
         obj.datasourceName = this.GPForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
-        obj.userName = this.GPForm.username;
-        obj.password = this.GPForm.password;
+        obj.jdbcUsername = this.GPForm.username;
+        obj.jdbcPassword = this.GPForm.password;
         obj.datasourceGroup = this.GPForm.datasourceGroup;
         obj.comments = this.GPForm.comments;
         obj.jdbcDriverClass = 'org.postgresql.Driver';
@@ -1541,8 +1541,8 @@ export default {
         obj.datasourceGroup = this.ruleForm.datasourceGroup;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
-        obj.userName = this.ruleForm.username;
-        obj.password = this.ruleForm.password;
+        obj.jdbcUsername = this.ruleForm.username;
+        obj.jdbcPassword = this.ruleForm.password;
         obj.comments = this.ruleForm.comments;
         obj.jdbcDriverClass = '';
       } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
@@ -1550,16 +1550,16 @@ export default {
         obj.datasourceGroup = this.CHForm.datasourceGroup;
         obj.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
         this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort
-        obj.userName = this.CHForm.username;
-        obj.password = this.CHForm.password;
+        obj.jdbcUsername = this.CHForm.username;
+        obj.jdbcPassword = this.CHForm.password;
         obj.comments = this.CHForm.comments;
         this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
       } else if (this.sqlName === 'DB2') {
         obj.datasourceName = this.DB2Form.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
-        obj.userName = this.DB2Form.username;
-        obj.password = this.DB2Form.password;
+        obj.jdbcUsername = this.DB2Form.username;
+        obj.jdbcPassword = this.DB2Form.password;
         obj.datasourceGroup = this.DB2Form.datasourceGroup;
         obj.comments = this.DB2Form.comments;
         obj.jdbcDriverClass = '';
@@ -1567,8 +1567,8 @@ export default {
         obj.datasourceName = this.HiveForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
-        obj.userName = this.HiveForm.username;
-        obj.password = this.HiveForm.password;
+        obj.jdbcUsername = this.HiveForm.username;
+        obj.jdbcPassword = this.HiveForm.password;
         obj.datasourceGroup = this.HiveForm.datasourceGroup;
         obj.comments = this.HiveForm.comments;
         obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
@@ -1716,6 +1716,12 @@ export default {
       this.getShowStrategy(row.datasource);
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = 'update';
+      console.log(this.temp)
+      if (this.temp.datasource === 'phoenix') {
+        this.temp.datasource = 'hbase'
+      }
+      this.temp.userName = this.temp.jdbcUsername
+      this.temp.password = this.temp.jdbcPassword
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate();
