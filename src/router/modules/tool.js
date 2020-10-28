@@ -18,7 +18,7 @@ const toolRouter = {
       path: 'jsonFormat',
       component: () => import('@/views/tool/jsonFormat'),
       name: 'MixChart',
-      meta: { title: 'JSON 格式化', noCache: false }
+      meta: { title: 'JSON Formatter', noCache: false }
     }
   ]
 }
