@@ -5,7 +5,8 @@
         <div class="box-card">
             <div class="text">
                 <div class="left">{{ obj.taskName }}</div>
-                <p><i class="el-icon-tickets" /><span>{{ obj.tableName }}</span></p>
+                <p><i class="el-icon-tickets" /><span>{{ obj.tableName }}</span><i class="el-icon-s-grid" style="margin-left: 10px" /><span>{{ obj.cols }} Columns</span></p>
+
             </div>
         </div>
         <div class="line" />
@@ -48,6 +49,8 @@
                                             <div class="t_header_02">
                                                 <p v-show="item.type === 'string'" class="p1">{{ item.statistics }}</p>
                                                 <p v-show="item.type === 'string'">Unique</p>
+                                                <p v-show="item.type === 'date'" class="p2">{{ item.statistics }}</p>
+                                                <p v-show="item.type === 'date'">Last Modified Date</p>
                                                 <!-- <v-chart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :options="polar" /> -->
                                                 <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
                                             </div>
@@ -589,6 +592,15 @@ export default {
                                                 transform: translateY(-50%);
                                                 color: skyblue;
                                                 font-size: 24px;
+                                            }
+
+                                            .p2 {
+                                                font-weight: 700px;
+                                                position: absolute;
+                                                top: 40px;
+                                                transform: translateY(-50%);
+                                                color: skyblue;
+                                                font-size: 16px;
                                             }
 
                                             p {
