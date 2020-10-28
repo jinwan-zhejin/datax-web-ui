@@ -2,54 +2,56 @@
   <el-container>
     <el-aside width="25%" class="contentLeft">
       <div class="dataBase">
-        <el-select style="width:100%" v-model="dataBaseid" clearable placeholder="请选择数据库">
+        <p class="P-tit">数据连接</p>
+        <el-select v-model="dataBaseid" style="width:100%" clearable placeholder="请选择数据库">
           <el-option
             v-for="item in dataBaseList"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
-          ></el-option>
+          />
         </el-select>
+        <p class="P-tit">模式</p>
         <el-select
-          style="margin-top:10px;width:100%;"
           v-model="schemaId"
+          style="width:100%;"
           clearable
           placeholder="请选择Schema"
-          @change='getTableList'
+          @change="getTableList"
         >
-          <el-option v-for="item in SchemaList" :key="item" :label="item" :value="item"></el-option>
+          <el-option v-for="item in SchemaList" :key="item" :label="item" :value="item" />
         </el-select>
       </div>
       <div class="table">
         <span>
           查看表结构
-          <em>({{tableList.length}} in {{dataBaseid}})</em>
+          <em>({{ tableList.length }} in {{ dataBaseid }})</em>
         </span>
         <el-select
-          style="margin-top:10px;width:100%"
           v-model="tableId"
+          style="margin-top:10px;width:100%"
           clearable
           placeholder="请选择表"
           @change="selectTable"
         >
-          <el-option v-for="item in tableList" :key="item" :label="item" :value="item"></el-option>
+          <el-option v-for="item in tableList" :key="item" :label="item" :value="item" />
         </el-select>
       </div>
       <div>
         <el-collapse v-model="activeNames">
-          <el-collapse-item name="1" >
+          <el-collapse-item name="1">
             <template slot="title">
-              <p class="tableName">{{tableName}}</p>
+              <p class="tableName">{{ tableName }}</p>
             </template>
-            <div style="max-height:360px;overflow:scroll;">
-              <div v-for="(item) in columnList" :key="item">{{item}}</div>
+            <div class="disnone" style="max-height:360px;overflow:scroll;">
+              <div v-for="(item) in columnList" :key="item">{{ item }}</div>
             </div>
           </el-collapse-item>
         </el-collapse>
       </div>
     </el-aside>
     <el-main style="padding:0 10px;height:100%;">
-      <CodeMirror :sqlHeight='sqlHeight' :tableList='tableList' :columnList='columnList' @querysql='runQuery' />
+      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
       <div class="dragBar">
         <span
           @mousedown="dragging = true"
@@ -57,20 +59,20 @@
           @mousemove="setTableHeight"
         >==</span>
       </div>
-      <TableDetail ref="table" :tableHeight='tableHeight' />
+      <TableDetail ref="table" :table-height="tableHeight" />
     </el-main>
   </el-container>
 </template>
 <script>
-import { list } from "@/api/datax-jdbcDatasource";
-import { getTables, getColumns, getTableSchema, getTableList} from "@/api/metadata-query";
-import CodeMirror from "./codeMirrror";
-import TableDetail from "./tableDetail";
+import { list } from '@/api/datax-jdbcDatasource';
+import { getTables, getColumns, getTableSchema, getTableList } from '@/api/metadata-query';
+import CodeMirror from './codeMirrror';
+import TableDetail from './tableDetail';
 export default {
-  name: "DataDevContent",
+  name: 'DataDevContent',
   components: {
     CodeMirror,
-    TableDetail,
+    TableDetail
   },
   data() {
     return {
@@ -79,17 +81,25 @@ export default {
       tableList: [],
       SchemaList: [],
       columnList: [],
-      dataBaseid: "",
-      schemaId: "",
-      tableName: "",
-      dragging: false, //是否拖拽,
+      dataBaseid: '',
+      schemaId: '',
+      tableName: '',
+      dragging: false, // 是否拖拽,
       sqlHeight: 200,
-      tableHeight:300,
-      tableId:''
+      tableHeight: 300,
+      tableId: ''
     };
   },
+  watch: {
+    dataBaseid() {
+      this.getSchema();
+    }
+  },
+  created() {
+    this.getDataBaseList();
+  },
   methods: {
-    //获取数据库列表
+    // 获取数据库列表
     getDataBaseList() {
       list({ current: 1, size: 100000 }).then((res) => {
         this.dataBaseList = res.records;
@@ -98,41 +108,41 @@ export default {
       });
     },
 
-    //获取schema
+    // 获取schema
     getSchema() {
       getTableSchema({ datasourceId: this.dataBaseid }).then((res) => {
         this.SchemaList = res;
       });
     },
 
-    //getTableList
-    getTableList(){
-      getTableList({id: this.dataBaseid,schema:this.schemaId})
-      .then(res => {
-        console.log('res', res);
-        this.tableList = res;
-      })
+    // getTableList
+    getTableList() {
+      getTableList({ id: this.dataBaseid, schema: this.schemaId })
+        .then(res => {
+          console.log('res', res);
+          this.tableList = res;
+        })
     },
-    //获取字段
+    // 获取字段
     getClo() {
       getColumns({
         datasourceId: this.dataBaseid,
-        tableName: this.tableName,
+        tableName: this.tableName
       }).then((res) => {
         this.columnList = res;
       });
     },
-    //选择表
+    // 选择表
     selectTable(val) {
       this.tableName = val;
       this.getClo();
       this.activeNames = ['1']
     },
-    //拖拽设置表格高度
+    // 拖拽设置表格高度
     setTableHeight(e) {
       const _this = this;
       if (this.dragging) {
-        const top = e.target.offsetTop; //获取鼠标距离父元素顶的高度
+        const top = e.target.offsetTop; // 获取鼠标距离父元素顶的高度
         const height = e.target.parentNode.parentNode.offsetHeight;
         console.log(top, height);
         const sqlHeightRate = (top / height).toFixed(2);
@@ -141,26 +151,19 @@ export default {
         // this.tableHeight = tableHeightRate * height;
       }
     },
-    //执行sql
+    // 执行sql
     runQuery() {
       this.$refs.table.initData()
     }
-  },
-  created() {
-    this.getDataBaseList();
-  },
-  watch: {
-    dataBaseid() {
-      this.getSchema();
-    },
-  },
+  }
 };
 </script>
 <style scoped>
 .contentLeft {
   background: white;
-  padding: 0 2px 0 15px;
+  padding: 0 15px 0 15px;
   min-height: 630px;
+  border-right: 1px solid #F0EDED;
 }
 .dataBase {
   margin-top: 20px;
@@ -169,7 +172,7 @@ export default {
 .table {
   padding: 0 0 20px;
   width: 100%;
-  border-bottom: 1px solid rgb(245, 241, 241);
+  /* border-bottom: 1px solid rgb(245, 241, 241); */
 }
 .dragBar {
   color: #cfd8dc;
@@ -182,5 +185,11 @@ export default {
   color: green;
   font-weight: bolder;
   font-size: 20px;
+}
+.P-tit {
+  padding: 10px 0px;
+}
+.disnone::-webkit-scrollbar {
+  display: none;
 }
 </style>

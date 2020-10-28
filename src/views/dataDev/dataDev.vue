@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:10px 0;min-height:705px;">
+  <div style="margin:30px;min-height:705px;backgroundColor: #fff;border-radius: 0px 0px 8px 8px;">
     <HeaderTabs />
     <!-- <DataDevContent /> -->
   </div>

@@ -94,10 +94,10 @@ import go from 'gojs';
 import cron from '@/components/Cron'
 
 export default {
+  name: 'Flow',
   components: {
     cron
   },
-  name: 'Flow',
   props: ['isSave', 'taskList'],
   data() {
     return {
@@ -141,24 +141,24 @@ export default {
 
       this.myDiagram =
         $(go.Diagram, 'myDiagramDiv' + this.myId, // 必须命名或引用DIV HTML元素
-{
-            padding: 20,  // extra space when scrolled all the way
-            grid: $(go.Panel, "Grid",  // a simple 10x10 grid
-              $(go.Shape, "LineH", { stroke: "lightgray", strokeWidth: 0.5 }),
-              $(go.Shape, "LineV", { stroke: "lightgray", strokeWidth: 0.5 })
+          {
+            padding: 20, // extra space when scrolled all the way
+            grid: $(go.Panel, 'Grid', // a simple 10x10 grid
+              $(go.Shape, 'LineH', { stroke: 'lightgray', strokeWidth: 0.5 }),
+              $(go.Shape, 'LineV', { stroke: 'lightgray', strokeWidth: 0.5 })
             ),
-            "draggingTool.isGridSnapEnabled": true,
+            'draggingTool.isGridSnapEnabled': true,
             handlesDragDropForTopLevelParts: true,
-            "clickCreatingTool.archetypeNodeData": { text: "NEW NODE" },  // create a new node by double-clicking in background
-            "PartCreated": function(e) {
-              var node = e.subject;  // the newly inserted Node -- now need to snap its location to the grid
+            'clickCreatingTool.archetypeNodeData': { text: 'NEW NODE' }, // create a new node by double-clicking in background
+            'PartCreated': function(e) {
+              var node = e.subject; // the newly inserted Node -- now need to snap its location to the grid
               node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize);
-              setTimeout(function() {  // and have the user start editing its text
+              setTimeout(function() { // and have the user start editing its text
                 e.diagram.commandHandler.editTextBlock();
               }, 20);
             },
-            "commandHandler.archetypeGroupData": { isGroup: true, text: "NEW GROUP" },
-            "undoManager.isEnabled": true
+            'commandHandler.archetypeGroupData': { isGroup: true, text: 'NEW GROUP' },
+            'undoManager.isEnabled': true
           })
 
       // 当文档被修改时，在标题中添加一个“*”，并启用“保存”按钮
@@ -230,7 +230,7 @@ export default {
       function textStyle() {
         return {
           font: '10pt Lato, Helvetica, Arial, sans-serif',
-          stroke: '#ffffff'
+          stroke: '#333333'
         }
       }
 
@@ -252,7 +252,7 @@ export default {
         $(go.Node, 'Table', nodeStyle(),
           $(go.Panel, 'Spot',
             $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(50, 50), fill: '#aaaaff', stroke: '#aaaaff', strokeWidth: 1.5 }),
+              { desiredSize: new go.Size(64, 64), fill: '#F9F3E0', stroke: '#F8BE00', strokeWidth: 1.5 }),
             $(go.TextBlock, 'Start', textStyle(),
               new go.Binding('text'))
           ),
@@ -274,7 +274,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { fill: '#0055ff', stroke: '#0055ff', strokeWidth: 1.5 },
+              { desiredSize: new go.Size(74, 56), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -291,14 +291,13 @@ export default {
           makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
         ))
 
-
       // 判断节点图表
       this.myDiagram.nodeTemplateMap.add('Conditional',
         $(go.Node, 'Table', nodeStyle(),
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'Diamond',
-              { desiredSize: new go.Size(60, 40), fill: '#55aa7f', stroke: '#55aa7f', strokeWidth: 1.5 },
+              { desiredSize: new go.Size(70, 70), fill: '#E2ECFA', stroke: '#1774FF', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -321,7 +320,7 @@ export default {
         $(go.Node, 'Table', nodeStyle(),
           $(go.Panel, 'Spot',
             $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(50, 50), fill: '#ff007f', stroke: '#ff007f', strokeWidth: 1.5 }),
+              { desiredSize: new go.Size(64, 64), fill: '#FAE8E8', stroke: '#FF4D4D', strokeWidth: 1.5 }),
             $(go.TextBlock, 'End', textStyle(),
               new go.Binding('text'))
           ),
@@ -432,7 +431,7 @@ export default {
             { category: 'Start', text: '开始' },
             { text: '子任务' },
             { category: 'Conditional', text: '判断' },
-            { category: 'End', text: '结束' },
+            { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }
           ])
         })
@@ -463,7 +462,7 @@ export default {
     },
     sure() {
       console.log('---------')
-      let key = this.selectedNodeKey
+      const key = this.selectedNodeKey
       var selectNode = this.myDiagram.nodes.filter(function(e) {
         return e.data.key === key
       })

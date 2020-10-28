@@ -24,79 +24,73 @@
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
                 <el-dropdown-item command="NORMAL">
-                  <img class="task_icon" src="./taskAdmin_png/normal.png">普通任务</el-dropdown-item
+                  <img class="task_icon" src="./taskAdmin_png/normal.png">普通任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="IMPORT"
+                ><img class="task_icon" src="./taskAdmin_png/import.png">引入任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="EXPORT"
                 >
-                <el-dropdown-item command="IMPORT"
-                  ><img class="task_icon" src="./taskAdmin_png/import.png">引入任务</el-dropdown-item
-                >
-                <el-dropdown-item command="EXPORT"
-                  >
-                    <img class="task_icon" src="./taskAdmin_png/export.png">导出任务
-                  </el-dropdown-item
-                >
+                  <img class="task_icon" src="./taskAdmin_png/export.png">导出任务
+                </el-dropdown-item>
                 <el-dropdown-item
                   command="COMPUTE"
                   disabled
-                  ><img class="task_icon" src="./taskAdmin_png/computed.png">计算任务</el-dropdown-item
-                >
-                <el-dropdown-item command="SQLJOB"
-                  ><img class="task_icon" src="./taskAdmin_png/sql.png">SQL任务</el-dropdown-item
-                >
-                <el-dropdown-item command="SPARK"
-                  ><img class="task_icon" src="./taskAdmin_png/spark.png">SPARK任务</el-dropdown-item
-                >
-                <el-dropdown-item command="DQCJOB"
-                  ><img class="task_icon" src="./taskAdmin_png/质量.png">质量任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/computed.png">计算任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="SQLJOB"
+                ><img class="task_icon" src="./taskAdmin_png/sql.png">SQL任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="SPARK"
+                ><img class="task_icon" src="./taskAdmin_png/spark.png">SPARK任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="DQCJOB"
+                ><img class="task_icon" src="./taskAdmin_png/质量.png">质量任务</el-dropdown-item>
                 <el-dropdown-item
                   command="METACOLLECT"
                   divided
-                  ><img class="task_icon" src="./taskAdmin_png/元数据采集.png">元数据采集任务</el-dropdown-item
-                >
-                <el-dropdown-item command="METACOMPARE"
-                  ><img class="task_icon" src="./taskAdmin_png/元数据比较.png">元数据比较任务</el-dropdown-item
-                >
-                <el-dropdown-item command="SHELL" divided
-                  ><img class="task_icon" src="./taskAdmin_png/shell.png">SHELL任务</el-dropdown-item
-                >
-                <el-dropdown-item command="POWERSHELL"
-                  ><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item
-                >
-                <el-dropdown-item command="PYTHON"
-                  ><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/元数据采集.png">元数据采集任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="METACOMPARE"
+                ><img class="task_icon" src="./taskAdmin_png/元数据比较.png">元数据比较任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="SHELL"
+                  divided
+                ><img class="task_icon" src="./taskAdmin_png/shell.png">SHELL任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="POWERSHELL"
+                ><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="PYTHON"
+                ><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item>
                 <el-dropdown-item
                   command="VJOB"
                   divided
-                  ><img class="task_icon" src="./taskAdmin_png/虚.png">虚任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/虚.png">虚任务</el-dropdown-item>
                 <el-dropdown-item
                   command="JAVA"
                   divided
                   disabled
-                  ><img class="task_icon" src="./taskAdmin_png/java.png">Java任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/java.png">Java任务</el-dropdown-item>
                 <el-dropdown-item
                   command="SCALA"
                   disabled
-                  ><img class="task_icon" src="./taskAdmin_png/scala.png">Scala任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/scala.png">Scala任务</el-dropdown-item>
                 <el-dropdown-item
                   command="PYSPARK"
                   disabled
-                  ><img class="task_icon" src="./taskAdmin_png/pyspark.png">PySpark任务</el-dropdown-item
-                >
-                <el-dropdown-item command="R" disabled
-                  ><img class="task_icon" src="./taskAdmin_png/R.png">R任务</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/pyspark.png">PySpark任务</el-dropdown-item>
+                <el-dropdown-item
+                  command="R"
+                  disabled
+                ><img class="task_icon" src="./taskAdmin_png/R.png">R任务</el-dropdown-item>
                 <el-dropdown-item
                   command="BATCH"
                   divided
-                  ><img class="task_icon" src="./taskAdmin_png/任务批量构建.png">任务批量构建</el-dropdown-item
-                >
-                <el-dropdown-item command="TEMPLATE"
-                  ><img class="task_icon" src="./taskAdmin_png/普通任务模板.png">普通任务模板</el-dropdown-item
-                >
+                ><img class="task_icon" src="./taskAdmin_png/任务批量构建.png">任务批量构建</el-dropdown-item>
+                <el-dropdown-item
+                  command="TEMPLATE"
+                ><img class="task_icon" src="./taskAdmin_png/普通任务模板.png">普通任务模板</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -105,8 +99,8 @@
       <div class="bottom">
         <div class="body">
           <el-input
-            class="input_serach"
             v-model="search"
+            class="input_serach"
             prefix-icon="el-icon-search"
             placeholder="任务名称/ID/代码"
           >
@@ -119,11 +113,11 @@
                 :key="item.id"
                 @click="getJobDetail(item)"
               >
-                <i class="el-icon-date" style="color:rgb(144,206,100);"></i>
-                <i class="el-icon-tickets" style="color: rgba(102, 102, 102, 1)"></i>
+                <i class="el-icon-date" style="color:rgb(144,206,100);" />
+                <i class="el-icon-tickets" style="color: rgba(102, 102, 102, 1)" />
                 <a
-                style="color: rgba(102, 102, 102, 1)"
-                  >{{ item.jobDesc }}
+                  style="color: rgba(102, 102, 102, 1)"
+                >{{ item.jobDesc }}
                 </a>
               </li>
             </ul>
@@ -142,14 +136,14 @@
         <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
           欢迎
         </el-tab-pane>
-        
+
         <el-tab-pane
-          :key="item.content.id"
           v-for="item in $store.state.taskAdmin.taskDetailList"
+          :key="item.content.id"
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail @deleteJob='getItem' @deleteDetailTab='clearJobTab' :job-info="item.content" />
+          <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
         </el-tab-pane>
 
         <el-tab-pane
@@ -157,7 +151,7 @@
           :name="$store.state.taskAdmin.tabType"
           :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]"
         >
-          <div  v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  class="rg">
+          <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
             <JsonBuild @refresh="freshItem" />
           </div>
 
@@ -218,22 +212,22 @@
 </template>
 
 <script>
-import Workflow from "./components/workflow.vue";
-import SimpleJob from "./components/simpleJob.vue";
-import SparkJob from "./components/sparkJob.vue";
-import JobDetail from "./components/jobDetail.vue";
-import * as jobProjectApi from "@/api/datax-job-project";
-import * as job from "@/api/datax-job-info";
-import JsonBuild from "@/views/datax/json-build/index";
-import JsonQuality from "@/views/datax/jsonQuality/index";
-import BatchBuild from "@/views/datax/json-build-batch/index";
-import JobTemplate from "@/views/datax/jobTemplate/index";
-import SqlJob from "@/views/datax/jobInfo/components/sqlJob";
-import MetaCompare from "@/views/datax/jobInfo/components/metaCompare";
-import _ from "lodash";
+import Workflow from './components/workflow.vue';
+import SimpleJob from './components/simpleJob.vue';
+import SparkJob from './components/sparkJob.vue';
+import JobDetail from './components/jobDetail.vue';
+import * as jobProjectApi from '@/api/datax-job-project';
+import * as job from '@/api/datax-job-info';
+import JsonBuild from '@/views/datax/json-build/index';
+import JsonQuality from '@/views/datax/jsonQuality/index';
+import BatchBuild from '@/views/datax/json-build-batch/index';
+import JobTemplate from '@/views/datax/jobTemplate/index';
+import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
+import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
+import _ from 'lodash';
 
 export default {
-  name: "",
+  name: '',
   components: {
     Workflow,
     JsonBuild,
@@ -244,36 +238,45 @@ export default {
     JobTemplate,
     SparkJob,
     SqlJob,
-    MetaCompare,
+    MetaCompare
   },
   data() {
     return {
-      editableTabsValue: "1",
+      editableTabsValue: '1',
       isDel: false,
       editableTabs: [
         {
-          title: "Untitled",
-          name: "1",
-        },
+          title: 'Untitled',
+          name: '1'
+        }
       ],
       // $store.state.taskAdmin.taskDetailList: [],
       tabIndex: 1,
-      options: "",
-      selectValue: "",
-      search: "",
+      options: '',
+      selectValue: '',
+      search: '',
       List: [],
       listQuery: {
         pageNo: 1,
         pageSize: 100,
-        searchVal: "",
+        searchVal: ''
       },
-      jobType: "SHOWDETAIL",
-      jobDetailIdx: "欢迎",
-      jobTypeMap: "",
+      jobType: 'SHOWDETAIL',
+      jobDetailIdx: '欢迎',
+      jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
-      projectIds:''
+      projectIds: ''
     };
+  },
+  computed: {
+    taskList() { // 任务列表
+      return this.$store.state.taskAdmin.taskList
+    },
+
+    taskDetailID() {
+      return this.$store.state.taskAdmin.taskDetailID
+    }
   },
   watch: {
     editableTabs(val) {
@@ -283,7 +286,18 @@ export default {
       } else {
         this.isDel = true;
       }
+    }
+  },
+
+  watch: {
+    taskList(val) {
+      this.List = val
     },
+
+    taskDetailID(val) {
+      this.jobDetailIdx = val
+    }
+
   },
   created() {
     this.getItem();
@@ -299,15 +313,15 @@ export default {
       if (this.jobDetailIdx === name) {
         this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content?.id ||
-            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + "";
+            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + '';
       }
-      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name)!= -1) {
-        this.jobType = "";
+      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name) != -1) {
+        this.jobType = '';
         this.$store.commit('SET_TAB_TYPE', '')
       } else {
         this.$store.commit('DELETE_TASKDETAIL', removeIndex)
         if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
-          this.jobDetailIdx = "欢迎";
+          this.jobDetailIdx = '欢迎';
         }
       }
     },
@@ -323,26 +337,26 @@ export default {
       );
       this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content?.id ||
-            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + "";
+            this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content?.id) + '';
       this.$store.commit('DELETE_TASKDETAIL', removeIndex)
     },
 
     freshItem() {
       this.getItem();
-      this.jobType = "SHOWDETAIL";
+      this.jobType = 'SHOWDETAIL';
     },
 
     handleTabsEdit(targetName, action) {
-      if (action === "add") {
+      if (action === 'add') {
         const newTabName = new Date().valueOf().toString();
         this.editableTabs.push({
-          title: "Untitled",
+          title: 'Untitled',
           name: newTabName,
-          content: "New Tab content",
+          content: 'New Tab content'
         });
         this.editableTabsValue = newTabName;
       }
-      if (action === "remove") {
+      if (action === 'remove') {
         const tabs = this.editableTabs;
         let activeName = this.editableTabsValue;
         if (activeName === targetName) {
@@ -383,7 +397,7 @@ export default {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
-          data: val.data,
+          data: val.data
         });
       } else {
         for (let i = 0; i < this.List.length; i++) {
@@ -392,7 +406,7 @@ export default {
           } else {
             this.List.push({
               name: val.name,
-              data: val.data,
+              data: val.data
             });
           }
         }
@@ -424,14 +438,14 @@ export default {
       a.title = data.jobDesc;
       a.name = data.jobDesc;
       a.content = data;
-      
-      if (_.findIndex(this.$store.state.taskAdmin.taskDetailList, (tab)=>tab.content.id == data.id) === -1) {
+
+      if (_.findIndex(this.$store.state.taskAdmin.taskDetailList, (tab) => tab.content.id == data.id) === -1) {
         this.$store.state.taskAdmin.taskDetailList.push(a);
-        this.jobDetailIdx = a.content.id + "";
+        this.jobDetailIdx = a.content.id + '';
       } else {
-        this.jobDetailIdx = a.content.id + "";
+        this.jobDetailIdx = a.content.id + '';
       }
-      this.jobType = "SHOWDETAIL";
+      this.jobType = 'SHOWDETAIL';
     },
 
     getList(data) {
@@ -447,7 +461,7 @@ export default {
           } else {
             this.editableTabs.push({
               title: data.name,
-              name: (this.editableTabs.length + 1).toString(),
+              name: (this.editableTabs.length + 1).toString()
             });
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
@@ -457,7 +471,7 @@ export default {
       } else {
         this.editableTabs.push({
           title: data.name,
-          name: (this.editableTabs.length + 1).toString(),
+          name: (this.editableTabs.length + 1).toString()
         });
       }
     },
@@ -468,16 +482,16 @@ export default {
         const { total } = response;
         this.total = total;
         this.options = records;
-        this.selectValue =  this.options[0].name;
-        this.$store.commit('SET_PROJECT_ID',this.options[0].id)
+        this.selectValue = this.options[0].name;
+        this.$store.commit('SET_PROJECT_ID', this.options[0].id)
         const listQuery = {
           current: 1,
           size: 10,
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: "",
-          glueType: "",
+          jobDesc: '',
+          glueType: ''
         };
         listQuery.projectIds = this.projectIds ? this.projectIds : this.options[0].id;
         job.getList(listQuery).then((response) => {
@@ -485,15 +499,15 @@ export default {
           this.List = content.data;
           const firstElement = content?.data[0] || {};
           const a = {};
-          
+
           a.title = firstElement.jobDesc;
           a.name = firstElement.jobDesc;
           a.content = firstElement;
           if (!this.firstTime) {
-            if(!del){
+            if (!del) {
               // this.$store.state.taskAdmin.taskDetailList.push(a);
-              this.$store.commit('ADD_TASKDETAIL',a)
-              this.jobDetailIdx = a.content.id + "";
+              this.$store.commit('ADD_TASKDETAIL', a)
+              this.jobDetailIdx = a.content.id + '';
             }
           } else {
             this.firstTime = false;
@@ -504,15 +518,15 @@ export default {
     },
 
     fetchJobs(event) {
-      this.$store.commit('SET_PROJECT_ID',event)
+      this.$store.commit('SET_PROJECT_ID', event)
       const listQuery = {
         current: 1,
         size: 10,
         jobGroup: 0,
         // projectIds: '',
         triggerStatus: -1,
-        jobDesc: "",
-        glueType: "",
+        jobDesc: '',
+        glueType: ''
       };
       this.projectIds = event;
       listQuery.projectIds = event;
@@ -527,27 +541,7 @@ export default {
       this.$store.commit('SET_TAB_TYPE', command)
       this.jobType = command;
       this.jobDetailIdx = command;
-    },
-  },
-  computed:{
-    taskList(){ //任务列表
-      return this.$store.state.taskAdmin.taskList
-    },
-
-    taskDetailID() {
-      return this.$store.state.taskAdmin.taskDetailID
     }
-  },
-
-  watch: {
-    taskList(val) {
-      this.List = val
-    },
-
-    taskDetailID(val) {
-      this.jobDetailIdx = val
-    }
-
   }
 };
 </script>
@@ -587,7 +581,7 @@ export default {
       height: 100%;
       .body {
         border-top: 1px solid #f8f8f8;
-        
+
         .list {
           ul {
             padding: 0px;
@@ -621,7 +615,7 @@ export default {
   .input_serach >.el-input__prefix > .el-input__icon {
     line-height: 35px !important;
   }
-  
+
 }
 .task_icon {
     width: 16px;

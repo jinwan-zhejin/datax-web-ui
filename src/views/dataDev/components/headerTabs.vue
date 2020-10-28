@@ -41,7 +41,7 @@ export default {
     addTab(targetName) {
       const newTabName = ++this.tabIndex + '';
       this.editableTabs.push({
-        title: 'New Tab',
+        title: '未命名的查询',
         name: newTabName
         // content: "New Tab content",
       });
@@ -68,7 +68,7 @@ export default {
       if (action === 'add') {
         const newTabName = ++this.tabIndex + '';
         this.editableTabs.push({
-          title: 'New Tab',
+          title: '未命名的查询',
           name: newTabName,
           content: 'New Tab content'
         });
@@ -103,5 +103,14 @@ export default {
 .header >>> .el-tabs__new-tab {
   float: left;
   margin-right: 10px;
+}
+.header >>> .el-tabs__header {
+  background-color: #F8F8fA;
+}
+.header >>> .el-tabs__new-tab {
+  background-color: #ffffff;
+}
+.header >>> .is-active {
+  background-color: #ffffff;
 }
 </style>

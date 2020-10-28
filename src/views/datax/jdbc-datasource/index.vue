@@ -1548,8 +1548,8 @@ export default {
       } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
         obj.datasourceName = this.CHForm.datasourceName;
         obj.datasourceGroup = this.CHForm.datasourceGroup;
-        obj.datasource = this.sqlName.toLowerCase();
-        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.jdbcUrl = 'jdbc:phoenix://' + this.CHForm.master + ':' + this.CHForm.serverPort
+        obj.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort : obj.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort
         obj.userName = this.CHForm.username;
         obj.password = this.CHForm.password;
         obj.comments = this.CHForm.comments;
@@ -1653,8 +1653,8 @@ export default {
       } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
         obj1.datasourceName = this.CHForm.datasourceName;
         obj1.datasourceGroup = this.CHForm.datasourceGroup;
-        obj1.datasource = this.sqlName.toLowerCase();
-        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl + '/' + this.CHForm.database : obj1.jdbcUrl = 'jdbc:phoenix://' + this.CHForm.master + ':' + this.CHForm.serverPort
+        obj1.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl + '/' + this.CHForm.database : obj1.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort
         obj1.jdbcUsername = this.CHForm.username;
         obj1.jdbcPassword = this.CHForm.password;
         obj1.comments = this.CHForm.comments;
