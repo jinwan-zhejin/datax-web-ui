@@ -3,7 +3,7 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
-        :default-active="activeMenu"
+        :default-active="activeMenu === '/datax/datasource/jdbcDatasource' ? '/datax/project/jobProject' : activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
@@ -42,6 +42,10 @@ export default {
       const { meta, path } = route
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
+        // console.log(meta.activeMenu, '____________12')
+        // if (meta.activeMenu === '数据源管理' || meta.activeMenu === '普通数据源') {
+        //   return '项目管理'
+        // } else {
         return meta.activeMenu
       }
       return path

@@ -21,8 +21,7 @@
                 class="filter-item"
                 type="goon"
                 @click="fetchData"
-                >搜索</el-button
-              >
+              >搜索</el-button>
             </el-input>
             <el-button
               class="filter-item"
@@ -75,8 +74,7 @@
             <a
               style="color: #3d5fff; margin: 0px 6px"
               @click="handleUpdate(row)"
-              >编辑</a
-            >
+            >编辑</a>
             <span
               style="
                 width: 1px;
@@ -89,8 +87,16 @@
               v-if="row.status !== 'deleted'"
               style="color: #fe4646; margin: 0px 6px"
               @click="handleDelete(row)"
-              >删除</a
-            >
+            >删除</a>
+            <span
+              style="
+                width: 1px;
+                height: 12px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <a style="color: #3d5fff; margin: 0px 6px" @click="handleDataSource(row)">数据源管理</a>
           </template>
         </el-table-column>
       </el-table>
@@ -158,32 +164,60 @@
         <el-table-column prop="pv" label="Pv" />
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false"
-          >Confirm</el-button
-        >
+        <el-button
+          type="primary"
+          @click="dialogPvVisible = false"
+        >Confirm</el-button>
+      </span>
+    </el-dialog>
+    <!-- 数据源管理对话框 -->
+    <el-dialog
+      :visible.sync="dialogDataSource"
+      title="数据源管理"
+      width="500px"
+    >
+      <el-form :model="sourceForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="数据源:">
+          <el-select v-model="sourceForm.region" style="width: 100%;" placeholder="请选择数据源">
+            <el-option label="数据源一" value="data1" />
+            <el-option label="数据源二" value="data2" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          size="small"
+          @click="dialogDataSource = false"
+        >取 消</el-button>
+        <el-button
+          type="goon"
+          size="small"
+          @click="dialogDataSource = false"
+        >完 成</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import * as jobProjectApi from "@/api/datax-job-project";
-import waves from "@/directive/waves";
-import Pagination from "@/components/Pagination";
+import * as jobProjectApi from '@/api/datax-job-project';
+import waves from '@/directive/waves';
+import Pagination from '@/components/Pagination';
+// import * as datasourceApi from '@/api/datax-jdbcDatasource';
 
 export default {
-  name: "JobProject",
+  name: 'JobProject',
   components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
       };
       return statusMap[status];
-    },
+    }
   },
   data() {
     return {
@@ -193,31 +227,33 @@ export default {
       listQuery: {
         pageNo: 1,
         pageSize: 10,
-        searchVal: "",
+        searchVal: ''
       },
-      pluginTypeOptions: ["reader", "writer"],
+      pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
       pluginData: [],
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogDataSource: false,
+      sourceForm: {},
+      dialogStatus: '',
       textMap: {
-        update: "编辑",
-        create: "+添加",
+        update: '编辑',
+        create: '+添加'
       },
       rules: {
         name: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         description: [
-          { required: true, message: "this is required", trigger: "blur" },
-        ],
+          { required: true, message: 'this is required', trigger: 'blur' }
+        ]
       },
       temp: {
         id: undefined,
-        name: "",
-        description: "",
+        name: '',
+        description: ''
       },
-      visible: true,
+      visible: true
     };
   },
   created() {
@@ -237,79 +273,87 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        name: "",
-        description: "",
+        name: '',
+        description: ''
       };
     },
     handleCreate() {
       this.resetTemp();
-      this.dialogStatus = "create";
+      this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs['dataForm'].clearValidate();
       });
     },
     createData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           jobProjectApi.created(this.temp).then(() => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
             });
           });
         }
       });
     },
     handleUpdate(row) {
+      console.log(row)
       this.temp = Object.assign({}, row); // copy obj
-      this.dialogStatus = "update";
+      this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs['dataForm'].clearValidate();
       });
     },
+    handleDataSource(row) {
+      console.log(row)
+      this.$router.push({
+        name: 'JdbcDatasource',
+        params: row
+      })
+    },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           jobProjectApi.updated(tempData).then(() => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: "Success",
-              message: "Update Successfully",
-              type: "success",
-              duration: 2000,
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
             });
           });
         }
       });
     },
     handleDelete(row) {
-      this.$confirm("确定删除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         const idList = [];
         idList.push(row.id);
         jobProjectApi.deleted({ idList: row.id }).then((response) => {
           this.fetchData();
           this.$notify({
-            title: "Success",
-            message: "Delete Successfully",
-            type: "success",
-            duration: 2000,
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
           });
         });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -447,6 +491,7 @@ export default {
       .el-form {
         overflow: hidden;
         border-radius: 6px;
+        padding-right: 50px;
       }
     }
     .el-dialog__footer {

@@ -163,13 +163,14 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/datasource',
     name: 'datasource',
-    meta: { title: '数据源管理', icon: 'icon_svg03' },
+    hidden: true,
+    meta: { title: '项目管理', icon: 'icon_svg03' },
     children: [
       {
         path: 'jdbcDatasource',
         name: 'JdbcDatasource',
         component: () => import('@/views/datax/jdbc-datasource/index'),
-        meta: { title: '普通数据源', icon: 'icon_svg05' }
+        meta: { title: '数据源管理', icon: 'icon_svg05' }
       },
       {
         path: 'compute',

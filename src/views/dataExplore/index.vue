@@ -399,7 +399,7 @@ export default {
     },
     // 获取数据源
     async getJdbcDs() {
-      jdbcDsList(this.jdbcDsQuery).then(response => {
+      jdbcDsList().then(response => {
         const { records } = response
         console.log(records)
         this.sourceList = records
