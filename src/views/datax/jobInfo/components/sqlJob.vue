@@ -13,6 +13,12 @@
         {{ this.jobTypeLabel }}
       </el-form-item>
 
+      <el-form-item label="执行器" prop="jobGroup">
+        <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="任务名称：" prop="jobDesc">
         <el-input
           v-model="temp.jobDesc"
@@ -239,7 +245,7 @@ export default {
       listQuery: {
         current: 1,
         size: 10,
-        jobGroup: 1,
+        jobGroup: 0,
         projectIds: "",
         triggerStatus: -1,
         jobDesc: "",
@@ -312,7 +318,7 @@ export default {
       },
       temp: {
         id: undefined,
-        jobGroup: 1,
+        jobGroup: '',
         jobCron: "",
         jobDesc: "",
         executorRouteStrategy: "FIRST",
@@ -324,7 +330,6 @@ export default {
         userId: 0,
         jobConfigId: "",
         executorHandler: "sqlJobHandler",
-        
         glueType: "BEAN",
         glueSource: "",
         jobJson: "",
@@ -452,11 +457,10 @@ export default {
     },
     async fetchData() {
       this.listLoading = true;
-      if (this.projectIds) {
-        this.listQuery.projectIds = this.projectIds.toString();
-      }
 
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
       let response = await job.getList(this.listQuery);
+
       const { content } = response;
       this.total = content.recordsTotal;
       this.list = content.data;
@@ -475,7 +479,6 @@ export default {
       } else {
         this.firstTime = false;
       }
-
       this.$store.commit('SET_TASKLIST', this.list)
     },
     incStartTimeFormat(vData) {},

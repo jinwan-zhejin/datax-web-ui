@@ -291,7 +291,6 @@ export default {
           this.buildJson();
         }
         if (this.active === 5) {
-          console.log('eeee');
           this.$refs.create.createTask()
         } else {
           this.active++

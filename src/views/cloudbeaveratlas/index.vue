@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 18:33:33
+ * @LastEditTime: 2020-10-28 17:42:15
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -19,60 +19,56 @@
         <el-collapse v-model="collapseActiveName">
           <el-collapse-item v-if="collapseExistName.indexOf('entity') > -1" name="entity">
             <div slot="title" class="collapse-title">
-              <div style="min-width: 222px;">
-                {{ entity.collapseNameCN }}
-                <el-tooltip style="position: relative;float:right;margin-right:50px;" :content="entity.switchStatus?'隐藏空服务类型':'显示空服务类型'" placement="top">
-                  <el-button v-model="entity.switchStatus" type="text" plain size="medium" @click.stop.native="entity.switchStatus=!entity.switchStatus">
-                    <i :class="[entity.switchStatus?'el-icon-open':'el-icon-turn-off']" style="font-size:20px;" />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip style="position: relative;float:right;margin-right:10px;" content="刷新" placement="top">
-                  <el-button type="text" plain size="medium" @click.stop.native="entity.refreshFun">
-                    <i class="el-icon-refresh" style="font-size:18px;" />
-                  </el-button>
-                </el-tooltip>
-              </div>
+              {{ entity.collapseNameCN }}
             </div>
-            <div style="overflow-y:auto;">
+            <el-col>
+              <el-checkbox v-model="entity.switchStatus" style="margin-top: 11px"> 显示空服务类型</el-checkbox>
+              <el-tooltip style="position: relative;float:right;margin-right:10px;" content="刷新" placement="top">
+                <el-button type="text" plain size="medium" @click.stop.native="entity.refreshFun">
+                  <i class="el-icon-refresh" style="font-size:18px;" />
+                </el-button>
+              </el-tooltip>
+            </el-col>
+            <el-col style="overflow-y:auto;">
               <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.switchStatus?entity.data:entity_Active" node-key="name" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
                   <span>{{ node.label }} {{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
                 </span>
               </el-tree>
-            </div>
+            </el-col>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('classifications') > -1" name="classifications">
             <div slot="title" class="collapse-title">
-              <div style="min-width: 222px;">
-                {{ classifications.collapseNameCN }}
-                <el-tooltip style="position: relative;float:right;margin-right:30px;" content="更多" placement="top">
-                  <el-button type="text" plain size="medium">
-                    <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
-                      <span class="el-dropdown-link">
-                        <i class="el-icon-more" style="font-size:18px;-moz-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);color:#3D5FFF;" />
-                      </span>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.stop.native="addNewClassification(undefined)">
-                          <i class="el-icon-plus" style="color:#3D5FFF;font-weight:bold;" />创建新分类
-                        </el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip style="position: relative;float:right;margin-right:10px;" :content="classifications.switchStatus?'隐藏未使用分类':'显示未使用分类'" placement="top">
-                  <el-button type="text" plain size="medium" @click.stop.native="classifications.switchStatus=!classifications.switchStatus">
-                    <i :class="[classifications.switchStatus?'el-icon-open':'el-icon-turn-off']" style="font-size:20px;" />
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip style="position: relative;float:right;" content="刷新" placement="top">
-                  <el-button type="text" plain size="medium" @click.stop.native="classifications.refreshFun">
-                    <i class="el-icon-refresh" style="font-size:18px;" />
-                  </el-button>
-                </el-tooltip>
-              </div>
+              {{ classifications.collapseNameCN }}
             </div>
-            <div style="overflow-y:hidden;">
+            <el-col>
+              <el-tooltip style="position: relative;float:right;margin-right:30px;" content="更多" placement="top">
+                <el-button type="text" plain size="medium">
+                  <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
+                    <span class="el-dropdown-link">
+                      <i class="el-icon-more" style="font-size:18px;-moz-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);color:#3D5FFF;" />
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item @click.stop.native="addNewClassification(undefined)">
+                        <i class="el-icon-plus" style="color:#3D5FFF;font-weight:bold;" />创建新分类
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip style="position: relative;float:right;margin-right:10px;" :content="classifications.switchStatus?'隐藏未使用分类':'显示未使用分类'" placement="top">
+                <el-button type="text" plain size="medium" @click.stop.native="classifications.switchStatus=!classifications.switchStatus">
+                  <i :class="[classifications.switchStatus?'el-icon-open':'el-icon-turn-off']" style="font-size:20px;" />
+                </el-button>
+              </el-tooltip>
+              <el-tooltip style="position: relative;float:right;" content="刷新" placement="top">
+                <el-button type="text" plain size="medium" @click.stop.native="classifications.refreshFun">
+                  <i class="el-icon-refresh" style="font-size:18px;" />
+                </el-button>
+              </el-tooltip>
+            </el-col>
+            <el-col style="overflow-y:hidden;">
               <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:tag_Active" node-key="name" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
@@ -102,7 +98,7 @@
                   </span>
                 </span>
               </el-tree>
-            </div>
+            </el-col>
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('businessMetadata') > -1" name="businessMetadata">
             <div slot="title" class="collapse-title">
@@ -186,21 +182,16 @@
           </el-collapse-item>
           <el-collapse-item v-if="collapseExistName.indexOf('customFilter') > -1" name="customFilter">
             <div slot="title" class="collapse-title">
-              <div style="min-width: 222px;">
-                {{ customFilter.collapseNameCN }}
-                <!-- <el-tooltip style="position: relative;float:right;margin-right:50px;" content="'显示所有':'显示类型'" placement="top">
-                  <el-button type="text" plain size="medium" @click="test(customFilter.collapseName)">
-                    <i class="el-icon-turn-off" style="font-size:20px;" />
-                  </el-button>
-                </el-tooltip> -->
-                <el-tooltip style="position: relative;float:right;margin-right:50px;" content="刷新" placement="top">
-                  <el-button type="text" plain size="medium" @click.stop.native="customFilter.refreshFun">
-                    <i class="el-icon-refresh" style="font-size:18px;" />
-                  </el-button>
-                </el-tooltip>
-              </div>
+              {{ customFilter.collapseNameCN }}
             </div>
-            <div style="overflow-y:auto;">
+            <el-col>
+              <el-tooltip style="position: relative;float:right;margin-right:50px;" content="刷新" placement="top">
+                <el-button type="text" plain size="medium" @click.stop.native="customFilter.refreshFun">
+                  <i class="el-icon-refresh" style="font-size:18px;" />
+                </el-button>
+              </el-tooltip>
+            </el-col>
+            <el-col style="overflow-y:auto;">
               <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.data" node-key="searchParameters.guid" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
                 <span slot-scope="{ node, data }" class="custom-tree-node">
                   <!-- 显示的文字 -->
@@ -228,18 +219,74 @@
                   </span>
                 </span>
               </el-tree>
-            </div>
+            </el-col>
           </el-collapse-item>
         </el-collapse>
       </el-aside>
       <el-container>
         <!-- <el-header>
-          <el-form :inline="true">
+          <el-form :inline="true" label-position="top" label-width="100px">
             <el-form-item label="实体类型">
-              <el-select></el-select>
+              <el-popover
+                placement="bottom"
+                title="实体类型选项"
+                trigger="click"
+                @hide="openEntityPopover=false"
+              >
+                <el-button slot="reference" style="width: 170px;" type="primary" plain size="medium" :icon="openEntityPopover?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openEntityPopover=!openEntityPopover">实体类型选项</el-button>
+                <el-form-item label="显示空服务类型">
+                  <el-switch v-model="entity.switchStatus" style="position: relative; float: right;margin-top: 10px" />
+                </el-form-item>
+                <el-row type="flex" class="list-row" justify="space-around">
+                  <el-col :span="4">
+                    <el-tooltip content="刷新" placement="top">
+                      <el-button type="primary" size="medium" icon="el-icon-refresh" @click="entity.refreshFun" />
+                    </el-tooltip>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-tooltip :content="entity.switchStatus?'隐藏空服务类型':'显示空服务类型'" placement="top">
+                      <el-button v-model="entity.switchStatus" :type="entity.switchStatus?'success':'primary'" size="medium" :icon="entity.switchStatus?'el-icon-open':'el-icon-turn-off'" @click="entity.switchStatus=!entity.switchStatus" />
+                    </el-tooltip>
+                  </el-col>
+                </el-row>
+                当前选择：{{ resultQuery.type === null ? '无' : resultQuery.type }}
+                <div class="list-row-outside">
+                  <el-row :gutter="10" class="list-row" justify="space-around">
+                    <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+                      <el-radio v-model="resultQuery.type" :label="null" border size="medium" @change="test('')">无</el-radio>
+                    </el-col>
+                    <el-col v-for="(item, index) in entity.switchStatus?entity.data:entity_Active" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+                      <el-radio v-model="resultQuery.type" :label="item.name" border size="medium" @change="handleNodeClickEntity(item)">
+                        {{ item.name }}{{ item.hasOwnProperty('countActive')?(' ('+item.countActive+')'):'' }}
+                      </el-radio>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-popover>
             </el-form-item>
             <el-form-item label="分类">
-              <el-select></el-select>
+              <el-popover
+                placement="bottom"
+                title="分类选项"
+                style="width: calc(100vw)"
+                trigger="click"
+                @hide="openTagPopover=false"
+              >
+                <el-button slot="reference" style="width: 170px;" type="primary" plain size="medium" :icon="openTagPopover?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openTagPopover=!openTagPopover">分类选项</el-button>
+                这是一段内容,这是一段内容,这是一段内容,这是一段内容。
+              </el-popover>
+            </el-form-item>
+            <el-form-item label="自定义过滤器">
+              <el-popover
+                placement="bottom"
+                title="自定义过滤器选项"
+                style="width: calc(100vw)"
+                trigger="click"
+                @hide="openFilterPopover=false"
+              >
+                <el-button slot="reference" style="width: 170px;" type="primary" plain size="medium" :icon="openFilterPopover?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilterPopover=!openFilterPopover">自定义过滤器选项</el-button>
+                这是一段内容,这是一段内容,这是一段内容,这是一段内容。
+              </el-popover>
             </el-form-item>
           </el-form>
         </el-header> -->
@@ -460,7 +507,11 @@ export default {
       addNewClassificationShow: false,
       classificationDeleteShow: false,
       classificationToDelete: '', // 待删除
-      isLoading: false
+      isLoading: false,
+      openEntityPopover: false, // 打开实体类型popover
+      openTagPopover: false, // 打开分类popover
+      openFilterPopover: false, // 打开自定义过滤器popover
+      entitySelected: ''
     }
   },
   computed: {
@@ -623,6 +674,7 @@ export default {
      */
     handleNodeClickEntity(data) {
       this.resultQuery.type = (this.resultQuery.type === data.name) ? null : data.name
+      // this.resultQuery.type = (data === null) ? null : data.name
       this.resultQuery.attributes = null
       var tempQuery = {}
       for (var i in this.resultQuery) {
@@ -1018,71 +1070,69 @@ export default {
       })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
 .container {
-    padding: 15px;
+  padding: 15px;
 }
 
 .left-container {
-    overflow-x: hidden;
-    overflow-y: hidden;
-    height: 100%;
-    background-color: transparent;
-    border-right: 1px solid rgb(209, 204, 204);
-    padding: 5px;
-    text-align: left;
-    font-family: Arial, Helvetica, sans-serif;
-
-    .topSearch {
-      height: 79px;
-      .searchLabel {
-          font-size: 18px;
-          font-weight: normal;
-          color: dimgray;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 100%;
+  background-color: transparent;
+  // border-right: 1px solid rgb(209, 204, 204);
+  padding: 5px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  .topSearch {
+    height: 79px;
+    .searchLabel {
+      font-size: 18px;
+      font-weight: normal;
+      color: dimgray;
+    }
+  }
+  .el-collapse {
+    height: calc(100vh - 219px);
+    overflow-y: auto;
+    background: transparent;
+    ::v-deep .el-collapse-item__header {
+      // color: #3D5FFF;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      background: transparent;
+      // border-bottom: #3D5FFF;
+      .collapse-title {
+        background: transparent;
       }
     }
-
-    .el-collapse {
-        height: calc(100vh - 219px);
-        overflow-y: auto;
-        background: white;
-        ::v-deep .el-collapse-item__header {
-            color: #3D5FFF;
-            font-size: 15px;
-            font-weight: bold;
-            flex: 1 0 auto;
-            order: -1;
-            // border-bottom: #3D5FFF;
-            .collapse-title {
-                flex: 1 0 100%;
-                order: 1;
-            }
-        }
-    }
-
-    .el-button {
-        color: #3D5FFF;
-        right: 5px;
-    }
-
-    ::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-      background-color: #3D5FFF;
+  }
+  .el-button {
+    color: #3D5FFF;
+     right: 5px;
+  }
+  .el-tree {
+    background: transparent;
+  }
+  ::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #3D5FFF;
+    color: white;
+    i {
       color: white;
-      i {
-        color: white;
-      }
-      i:hover {
-        color: #d7ebff;
-      }
     }
-    ::v-deep .el-tree-node__content:hover {
-      background-color: #d9e6fd;
-      // color: #fff;
+    i:hover {
+      color: #d7ebff;
     }
-}
+  }
+  ::v-deep .el-tree-node__content:hover {
+    background-color: #d9e6fd;
+        // color: #fff;
+    }
+  }
 
 .right-container {
     height: calc(100vh - 132px);
@@ -1104,19 +1154,18 @@ export default {
   }
   .el-collapse {
     ::v-deep .el-collapse-item__header {
-      color: #3D5FFF;
+      // color: #3D5FFF;
       font-size: 15px;
       font-weight: bold;
-      flex: 1 0 auto;
-      order: -1;
+      // flex: 1 0 auto;
+      // order: -1;
       // border-bottom: #3D5FFF;
       .collapse-title {
-        flex: 1 0 100%;
-        order: 1;
+        // flex: 1 0 100%;
+        // order: 1;
       }
     }
   }
-
 }
 
 .form-ring {
@@ -1128,5 +1177,35 @@ export default {
     // border:3px solid rgba(201, 201, 201, 0.7);
     border-color: rgba(201, 201, 201, 0.7);
 }
+.list-row-outside {
+  width: calc(50vw);
+  height: calc(50vh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  .list-row {
+    padding: 10px 0;
+    .el-col {
+      .el-button:hover {
+        background: #d7ebff;
+        color: #3D5FFF;
+      }
+      .el-button:active {
+        background: #d7ebff;
+      }
+      .el-button:focus {
+        background: #3D5FFF;
+        color: white;
+      }
+    }
+  }
+}
 
+.el-popover {
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
 </style>

@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-22 09:49:37
+ * @LastEditTime: 2020-10-28 11:14:50
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -11,54 +11,78 @@
   <div>
     <el-tabs v-model="compareType" style="margin-top: 20px; margin-left: 20px" @tab-click="handleClick">
       <el-tab-pane label="时间版本比对" name="time">
-        <div class="filter-container">
+        <div>
           <!-- <el-input v-model="listQuery.entityName" placeholder="全部" style="width: 200px" /> -->
           <!-- <el-select v-model="listQuery.entityType" placeholder="Entity类型"> -->
           <!-- <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" /> -->
           <!-- </el-select> -->
           <!-- <el-input v-model="listQuery.entityName" placeholder="任务提交时间From" style="width: 200px" />
           <el-input v-model="listQuery.entityName" placeholder="任务提交时间To" style="width: 200px" /> -->
-          <el-select v-model="queryList.guid" placeholder="选择guid">
-            <el-option v-for="item in queryList.guidList" :key="item.value" :label="item.name.indexOf('null')>-1?item.value:item.name" :value="item.value" />
-          </el-select>
-          <el-button size="small" type="primary" icon="el-icon-search" @click="refreshTableGuid">
-            搜索
-          </el-button>
-          <el-button size="small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleClear">
-            清除
-          </el-button>
+          <el-form :inline="true">
+            <el-form-item>
+              <el-select v-model="queryList.guid" placeholder="实体">
+                <el-option v-for="(item,index) in queryList.guidList" :key="index" :label="item.name.indexOf('null')>-1?item.value:item.name" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="small" type="primary" icon="el-icon-search" @click="refreshTableGuid">
+                搜索
+              </el-button>
+              <el-button size="small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleClear">
+                清除
+              </el-button>
+            </el-form-item>
+          </el-form>
         </div>
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="id" label="任务id" min-width="75" />
-          <el-table-column label="Entity名称" min-width="100">
+          <el-table-column v-if="tableShowAll" :key="Math.random()" prop="id" label="任务id" min-width="75" />
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="Entity名称" min-width="100">
             <template v-slot:default="{ row }">
               {{ row.name===null?'Null':row.name }}
             </template>
           </el-table-column>
-          <el-table-column label="Entity类型" min-width="100">
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="Entity类型" min-width="100">
             <template v-slot:default="{ row }">
               {{ row.typeName===null?'Null':row.typeName }}
             </template>
           </el-table-column>
-          <el-table-column label="基线时间" min-width="160">
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="基线时间" min-width="160">
             <template v-slot:default="{ row }">
               {{ row.timestamp1 | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="待比较时间" min-width="160">
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="待比较时间" min-width="160">
             <template v-slot:default="{ row }">
               {{ row.timestamp2 | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="任务提交时间" min-width="160" sortable>
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="任务提交时间" min-width="160" sortable>
             <template v-slot:default="{ row }">
               {{ row.createTime===null?'Null':row.createTime }}
             </template>
           </el-table-column>
           <!-- <el-table-column prop="progress" label="比较进度" width="120" sortable align="center" /> -->
-          <el-table-column label="操作" min-width="100">
+          <el-table-column v-if="tableShowAll" :key="Math.random()" label="操作" min-width="100">
             <template v-slot:default="{ row }">
               <el-button type="text" size="small" @click="getDetails(row.id)">查看比对结果</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="实体ID" prop="entityId" min-width="160" />
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="事件Key" prop="eventKey" min-width="160" />
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="编辑者" prop="user" />
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="任务提交时间戳" min-width="100">
+            <template v-slot:default="{ row }">
+              {{ row.timestamp | formatDate }}
+            </template>
+          </el-table-column>
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="行为">
+            <template v-slot:default="{ row }">
+              {{ translaterMasterIt(row.action) }}
+            </template>
+          </el-table-column>
+          <el-table-column v-if="!tableShowAll" :key="Math.random()" label="详情">
+            <template v-slot:default="{ row }">
+              <el-button type="text" size="small" @click="showDetails(row)">查看详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -69,13 +93,16 @@
       <el-form>
         <el-form-item>
           <el-row>
-            <el-col>
+            <el-col v-if="tableShowAll">
               版本不同：{{ compare.difference === '' ? '无' : compare.difference }}
+            </el-col>
+            <el-col v-else>
+              行为：{{ translaterMasterIt(guidLogInfo.action) }}
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
-      <el-row>
+      <el-row v-if="tableShowAll">
         <el-col :span="12">
           <!-- {{ compare.params1 }} -->
           基线时间版本
@@ -85,6 +112,15 @@
           待比较时间版本
           <json-viewer :value="compare.params2" :expand-depth="10" expanded :copyable="false" sort />
         </el-col>
+      </el-row>
+      <el-row v-else>
+        <json-viewer
+          :value="guidLogDetails"
+          :expand-depth="10"
+          expanded
+          :copyable="false"
+          sort
+        />
       </el-row>
     </el-dialog>
   </div>
@@ -119,7 +155,7 @@ export default {
   data() {
     return {
       listQuery: {},
-      tableData: '', // 所有记录
+      tableData: [], // 所有记录
       dialogVisible: false,
       // 比对数据解析
       compare: {
@@ -163,7 +199,10 @@ export default {
         }
         ]
       }
-      ]
+      ],
+      tableShowAll: true, // 所有数据
+      guidLogInfo: {},
+      guidLogDetails: {}
     }
   },
   watch: {
@@ -188,6 +227,7 @@ export default {
     },
     handleClear() {
       this.queryList.guid = ''
+      this.refreshTable()
     },
     fetchData() {
 
@@ -200,7 +240,8 @@ export default {
       // console.log(res)
       if (res.code === 200) {
         this.tableData = res.content
-        console.log(this.tableData)
+        this.tableShowAll = true
+        // console.log(this.tableData)
         this.queryList.guidList = []
         for (var i in this.tableData) {
           this.queryList.guidList.push({
@@ -217,10 +258,15 @@ export default {
         })
       }
     },
+    /**
+     * @description: 查询guid下所有记录
+     */
     async refreshTableGuid() {
-      const res = await apiatlas.getGuidAllCompareRecord(this.queryList.guid)
+      const res = await apiatlas.getVersionInfo(this.queryList.guid)
       if (res.code === 200) {
+        console.log(res);
         this.tableData = res.content
+        this.tableShowAll = false
       } else {
         this.$message({
           message: '获取该Guid下所有比对记录失败',
@@ -257,6 +303,21 @@ export default {
           duration: 4000
         })
       }
+    },
+    /**
+     * @description: 展示详情
+     * @param {object} 信息
+     */
+    showDetails(row) {
+      // console.log(row.details);
+      this.guidLogInfo = row
+      var t = this.guidLogInfo.details.length
+      this.guidLogDetails = JSON.parse(this.guidLogInfo.details.substring(this.guidLogInfo.details.indexOf(': ') + 2, t))
+      // console.log(this.guidLogDetails);
+      this.dialogVisible = true
+    },
+    translaterMasterIt(str) {
+      return translaterMaster(str)
     }
   }
 };
