@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 16:29:21
+ * @LastEditTime: 2020-10-28 13:25:48
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -108,9 +108,9 @@
             <!-- <el-tab-pane label="血缘" name="lineage">血缘关系</el-tab-pane> -->
             <el-tab-pane label="关系" name="relationships">
               <el-row style="margin-bottom: 10px;">
-                <el-col :span="8">
+                <!-- <el-col :span="8">
                   <el-switch v-model="graphTable" active-text="表格" inactive-text="图表" />
-                </el-col>
+                </el-col> -->
                 <el-col :span="8">
                   <el-switch v-if="graphTable" v-model="showEmptyRelationships" active-text="显示空值" inactive-text="不显示空值" />
                 </el-col>
@@ -274,14 +274,19 @@
                 @current-change="handleCurrentChange"
               /> -->
             </el-tab-pane>
-            <el-tab-pane v-if="properties.entity.typeName.split('_')[properties.entity.typeName.split('_').length-1] === 'table'" label="Schema" name="schema">
-              <el-table>
-                <el-table-column label="名称" />
-                <el-table-column label="描述" />
-                <el-table-column label="所有者" />
-                <el-table-column label="数据类型" />
-                <el-table-column label="评论" />
-                <el-table-column label="分类" />
+            <!-- v-if="properties.entity.typeName.split('_')[properties.entity.typeName.split('_').length-1] === 'table'" -->
+            <el-tab-pane v-if="properties.entity.typeName === 'rdbms_table'" label="Schema" name="schema">
+              <el-table :data="schemaList">
+                <el-table-column label="名称">
+                  <template v-slot:default="{ row }">
+                    <a class="aClass" @click="gotoNextDetails(row)">{{ row.attributes.name }}</a>
+                  </template>
+                </el-table-column>
+                <el-table-column label="描述" prop="attributes.description" min-width="100" />
+                <el-table-column label="所有者" prop="attributes.owner" />
+                <el-table-column label="数据类型" prop="attributes.data_type" />
+                <el-table-column label="备注" prop="attributes.comment" min-width="100" />
+                <el-table-column label="分类" prop="attributes.classification" />
               </el-table>
               <!-- <el-pagination
                 background
@@ -380,7 +385,8 @@ export default {
       addClassificationShow: false, // 打开添加分类面板
       classificationInfo: {}, // 为该条添加分类（guid，typeName）
       resultGuid: '', // router params传值guid
-      timer: ''
+      timer: '',
+      schemaList: []
     }
   },
   computed: {
@@ -546,6 +552,7 @@ export default {
       handler(val, oldVal) {
         this.resultGuid = val.guid
         this.init()
+        this.tabActiveName = 'properties'
       },
       deep: true
     }
@@ -680,6 +687,10 @@ export default {
       if (res.status === 200 && res.statusText === 'OK') {
         this.properties = res.data
         // console.log(this.properties)
+        this.schemaList = []
+        for (var i in this.properties.referredEntities) {
+          this.schemaList.push(this.properties.referredEntities[i])
+        }
       } else {
         this.$message({
           message: '获取详情信息-属性失败',
