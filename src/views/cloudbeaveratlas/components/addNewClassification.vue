@@ -2,7 +2,7 @@
  * @Date: 2020-10-23 14:05:25
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 16:19:48
+ * @LastEditTime: 2020-10-27 13:27:34
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
  * @Description: 添加新分类
 -->
@@ -38,7 +38,7 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-input v-model="item.name" placeholder="属性名" clearable />
           </el-col>
-          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+          <el-col :xs="20" :sm="20" :md="10" :lg="10" :xl="10">
             <el-select v-model="item.typeName" placeholder="类型" clearable>
               <el-option label="string" value="string" />
               <el-option label="boolean" value="boolean" />
@@ -48,9 +48,10 @@
               <el-option label="float" value="float" />
               <el-option label="double" value="double" />
               <el-option label="date" value="date" />
+              <el-option v-for="(attribute,attributeindex) in attributeList" :key="attributeindex" :label="attribute.name" :value="attribute.name" />
             </el-select>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
+          <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2">
             <el-button size="mini" type="danger" icon="el-icon-close" @click="removeAttribute(index)" />
           </el-col>
         </el-form-item>
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import { addNewClassification } from '@/api/datax-metadata-atlas'
+import { addNewClassification, getListType } from '@/api/datax-metadata-atlas'
 export default {
   name: 'AddNewClassification',
   props: {
@@ -89,7 +90,8 @@ export default {
           // valuesMinCount: 0
         ]
       },
-      isLoading: false // loading
+      isLoading: false, // loading
+      attributeList: ''
     }
   },
   computed: {
@@ -102,6 +104,11 @@ export default {
       this.dataForm.superTypes = []
       if (val !== '') {
         this.dataForm.superTypes.push(val)
+      }
+    },
+    addNewClassificationShow(val) {
+      if (val) {
+        this.getAllType()
       }
     }
   },
@@ -179,6 +186,23 @@ export default {
      */
     removeAttribute(index) {
       this.dataForm.attributeDefs.splice(index, 1)
+    },
+    /**
+     * @description: 获取所有实体信息并筛选有用信息
+     */
+    async getAllType() {
+      const res = await getListType()
+      if (res.status === 200 && res.statusText === 'OK') {
+        this.attributeList = res.data.filter(item => item.category === 'ENUM')
+        // console.log(this.attributeList);
+      } else {
+        this.$message({
+          message: '获取所有实体信息出错',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
  * @Date: 2020-10-26 16:24:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 19:29:55
+ * @LastEditTime: 2020-10-27 17:39:29
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
  * @Description: 查看编辑页
 -->
@@ -15,10 +15,15 @@
             <i class="el-icon-arrow-left topArrow" @click="backToResult" />
           </el-tooltip>
         </el-col>
-        <el-col :span="18">
+        <el-col :span="19">
           <el-tooltip :content="classification" placement="top">
             <span class="topBarText">{{ classification }}</span>
           </el-tooltip>
+        </el-col>
+        <el-col :span="2" style="line-height: 3.2rem;">
+          <span>
+            <el-button type="primary" size="mini" plain icon="el-icon-edit" @click="editDescriptionShow=true" />
+          </span>
         </el-col>
       </el-row>
       <!-- {{ thisAttribute }} -->
@@ -42,9 +47,9 @@
           <!-- {{ properties.entity.classifications }} -->
           属性：
           <span v-for="(item,index) in thisAttribute.attributeDefs" :key="index">
-            <el-tag type="info" size="medium" effect="dark">{{ item.name }}</el-tag>
+            <el-tag type="info" size="medium">{{ item.name }}</el-tag>
           </span>
-          <el-button type="success" plain size="mini" icon="el-icon-plus" />
+          <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addAttributeShow=true" />
         </el-col>
       </el-row>
       <el-row class="bottomBar">
@@ -68,7 +73,7 @@
             <el-table-column label="描述" min-width="110" prop="attributes.description" />
             <el-table-column label="类型">
               <template v-slot:default="{row}">
-                <a :class="tableItemLink" @click="gotoResult(row.typeName)">{{ row.typeName }}</a>
+                <a class="tableItemLink" @click="gotoResult(row.typeName)">{{ row.typeName }}</a>
               </template>
             </el-table-column>
             <el-table-column label="分类" width="150">
@@ -126,6 +131,57 @@
         <el-button v-loading="isLoading" type="primary" @click="handledeleteClassification">提交</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="添加属性" :visible.sync="addAttributeShow">
+      <el-form ref="dataForm" :model="dataForm">
+        <el-form-item>
+          <el-button type="primary" plain size="mini" icon="el-icon-plus" @click="addAttribute">添加新属性</el-button>
+        </el-form-item>
+        <el-form-item
+          v-for="(item,index) in dataForm.attributes"
+          :key="index"
+          :prop="'attributes.' + index + '.name'"
+          :rules="[{ required: true, message: '新增属性名不能为空', trigger: 'blur' }]"
+        >
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-input v-model="item.name" placeholder="属性名" clearable />
+          </el-col>
+          <el-col :xs="20" :sm="20" :md="10" :lg="10" :xl="10">
+            <el-select v-model="item.typeName" placeholder="类型" clearable>
+              <el-option label="string" value="string" />
+              <el-option label="boolean" value="boolean" />
+              <el-option label="byte" value="byte" />
+              <el-option label="short" value="short" />
+              <el-option label="int" value="int" />
+              <el-option label="float" value="float" />
+              <el-option label="double" value="double" />
+              <el-option label="date" value="date" />
+              <el-option v-for="(attribute,attributeindex) in attributeList" :key="attributeindex" :label="attribute.name" :value="attribute.name" />
+            </el-select>
+          </el-col>
+          <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2">
+            <el-button size="mini" type="danger" icon="el-icon-close" @click="removeAttribute(index)" />
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" plain @click="addAttributeShow = false">取消</el-button>
+        <el-button v-loading="isLoading" type="primary" @click="handleAddAttribute('dataForm')">提交</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="编辑分类" :visible.sync="editDescriptionShow">
+      <el-form>
+        <el-form-item label="名称">
+          {{ classification }}
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="editDescription" placeholder="描述" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" plain @click="editDescriptionShow = false">取消</el-button>
+        <el-button v-loading="isLoading" type="primary" @click="handleEditDescription('dataForm2')">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -145,16 +201,27 @@ export default {
   data() {
     return {
       timer: '',
-      classification: '',
-      excludeSub: false,
-      showHistorical: false,
-      tableData: '',
+      classification: '', // query 分类名
+      excludeSub: false, // 不包含子分类
+      showHistorical: false, // 显示历史
+      tableData: [], // 表格数据
       pageTotal: 0,
       pageCurrent: 1,
       pageSize: 25,
       addClassificationShow: false,
+      deleteGuid: '',
+      deleteClass: '',
+      deleteTypeName: '',
       deleteClassificationFlag: false,
-      isLoading: false
+      classificationInfo: {},
+      isLoading: false,
+      addAttributeShow: false,
+      dataForm: {
+        attributes: [] // 添加的属性
+      },
+      attributeList: [],
+      editDescriptionShow: false,
+      editDescription: '' // 描述
     }
   },
   computed: {
@@ -170,6 +237,7 @@ export default {
   watch: {
     '$route.params.name'(val) {
       this.timer = new Date().getTime()
+      this.getAllType()
       this.classification = this.$route.params.name
       this.getList()
     },
@@ -178,10 +246,19 @@ export default {
     },
     showHistorical(val) {
       this.getList()
+    },
+    addAttributeShow(val) {
+      if (!val) {
+        this.dataForm.attributes = []
+      }
+    },
+    editDescriptionShow(val) {
+      this.editDescription = this.thisAttribute.description
     }
   },
   created() {
     this.timer = new Date().getTime()
+    this.getAllType()
     this.classification = this.$route.params.name
     this.getList()
   },
@@ -211,13 +288,30 @@ export default {
         termName: null,
         typeName: null
       })
-      console.log(res);
+      // console.log(res);
       if (res.status === 200 && res.statusText === 'OK') {
         this.pageTotal = res.data.approximateCount
         this.tableData = res.data.entities
       } else {
         this.$message({
           message: '获取对应记录出错',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      }
+    },
+    /**
+     * @description: 获取所有实体信息并筛选有用信息
+     */
+    async getAllType() {
+      const res = await apiatlas.getListType()
+      if (res.status === 200 && res.statusText === 'OK') {
+        this.attributeList = res.data.filter(item => item.category === 'ENUM')
+        // console.log(this.attributeList);
+      } else {
+        this.$message({
+          message: '获取所有实体信息出错',
           showClose: true,
           type: 'error',
           duration: 4000
@@ -328,6 +422,83 @@ export default {
     addClassification(row) {
       this.classificationInfo = row
       this.addClassificationShow = true
+    },
+    /**
+     * @description: 添加属性提交
+     */
+    handleAddAttribute(dataForm) {
+      this.$refs[dataForm].validate((valid) => {
+        if (valid) {
+          var tempForm = this.thisAttribute
+          if (this.dataForm.attributes.length > 0) {
+            tempForm.attributeDefs = tempForm.attributeDefs.concat(this.dataForm.attributes)
+          }
+          this.editNewClassification(tempForm)
+        } else {
+          return false
+        }
+      })
+    },
+    /**
+     * @description: 添加属性
+     */
+    addAttribute() {
+      this.dataForm.attributes.push({
+        cardinality: 'SINGLE',
+        isIndexable: true,
+        isOptional: true,
+        isUnique: false,
+        name: '',
+        typeName: 'string',
+        valuesMaxCount: 1,
+        valuesMinCount: 0
+      })
+    },
+    /**
+     * @description: 移除属性
+     */
+    removeAttribute(index) {
+      this.dataForm.attributes.splice(index, 1)
+    },
+    /**
+     * @description: 添加分类属性
+     */
+    async editNewClassification(data) {
+      this.isLoading = true
+      const res = await apiatlas.editNewClassification(data)
+      if (res.status === 200 && res.statusText === 'OK') {
+        this.addAttributeShow = false
+        this.editDescriptionShow = false
+        this.$message({
+          message: '编辑分类成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        })
+        this.isLoading = false
+        this.$router.replace({
+          name: 'atlasTagAttr',
+          query: this.$route.query,
+          params: this.$route.params
+        })
+      } else {
+        this.$message({
+          message: '编辑分类失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+        this.isLoading = false
+      }
+    },
+    /**
+     * @description: 编辑描述提交
+     */
+    handleEditDescription() {
+      var tempForm = this.thisAttribute
+      tempForm.description = this.editDescription
+      // console.log(tempForm);
+      this.editNewClassification(tempForm)
     }
   }
 }

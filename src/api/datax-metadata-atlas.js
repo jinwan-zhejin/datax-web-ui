@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 19:07:05
+ * @LastEditTime: 2020-10-27 14:17:02
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -85,10 +85,44 @@ export async function addNewClassification(data) {
   })
   return res
 }
+
+/**
+ * @description: 删除新分类
+ * @param {object} 添加分类参数
+ * @return {object} axios返回值
+ */
 export async function deleteNewClassification(name) {
   const res = await axios({
     url: '/atlasApi/v2/types/typedef/name/'.concat(name),
     method: 'delete',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': '""'
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 修改分类
+ * @param {object} 修改分类参数
+ * @return {object} axios返回值
+ */
+export async function editNewClassification(data) {
+  var tempClass = []
+  tempClass.push(data)
+  const res = await axios({
+    url: '/atlasApi/v2/types/typedefs',
+    method: 'put',
+    params: {
+      type: 'classification'
+    },
+    data: {
+      entityDefs: [],
+      enumDefs: [],
+      structDefs: [],
+      classificationDefs: tempClass
+    },
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'X-XSRF-HEADER': '""'

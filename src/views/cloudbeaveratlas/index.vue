@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 18:12:18
+ * @LastEditTime: 2020-10-27 18:33:33
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -233,6 +233,16 @@
         </el-collapse>
       </el-aside>
       <el-container>
+        <!-- <el-header>
+          <el-form :inline="true">
+            <el-form-item label="实体类型">
+              <el-select></el-select>
+            </el-form-item>
+            <el-form-item label="分类">
+              <el-select></el-select>
+            </el-form-item>
+          </el-form>
+        </el-header> -->
         <el-header>
           <el-tooltip content="统计数据" placement="bottom-start">
             <el-button style="position: absolute; right: 30px; z-index: 999; font-size: 22px;" type="text" icon="el-icon-s-data" @click="statisticsShow=true" />
@@ -489,29 +499,29 @@ export default {
           }
         }
       )
-    },
-    tag_Tree() {
-      // 顶层
-      const tempTop = this.classifications.data.filter(item => {
-        if (item.superTypes.length === 0 && item.subTypes.length > 0) {
-          return true
-        }
-      })
-      // 叶子节点
-      const tempLeaf = this.classifications.data.filter(item => {
-        if (item.superTypes.length > 0 && item.subTypes.length === 0) {
-          return true
-        }
-      })
-      // 中间节点
-      const tempMiddle = this.classifications.data.filter(item => {
-        if (item.superTypes.length > 0 && item.subTypes.length > 0) {
-          return true
-        }
-      })
-      var temp = tempTop
-      return temp
     }
+    // tag_Tree() {
+    //   // 顶层
+    //   const tempTop = this.classifications.data.filter(item => {
+    //     if (item.superTypes.length === 0 && item.subTypes.length > 0) {
+    //       return true
+    //     }
+    //   })
+    //   // 叶子节点
+    //   const tempLeaf = this.classifications.data.filter(item => {
+    //     if (item.superTypes.length > 0 && item.subTypes.length === 0) {
+    //       return true
+    //     }
+    //   })
+    //   // 中间节点
+    //   const tempMiddle = this.classifications.data.filter(item => {
+    //     if (item.superTypes.length > 0 && item.subTypes.length > 0) {
+    //       return true
+    //     }
+    //   })
+    //   var temp = tempTop
+    //   return temp
+    // }
   },
   watch: {
     searchTreeList(val) {
@@ -742,7 +752,7 @@ export default {
       const res = await apiatlas.getList('classification')
       if (res.status === 200 && res.statusText === 'OK') {
         this.classifications.data = res.data.classificationDefs
-        console.log(this.tag_Tree);
+        // console.log(this.tag_Tree);
         this.classifications.data.push(
           {
             category: 'CLASSIFICATION',

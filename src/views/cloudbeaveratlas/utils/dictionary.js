@@ -129,7 +129,10 @@ const translate = {
   'nonheapcommitted': '非堆内存提交',
   'nonheapinit': '非堆内存初始化',
   'nonheapmax': '非堆内存最大值',
-  'nonheapused': '非堆内存已使用'
+  'nonheapused': '非堆内存已使用',
+  'includede': '包含已删除实体',
+  'excludesc': '排除子分类',
+  'excludest': '排除子类型'
 }
 // export default translate
 

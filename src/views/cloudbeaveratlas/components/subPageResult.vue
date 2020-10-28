@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 19:08:09
+ * @LastEditTime: 2020-10-27 18:47:22
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -15,7 +15,80 @@
         <el-tooltip content="刷新搜索结果" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-refresh" @click="refreshList" />
         </el-tooltip>
-        <el-button type="primary" size="mini" plain icon="el-icon-arrow-right" @click="test">筛选</el-button>
+        <!-- <el-button type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button> -->
+        <el-popover
+          placement="bottom"
+          width="80%"
+          trigger="click"
+        >
+          <el-button slot="reference" type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button>
+          <el-collapse v-model="filterActiveName">
+            <el-collapse-item name="includeexclude">
+              <div slot="title" class="collapse-title">
+                包含/排除
+              </div>
+              <el-col :span="12">
+                <el-switch
+                  v-model="showHistoricalEntities"
+                  active-text="显示历史实体"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubClassifications"
+                  active-text="排除子分类"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubTypes"
+                  active-text="排除子类型"
+                  inactive-text=""
+                />
+              </el-col>
+            </el-collapse-item>
+          </el-collapse>
+          <span style="margin-top: 15px;margin-bottom: 15px;position: relative;float: right;">
+            <el-button type="primary" plain size="small" @click="addOtherFilter">确认</el-button>
+            <el-button type="primary" plain size="small" @click="openFilter=false">取消</el-button>
+          </span>
+        </el-popover>
+        <!-- <el-card v-show="openFilter" style="z-index: 999;position: absolute;width: 90%;margin: 5px;">
+          <el-collapse v-model="filterActiveName">
+            <el-collapse-item name="includeexclude">
+              <div slot="title" class="collapse-title">
+                包含/排除
+              </div>
+              <el-col :span="12">
+                <el-switch
+                  v-model="showHistoricalEntities"
+                  active-text="显示历史实体"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubClassifications"
+                  active-text="排除子分类"
+                  inactive-text=""
+                />
+              </el-col>
+              <el-col :span="12">
+                <el-switch
+                  v-model="excludeSubTypes"
+                  active-text="排除子类型"
+                  inactive-text=""
+                />
+              </el-col>
+            </el-collapse-item>
+          </el-collapse>
+          <span style="margin-top: 15px;margin-bottom: 15px;position: relative;float: right;">
+            <el-button type="primary" plain size="small" @click="addOtherFilter">确认</el-button>
+            <el-button type="primary" plain size="small" @click="openFilter=false">取消</el-button>
+          </span>
+        </el-card> -->
         <el-button type="primary" size="mini" plain @click="backToSearch">清除</el-button>
         <el-tooltip content="保存为自定义筛选器" placement="top">
           <el-button type="primary" size="mini" plain icon="el-icon-folder-add" @click="saveAsCustomFilter">保存过滤器</el-button>
@@ -27,7 +100,6 @@
           multiple
           collapse-tags
           placeholder="其他列项"
-          @change="test"
         >
           <el-option
             v-for="(item, index) in tableColumns"
@@ -62,7 +134,12 @@
         <el-table class="tableStyle" :data="tableData">
           <el-table-column key="名称" label="名称" prop="attributes.name" min-width="100" :show-overflow-tooltip="true">
             <template v-slot:default="{row}">
-              <a class="tableItemLink" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
+              <a :class="[row.status==='DELETED'?'tableItemLinkRed':'tableItemLink']" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
+              <el-tooltip content="已删除" placement="bottom">
+                <el-tag v-if="row.status==='DELETED'" type="danger" size="mini">
+                  <i class="el-icon-delete" />
+                </el-tag>
+              </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column key="所有者" label="所有者" prop="attributes.owner" />
@@ -118,7 +195,12 @@
               <el-button type="primary" plain size="mini" @click="metaCompare(row.guid)">元数据比对</el-button>
             </template>
           </el-table-column>
-          <el-table-column v-for="(item, index) in tableColumnsSelected" :key="index" :label="item.label" :prop="item.value" />
+          <el-table-column v-for="(item, index) in tableColumnsSelected" :key="index" :label="translateIt(item)" min-width="115">
+            <template v-slot:default="{ row }">
+              {{ item !== 'instance' ? row.attributes[item] : '' }}
+              <a v-if="item === 'instance'" class="tableItemLink" @click="goToDetails(instanceInfo(row))">{{ instanceInfo(row).hasOwnProperty('attributes') ? instanceInfo(row).attributes.name:'' }}</a>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           background
@@ -214,6 +296,7 @@ export default {
       ],
       tableColumnsPlus: [], // 除固定显示的列，额外显示的列项
       tableData: [], // 表数据
+      allData: {}, // 所有数据
       metaCompareVisible: false, // 版本比较dialog可见
       // 比较参数
       compareParams: {
@@ -233,7 +316,12 @@ export default {
       addCustomFilterShow: false,
       currentPage: 1,
       pageSize: 25,
-      tableTotal: 0 // 总数
+      tableTotal: 0, // 总数
+      openFilter: false,
+      filterActiveName: ['includeexclude'],
+      showHistoricalEntities: false,
+      excludeSubClassifications: false,
+      excludeSubTypes: false
     }
   },
   computed: {
@@ -284,6 +372,20 @@ export default {
       return rmItem => {
         return this.versionList.filter(item => item.timestamp !== rmItem)
       }
+    },
+    instanceInfo() {
+      return row => {
+        if (row.attributes.hasOwnProperty('instance')) {
+          if (row.attributes.instance.hasOwnProperty('guid')) {
+            if (this.allData.hasOwnProperty('referredEntities')) {
+              if (this.allData.referredEntities.hasOwnProperty(row.attributes.instance.guid)) {
+                return this.allData.referredEntities[row.attributes.instance.guid]
+              }
+            }
+          }
+        }
+        return {}
+      }
     }
   },
   watch: {
@@ -311,6 +413,9 @@ export default {
       if (!val) {
         this.$emit('refreshcustomlist')
       }
+    },
+    tableColumnsSelected(val) {
+      this.refreshList()
     }
   },
   created() {
@@ -331,6 +436,9 @@ export default {
     },
     test(info) {
       console.log(info)
+    },
+    test3() {
+      console.log(this.tableColumnsSelected);
     },
     async metaCompare(guid) {
       this.metaCompareVisible = true
@@ -402,12 +510,12 @@ export default {
         this.backToSearch()
       } else {
         const res = await apiatlas.getTableByItems({
-          attributes: this.searchParamsAttributes,
+          attributes: this.searchParamsAttributes.concat(this.tableColumnsSelected),
           classification: this.resultQuery.hasOwnProperty('tag') ? this.resultQuery.tag : null,
-          excludeDeletedEntities: true,
+          excludeDeletedEntities: !this.showHistoricalEntities,
           includeClassificationAttributes: true,
-          includeSubClassifications: true,
-          includeSubTypes: true,
+          includeSubClassifications: !this.excludeSubClassifications,
+          includeSubTypes: !this.excludeSubTypes,
           query: this.resultQuery.hasOwnProperty('query') ? this.resultQuery.query : null,
           limit: this.pageSize,
           offset: this.pageSize * (this.currentPage - 1),
@@ -415,8 +523,11 @@ export default {
         })
         // console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
+          this.allData = res.data
+          // console.log(this.allData);
           this.tableData = res.data.entities
           this.tableTotal = res.data.approximateCount
+          this.openFilter = false
         } else {
           this.$message({
             message: '获取对应记录出错',
@@ -443,9 +554,15 @@ export default {
          * @description: 删除筛选条件
          */
     deleteFilterItem(index, name) {
-      // console.log('删除查询搜索条件')
       this.$delete(this.resultQuery, name)
       var temp = JSON.parse(JSON.stringify(this.resultQuery))
+      if (name === 'includeDE') {
+        this.showHistoricalEntities = false
+      } else if (name === 'excludeST') {
+        this.excludeSubTypes = false
+      } else if (name === 'excludeSC') {
+        this.excludeSubClassifications = false
+      }
       this.$router.replace({
         name: 'atlasResult',
         query: {}
@@ -454,7 +571,7 @@ export default {
         name: 'atlasResult',
         query: temp
       })
-      // console.log(this.$route.query);
+      // console.log(index, name);
     },
     researchClassification(param) {
       this.$router.replace({
@@ -550,6 +667,44 @@ export default {
     handlePageCurrentChange(val) {
       this.currentPage = val
       this.refreshList()
+    },
+    /**
+     * @description: 添加其他过滤器
+     */
+    addOtherFilter() {
+      // console.log(!this.showHistoricalEntities, !this.excludeSubClassifications, !this.excludeSubTypes);
+      var temp = {}
+      var temp2 = this.$route.query
+      if (this.showHistoricalEntities) {
+        temp.includeDE = true
+      } else {
+        if (temp2.hasOwnProperty('includeDE')) {
+          delete temp2.includeDE
+        }
+      }
+      if (this.excludeSubClassifications) {
+        temp.excludeSC = true
+      } else {
+        if (temp2.hasOwnProperty('excludeSC')) {
+          delete temp2.excludeSC
+        }
+      }
+      if (this.excludeSubTypes) {
+        temp.excludeST = true
+      } else {
+        if (temp2.hasOwnProperty('excludeST')) {
+          delete temp2.excludeST
+        }
+      }
+      Object.assign(temp, temp2);
+      this.$router.replace({
+        name: 'atlasResult',
+        query: {}
+      })
+      this.$router.replace({
+        name: 'atlasResult',
+        query: temp
+      })
     }
   }
 }
@@ -628,8 +783,29 @@ export default {
         font-weight: bold;
     }
 }
+.tableItemLinkRed {
+  color: #853d13;
+  i {
+    font-weight: bold;
+  }
+}
+.tableItemLinkRed:hover {
+    text-decoration: underline;
+}
 
 .tableItemLink:hover {
     text-decoration: underline;
 }
+::v-deep .el-collapse-item__header {
+            color: #3D5FFF;
+            font-size: 15px;
+            font-weight: bold;
+            flex: 1 0 auto;
+            order: -1;
+            // border-bottom: #3D5FFF;
+            .collapse-title {
+                flex: 1 0 100%;
+                order: 1;
+            }
+        }
 </style>
