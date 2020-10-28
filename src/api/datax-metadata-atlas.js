@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 14:17:02
+ * @LastEditTime: 2020-10-28 11:27:09
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -400,7 +400,7 @@ export async function deleteClassification(guid, classification) {
  */
 export async function getVersionInfo(guid) {
   const res = await request({
-    url: '/test/metadata/audit',
+    url: '/api/metadata/audit',
     method: 'get',
     params: {
       guid
@@ -418,7 +418,7 @@ export async function getVersionInfo(guid) {
  */
 export async function getCompareResult(guid, timestamps) {
   const res = await request({
-    url: '/test/metadata/contrast',
+    url: '/api/metadata/contrast',
     method: 'post',
     data: {
       'guid': guid,
@@ -438,7 +438,7 @@ export async function getCompareResult(guid, timestamps) {
  */
 export async function getAllCompareRecord() {
   const res = await request({
-    url: '/test/metadata/contrast/all',
+    url: '/api/metadata/contrast/all',
     method: 'get',
     withCredentials: true
   })
@@ -452,7 +452,7 @@ export async function getAllCompareRecord() {
  */
 export async function getOneCompareRecord(id) {
   const res = await request({
-    url: '/test/metadata/contrast/record',
+    url: '/api/metadata/contrast/record',
     method: 'get',
     params: {
       id
@@ -469,7 +469,7 @@ export async function getOneCompareRecord(id) {
  */
 export async function getGuidAllCompareRecord(guid) {
   const res = await request({
-    url: '/test/metadata',
+    url: '/api/metadata',
     method: 'get',
     params: {
       guid

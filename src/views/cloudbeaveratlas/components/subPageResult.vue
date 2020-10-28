@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 18:47:22
+ * @LastEditTime: 2020-10-28 14:02:59
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -18,8 +18,9 @@
         <!-- <el-button type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button> -->
         <el-popover
           placement="bottom"
-          width="80%"
+          width="100%"
           trigger="click"
+          @hide="openFilter=false"
         >
           <el-button slot="reference" type="primary" size="mini" plain :icon="openFilter?'el-icon-arrow-down':'el-icon-arrow-right'" @click="openFilter=!openFilter">过滤器</el-button>
           <el-collapse v-model="filterActiveName">
@@ -48,6 +49,7 @@
                   inactive-text=""
                 />
               </el-col>
+              <br>
             </el-collapse-item>
           </el-collapse>
           <span style="margin-top: 15px;margin-bottom: 15px;position: relative;float: right;">
@@ -420,6 +422,15 @@ export default {
   },
   created() {
     this.resultQuery = this.$route.query
+    if (this.resultQuery.hasOwnProperty('includeDE')) {
+      this.showHistoricalEntities = true
+    }
+    if (this.resultQuery.hasOwnProperty('excludeSC')) {
+      this.excludeSubClassifications = true
+    }
+    if (this.resultQuery.hasOwnProperty('excludeST')) {
+      this.excludeSubTypes = true
+    }
     this.refreshList()
   },
   mounted() {
