@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-card class="box-card">
         <div class="text item">
-          <div class="left">普通数据源</div>
+          <div class="left">数据源管理</div>
           <div class="right">
             <el-input
               v-model="listQuery.datasourceName"
