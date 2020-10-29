@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-28 11:27:09
+ * @LastEditTime: 2020-10-28 18:50:13
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -53,6 +53,9 @@ export async function getList(type) {
   const res = await axios({
     url: '/atlasApi/v2/types/typedefs',
     method: 'get',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    },
     params: {
       type: type,
       _: new Date().getTime()

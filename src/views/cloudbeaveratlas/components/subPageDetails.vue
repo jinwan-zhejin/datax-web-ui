@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-28 13:25:48
+ * @LastEditTime: 2020-10-29 17:40:42
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -10,20 +10,25 @@
 <template>
   <div :key="timer">
     <div class="container">
+      <!-- 顶部 -->
       <el-row>
-        <el-col class="topBar" :span="4">
+        <el-col class="top-bar" :span="2">
           <el-tooltip content="返回" placement="top">
-            <i class="el-icon-arrow-left topArrow" @click="backToResult" />
+            <div class="left-arrow-btn">
+              <i class="el-icon-arrow-left top-arrow" @click="backToResult" />
+            </div>
           </el-tooltip>
-          <i class="el-icon-document" />
         </el-col>
-        <el-col :span="18">
+        <el-col :span="20">
           <el-tooltip :content="properties.entity.attributes.name.concat(' ( ').concat(properties.entity.typeName).concat(' ) ')" placement="top">
-            <span class="topBarText">{{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;</span>
+            <span class="top-bar-text">
+              {{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;
+            </span>
           </el-tooltip>
         </el-col>
       </el-row>
-      <el-row class="centerBar">
+      <!-- 中部 -->
+      <el-row class="center-bar">
         <el-col>
           <!-- {{ properties.entity.classifications }} -->
           分类：
@@ -45,16 +50,17 @@
           术语：<el-button type="success" plain size="mini" icon="el-icon-plus" @click="test(row)" />
         </el-col> -->
       </el-row>
+      <!-- 底部 -->
       <el-row class="bottomBar">
         <el-col>
           <el-tabs v-model="tabActiveName" type="card" @tab-click="handleTabClick">
             <el-tab-pane label="属性" name="properties">
               <el-row>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-collapse v-model="propertiesCollapseActive[0]">
-                    <el-collapse-item name="properties0">
-                      <div slot="title" class="collapse-title">
-                        技术属性&nbsp;
+                    <el-collapse-item name="properties0" style="">
+                      <div slot="title">
+                        &nbsp;技术属性&nbsp;
                         <el-tooltip :content="techPropShow ?'隐藏空值':'显示空值'">
                           <el-switch v-model="techPropShow" @click.stop.native />
                         </el-tooltip>
@@ -70,6 +76,7 @@
                             <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextDetails(row.value[0])">{{ row.value[0].displayText }}</a>
                             <a v-else-if="row.key === 'instance'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.displayText }}</a>
                             <!-- <a v-else-if="row.key === 'databases'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.name }}</a> -->
+                            <span v-else-if="row.key.toLowerCase().indexOf('time') > -1">{{ row.value | formatDate }}</span>
                             <span v-else>{{ row.value }}</span>
                           </template>
                         </el-table-column>
@@ -77,7 +84,7 @@
                     </el-collapse-item>
                   </el-collapse>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <!-- <el-collapse v-model="propertiesCollapseActive[1]">
                     <el-collapse-item title="用户定义的属性" name="properties1">
                       <el-table :data="custProp" :show-header="false">
@@ -88,9 +95,9 @@
                   </el-collapse> -->
                   <el-collapse v-model="propertiesCollapseActive[2]">
                     <el-collapse-item name="properties2">
-                      <div slot="title" class="collapse-title">
-                        标签&nbsp;
-                        <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button>
+                      <div slot="title">
+                        &nbsp;标签&nbsp;
+                        <!-- <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button> -->
                       </div>
                       <span v-if="properties.entity.labels.length <= 0">&nbsp;暂无数据</span>
                       <el-tag v-for="(item, index) in properties.entity.labels" :key="index" style="margin: 2px;">{{ item }}</el-tag>
@@ -179,10 +186,10 @@
                         </el-col>
                       </el-row> -->
                       <el-row>
-                        <el-col v-if="hasAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                        <el-col v-if="hasAttributes(transformObject(props.row)[1])">
                           <el-collapse v-model="detailsCollapseActive[0]">
                             <el-collapse-item name="details0">
-                              <div slot="title" class="collapse-title">
+                              <div slot="title">
                                 技术属性
                               </div>
                               <el-table :data="detailsAttributes(transformObject(props.row)[1])" :show-header="false">
@@ -196,10 +203,10 @@
                             </el-collapse-item>
                           </el-collapse>
                         </el-col>
-                        <el-col v-if="hasRelationshipAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                        <el-col v-if="hasRelationshipAttributes(transformObject(props.row)[1])">
                           <el-collapse v-model="detailsCollapseActive[1]">
                             <el-collapse-item name="details1">
-                              <div slot="title" class="collapse-title">
+                              <div slot="title">
                                 关系属性
                               </div>
                               <el-table :data="detailsRelationshipAttributes(transformObject(props.row)[1])" :show-header="false">
@@ -213,10 +220,10 @@
                             </el-collapse-item>
                           </el-collapse>
                         </el-col>
-                        <el-col v-if="hasCustomAttributes(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                        <el-col v-if="hasCustomAttributes(transformObject(props.row)[1])">
                           <el-collapse v-model="detailsCollapseActive[2]">
                             <el-collapse-item name="details2">
-                              <div slot="title" class="collapse-title">
+                              <div slot="title">
                                 自定义属性
                               </div>
                               <el-table :data="detailsCustomAttributes(transformObject(props.row)[1])" :show-header="false">
@@ -230,10 +237,10 @@
                             </el-collapse-item>
                           </el-collapse>
                         </el-col>
-                        <el-col v-if="hasTerm(transformObject(props.row)[1])" :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                        <el-col v-if="hasTerm(transformObject(props.row)[1])">
                           <el-collapse v-model="detailsCollapseActive[3]">
                             <el-collapse-item name="details3">
-                              <div slot="title" class="collapse-title">
+                              <div slot="title">
                                 属性
                               </div>
                               <el-table :data="detailsTerm(transformObject(props.row)[1])" :show-header="false">
@@ -775,26 +782,30 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin: 20px;
-  .topBar {
+  .top-bar {
     margin: 0 auto 20px auto;
-    min-width: 113px;
+    min-width: 55px;
     font-size: 2.8em;
     line-height: 3.2rem;
-    .topArrow {
-      font-weight: bold;
-      color: rgb(192, 192, 192);
-      cursor: pointer;
+    .left-arrow-btn {
+      width: 50px;
+      height: 50px;
+      background: #F8F8FA;
+      border-radius: 50%;
+      .top-arrow {
+        font-weight: bold;
+        color: rgb(192, 192, 192);
+        cursor: pointer;
+      }
+      .top-arrow:hover {
+        color: rgb(143, 143, 143);
+      }
     }
-    .topArrow:hover {
-      color: rgb(143, 143, 143);
-    }
-    i {
-      font-weight: bold;
-      color: #006ad4;
+    .left-arrow-btn:hover {
+      background: #e9e9e9;
     }
   }
-  .topBarText {
+  .top-bar-text {
     font-size: 2.8em;
     line-height: 3.2rem;
     display: -webkit-box;/*作为弹性伸缩盒子模型显示*/
@@ -803,11 +814,14 @@ export default {
     text-overflow: ellipsis; /* 溢出用省略号*/
     -webkit-box-orient: vertical;/*伸缩盒子的子元素排列：从上到下*/
   }
-  .centerBar {
+  .center-bar {
     margin: 0 auto 20px auto;
     .el-col {
       margin-top: 10px;
       margin-bottom: 10px;
+      .el-button {
+        margin: 0 5px;
+      }
     }
   }
   .bottomBar {
@@ -825,15 +839,21 @@ export default {
   border-radius: 5px;
   padding: 5px;
   margin: 5px;
-}
-::v-deep .el-collapse-item__header {
-  color: #3D5FFF;
-  font-size: 15px;
-  flex: 1 0 auto;
-  order: -1;
-  .collapse-title {
-    flex: 1 0 100%;
-    order: 1;
+  ::v-deep .el-collapse-item__header {
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    border: 0;
+  }
+  ::v-deep .el-collapse-item__wrap {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 0;
+    .el-table td {
+      background: #F8F8FA;
+      border: 0;
+    }
   }
 }
+
 </style>
