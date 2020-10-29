@@ -66,7 +66,9 @@
                                 <el-select v-model="form.sourceName" placeholder="Please Choose DataSource" @change="schemaChange">
                                     <el-option v-for="item in sourceList" :key="item.id" :label="item.datasourceName" :value="item.datasourceName" />
                                 </el-select>
-                                <el-button size="mini">From ASG DI</el-button>
+                                <el-tooltip class="item" effect="dark" content="Choose From Data Assets Repo" placement="top-end">
+                                    <el-button size="mini">From Assets</el-button>
+                                </el-tooltip>
                             </div>
                         </el-form-item>
                         <el-form-item label="Table Name:">

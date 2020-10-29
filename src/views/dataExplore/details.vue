@@ -15,11 +15,11 @@
             <div class="right">
                 <!-- 选项卡 -->
                 <div class="choose">
-                    <el-tabs v-model="activeName" type="card">
+                    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
                         <el-tab-pane label="Detail" name="first">
                             <!-- 表格 -->
                             <template>
-                                <el-table :data="tableData" background-color="#F8F8FA" border style="width: 100%">
+                                <el-table :data="tableData" background-color="#F8F8FA" border style="width: 100%;" height="600px" ref="myTable">
                                     <el-table-column v-for="item in tableData1" :key="item.name" width="200" :prop="item.name" align="left">
                                         <template slot="header" slot-scope="scope">
                                             <div class="t_header_01">
@@ -62,7 +62,7 @@
                         <el-tab-pane label="Data" name="second">
                             <!-- 表格 -->
                             <template>
-                                <el-table :data="tableData" background-color="#F8F8FA" border style="width: 100%">
+                                <el-table :data="tableData" background-color="#F8F8FA" border style="width: 100%" height="600px" ref="myTable1">
                                     <el-table-column v-for="item in tableData1" :key="item.name" width="200" :prop="item.name" align="left">
                                         <template slot="header" slot-scope="scope">
                                             <div class="t_header_01" style="border:none">
@@ -348,9 +348,17 @@ export default {
                     id: 4,
                     age: 19
                 }
-            ]
+            ],
+            pageNumber: 1,
+            pageSize: 10, //  
+            total: ""
         }
     },
+    mounted() {
+        this.lazyLoad()
+        this.lazyLoad1()
+    },
+
     created() {
         console.log(this.$route)
         this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
@@ -368,25 +376,26 @@ export default {
         handleSelect(val) {
             console.log(val)
         },
-        handleClick(val) {
-            console.log(val)
-        },
+
         // 获取表格数据
         getTableData() {
             const params = {
                 datasourceId: this.obj.jdbcDatasourceId,
-                tableName: this.obj.tableName
+                tableName: this.obj.tableName,
+                pageSize: this.pageSize,
+                pageNumber: this.pageNumber
             }
             explore.getTableData(params).then(res => {
                 const arr = []
                 console.log(res)
+                this.total = res.total
                 let obj = {}
                 let newObj = {}
-                for (let i = 0; i < res.length; i++) {
+                for (let i = 0; i < res.datas.length; i++) {
                     obj = {}
-                    for (let j = 0; j < res[i].length; j++) {
-                        obj = Object.assign(obj, res[i][j])
-                        if (j === res[i].length - 1) {
+                    for (let j = 0; j < res.datas[i].length; j++) {
+                        obj = Object.assign(obj, res.datas[i][j])
+                        if (j === res.datas[i].length - 1) {
                             newObj = obj
                         }
                     }
@@ -394,11 +403,59 @@ export default {
                 }
                 console.log(obj)
                 console.log(arr, '______')
-                this.tableData = arr
+                this.tableData.push(...arr)
                 this.loading = false
             }).catch(err => {
                 console.log(err)
             })
+        },
+        lazyLoad() {
+            console.log('监听表格dom对象的滚动事件')
+            const that = this
+            const dom = that.$refs.myTable.bodyWrapper
+            dom.addEventListener('scroll', function () {
+                const scrollDistance = dom.scrollHeight - dom.scrollTop - dom.clientHeight;
+                console.log('scroll', scrollDistance)
+                if (scrollDistance <= 0) { // 等于0证明已经到底，可以请求接口
+                    if (that.pageNumber < Math.ceil(that.total / that.pageNumber)) { // 当前页数小于总页数就请求
+                        that.pageNumber++; // 当前页数自增
+                        // 请求接口的代码
+                        that.getTableData()
+                    }
+                }
+            })
+        },
+        lazyLoad1() {
+            console.log('监听表格dom对象的滚动事件')
+            const that = this
+            const dom1 = that.$refs.myTable1.bodyWrapper
+            dom1.addEventListener('scroll', function () {
+                const scrollDistance = dom1.scrollHeight - dom1.scrollTop - dom1.clientHeight;
+                console.log('scroll1', scrollDistance)
+                if (scrollDistance <= 0) { // 等于0证明已经到底，可以请求接口
+                    if (that.pageNumber < Math.ceil(that.total / that.pageNumber)) { // 当前页数小于总页数就请求
+                        that.pageNumber++; // 当前页数自增
+                        // 请求接口的代码
+                        that.getTableData()
+                    }
+                }
+            })
+        },
+        handleClick(val) {
+            console.log(val)
+            if (val.label === 'Data') {
+                this.tableData = []
+                this.total = ''
+                this.pageNumber = 1
+                this.pageSize = 10
+                this.getTableData()
+            } else if (val.label === 'Detail') {
+                this.tableData = []
+                this.total = ''
+                this.pageNumber = 1
+                this.pageSize = 10
+                this.getTableData()
+            }
         },
         // 获取其他表格数据
         getOtherData() {
@@ -471,7 +528,7 @@ export default {
 
         .charts {
             width: 100%;
-            height: 600px;
+            // height: 600px;
             overflow: hidden;
             position: relative;
             margin-top: 20px;
