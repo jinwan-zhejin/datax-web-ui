@@ -278,7 +278,7 @@ export default {
       List: [],
       listQuery: {
         pageNo: 1,
-        pageSize: 100,
+        pageSize: 1000,
         searchVal: ''
       },
       jobType: 'SHOWDETAIL',
@@ -506,7 +506,7 @@ export default {
         this.$store.commit('SET_PROJECT_ID', this.options[0].id)
         const listQuery = {
           current: 1,
-          size: 10,
+          size: 10000,
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
@@ -576,6 +576,8 @@ export default {
   .lt {
     width: 280px;
     min-height: 660px;
+    max-height: 700px;
+    overflow: scroll;
     padding: 10px;
     background: #F0F0F2;
     .top {
@@ -657,7 +659,8 @@ export default {
   background: rgb(240, 240, 242);
 }
 .el-bar-tab >>> .el-tabs__content {
-  min-height: 660px;
+  height: 660px;
+  overflow: scroll;
 }
 .el-bar-tab  {
   border: 0;
