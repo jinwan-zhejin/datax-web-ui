@@ -22,11 +22,11 @@
                 <!-- 表格 -->
                 <template>
                   <el-table
+                    ref="myTable"
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
-                    lazy
-                    :loading="lazyLoad"
+                    height="600px"
                     style="width: 100%"
                   >
                     <el-table-column
@@ -81,6 +81,7 @@
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
+                    height="600px"
                     style="width: 100%"
                   >
                     <el-table-column
@@ -182,19 +183,19 @@
                             <i>最常用</i>
                             <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
                             <!-- <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i> -->
-                            <el-tooltip class="item" effect="dark" :content="item.indicator.unique && item.indicator.mostCommon.value" placement="top-end">
+                            <el-tooltip class="item" effect="dark" :content="(item.indicator.unique && item.indicator.mostCommon.value) + ''" placement="top-end">
                               <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
                             </el-tooltip>
                           </p>
                           <p v-if="item.type === 'number'">
                             <i>最大值</i>
-                            <el-tooltip class="item" effect="dark" :content="item.indicator.maximum && item.indicator.maximum.value" placement="top-end">
+                            <el-tooltip class="item" effect="dark" :content="(item.indicator.maximum && item.indicator.maximum.value) + ''" placement="top-end">
                               <i class="m_t">{{ item.indicator.maximum && item.indicator.maximum.value }}</i>
                             </el-tooltip>
                           </p>
                           <p v-if="item.type === 'number'">
                             <i>最小值</i>
-                            <el-tooltip class="item" effect="dark" :content="item.indicator.minimum && item.indicator.minimum.value" placement="top-end">
+                            <el-tooltip class="item" effect="dark" :content="(item.indicator.minimum && item.indicator.minimum.value) + ''" placement="top-end">
                               <i class="m_t">{{ item.indicator.minimum && item.indicator.minimum.value }}</i>
                             </el-tooltip>
                           </p>
@@ -260,6 +261,9 @@ export default {
       },
       userName: '',
       activeIndex: '1',
+      pageSize: 10,
+      pageNumber: 1,
+      total: '',
       polar: {
         color: ['#3398DB'],
         tooltip: {
@@ -407,10 +411,25 @@ export default {
     this.getTableData()
     this.getOtherData()
   },
+  mounted() {
+    this.lazyLoad()
+  },
   methods: {
-    lazyLoad1() {
+    lazyLoad() {
       console.log('监听表格dom对象的滚动事件')
       const that = this
+      const dom = that.$refs.myTable.bodyWrapper
+      dom.addEventListener('scroll', function() {
+        const scrollDistance = dom.scrollHeight - dom.scrollTop - dom.clientHeight;
+        console.log('scroll', scrollDistance)
+        if (scrollDistance <= 0) { // 等于0证明已经到底，可以请求接口
+          if (that.pageNumber < Math.ceil(that.total / that.pageNumber)) { // 当前页数小于总页数就请求
+            that.pageNumber++;// 当前页数自增
+            // 请求接口的代码
+            that.getTableData()
+          }
+        }
+      })
     },
     indexMethod(index) {
       return index
@@ -425,18 +444,21 @@ export default {
     getTableData() {
       const params = {
         datasourceId: this.obj.jdbcDatasourceId,
-        tableName: this.obj.tableName
+        tableName: this.obj.tableName,
+        pageSize: this.pageSize,
+        pageNumber: this.pageNumber
       }
       explore.getTableData(params).then(res => {
         const arr = []
         console.log(res)
+        this.total = res.total
         let obj = {}
         let newObj = {}
-        for (let i = 0; i < res.length; i++) {
+        for (let i = 0; i < res.datas.length; i++) {
           obj = {}
-          for (let j = 0; j < res[i].length; j++) {
-            obj = Object.assign(obj, res[i][j])
-            if (j === res[i].length - 1) {
+          for (let j = 0; j < res.datas[i].length; j++) {
+            obj = Object.assign(obj, res.datas[i][j])
+            if (j === res.datas[i].length - 1) {
               newObj = obj
             }
           }
@@ -444,7 +466,7 @@ export default {
         }
         console.log(obj)
         console.log(arr, '______')
-        this.tableData = arr
+        this.tableData.push(...arr)
         this.loading = false
       }).catch(err => {
         console.log(err)
@@ -457,7 +479,7 @@ export default {
         tableName: this.obj.tableName
       }
       explore.getTwoData(params).then(res => {
-        console.log(res)
+        console.log(res, 'content1111')
         this.tableData1 = res
         this.loading1 = false
         // this.polar.series[0].data = []
@@ -516,7 +538,7 @@ export default {
     }
     .charts {
       width: 100%;
-      height: 600px;
+      height: 100%;
       overflow: hidden;
       position: relative;
       margin-top: 20px;
@@ -547,7 +569,6 @@ export default {
         width: 100%;
         float: right;
         height: 100%;
-        overflow-y: auto;
         .choose {
           border-radius: 5px;
           height: 100%;

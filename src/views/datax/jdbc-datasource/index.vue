@@ -483,7 +483,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="MySQLForm.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -536,7 +535,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="GPForm.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -593,7 +591,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="HiveForm.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -681,7 +678,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="OracleForm.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -724,7 +720,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="DB2Form.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -770,7 +765,6 @@
             </el-form-item>
             <el-form-item label="密码:">
               <el-input v-model="CHForm.password" type="password" />
-              <el-checkbox v-model="checked">在本地保存密码</el-checkbox>
             </el-form-item>
           </el-form>
         </div>
@@ -1773,12 +1767,7 @@ export default {
         const { records } = response;
         const { total } = response;
         this.total = total;
-        const bdsource = ['hive', 'impala', 'spark', 'flink'];
-        this.list = records.filter(function(e) {
-          if (!bdsource.includes(e.datasource)) {
-            return true;
-          }
-        });
+        this.list = records;
         this.listLoading = false;
       });
     },
@@ -1916,7 +1905,7 @@ export default {
         li {
           list-style: none;
           float: left;
-          width: 12.5%;
+          width: 20%;
           a {
             text-align: center;
             img {
@@ -1960,7 +1949,8 @@ export default {
     }
     .bgcForm {
       background-color: #f5f6fa;
-      padding: 24px 16px;
+      padding: 16px 16px;
+      padding-bottom: 0px;
       overflow: hidden;
     }
   }
