@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 18:45:25
+ * @LastEditTime: 2020-10-29 17:11:17
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -11,7 +11,7 @@
     <el-row>
       <el-col :span="24">
         <div class="searchBar">
-          <el-input v-model="searchEntityName" size="medium" prefix-icon="el-icon-search" placeholder="查找实体" clearable>
+          <el-input v-model="searchEntityName" size="medium" prefix-icon="el-icon-search" placeholder="搜索实体" clearable>
             <i slot="suffix" class="el-input__icon el-icon-caret-bottom" style="cursor: pointer;" @click="showSearchCardFun" />
           </el-input>
         </div>
