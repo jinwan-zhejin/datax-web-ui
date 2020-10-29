@@ -11,6 +11,7 @@ export function handlerExecute(row) {
     const param = {};
     param.jobId = row.id;
     param.executorParam = row.executorParam;
+    
     job.triggerJob(param).then(response => {
       this.$notify({
         title: "成功",
