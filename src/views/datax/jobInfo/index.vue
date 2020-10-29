@@ -143,7 +143,7 @@
         </div>
       </div>
     </div>
-    <div class="rg">
+    <div class="rg rt">
       <el-tabs
         v-model="jobDetailIdx"
         type="border-card"
@@ -632,6 +632,10 @@ export default {
         // padding: 10px;
       }
     }
+  }
+
+  .rt {
+    overflow-x: scroll;
   }
 
   .input_serach >.el-input__prefix > .el-input__icon {
