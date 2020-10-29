@@ -634,4 +634,8 @@ export default {
 .el-bar-tab >>> .el-tabs__content {
   min-height: 660px;
 }
+.el-bar-tab  {
+  border: 0;
+  box-shadow: 0 0 ;
+}
 </style>
