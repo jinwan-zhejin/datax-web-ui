@@ -291,7 +291,7 @@
       </span>
     </el-dialog>
     <!-- UI添加对话框 -->
-    <el-dialog :visible.sync="dialogVisible" width="70%" top="51px">
+    <el-dialog :visible.sync="dialogVisible" width="50%" top="51px">
       <div slot="title" class="add_dialog_title">
         <span v-show="currentStep === 2">{{ sqlName }}连接设置</span>
         <span v-show="currentStep === 1">选择新连接类型</span>
@@ -1975,12 +1975,12 @@ export default {
       }
     }
     .el-dialog__body {
-      padding: 10px 20px;
+      padding: 10px 40px;
       .bgcForm {
         .el-form {
           overflow: hidden;
           border-radius: 6px;
-          width: 60%;
+          width: 70%;
           margin: 0px auto;
         }
       }
@@ -1988,7 +1988,7 @@ export default {
         .el-form {
           overflow: hidden;
           border-radius: 6px;
-          width: 60%;
+          width: 70%;
           margin: 0px auto;
         }
       }
