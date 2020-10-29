@@ -113,8 +113,8 @@
                 :key="item.id"
                 @click="getJobDetail(item)"
               >
-                <i class="el-icon-date" style="color:rgb(144,206,100);" />
-                <i class="el-icon-tickets" style="color: rgba(102, 102, 102, 1)" />
+                <!-- <i class="el-icon-date" style="color:rgb(144,206,100);" /> -->
+                <img class="task_icon" src="./taskAdmin_png/normal.png">
                 <a
                   style="color: rgba(102, 102, 102, 1)"
                 >{{ item.jobDesc }}
@@ -551,13 +551,13 @@ export default {
 <style lang="scss">
 .Management {
   display: flex;
-  min-height: 600px;
+  min-height: 660px;
   margin: 24px;
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   .lt {
     width: 280px;
-    min-height: 600px;
+    min-height: 660px;
     padding: 10px;
     background: #F0F0F2;
     .top {
@@ -632,6 +632,6 @@ export default {
   background: rgb(240, 240, 242);
 }
 .el-bar-tab >>> .el-tabs__content {
-  min-height: 600px;
+  min-height: 660px;
 }
 </style>
