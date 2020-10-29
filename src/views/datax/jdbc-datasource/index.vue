@@ -37,13 +37,13 @@
         <!-- <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index }}</template>
         </el-table-column> -->
-        <el-table-column label="数据源" width="100" align="center">
+        <el-table-column label="数据源" width="100" align="left">
           <template slot-scope="scope">{{ scope.row.datasource === 'phoenix' ? 'hbase' : scope.row.datasource }}</template>
         </el-table-column>
-        <el-table-column label="数据源名称" width="120" align="center">
+        <el-table-column label="数据源名称" width="120" align="left">
           <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
         </el-table-column>
-        <el-table-column label="数据源分组" width="140" align="center">
+        <el-table-column label="数据源分组" width="140" align="left">
           <template
             slot-scope="scope"
           >{{ scope.row.datasourceGroup }}
@@ -52,34 +52,34 @@
         <el-table-column
           label="jdbc连接串"
           width="200"
-          align="center"
+          align="left"
           :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">{{
             scope.row.jdbcUrl ? scope.row.jdbcUrl : "-"
           }}</template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="ZK地址"
           width="190"
-          align="center"
+          align="left"
           :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">{{
             scope.row.zkAdress ? scope.row.zkAdress : "-"
           }}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="数据库名"
-          width="120"
-          align="center"
+          width="150"
+          align="left"
           :show-overflow-tooltip="true"
         >-->
           <template slot-scope="scope">{{
             scope.row.database ? scope.row.database : "-"
           }}</template>-->
         </el-table-column>
-        <el-table-column label="备注" width="120" align="center">
+        <el-table-column label="备注" width="230" align="left">
           <template slot-scope="scope">{{ scope.row.comments }}</template>
         </el-table-column>
         <el-table-column
@@ -103,7 +103,7 @@
             />
             <a
               style="color: #fe4646; margin: 0px 6px"
-              @click="handleDelete(row)"
+              @click="open(row)"
             >删除</a>
             <span
               style="
@@ -1562,7 +1562,7 @@ export default {
         obj.jdbcPassword = this.DB2Form.password;
         obj.datasourceGroup = this.DB2Form.datasourceGroup;
         obj.comments = this.DB2Form.comments;
-        obj.jdbcDriverClass = '';
+        obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
       } else if (this.sqlName === 'Hive') {
         obj.datasourceName = this.HiveForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
@@ -1668,6 +1668,15 @@ export default {
         obj1.datasourceGroup = this.HiveForm.datasourceGroup;
         obj1.comments = this.HiveForm.comments;
         obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+      } else if (this.sqlName === 'DB2') {
+        obj1.datasourceName = this.DB2Form.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
+        obj1.jdbcUsername = this.DB2Form.username;
+        obj1.jdbcPassword = this.DB2Form.password;
+        obj1.datasourceGroup = this.DB2Form.datasourceGroup;
+        obj1.comments = this.DB2Form.comments;
+        obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
       }
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
@@ -1743,6 +1752,20 @@ export default {
           });
         }
       });
+    },
+    open(row) {
+      this.$confirm('您确定删除此条数据源?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     fetchData() {
       this.listLoading = true;

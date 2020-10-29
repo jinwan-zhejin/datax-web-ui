@@ -50,23 +50,23 @@
         highlight-current-row
       >
         <el-table-column align="center" label="序号" width="95">
-          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+          <template slot-scope="scope"><span>{{ scope.$index + 1 }}</span></template>
         </el-table-column>
-        <el-table-column label="项目名称" align="center">
+        <el-table-column label="项目名称" align="left">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="项目描述" align="center">
+        <el-table-column label="项目描述" align="left">
           <template slot-scope="scope">{{ scope.row.description }}</template>
         </el-table-column>
-        <el-table-column label="所属用户" width="200" align="center">
+        <el-table-column label="所属用户" width="200" align="left">
           <template slot-scope="scope">{{ scope.row.userName }} </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="200" align="center">
+        <el-table-column label="创建时间" width="200" align="left">
           <template slot-scope="scope">{{ scope.row.createTime }}</template>
         </el-table-column>
         <el-table-column
           label="操作"
-          align="center"
+          align="left"
           width="230"
           class-name="small-padding fixed-width"
         >
@@ -117,20 +117,20 @@
         :rules="rules"
         :model="temp"
         label-position="right"
-        label-width="128px"
+        label-width="100px"
       >
         <el-form-item label="项目名称" prop="name">
           <el-input
             v-model="temp.name"
             placeholder="项目名称"
-            style="width: 256px"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="项目描述" prop="description">
           <el-input
             v-model="temp.description"
             placeholder="项目描述"
-            style="width: 256px"
+            style="width: 100%"
           />
         </el-form-item>
       </el-form>
@@ -345,13 +345,18 @@ export default {
         jobProjectApi.deleted({ idList: row.id }).then((response) => {
           this.fetchData();
           this.$notify({
-            title: 'Success',
-            message: 'Delete Successfully',
+            title: '成功',
+            message: '删除成功',
             type: 'success',
             duration: 2000
-          });
-        });
-      });
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      })
     }
   }
 };
@@ -491,7 +496,7 @@ export default {
       .el-form {
         overflow: hidden;
         border-radius: 6px;
-        padding-right: 50px;
+        padding-right: 25px;
       }
     }
     .el-dialog__footer {
