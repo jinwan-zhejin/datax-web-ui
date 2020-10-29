@@ -17,7 +17,7 @@
         <div class="right">
           <!-- 选项卡 -->
           <div class="choose">
-            <el-tabs v-model="activeName" type="card">
+            <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
               <el-tab-pane label="详情" name="first">
                 <!-- 表格 -->
                 <template>
@@ -78,6 +78,7 @@
                 <!-- 表格 -->
                 <template>
                   <el-table
+                    ref="myTable1"
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
@@ -413,6 +414,7 @@ export default {
   },
   mounted() {
     this.lazyLoad()
+    this.lazyLoad1()
   },
   methods: {
     lazyLoad() {
@@ -431,6 +433,22 @@ export default {
         }
       })
     },
+    lazyLoad1() {
+      console.log('监听表格dom对象的滚动事件')
+      const that = this
+      const dom1 = that.$refs.myTable1.bodyWrapper
+      dom1.addEventListener('scroll', function() {
+        const scrollDistance = dom1.scrollHeight - dom1.scrollTop - dom1.clientHeight;
+        console.log('scroll1', scrollDistance)
+        if (scrollDistance <= 0) { // 等于0证明已经到底，可以请求接口
+          if (that.pageNumber < Math.ceil(that.total / that.pageNumber)) { // 当前页数小于总页数就请求
+            that.pageNumber++;// 当前页数自增
+            // 请求接口的代码
+            that.getTableData()
+          }
+        }
+      })
+    },
     indexMethod(index) {
       return index
     },
@@ -439,6 +457,19 @@ export default {
     },
     handleClick(val) {
       console.log(val)
+      if (val.label === '数据') {
+        this.tableData = []
+        this.total = ''
+        this.pageNumber = 1
+        this.pageSize = 10
+        this.getTableData()
+      } else if (val.label === '详情') {
+        this.tableData = []
+        this.total = ''
+        this.pageNumber = 1
+        this.pageSize = 10
+        this.getTableData()
+      }
     },
     // 获取表格数据
     getTableData() {
