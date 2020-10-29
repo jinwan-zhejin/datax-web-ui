@@ -631,4 +631,7 @@ export default {
 .el-bar-tab >>>  .el-tabs__nav-scroll {
   background: rgb(240, 240, 242);
 }
+.el-bar-tab >>> .el-tabs__content {
+  min-height: 600px;
+}
 </style>
