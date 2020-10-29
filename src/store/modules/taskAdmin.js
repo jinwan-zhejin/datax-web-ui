@@ -39,7 +39,28 @@ const state = {
 
     taskDetailList:[],//任务详情列表
 
-    taskDetailID:''//当前选中任务详情id
+    taskDetailID:'',//当前选中任务详情id
+    
+    imgurl: { //图片地址
+        'NORMAL': './taskAdmin_png/normal.png',
+        'IMPORT': './taskAdmin_png/import.png',
+        'EXPORT': './taskAdmin_png/export.png',
+        'SQLJOB': './taskAdmin_png/computed.png',
+        'SPARK': './taskAdmin_png/sql.png',
+        'DQCJOB': './taskAdmin_png/spark.png',
+        'METACOLLECT': './taskAdmin_png/质量.png',
+        'METACOMPARE': './taskAdmin_png/元数据采集.png',
+        'SHELL': './taskAdmin_png/元数据比较.png',
+        'POWERSHELL': './taskAdmin_png/shell.png',
+        'PYTHON': './taskAdmin_png/python.png',
+        'VJOB': './taskAdmin_png/虚.png',
+        'JAVA': './taskAdmin_png/java.png',
+        'SCALA': './taskAdmin_png/scala.png',
+        'PYSPARK': './taskAdmin_png/pyspark.png',
+        'R': './taskAdmin_png/R.png',
+        'BATCH': './taskAdmin_png/任务批量构建.png',
+        'TEMPLATE': './taskAdmin_png/普通任务模板.png'
+    }
 
   }
   
