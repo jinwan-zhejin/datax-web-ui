@@ -260,9 +260,14 @@ export default {
   methods: {
     // 添加行
     addRow() {
+      this.tableData1.push({
+        columnName: "",
+        ruleId: [],
+        status: 1,
+      });
       this.tableData1.map((item) => {
         if (item.status) {
-          console.log(this.readerForm);
+          console.log('this.readerForm',this.readerForm);
           item.columnName = this.readerForm.columnName;
           for (let i = 0; i < this.nameList.length; i++) {
             for (let j = 0; j < this.readerForm.rule.length; j++) {
@@ -275,17 +280,10 @@ export default {
             }
           }
           this.readerForm.columnName = "";
-          console.log(item.ruleId);
           item.status = 0;
         }
         return item;
       });
-      this.tableData1.push({
-        columnName: "",
-        ruleId: [],
-        status: 1,
-      });
-      console.log(this.tableData1);
     },
     // 编辑行
     editRow(row) {
@@ -307,8 +305,6 @@ export default {
       console.log(row.row);
       const index = this.tableData1.indexOf(row.row);
       this.tableData1.splice(index, 1);
-      console.log(this.tableData1);
-      console.log(this.readerForm);
       this.readerForm.rule = this.tableData1;
     },
     // 获取可用数据源
