@@ -932,6 +932,10 @@ export default {
         
         let newestLog = content.data[0] || {};
         console.log('+++',content,newestLog);
+        if(!newestLog?.executorAddress){
+          this.logList()
+          return;
+        }
         status = newestLog.handleCode;
         const triggerTime = Date.parse(newestLog?.triggerTime)
         log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)

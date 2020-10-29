@@ -132,6 +132,7 @@
         closable
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
+        class="el-bar-tab"
       >
         <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
           欢迎
@@ -550,13 +551,13 @@ export default {
 <style lang="scss">
 .Management {
   display: flex;
-  min-height: 700px;
+  min-height: 600px;
   margin: 24px;
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   .lt {
     width: 280px;
-    min-height: 700px;
+    min-height: 600px;
     padding: 10px;
     background: #F0F0F2;
     .top {
@@ -624,4 +625,10 @@ export default {
     margin-top: 10px;
     margin-right: 8px;
   }
+</style>
+
+<style scoped>
+.el-bar-tab >>>  .el-tabs__nav-scroll {
+  background: rgb(240, 240, 242);
+}
 </style>
