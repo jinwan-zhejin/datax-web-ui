@@ -260,11 +260,7 @@ export default {
   methods: {
     // 添加行
     addRow() {
-      this.tableData1.push({
-        columnName: "",
-        ruleId: [],
-        status: 1,
-      });
+      
       this.tableData1.map((item) => {
         if (item.status) {
           console.log('this.readerForm',this.readerForm);
@@ -283,6 +279,12 @@ export default {
           item.status = 0;
         }
         return item;
+      });
+
+      this.tableData1.push({
+        columnName: "",
+        ruleId: [],
+        status: 1,
       });
     },
     // 编辑行
