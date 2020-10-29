@@ -109,10 +109,19 @@
                                                         {{ item.statistics }}
                                                     </p>
                                                     <p class="v_p2">
-                                                        唯一值
+                                                        Unique Value
+                                                    </p>
+                                                </div>
+                                                <div v-show="item.type === 'date'" class="value">
+                                                    <p class="v_p1">
+                                                        {{ item.statistics }}
+                                                    </p>
+                                                    <p class="v_p2">
+                                                        Last Modified Date
                                                     </p>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                     <div class="rg">
