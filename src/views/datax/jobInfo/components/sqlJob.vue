@@ -467,7 +467,7 @@ export default {
       this.listLoading = false;
 
       const firstElement = content?.data[0] || {};
-          const a = {};
+      const a = {};
           
       a.title = firstElement.jobDesc;
       a.name = firstElement.jobDesc;
@@ -530,7 +530,6 @@ export default {
               }
 
               this.temp.jobType = this.$store.state.taskAdmin.tabType;
-              
               job.createJob(this.temp).then((res) => {
                 this.fetchData()
                 this.$store.commit('SET_TAB_TYPE', '');

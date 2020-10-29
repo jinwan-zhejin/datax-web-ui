@@ -36,8 +36,8 @@ export function handlerDelete(row) {
   }).then(() => {
     job.removeJob(row.id).then(response => {
       this.$notify({
-        title: "Success",
-        message: "Delete Successfully",
+        title: "成功",
+        message: "删除成功",
         type: "success",
         duration: 2000
       });

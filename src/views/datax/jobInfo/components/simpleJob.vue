@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose"> -->
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -59,24 +58,16 @@
               </el-select>
             </el-form-item>
           </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="失败重试次数">
-              <el-input-number v-model="temp.executorFailRetryCount" :min="0" :max="20" />
-            </el-form-item>
-          </el-col>
         </el-row>
+        <el-col :span="12">
+          <el-form-item label="失败重试次数">
+            <el-input-number size="small" v-model="temp.executorFailRetryCount" :min="0" :max="20" />
+          </el-form-item>
+        </el-col>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="所属项目" prop="projectId">
-              <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
-                <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="超时时间(分钟)">
-              <el-input-number v-model="temp.executorTimeout" :min="0" :max="120" />
+              <el-input-number size="small" v-model="temp.executorTimeout" :min="0" :max="120" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -175,7 +166,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-input-number v-model="timeOffset" :min="-20" :max="0" style="width: 65%" />
+            <el-input-number size="samll" v-model="timeOffset" :min="-20" :max="0" style="width: 65%" />
           </el-col>
         </el-row>
         <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
@@ -195,11 +186,9 @@
           取消
         </el-button>
         <el-button type="primary" @click="createData()">
-        <!-- <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()"> -->
           确定
         </el-button>
       </div>
-    <!-- </el-dialog> -->
   </div>
 </template>
 
@@ -246,6 +235,7 @@ export default {
       callback()
     }
     return {
+      firstTime: true,
       projectIds: '',
       list: null,
       listLoading: true,
@@ -428,15 +418,29 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      if (this.projectIds) {
-        this.listQuery.projectIds = this.projectIds.toString()
-      }
+      
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
+
 
       job.getList(this.listQuery).then(response => {
         const { content } = response
         this.total = content.recordsTotal
         this.list = content.data
         this.listLoading = false
+
+        const firstElement = content?.data[0] || {};
+        const a = {};
+            
+        a.title = firstElement.jobDesc;
+        a.name = firstElement.jobDesc;
+        a.content = firstElement;
+        if (!this.firstTime) {
+          this.$store.commit('ADD_TASKDETAIL',a)
+        } else {
+          this.firstTime = false;
+        }
+
+        this.$store.commit('SET_TASKLIST', this.list)
       })
     },
     incStartTimeFormat(vData) {
@@ -459,6 +463,7 @@ export default {
         })
         return
       }
+
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
@@ -472,8 +477,15 @@ export default {
           this.temp.glueSource = this.glueSource
           this.temp.executorHandler = this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
           if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
-          job.createJob(this.temp).then(() => {
+
+          this.temp.projectId = this.$store.state.taskAdmin.projectId
+          this.temp.jobType = this.$store.state.taskAdmin.tabType;
+
+          job.createJob(this.temp).then((res) => {
             this.fetchData()
+            this.$store.commit('SET_TAB_TYPE', '');
+            this.$store.commit('SET_TASKDETAIL_ID', res.content);
+
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -551,8 +563,8 @@ export default {
             this.fetchData()
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '添加成功',
               type: 'success',
               duration: 2000
             })
@@ -642,12 +654,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
   }
   .el-dropdown + .el-dropdown {
     margin-left: 15px;
+  }
+  .dialog-footer {
+    text-align: right;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(243, 243, 243, 1);
   }
 </style>

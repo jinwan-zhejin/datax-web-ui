@@ -106,7 +106,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="阻塞处理" prop="executorBlockStrategy">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="阻塞处理" prop="executorBlockStrategy">
             <el-select
               v-model="temp.executorBlockStrategy"
               placeholder="请选择阻塞处理策略"
@@ -131,7 +131,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="执行器" prop="jobGroup">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="执行器" prop="jobGroup">
             <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
               <el-option
                 v-for="item in executorList"
@@ -156,34 +156,19 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="所属项目" prop="projectId">
-            <el-select
-              v-model="temp.projectId"
-              placeholder="所属项目"
-              class="filter-item"
-            >
-              <el-option
-                v-for="item in jobProjectList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="超时时间(分钟)">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL'  || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="超时时间(分钟)">
             <el-input-number
               v-model="temp.executorTimeout"
               :min="0"
               :max="120"
+              size="small"
             />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="路由策略" prop="executorRouteStrategy">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="路由策略" prop="executorRouteStrategy">
             <el-select
               v-model="temp.executorRouteStrategy"
               placeholder="请选择路由策略"
@@ -286,7 +271,7 @@
       <el-row>
       <el-col :span="8">
           <el-form-item v-if="jobType === 'SQLJOB'" label="schema：" prop="schema">
-            <el-select v-model="temp.dataSourceId" placeholder="请选择schema">
+            <el-select v-model="temp.schema" placeholder="请选择schema">
               <el-option
                 v-for="item in schemaList"
                 :key="item"
@@ -966,7 +951,7 @@ export default {
     //schema列表
     async getSchemaList() {
       let schemaList = await getTableSchema({
-        datasourceId: this.temp.dataSourceId,
+        datasourceId: this.temp.datasourceId,
       });
       this.schemaList = schemaList;
     },
@@ -1063,8 +1048,8 @@ export default {
             }
             this.temp.childJobId = auth.toString();
           }
-          this.temp.executorHandler =
-            this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
+          // this.temp.executorHandler =
+          //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
           this.temp.glueSource = this.glueSource;
           if (this.partitionField)
             this.temp.partitionInfo =
