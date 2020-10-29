@@ -447,7 +447,7 @@
       </div>
       <!-- MariaDB MYSQL连接设置表单 -->
       <div v-show="mm" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="MySQLForm" label-width="100px">
             <el-form-item label="数据源名称:">
@@ -499,7 +499,7 @@
       </div>
       <!-- Greenplum PostqreSQL连接设置表单 -->
       <div v-show="gp" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="GPForm" label-width="100px" class="bgcForm">
             <el-form-item label="数据源名称:">
@@ -552,7 +552,7 @@
       </div>
       <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
       <div v-show="threeSQL" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="HiveForm" label-width="100px">
             <el-form-item label="数据源名称:">
@@ -597,7 +597,7 @@
       </div>
       <!-- oracle连接设置表单 -->
       <div v-show="oracle" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="OracleForm" label-width="100px">
             <el-form-item label="数据源名称:">
@@ -684,7 +684,7 @@
       </div>
       <!-- DB2 LUW 连接设置表单 -->
       <div v-show="DB2" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="DB2Form" label-width="100px">
             <el-form-item label="数据源名称:">
@@ -726,7 +726,7 @@
       </div>
       <!-- ClickHouse HBase 连接设置表单 -->
       <div v-show="ch" class="set">
-        <p>基本信息</p>
+        <p style="margin-top:0px;">基本信息</p>
         <div class="bgcForm">
           <el-form :model="CHForm" label-width="100px">
             <el-form-item label="数据源名称:">
@@ -1949,7 +1949,7 @@ export default {
     }
     .bgcForm {
       background-color: #f5f6fa;
-      padding: 16px 16px;
+      padding: 10px 16px;
       padding-bottom: 0px;
       overflow: hidden;
     }
@@ -1972,6 +1972,9 @@ export default {
           border-radius: 6px;
           width: 70%;
           margin: 0px auto;
+          .el-form-item {
+            margin-bottom: 10px;
+          }
         }
       }
       .sqlserForm {
