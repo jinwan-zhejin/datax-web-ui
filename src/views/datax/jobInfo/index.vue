@@ -270,7 +270,6 @@ export default {
           name: '1'
         }
       ],
-      // $store.state.taskAdmin.taskDetailList: [],
       tabIndex: 1,
       options: '',
       selectValue: '',
