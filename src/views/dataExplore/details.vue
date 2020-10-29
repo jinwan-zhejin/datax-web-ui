@@ -147,7 +147,9 @@
                                                 <p>
                                                     <i>Most Common</i>
                                                     <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
-                                                    <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
+                                                    <el-tooltip class="item" effect="dark" :content="item.indicator.unique && item.indicator.mostCommon.value" placement="top-end">
+                                                        <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
+                                                    </el-tooltip>
                                                 </p>
                                                 <p v-if="item.type === 'number'">
                                                     <i>Maximum</i>
@@ -701,7 +703,7 @@ export default {
                                                     }
 
                                                     .m_t {
-                                                        width: 50px;
+                                                        width: 70px;
                                                         position: absolute;
                                                         right: 20%;
                                                         overflow: hidden;
@@ -710,7 +712,7 @@ export default {
                                                     }
 
                                                     .m_r_t {
-                                                        width: 50px;
+                                                        width: 70px;
                                                         overflow: hidden;
                                                         text-overflow: ellipsis; //超出部分以省略号显示
                                                         white-space: nowrap;
