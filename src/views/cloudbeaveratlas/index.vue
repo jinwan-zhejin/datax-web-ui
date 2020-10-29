@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 17:12:28
+ * @LastEditTime: 2020-10-29 19:04:25
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -1093,6 +1093,7 @@ export default {
   margin: 24px 24px 35px 24px;
   height: calc(100vh - 109px);
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   .el-container {
     .el-aside {
       border-top-left-radius: 8px;
@@ -1296,8 +1297,9 @@ export default {
   background: rgba(209, 209, 209, 0.1);
 }
 
-::v-deep .el-button--primary {
+::v-deep .el-button--primary.is-plain {
   background: white;
+  color: #3D5FFF;
   border-radius: 4px;
 }
 ::v-deep .el-button--success {

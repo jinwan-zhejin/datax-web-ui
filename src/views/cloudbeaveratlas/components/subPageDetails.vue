@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 17:40:42
+ * @LastEditTime: 2020-10-29 19:22:46
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -122,7 +122,7 @@
                   <el-switch v-if="graphTable" v-model="showEmptyRelationships" active-text="显示空值" inactive-text="不显示空值" />
                 </el-col>
               </el-row>
-              <el-table v-if="graphTable" :data="relationshipShow">
+              <el-table v-if="graphTable" :data="relationshipShow" class="tableStyle" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
                 <el-table-column label="键" prop="key" />
                 <el-table-column label="值" prop="value" />
               </el-table>
@@ -136,21 +136,32 @@
                   :value="item.value"
                 />
               </el-select>
-              <el-table :data="classifications">
-                <el-table-column label="分类" prop="value" sortable />
-                <el-table-column label="属性" prop="">
-                  <template v-slot:default="{ }">
-                    N/A
+              <el-table :data="classifications" class="tableStyle" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
+                <el-table-column label="分类" prop="typeName" sortable />
+                <el-table-column label="属性">
+                  <template v-slot:default="{ row }">
+                    {{ row.hasOwnProperty('attributes') ? '' : 'N/A' }}
+                    <el-row v-if="row.hasOwnProperty('attributes')" style="border: 1px solid #dfe6ec">
+                      <el-col>
+                        <el-col style="border: 1px solid #dfe6ec; padding: 0 5px;" :span="12">属性名</el-col>
+                        <el-col style="border: 1px solid #dfe6ec; padding: 0 5px;" :span="12">值</el-col>
+                      </el-col>
+                      <el-col v-for="(val,key,i) in row.attributes" :key="i">
+                        <el-col style="border: 1px solid #dfe6ec; padding: 0 5px;" :span="12">{{ key }}</el-col>
+                        <el-col style="border: 1px solid #dfe6ec; padding: 0 5px;" :span="12">{{ val === null ? '-' : val }}</el-col>
+                      </el-col>
+                    </el-row>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
                   <template v-slot:default="{ row }">
                     <el-tooltip content="删除" placement="bottom">
-                      <el-button type="primary" plain size="mini" icon="el-icon-delete" @click="test(row)" />
+                      <el-button type="primary" plain size="mini" icon="el-icon-delete" @click="openDeleteClassification(row)" />
                     </el-tooltip>
-                    <el-tooltip content="编辑" placement="bottom">
+                    <!-- 待完成 -->
+                    <!-- <el-tooltip content="编辑" placement="bottom">
                       <el-button type="primary" plain size="mini" icon="el-icon-edit" @click="test(row)" />
-                    </el-tooltip>
+                    </el-tooltip> -->
                   </template>
                 </el-table-column>
               </el-table>
@@ -166,7 +177,7 @@
               /> -->
             </el-tab-pane>
             <el-tab-pane label="审计" name="audits">
-              <el-table :data="audits">
+              <el-table :data="audits" class="tableStyle" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
                 <el-table-column type="expand">
                   <template slot-scope="props">
                     <el-form label-position="left" inline>
@@ -310,6 +321,21 @@
         </el-col>
       </el-row>
     </div>
+    <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
+      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          plain
+          @click="deleteClassificationFlag = false"
+        >取消</el-button>
+        <el-button
+          v-loading="isLoading"
+          type="primary"
+          @click="handledeleteClassification"
+        >提交</el-button>
+      </div>
+    </el-dialog>
     <AddClassification :add-classification-show="addClassificationShow" :classification-info="properties.entity" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
   </div>
 </template>
@@ -393,7 +419,12 @@ export default {
       classificationInfo: {}, // 为该条添加分类（guid，typeName）
       resultGuid: '', // router params传值guid
       timer: '',
-      schemaList: []
+      schemaList: [],
+      deleteClassificationFlag: false,
+      deleteClass: '',
+      deleteTypeName: '',
+      deleteGuid: '',
+      isLoading: false
     }
   },
   computed: {
@@ -585,10 +616,7 @@ export default {
         this.relationshipList = []
         if (this.properties.entity.hasOwnProperty('classifications')) {
           for (var i in this.properties.entity.classifications) {
-            this.classificationsOptions.push({
-              value: this.properties.entity.classifications[i].typeName,
-              label: this.properties.entity.classifications[i].typeName
-            })
+            this.classificationsOptions.push(this.properties.entity.classifications[i])
           }
         }
         for (var j in this.properties.entity.attributes) {
@@ -765,7 +793,7 @@ export default {
     },
     addClassificationClose() {
       this.addClassificationShow = false
-    }
+    },
     /**
      * @description: 分页
      */
@@ -776,6 +804,56 @@ export default {
     // handleTagCurrentChange(val) {
     //   this.tagCurrent = val
     // }
+    openDeleteClassification(row) {
+      this.deleteClassificationFlag = true
+      this.deleteClass = row.typeName
+      this.deleteGuid = row.entityGuid
+      this.deleteTypeName = this.properties.entity.attributes.name.concat(' ( ').concat(this.properties.entity.typeName).concat(' ) ')
+    },
+    /**
+     * @description: 移除分类
+     */
+    async handledeleteClassification() {
+      this.isLoading = true
+      const res = await apiatlas.deleteClassification(
+        this.deleteGuid,
+        this.deleteClass
+      );
+      // console.log(res)
+      if (res.status === 204) {
+        this.deleteClassificationFlag = false;
+        this.$message({
+          message: '删除分类成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        });
+        const query = this.$route.query
+        const param = this.$route.params
+        this.$router.replace({
+          name: 'atlasDetails',
+          params: {},
+          query: {}
+        })
+        this.$router.replace({
+          name: 'atlasDetails',
+          params: {
+            guid: param
+          },
+          query: query
+        })
+        this.timer = new Date().getTime()
+        this.isLoading = false
+      } else {
+        this.$message({
+          message: '删除分类失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        });
+        this.isLoading = false
+      }
+    }
   }
 }
 </script>
@@ -854,6 +932,12 @@ export default {
       border: 0;
     }
   }
+}
+.tableStyle {
+  width: 100%;
+  border: 2px solid #F8f8FA;
+  border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 </style>

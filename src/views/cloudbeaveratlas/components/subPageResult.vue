@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 17:10:20
+ * @LastEditTime: 2020-10-29 18:57:56
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -22,7 +22,6 @@
         </el-tooltip>
         <el-popover
           placement="bottom"
-          width="100%"
           trigger="click"
           @hide="openFilter = false"
         >
@@ -147,6 +146,7 @@
             prop="attributes.name"
             min-width="100"
             :show-overflow-tooltip="true"
+            sortable
           >
             <template v-slot:default="{ row }">
               <a
@@ -174,14 +174,16 @@
             key="所有者"
             label="所有者"
             prop="attributes.owner"
+            sortable
           />
           <el-table-column
             key="描述"
             label="描述"
             min-width="110"
             prop="attributes.description"
+            sortable
           />
-          <el-table-column key="类型" label="类型">
+          <el-table-column key="类型" label="类型" sortable>
             <template v-slot:default="{ row }">
               <a class="tableItemLink" @click="researchEntity(row.typeName)">{{
                 row.typeName
@@ -1004,16 +1006,20 @@ export default {
 .tableItemLink:hover {
   text-decoration: underline;
 }
-::v-deep .el-collapse-item__header {
-  color: #3d5fff;
-  font-size: 15px;
-  font-weight: bold;
-  flex: 1 0 auto;
-  order: -1;
-  // border-bottom: #3D5FFF;
-  .collapse-title {
-    flex: 1 0 100%;
-    order: 1;
+.el-collapse {
+  width: calc(60vw);
+  max-width: 620px;
+  min-width: 300px;
+  border: 0;
+  ::v-deep .el-collapse-item__header {
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    border: 0;
+  }
+  ::v-deep .el-collapse-item__wrap {
+    border: 0;
   }
 }
+
 </style>
