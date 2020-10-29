@@ -271,7 +271,7 @@
       <el-row>
       <el-col :span="8">
           <el-form-item v-if="jobType === 'SQLJOB'" label="schema：" prop="schema">
-            <el-select v-model="temp.dataSourceId" placeholder="请选择schema">
+            <el-select v-model="temp.schema" placeholder="请选择schema">
               <el-option
                 v-for="item in schemaList"
                 :key="item"
@@ -951,7 +951,7 @@ export default {
     //schema列表
     async getSchemaList() {
       let schemaList = await getTableSchema({
-        datasourceId: this.temp.dataSourceId,
+        datasourceId: this.temp.datasourceId,
       });
       this.schemaList = schemaList;
     },
@@ -1048,8 +1048,8 @@ export default {
             }
             this.temp.childJobId = auth.toString();
           }
-          this.temp.executorHandler =
-            this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
+          // this.temp.executorHandler =
+          //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
           this.temp.glueSource = this.glueSource;
           if (this.partitionField)
             this.temp.partitionInfo =

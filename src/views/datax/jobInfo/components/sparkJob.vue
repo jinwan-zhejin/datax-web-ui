@@ -6,15 +6,22 @@
               {{ this.jobTypeLabel }}
             </el-form-item>
          
-            <el-form-item label="所属项目：" prop="projectId">
+            <!-- <el-form-item label="所属项目：" prop="projectId">
               <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
                 <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           
             <el-form-item label="任务名称：" prop="jobDesc">
               <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" style="width:300px;" />
             </el-form-item>
+
+            <el-form-item label="执行器" prop="jobGroup">
+              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+              </el-select>
+            </el-form-item>
+
          
             <el-dialog
               title="提示"
@@ -29,17 +36,33 @@
               </span>
             </el-dialog>
            
-        
+           <el-form-item label="Cron" prop="jobCron">
+              <el-input style="width:300px"  v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
+                <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+                <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="路由策略" prop="executorRouteStrategy">
+              <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
+                <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+
+             <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
+                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
         
             <el-form-item label="程序名称：" prop="appName">
              <el-input v-model="temp.appName" placeholder="请输入程序名称" style="width:300px;"/>
             </el-form-item>
           
-            <el-form-item label="SPARK MASTER：" prop="sparkMaster">
+            <!-- <el-form-item label="SPARK MASTER：" prop="sparkMaster">
               <el-select v-model="temp.sparkMaster" placeholder="选择SPARK MASTER">
                 <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           
             <el-form-item label="运行模式：">
               <el-select v-model="temp.sparkMaster" placeholder="请选择运行模式">
