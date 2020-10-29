@@ -113,11 +113,29 @@
                 :key="item.id"
                 @click="getJobDetail(item)"
               >
-                <i class="el-icon-date" style="color:rgb(144,206,100);" />
-                <i class="el-icon-tickets" style="color: rgba(102, 102, 102, 1)" />
+              <img v-if="item.jobType === 'NORMAL'" class="task_img" src="./taskAdmin_png/normal.png">
+              <img v-if="item.jobType === 'IMPORT'"  class="task_img" src="./taskAdmin_png/import.png">
+              <img v-if="item.jobType === 'EXPORT'"  class="task_img" src="./taskAdmin_png/export.png">
+              <img v-if="item.jobType === 'COMPUTE'"  class="task_img" src="./taskAdmin_png/computed.png">
+              <img v-if="item.jobType === 'SQLJOB'"  class="task_img" src="./taskAdmin_png/sql.png">
+              <img v-if="item.jobType === 'SPARK'"  class="task_img" src="./taskAdmin_png/spark.png">
+              <img v-if="item.jobType === 'DQCJOB'"  class="task_img" src="./taskAdmin_png/质量.png">
+              <img v-if="item.jobType === 'METACOLLECT'"  class="task_img" src="./taskAdmin_png/元数据采集.png">
+              <img v-if="item.jobType === 'METACOMPARE'"  class="task_img" src="./taskAdmin_png/元数据比较.png">
+              <img v-if="item.jobType === 'SHELL'"  class="task_img" src="./taskAdmin_png/shell.png">
+              <img v-if="item.jobType === 'POWERSHELL'"  class="task_img" src="./taskAdmin_png/powershell.png">
+              <img v-if="item.jobType === 'PYTHON'"  class="task_img" src="./taskAdmin_png/python.png">
+              <img v-if="item.jobType === 'VJOB'"  class="task_img" src="./taskAdmin_png/虚.png">
+              <img v-if="item.jobType === 'JAVA'"  class="task_img" src="./taskAdmin_png/java.png">
+              <img v-if="item.jobType === 'SCALA'"  class="task_img" src="./taskAdmin_png/scala.png">
+              <img v-if="item.jobType === 'PYSPARK'"  class="task_img" src="./taskAdmin_png/pyspark.png">
+              <img v-if="item.jobType === 'R'"  class="task_img" src="./taskAdmin_png/R.png">
+              <img v-if="item.jobType === 'BATCH'"  class="task_img" src="./taskAdmin_png/任务批量构建.png">
+              <img v-if="item.jobType === 'TEMPLATE'"  class="task_img" src="./taskAdmin_png/普通任务模板.png">
                 <a
                   style="color: rgba(102, 102, 102, 1)"
-                >{{ item.jobDesc }}
+                >
+                {{ item.jobDesc }}
                 </a>
               </li>
             </ul>
@@ -551,13 +569,13 @@ export default {
 <style lang="scss">
 .Management {
   display: flex;
-  min-height: 600px;
+  min-height: 660px;
   margin: 24px;
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   .lt {
     width: 280px;
-    min-height: 600px;
+    min-height: 660px;
     padding: 10px;
     background: #F0F0F2;
     .top {
@@ -625,10 +643,24 @@ export default {
     margin-top: 10px;
     margin-right: 8px;
   }
+
+.task_img {
+  width: 16px;
+  float: left;
+  margin-top: 13px;
+  margin-right: 8px;
+}
 </style>
 
 <style scoped>
 .el-bar-tab >>>  .el-tabs__nav-scroll {
   background: rgb(240, 240, 242);
+}
+.el-bar-tab >>> .el-tabs__content {
+  min-height: 660px;
+}
+.el-bar-tab  {
+  border: 0;
+  box-shadow: 0 0 ;
 }
 </style>
