@@ -270,7 +270,7 @@ export default {
     .statement {
       color: rgba(0, 0, 0, 0.45);
       position: absolute;
-      bottom: 0;
+      bottom: 10px;
       margin-left: 50%;
       transform: translateX(-50%);
     }
