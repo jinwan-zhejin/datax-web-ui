@@ -244,7 +244,7 @@ export default {
       // jobTypeLabel: '',
       listQuery: {
         current: 1,
-        size: 10,
+        size: 10000,
         jobGroup: 0,
         projectIds: "",
         triggerStatus: -1,

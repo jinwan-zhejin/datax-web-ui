@@ -197,7 +197,7 @@ export default {
       total: 0,
       listQuery: {
         current: 1,
-        size: 10,
+        size: 10000,
         jobGroup: 0,
         triggerStatus: -1,
         jobDesc: '',
