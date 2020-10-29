@@ -25,6 +25,8 @@
                     :data="tableData"
                     background-color="#F8F8FA"
                     border
+                    lazy
+                    :loading="lazyLoad"
                     style="width: 100%"
                   >
                     <el-table-column
@@ -136,6 +138,14 @@
                               唯一值
                             </p>
                           </div>
+                          <div v-show="item.type === 'date'" class="value">
+                            <p class="v_p1">
+                              {{ item.statistics }}
+                            </p>
+                            <p class="v_p2">
+                              更新时间
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -171,15 +181,22 @@
                           <p>
                             <i>最常用</i>
                             <i class="m_r_t">{{ item.indicator.unique && item.indicator.mostCommon.rate }}</i>
-                            <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
+                            <!-- <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i> -->
+                            <el-tooltip class="item" effect="dark" :content="item.indicator.unique && item.indicator.mostCommon.value" placement="top-end">
+                              <i class="m_t">{{ item.indicator.unique && item.indicator.mostCommon.value }}</i>
+                            </el-tooltip>
                           </p>
                           <p v-if="item.type === 'number'">
                             <i>最大值</i>
-                            <i class="m_t">{{ item.indicator.maximum && item.indicator.maximum.value }}</i>
+                            <el-tooltip class="item" effect="dark" :content="item.indicator.maximum && item.indicator.maximum.value" placement="top-end">
+                              <i class="m_t">{{ item.indicator.maximum && item.indicator.maximum.value }}</i>
+                            </el-tooltip>
                           </p>
                           <p v-if="item.type === 'number'">
                             <i>最小值</i>
-                            <i class="m_t">{{ item.indicator.minimum && item.indicator.minimum.value }}</i>
+                            <el-tooltip class="item" effect="dark" :content="item.indicator.minimum && item.indicator.minimum.value" placement="top-end">
+                              <i class="m_t">{{ item.indicator.minimum && item.indicator.minimum.value }}</i>
+                            </el-tooltip>
                           </p>
                         </div>
                       </div>
@@ -247,9 +264,11 @@ export default {
         color: ['#3398DB'],
         tooltip: {
           trigger: 'axis',
-          axisPointer: { // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-          }
+          formatter: function() {
+            return '123123' + '<br>' + 'aaa'
+          },
+          show: true,
+          position: 'top'
         },
         grid: {
           top: '8%',
@@ -389,6 +408,10 @@ export default {
     this.getOtherData()
   },
   methods: {
+    lazyLoad1() {
+      console.log('监听表格dom对象的滚动事件')
+      const that = this
+    },
     indexMethod(index) {
       return index
     },
@@ -693,7 +716,7 @@ export default {
                             display: inline-block;
                           }
                           .m_t {
-                            width: 50px;
+                            width: 70px;
                             position: absolute;
                             right: 20%;
                             overflow: hidden;
@@ -701,7 +724,7 @@ export default {
                             white-space: nowrap;
                           }
                           .m_r_t {
-                            width: 50px;
+                            width: 70px;
                             overflow: hidden;
                             text-overflow: ellipsis; //超出部分以省略号显示
                             white-space: nowrap;
