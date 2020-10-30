@@ -13,7 +13,7 @@
         {{ this.jobTypeLabel }}
       </el-form-item>
 
-      <el-form-item label="执行器" prop="jobGroup">
+      <el-form-item label="执行器：" prop="jobGroup">
         <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
           <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
         </el-select>

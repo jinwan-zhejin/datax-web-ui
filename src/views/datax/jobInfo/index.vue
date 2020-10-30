@@ -642,19 +642,7 @@ export default {
   }
 
 }
-.task_icon {
-    width: 16px;
-    float: left;
-    margin-top: 10px;
-    margin-right: 8px;
-  }
 
-.task_img {
-  width: 16px;
-  float: left;
-  margin-top: 13px;
-  margin-right: 8px;
-}
 </style>
 
 <style scoped>
@@ -668,5 +656,18 @@ export default {
 .el-bar-tab  {
   border: 0;
   box-shadow: 0 0 ;
+}
+.task_icon {
+    width: 16px;
+    float: left;
+    margin-top: 10px;
+    margin-right: 8px;
+  }
+
+.task_img {
+  width: 16px;
+  float: left;
+  margin-top: 13px;
+  margin-right: 8px;
 }
 </style>
