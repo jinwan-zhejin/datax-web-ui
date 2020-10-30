@@ -851,7 +851,7 @@ export default {
 <style scoped>
 .header {
   overflow: hidden;
-  padding: 16px 0;
+  padding: 8px 0;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
 }
 .header_action {
@@ -963,10 +963,10 @@ export default {
 }
 
 .log_title {
-  height: 56px;
-  line-height: 56px;
+  height: 36px;
+  line-height: 36px;
   width: 110px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: PingFangHK-Medium, PingFangHK;
   font-weight: 500;
   color: #333333;
@@ -979,5 +979,6 @@ export default {
   max-height: 400px;
   overflow: scroll;
   background: white;
+  font-size: 13px;
 }
 </style>
