@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 17:11:17
+ * @LastEditTime: 2020-10-30 16:37:18
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -24,11 +24,11 @@
                 <span style="line-height: 32px;">
                   高级<i class="el-icon-question" style="cursor: pointer;" @click="advanced=true" />
                 </span>
-                <el-tooltip style="float:right; position:relative;" content="刷新" placement="top">
+                <!-- <el-tooltip style="float:right; position:relative;" content="刷新" placement="top">
                   <el-button size="mini" type="primary" plain @click="test">
                     <i class="el-icon-refresh" />
                   </el-button>
-                </el-tooltip>
+                </el-tooltip> -->
               </el-row>
               <el-row style="margin-top: 15px;">
                 通过类型查找
@@ -39,7 +39,7 @@
                     <el-option
                       v-for="(item, index) in entities"
                       :key="index"
-                      :label="item.name"
+                      :label="item.hasOwnProperty('countActive')?item.name.concat(' (').concat(item.countActive).concat(')'):item.name"
                       :value="item.name"
                     />
                   </el-select>
@@ -49,11 +49,11 @@
                 通过查询语句查找
               </el-row>
               <el-row :span="24">
-                <el-input v-model="searchByQuery" placeholder="通过查询语句查找 例.where name=&quot;sales_fact&quot;" />
+                <el-input v-model="searchByQuery" placeholder="通过查询语句查找 例如其中name=&quot;sales_fact&quot;" />
               </el-row>
               <el-row style="margin-top: 15px;">
                 <el-button plain type="primary" @click="clearCardInput">清空</el-button>
-                <el-button plain type="primary" style="float:right; position:relative;" @click="searchEntity">搜索</el-button>
+                <el-button plain type="primary" :disabled="entityType===''&&searchByQuery===''" style="float:right; position:relative;" @click="searchEntity">搜索</el-button>
               </el-row>
             </el-card>
           </el-collapse-transition>
@@ -204,7 +204,11 @@ export default {
      * @description: 查找实体
      */
     searchEntity() {
-      return console.log('查找实体')
+      // console.log('查找实体')
+      // console.log(this.entityType);
+      // console.log(this.searchByQuery);
+      this.showSearchCard = false
+      this.getDslQuery()
     },
     /**
      * @description: 搜索卡片开闭状态
@@ -278,6 +282,7 @@ export default {
       this.$router.replace({
         name: 'atlasResult',
         query: {
+          searchType: 'basic',
           query: suggest
         }
       })
@@ -287,6 +292,20 @@ export default {
      */
     handleClose() {
       this.advanced = false
+    },
+    async getDslQuery() {
+      var temp = {}
+      if (this.searchByQuery !== '') {
+        temp.query = this.searchByQuery
+      }
+      if (this.entityType !== '') {
+        temp.type = this.entityType
+      }
+      temp.searchType = 'dsl'
+      this.$router.replace({
+        name: 'atlasResult',
+        query: temp
+      })
     }
   }
 }

@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 18:57:56
+ * @LastEditTime: 2020-10-30 17:41:00
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -11,6 +11,8 @@
   <div :key="timer">
     <el-row class="top-buttons">
       <el-col>
+        <!-- {{ classificationList }} -->
+        <!-- {{ entities }} -->
         <el-tooltip content="刷新搜索结果" placement="top">
           <el-button
             type="primary"
@@ -20,9 +22,45 @@
             @click="refreshList"
           >刷新</el-button>
         </el-tooltip>
-        <el-popover
+        <el-button type="primary" size="mini" plain @click="openFilter = !openFilter">
+          <svg-icon :icon-class="openFilter?'filter-solid':'filter-regular'" /> 过滤器
+        </el-button>
+        <el-collapse-transition>
+          <el-card v-if="openFilter" style="position: absolute; z-index: 999; width: 100%;margin-top: 10px;" header="过滤器">
+            <el-form label-position="top">
+              <el-form-item label="包含/排除">
+                <el-col :span="12">
+                  <el-checkbox v-model="showHistoricalEntities">显示历史实体</el-checkbox>
+                </el-col>
+                <el-col :span="12">
+                  <el-checkbox v-model="excludeSubClassifications">排除子分类</el-checkbox>
+                </el-col>
+                <el-col :span="12">
+                  <el-checkbox v-model="excludeSubTypes">排除子类型</el-checkbox>
+                </el-col>
+              </el-form-item>
+            </el-form>
+            <span
+              style="margin: 15px;position: relative;float: right;"
+            >
+              <el-button
+                type="primary"
+                plain
+                size="small"
+                @click="openFilter = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="addOtherFilter"
+              >确认</el-button>
+            </span>
+          </el-card>
+        </el-collapse-transition>
+        <!-- <el-popover
           placement="bottom"
           trigger="click"
+          title="过滤器"
           @hide="openFilter = false"
         >
           <el-button
@@ -32,52 +70,35 @@
             plain
             @click="openFilter = !openFilter"
           ><svg-icon :icon-class="openFilter?'filter-solid':'filter-regular'" /> 过滤器</el-button>
-          <el-collapse v-model="filterActiveName">
-            <el-collapse-item name="includeexclude">
-              <div slot="title" class="collapse-title">
-                包含/排除
-              </div>
+          <el-form label-position="top">
+            <el-form-item label="包含/排除">
               <el-col :span="12">
-                <el-switch
-                  v-model="showHistoricalEntities"
-                  active-text="显示历史实体"
-                  inactive-text=""
-                />
+                <el-checkbox v-model="showHistoricalEntities">显示历史实体</el-checkbox>
               </el-col>
               <el-col :span="12">
-                <el-switch
-                  v-model="excludeSubClassifications"
-                  active-text="排除子分类"
-                  inactive-text=""
-                />
+                <el-checkbox v-model="excludeSubClassifications">排除子分类</el-checkbox>
               </el-col>
               <el-col :span="12">
-                <el-switch
-                  v-model="excludeSubTypes"
-                  active-text="排除子类型"
-                  inactive-text=""
-                />
+                <el-checkbox v-model="excludeSubTypes">排除子类型</el-checkbox>
               </el-col>
-              <br>
-            </el-collapse-item>
-          </el-collapse>
+            </el-form-item>
+          </el-form>
           <span
-            style="margin-top: 15px;margin-bottom: 15px;position: relative;float: right;"
+            style="margin: 15px;position: relative;float: right;"
           >
-            <el-button
-              type="primary"
-              plain
-              size="small"
-              @click="addOtherFilter"
-            >确认</el-button>
             <el-button
               type="primary"
               plain
               size="small"
               @click="openFilter = false"
             >取消</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="addOtherFilter"
+            >确认</el-button>
           </span>
-        </el-popover>
+        </el-popover> -->
         <el-button
           type="primary"
           size="mini"
@@ -265,7 +286,7 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <el-tooltip content="添加分类" placement="bottom">
+              <el-tooltip v-if="row.status !== 'DELETED'" content="添加分类" placement="bottom">
                 <el-button type="text" size="medium" icon="el-icon-plus" @click="addClassification(row)" />
               </el-tooltip>
             </template>
@@ -317,10 +338,10 @@
           style="position: relative; float: right;"
           background
           :current-page="currentPage"
-          layout="total, sizes, prev, pager, next, jumper"
+          :layout="pagerLayout"
           :page-sizes="[25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]"
           :page-size="pageSize"
-          :pager-count="4"
+          :pager-count="5"
           :total="tableTotal"
           @size-change="handlePageSizeChange"
           @current-change="handlePageCurrentChange"
@@ -388,9 +409,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelCompareTask">取消</el-button>
+        <el-button type="primary" plain size="small" @click="cancelCompareTask">取消</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="submitCompareTask('compareParams')"
         >提交</el-button>
       </div>
@@ -436,7 +458,8 @@ export default {
     AddCustomFilter
   },
   props: {
-    classificationList: { type: Array, default: () => [] }
+    classificationList: { type: Array, default: () => [] },
+    entities: { type: Array, default: () => [] }
   },
   data() {
     return {
@@ -495,7 +518,8 @@ export default {
       filterActiveName: ['includeexclude'],
       showHistoricalEntities: false,
       excludeSubClassifications: false,
-      excludeSubTypes: false
+      excludeSubTypes: false,
+      pagerLayout: 'total, prev, pager, next, sizes'
     };
   },
   computed: {
@@ -503,7 +527,7 @@ export default {
     searchParams() {
       var temp = [];
       for (var i in this.resultQuery) {
-        if (i === 'attributes') {
+        if (i === 'attributes' || i === 'searchType') {
           continue;
         }
         temp.push({
@@ -575,7 +599,16 @@ export default {
         this.pageSize = 25;
         this.tableTotal = 0; // 总数
         this.resultQuery = val;
-        this.refreshList();
+        this.showHistoricalEntities = this.resultQuery.hasOwnProperty('includeDE')
+        this.excludeSubClassifications = this.resultQuery.hasOwnProperty('excludeSC')
+        this.excludeSubTypes = this.resultQuery.hasOwnProperty('excludeST')
+        if (val.searchType === 'dsl') {
+          // this.pagerLayout = 'prev, next, sizes'
+          this.refreshList_dsl()
+        } else if (val.searchType === 'basic') {
+          // this.pagerLayout = 'total, prev, pager, next, sizes'
+          this.refreshList();
+        }
         // console.log('query changed');
       },
       deep: true
@@ -605,16 +638,17 @@ export default {
   },
   created() {
     this.resultQuery = this.$route.query;
-    if (this.resultQuery.hasOwnProperty('includeDE')) {
-      this.showHistoricalEntities = true;
+    this.showHistoricalEntities = this.resultQuery.hasOwnProperty('includeDE')
+    this.excludeSubClassifications = this.resultQuery.hasOwnProperty('excludeSC')
+    this.excludeSubTypes = this.resultQuery.hasOwnProperty('excludeST')
+    // this.refreshList();
+    if (this.resultQuery.searchType === 'dsl') {
+      // this.pagerLayout = 'prev, next, sizes'
+      this.refreshList_dsl()
+    } else if (this.resultQuery.searchType === 'basic') {
+      // this.pagerLayout = 'total, prev, pager, next, sizes'
+      this.refreshList();
     }
-    if (this.resultQuery.hasOwnProperty('excludeSC')) {
-      this.excludeSubClassifications = true;
-    }
-    if (this.resultQuery.hasOwnProperty('excludeST')) {
-      this.excludeSubTypes = true;
-    }
-    this.refreshList();
   },
   mounted() {
     // this.$nextTick(function() {
@@ -746,6 +780,59 @@ export default {
       }
     },
     /**
+     * @description: 重新获取表信息2
+     */
+    async refreshList_dsl() {
+      // console.log('父组件传值改变重新获取数据')
+      // console.log(this.resultQuery);
+      if (
+        !this.resultQuery.hasOwnProperty('type') &&
+        !this.resultQuery.hasOwnProperty('term') &&
+        !this.resultQuery.hasOwnProperty('tag') &&
+        !this.resultQuery.hasOwnProperty('query')
+      ) {
+        this.backToSearch();
+      } else {
+        // console.log(this.resultQuery);
+        var temp = {
+          limit: this.pageSize,
+          offset: this.pageSize * (this.currentPage - 1),
+          _: new Date().getTime()
+        }
+        if (this.resultQuery.hasOwnProperty('type')) {
+          temp.typeName = this.resultQuery.type
+        }
+        if (this.resultQuery.hasOwnProperty('query')) {
+          temp.query = this.resultQuery.query
+        }
+        // console.log(temp);
+        const res = await apiatlas.getDSLResult(temp)
+        // console.log(res)
+        if (res.status === 200 && res.statusText === 'OK') {
+          this.allData = res.data;
+          // console.log(this.allData);
+          this.tableData = res.data.entities;
+          for (var i = 0; i < this.entities.length; i++) {
+            if (this.entities[i].name === this.resultQuery.type) {
+              this.tableTotal = this.entities[i].hasOwnProperty('countActive') ? this.entities[i].countActive : 1000
+              break
+            }
+            if (i === this.entities.length - 1) {
+              this.tableTotal = res.data.approximateCount;
+            }
+          }
+          this.openFilter = false;
+        } else {
+          this.$message({
+            message: res.status === 400 ? res.data.errorMessage : '获取对应记录出错',
+            showClose: true,
+            type: 'error',
+            duration: 6000
+          });
+        }
+      }
+    },
+    /**
      * @description: 保存为自定义过滤器
      */
     saveAsCustomFilter() {
@@ -784,6 +871,7 @@ export default {
       this.$router.replace({
         name: 'atlasResult',
         query: {
+          searchType: 'basic',
           tag: param
         }
       });
@@ -792,6 +880,7 @@ export default {
       this.$router.replace({
         name: 'atlasResult',
         query: {
+          searchType: 'basic',
           type: param
         }
       });
@@ -876,11 +965,19 @@ export default {
     handlePageSizeChange(val) {
       this.pageSize = val;
       this.currentPage = 1;
-      this.refreshList();
+      if (this.resultQuery.searchType === 'dsl') {
+        this.refreshList_dsl()
+      } else if (this.resultQuery.searchType === 'basic') {
+        this.refreshList();
+      }
     },
     handlePageCurrentChange(val) {
       this.currentPage = val;
-      this.refreshList();
+      if (this.resultQuery.searchType === 'dsl') {
+        this.refreshList_dsl()
+      } else if (this.resultQuery.searchType === 'basic') {
+        this.refreshList();
+      }
     },
     /**
      * @description: 添加其他过滤器
@@ -911,6 +1008,7 @@ export default {
         }
       }
       Object.assign(temp, temp2);
+      temp.searchType = 'basic'
       this.$router.replace({
         name: 'atlasResult',
         query: {}
@@ -985,6 +1083,11 @@ export default {
   border: 2px solid #F8f8FA;
   border-radius: 4px;
   margin-bottom: 20px;
+  // ::v-deep .el-table__body-wrapper {
+  //   height: 50%;
+  //   overflow-y: auto;
+  // }
+
 }
 
 .tableItemLink {
@@ -1021,5 +1124,4 @@ export default {
     border: 0;
   }
 }
-
 </style>

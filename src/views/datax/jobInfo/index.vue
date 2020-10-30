@@ -607,8 +607,8 @@ export default {
           ul {
             padding: 0px;
             li {
-              height: 40px;
-              line-height: 40px;
+              height: 24px;
+              line-height: 24px;
               // background-color: rgb(218, 243, 253);
               text-align: left;
               list-style: none;
@@ -642,6 +642,22 @@ export default {
   }
 
 }
+
+</style>
+
+<style scoped>
+.el-bar-tab >>>  .el-tabs__nav-scroll {
+  background: rgb(240, 240, 242);
+}
+.el-bar-tab >>> .el-tabs__content {
+  height: 660px;
+  overflow: scroll;
+  padding: 0;
+}
+.el-bar-tab  {
+  border: 0;
+  box-shadow: 0 0 ;
+}
 .task_icon {
     width: 16px;
     float: left;
@@ -652,21 +668,7 @@ export default {
 .task_img {
   width: 16px;
   float: left;
-  margin-top: 13px;
-  margin-right: 8px;
-}
-</style>
-
-<style scoped>
-.el-bar-tab >>>  .el-tabs__nav-scroll {
-  background: rgb(240, 240, 242);
-}
-.el-bar-tab >>> .el-tabs__content {
-  height: 660px;
-  overflow: scroll;
-}
-.el-bar-tab  {
-  border: 0;
-  box-shadow: 0 0 ;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 </style>

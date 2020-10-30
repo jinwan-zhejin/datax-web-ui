@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-28 18:50:13
+ * @LastEditTime: 2020-10-30 16:33:15
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -478,6 +478,25 @@ export async function getGuidAllCompareRecord(guid) {
       guid
     },
     withCredentials: true
+  })
+  return res
+}
+
+/**
+ * @description: 获取dsl返回值
+ * @param {object} params 参数
+ * @return {object} axios返回值
+ */
+export async function getDSLResult(params) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/dsl',
+    method: 'get',
+    params,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }).catch(err => {
+    return err.response
   })
   return res
 }

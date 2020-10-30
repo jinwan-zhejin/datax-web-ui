@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 19:22:46
+ * @LastEditTime: 2020-10-30 18:14:48
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -31,7 +31,7 @@
       <el-row class="center-bar">
         <el-col>
           <!-- {{ properties.entity.classifications }} -->
-          分类：
+          <label style="font-size: 16px;">分类：</label>
           <!-- {{properties.entity}} -->
           <span v-for="(classifiy,index) in properties.entity.classifications" :key="index">
             <el-button type="primary" plain size="mini">
@@ -41,7 +41,7 @@
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
             </el-tooltip> -->
           </span>
-          <span v-if="!properties.entity.hasOwnProperty('classifications')">无</span>
+          <span v-if="!properties.entity.hasOwnProperty('classifications')" style="font-size: 16px;">无</span>
           <!-- <el-tooltip content="添加分类" placement="bottom">
             <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test2" />
           </el-tooltip> -->
@@ -187,6 +187,7 @@
                             <!-- <span>{{ props.row | toObject }}</span> -->
                             <span>{{ transformObject(props.row) | displayName }}</span>
                           </el-form-item>
+                          <!-- {{ props.row }} -->
                         </el-col>
                       </el-row>
                       <!-- <el-row>
@@ -198,6 +199,16 @@
                       </el-row> -->
                       <el-row>
                         <el-col v-if="hasAttributes(transformObject(props.row)[1])">
+                          <!-- <el-form label-position="top">
+                            <el-form-item label="技术属性">
+                              <el-col :span="6">
+                                
+                              </el-col>
+                              <el-col :span="6">
+
+                              </el-col>
+                            </el-form-item>
+                          </el-form> -->
                           <el-collapse v-model="detailsCollapseActive[0]">
                             <el-collapse-item name="details0">
                               <div slot="title">
@@ -922,6 +933,7 @@ export default {
     font-size: 16px;
     font-weight: bold;
     border: 0;
+    background: #F8f8FA;
   }
   ::v-deep .el-collapse-item__wrap {
     max-height: 400px;
@@ -932,12 +944,21 @@ export default {
       border: 0;
     }
   }
+  ::v-deep .el-collapse-item__content {
+    background: #F8f8FA;
+  }
 }
 .tableStyle {
   width: 100%;
   border: 2px solid #F8f8FA;
   border-radius: 4px;
   margin-bottom: 20px;
+  // ::v-deep .el-table__expanded-cell[class*=cell] {
+  //   background: #F8f8FA;
+  // }
+  // ::v-deep .el-table__expanded-cell[class*=cell]:hover {
+  //   background: #F8f8FA;
+  // }
 }
 
 </style>

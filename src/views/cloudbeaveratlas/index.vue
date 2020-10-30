@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 19:04:25
+ * @LastEditTime: 2020-10-30 18:01:32
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -10,7 +10,7 @@
 <template>
   <div ref="container" class="container">
     <el-container style="height: 100%;">
-      <el-aside width="25%" style="min-width: 200px">
+      <el-aside v-show="asideShow" width="26%" style="min-width: 200px">
         <div class="top-search">
           <label class="title-label">
             元数据管理
@@ -217,6 +217,13 @@
           </el-collapse-item>
         </el-collapse>
       </el-aside>
+      <span class="slider-bar" @mouseenter="sliderShow = true" @mouseleave="mouseleave">
+        <span />
+        <el-button v-show="sliderShow" type="text" @click="resizeAside">
+          <svg-icon :icon-class="asideShow?'chevron-circle-left':'chevron-circle-right'" />
+        </el-button>
+      </span>
+      <!-- <el-aside width="1" style="background: red;"></el-aside> -->
       <el-container>
         <!-- <el-header>
           <el-form :inline="true" label-position="right" label-width="120px">
@@ -525,7 +532,9 @@ export default {
       openEntityPopover: false, // 打开实体类型popover
       openTagPopover: false, // 打开分类popover
       openFilterPopover: false, // 打开自定义过滤器popover
-      entitySelected: ''
+      entitySelected: '',
+      sliderShow: false,
+      asideShow: true
     }
   },
   computed: {
@@ -565,28 +574,6 @@ export default {
         }
       )
     }
-    // tag_Tree() {
-    //   // 顶层
-    //   const tempTop = this.classifications.data.filter(item => {
-    //     if (item.superTypes.length === 0 && item.subTypes.length > 0) {
-    //       return true
-    //     }
-    //   })
-    //   // 叶子节点
-    //   const tempLeaf = this.classifications.data.filter(item => {
-    //     if (item.superTypes.length > 0 && item.subTypes.length === 0) {
-    //       return true
-    //     }
-    //   })
-    //   // 中间节点
-    //   const tempMiddle = this.classifications.data.filter(item => {
-    //     if (item.superTypes.length > 0 && item.subTypes.length > 0) {
-    //       return true
-    //     }
-    //   })
-    //   var temp = tempTop
-    //   return temp
-    // }
   },
   watch: {
     searchTreeList(val) {
@@ -687,6 +674,7 @@ export default {
      * @description: entity el-tree节点点击事件
      */
     handleNodeClickEntity(data) {
+      this.resultQuery.searchType = 'basic'
       this.resultQuery.type = (this.resultQuery.type === data.name) ? null : data.name
       // this.resultQuery.type = (data === null) ? null : data.name
       this.resultQuery.attributes = null
@@ -705,6 +693,7 @@ export default {
      * @description: classifications el-tree节点点击事件
      */
     handleNodeClickClassifications(data) {
+      this.resultQuery.searchType = 'basic'
       this.resultQuery.tag = (this.resultQuery.tag === data.name) ? null : data.name
       this.resultQuery.attributes = null
       var tempQuery = {}
@@ -725,7 +714,7 @@ export default {
       this.$router.replace({
         name: 'atlasResult',
         query: {
-          // searchType: 'basic',
+          searchType: 'basic',
           tag: data.name
         }
       })
@@ -744,6 +733,7 @@ export default {
      * @description: CustomFilter el-tree节点点击事件
      */
     handleNodeClickCustomFilter(data) {
+      this.resultQuery.searchType = 'basic'
       this.resultQuery.type = (!data.searchParameters.hasOwnProperty('typeName'))
         ? null : (this.resultQuery.type = this.resultQuery.type === data.searchParameters.typeName
           ? null : data.searchParameters.typeName)
@@ -1083,6 +1073,13 @@ export default {
           name: data.name
         }
       })
+    },
+    mouseleave() {
+      this.sliderShow = !this.asideShow
+    },
+    resizeAside() {
+      this.asideShow = !this.asideShow
+      this.sliderShow = !this.asideShow
     }
   }
 }
@@ -1095,18 +1092,54 @@ export default {
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   .el-container {
+    .slider-bar {
+      width: 13px;
+      height: 100%;
+      background:  white;
+      position: relative;
+      float: left;
+      z-index: 999;
+      cursor:col-resize;
+      span {
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        background: #e9e9e9;
+      }
+      .el-button  {
+        position: absolute;
+        z-index: 2033;
+        font-size: 32px;
+        margin-left: -16px;
+        margin-top: 20px;
+        border-radius: 50%;
+        padding: 0;
+        transition: .3s linear;
+        color: white;
+        background: #3d5eff;
+      }
+      .el-button:hover  {
+        color: #3d5eff;
+        background: white;
+      }
+    }
+    .slider-bar:hover {
+      span {
+        background: #3d5eff;
+      }
+    }
     .el-aside {
       border-top-left-radius: 8px;
       border-bottom-left-radius: 8px;
       overflow-x: hidden;
       overflow-y: hidden;
       background: #F8F8FA;
-      padding: 24px 23px;
+      padding: 24px;
       height: 100%;
       text-align: left;
       font-family: Arial, Helvetica, sans-serif;
       .top-search {
-        height: 79px;
+        // height: 79px;
         margin-bottom: 10px;
         .title-label {
           font-size: 24px;
@@ -1152,6 +1185,7 @@ export default {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px;
             font-weight: bold;
+            color: #333333;
             background: transparent;
             .collapse-title {
               background: transparent;
@@ -1194,11 +1228,13 @@ export default {
       overflow: hidden;
       .el-header {
         background: transparent;
-        margin: 0px 24px;
+        // margin: 0px 24px;
+        margin: 0 24px 0 10px;
       }
       .el-main {
         height: calc(100vh - 140px);
-        margin: 24px;
+        // margin: 24px;
+        margin: 24px 24px 24px 10px;
         padding: 0;
         // overflow: hidden;
       }
@@ -1351,5 +1387,28 @@ export default {
 }
 ::v-deep .el-pagination .el-select .el-input .el-input__inner {
   height: 28px;
+}
+::v-deep .el-dialog .el-dialog__title {
+  font-size: 24px;
+}
+::v-deep .el-form .el-form-item__label {
+  font-size: 16px;
+  color: #333333;
+}
+::v-deep .el-table {
+  color: #333333;
+}
+::v-deep .el-table td {
+  border-bottom: 1px solid #f8f8fa;
+}
+::v-deep .el-table th.is-leaf {
+  border-bottom: 0;
+}
+::v-deep .el-card {
+  color: #333333;
+  .el-card__header {
+    border: 0;
+    font-size: 24px;
+  }
 }
 </style>
