@@ -2,7 +2,7 @@
  * @Date: 2020-10-26 16:24:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-27 17:39:29
+ * @LastEditTime: 2020-10-30 19:11:20
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
  * @Description: 查看编辑页
 -->
@@ -58,7 +58,7 @@
           <el-checkbox v-model="showHistorical">显示历史实体</el-checkbox>
         </el-col>
         <el-col>
-          <el-table :data="tableData">
+          <el-table :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}" style="border: 1px solid #f8f8fa;margin-bottom: 20px;">
             <el-table-column label="名称" prop="attributes.name">
               <template v-slot:default="{row}">
                 <a :class="[row.status==='DELETED'?'tableItemLinkRed':'tableItemLink']" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
@@ -106,6 +106,7 @@
             </el-table-column>
           </el-table>
           <el-pagination
+            style="position: relative; float: right;"
             background
             :current-page="pageCurrent"
             layout="total, sizes, prev, pager, next, jumper"

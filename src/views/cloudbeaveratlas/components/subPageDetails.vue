@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 18:14:48
+ * @LastEditTime: 2020-10-30 19:05:31
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -199,16 +199,6 @@
                       </el-row> -->
                       <el-row>
                         <el-col v-if="hasAttributes(transformObject(props.row)[1])">
-                          <!-- <el-form label-position="top">
-                            <el-form-item label="技术属性">
-                              <el-col :span="6">
-                                
-                              </el-col>
-                              <el-col :span="6">
-
-                              </el-col>
-                            </el-form-item>
-                          </el-form> -->
                           <el-collapse v-model="detailsCollapseActive[0]">
                             <el-collapse-item name="details0">
                               <div slot="title">
@@ -937,12 +927,15 @@ export default {
   }
   ::v-deep .el-collapse-item__wrap {
     max-height: 400px;
-    overflow-y: auto;
+    overflow-y: hidden;
     border: 0;
     .el-table td {
       background: #F8F8FA;
       border: 0;
     }
+  }
+  ::v-deep .el-collapse-item__wrap:hover {
+    overflow: auto;
   }
   ::v-deep .el-collapse-item__content {
     background: #F8f8FA;
