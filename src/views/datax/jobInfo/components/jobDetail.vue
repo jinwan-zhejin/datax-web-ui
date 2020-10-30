@@ -155,7 +155,8 @@
         <p>运行日志</p>
       </div>
       <div class="log_container">
-        <span>{{newstlogContent}}</span>
+       
+        <pre v-text="newstlogContent" />
       </div>
     </div>
 
