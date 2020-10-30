@@ -607,8 +607,8 @@ export default {
           ul {
             padding: 0px;
             li {
-              height: 40px;
-              line-height: 40px;
+              height: 24px;
+              line-height: 24px;
               // background-color: rgb(218, 243, 253);
               text-align: left;
               list-style: none;
@@ -668,7 +668,7 @@ export default {
 .task_img {
   width: 16px;
   float: left;
-  margin-top: 13px;
-  margin-right: 8px;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="jab_detail">
     
     <div class="header">
       <div class="header_action" style="margin-left:10px;" @click="handlerExecute(temp)">
@@ -152,12 +152,17 @@
 
     <div class="log_detail">
       <div class="log_title">
-        <p>运行日志</p>
+          <span class="log_log">运行日志</span>
+          <span @click="showLog = !showLog" class="unflod">
+          <i v-if="!showLog" class="el-icon-sort-up"></i>
+          <i v-else class="el-icon-sort-down"></i>
+        </span>
       </div>
-      <div class="log_container">
-       
+      <transition name="fade">
+      <div v-if="showLog" class="log_container">
         <pre v-text="newstlogContent" />
       </div>
+      </transition>
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose">
@@ -773,6 +778,8 @@ export default {
         this.total = content.recordsTotal;
         this.list = content.data;
         this.listLoading = false;
+
+        this.$store.commit('SET_TASKLIST', this.list)
       });
     },
     incStartTimeFormat(vData) {},
@@ -828,8 +835,8 @@ export default {
               type: "success",
               duration: 2000,
             });
-            this.$emit("deleteDetailTab", tabName);
-            this.$emit("deleteJob");
+            // this.$emit("deleteDetailTab", tabName);
+            // this.$emit("deleteJob");
           });
         }
       });
@@ -956,29 +963,53 @@ export default {
   /* width: 44px !important; */
 }
 
+.job_detail {
+  position: relative;
+}
+
 .log_detail {
   background: #F8F8FA;
   border: 2px solid #F8F8FA;
   border-left: none;
+  position: relative;;
+  bottom: 0
 }
 
 .log_title {
   height: 36px;
   line-height: 36px;
-  width: 110px;
   font-size: 14px;
   font-family: PingFangHK-Medium, PingFangHK;
   font-weight: 500;
   color: #333333;
-  padding-left: 24px;
+  /* background: white; */
+}
+
+.log_log {
   background: white;
+  display: inline-block;
+  padding: 0 24px;
 }
 
 .log_container {
-  padding:24px;
-  max-height: 400px;
+  /* padding:24px; */
+  height: 400px;
   overflow: scroll;
   background: white;
   font-size: 13px;
+}
+
+.unflod {
+  color: black;
+  float: right;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: height .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  height: 0;
 }
 </style>
