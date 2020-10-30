@@ -1,162 +1,403 @@
 <template>
-  <div>
-    <div class="header">
-      <div class="header_action" @click="handlerExecute(temp)">
-        <i class="el-icon-video-play"></i>
-        <span>执行一次</span>
-      </div>
-      <div class="header_action" @click="handlerViewLog(temp)">
-        <i class="el-icon-s-order"></i>
-        <span>查询日志</span>
-      </div>
-      <div class="header_action">
-        <el-popover placement="bottom" width="500" @show="loadById(temp)">
-          <el-table :data="registerNode">
+  <div class="app-container">
+    <div class="action_btn">
+      <span class="span_btn" @click="handlerExecute(temp)"><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行一次</span>
+      <span class="span_btn" @click="handlerViewLog(temp)"><i class="el-icon-tickets"></i>&nbsp;&nbsp;查询日志</span>
+      <span class="span_btn" @click="handlerUpdate(temp)"><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
+
+      <el-popover
+            placement="bottom"
+            width="500"
+            @show="loadById(temp)"
+          >
+            <el-table :data="registerNode">
               <el-table-column width="150" property="title" label="执行器名称" />
               <el-table-column width="150" property="appName" label="appName" />
               <el-table-column width="150" property="registryList" label="机器地址" />
             </el-table>
-          <div style="float: left" slot="reference">
-            <i class="el-icon-s-tools"></i>
-            <span>注册节点</span>
-          </div>
-        </el-popover>
-      </div>
-
-      <div class="header_action">
-        <el-popover
-          placement="bottom"
-          width="300"
-          @show="nextTriggerTime(temp)"
-        >
-        <h5 v-html="triggerNextTimes" />
-          <div style="float: left" slot="reference">
-            <i class="el-icon-message-solid"></i>
-            <span>下次触发时间</span>
-          </div>
-        </el-popover>
-      </div>
-
-      <div class="header_action" @click="handlerDelete(temp)">
-        <i class="el-icon-delete-solid"></i>
-        <span>删除</span>
-      </div>
-      <div class="header_switch">
-        <el-switch
-          v-model="temp.triggerStatus"
-          active-color="#00A854"
-          active-text="启动"
-          :active-value="1"
-          inactive-color="#F04134"
-          inactive-text="停止"
-          :inactive-value="0"
-          @change="changeSwitch(temp)"
-        >
-        </el-switch>
-      </div>
+            <span slot="reference" class="span_btn"><i class="el-icon-copy-document"></i>&nbsp;&nbsp;注册节点</span>
+      </el-popover>
+      <el-popover
+            placement="bottom"
+            width="300"
+            @show="nextTriggerTime(temp)"
+          >
+            <h5 v-html="triggerNextTimes" />
+            <span slot="reference" class="span_btn"><i class="el-icon-time"></i>&nbsp;&nbsp;下次触发时间</span>
+      </el-popover>
+      
+      <span class="span_btn" @click="handlerDelete(temp)"><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
+    <el-switch
+      v-model='temp.triggerStatus'
+      active-color="#00A854"
+      active-text="启动"
+      :active-value="1"
+      inactive-color="#F04134"
+      inactive-text="停止"
+      :inactive-value="0"
+      @change="changeSwitch(temp)"
+    ></el-switch>
     </div>
+    <el-divider></el-divider>
+    <el-form
+      ref="dataForm"
+      :rules="rules"
+      :model="temp"
+      label-position="left"
+      label-width="110px"
+      :disabled="editFrom"
+    >
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="任务类型" prop="glueType">
+            {{ this.temp.jobType }}
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="任务名称" prop="jobDesc">
+            <el-input
+              v-model="temp.jobDesc"
+              size="medium"
+              placeholder="请输入任务描述"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-dialog
+            title="提示"
+            :visible.sync="showCronBox"
+            width="60%"
+            append-to-body
+          >
+            <cron v-model="temp.jobCron" />
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="showCronBox = false">关闭</el-button>
+              <el-button type="primary" @click="showCronBox = false"
+                >确 定</el-button
+              >
+            </span>
+          </el-dialog>
+          <el-form-item label="Cron" prop="jobCron">
+            <el-input
+              v-model="temp.jobCron"
+              auto-complete="off"
+              placeholder="请输入Cron表达式"
+            >
+              <el-button
+                v-if="!showCronBox"
+                slot="append"
+                icon="el-icon-turn-off"
+                title="打开图形配置"
+                @click="showCronBox = true"
+              />
+              <el-button
+                v-else
+                slot="append"
+                icon="el-icon-open"
+                title="关闭图形配置"
+                @click="showCronBox = false"
+              />
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="阻塞处理" prop="executorBlockStrategy">
+            <el-select
+              v-model="temp.executorBlockStrategy"
+              placeholder="请选择阻塞处理策略"
+            >
+              <el-option
+                v-for="item in blockStrategies"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="报警邮件">
+            <el-input
+              v-model="temp.alarmEmail"
+              placeholder="请输入报警邮件，多个用逗号分隔"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="执行器" prop="jobGroup">
+            <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+              <el-option
+                v-for="item in executorList"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
 
-    <div class="content">
-      <div class="title">
-        <img v-if="temp.jobType === 'NORMAL'" class="task_img" src="../taskAdmin_png/normal.png">
-        <img v-if="temp.jobType === 'IMPORT'"  class="task_img" src="../taskAdmin_png/import.png">
-        <img v-if="temp.jobType === 'EXPORT'"  class="task_img" src="../taskAdmin_png/export.png">
-        <img v-if="temp.jobType === 'COMPUTE'"  class="task_img" src="../taskAdmin_png/computed.png">
-        <img v-if="temp.jobType === 'SQLJOB'"  class="task_img" src="../taskAdmin_png/sql.png">
-        <img v-if="temp.jobType === 'SPARK'"  class="task_img" src="../taskAdmin_png/spark.png">
-        <img v-if="temp.jobType === 'DQCJOB'"  class="task_img" src="../taskAdmin_png/质量.png">
-        <img v-if="temp.jobType === 'METACOLLECT'"  class="task_img" src="../taskAdmin_png/元数据采集.png">
-        <img v-if="temp.jobType === 'METACOMPARE'"  class="task_img" src="../taskAdmin_png/元数据比较.png">
-        <img v-if="temp.jobType === 'SHELL'"  class="task_img" src="../taskAdmin_png/shell.png">
-        <img v-if="temp.jobType === 'POWERSHELL'"  class="task_img" src="../taskAdmin_png/powershell.png">
-        <img v-if="temp.jobType === 'PYTHON'"  class="task_img" src="../taskAdmin_png/python.png">
-        <img v-if="temp.jobType === 'VJOB'"  class="task_img" src="../taskAdmin_png/虚.png">
-        <img v-if="temp.jobType === 'JAVA'"  class="task_img" src="../taskAdmin_png/java.png">
-        <img v-if="temp.jobType === 'SCALA'"  class="task_img" src="../taskAdmin_png/scala.png">
-        <img v-if="temp.jobType === 'PYSPARK'"  class="task_img" src="../taskAdmin_png/pyspark.png">
-        <img v-if="temp.jobType === 'R'"  class="task_img" src="../taskAdmin_png/R.png">
-        <img v-if="temp.jobType === 'BATCH'"  class="task_img" src="../taskAdmin_png/任务批量构建.png">
-        <img v-if="temp.jobType === 'TEMPLATE'"  class="task_img" src="../taskAdmin_png/普通任务模板.png">
+        <el-col :span="12">
+          <el-form-item label="失败重试次数">
+            <el-input-number
+              v-model="temp.executorFailRetryCount"
+              :min="0"
+              :max="20"
+              size="small"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL'  || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="超时时间(分钟)">
+            <el-input-number
+              v-model="temp.executorTimeout"
+              :min="0"
+              :max="120"
+              size="small"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="路由策略" prop="executorRouteStrategy">
+            <el-select
+              v-model="temp.executorRouteStrategy"
+              placeholder="请选择路由策略"
+            >
+              <el-option
+                v-for="item in routeStrategies"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item  label="子任务">
+            <el-select
+              v-model="temp.childJobId"
+              multiple
+              placeholder="子任务"
+              value-key="id"
 
-        <span class="jobDesc">{{temp.jobDesc}}</span>
+            >
+              <el-option
+                v-for="item in jobIdList"
+                :key="item.id"
+                :label="item.jobDesc"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" />
+      </el-row>
+      <el-row
+        v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"
+        :gutter="20"
+      >
+        <el-col :span="12">
+          <el-form-item label="增量主键ID" prop="incStartId">
+            <el-input
+              v-model="temp.incStartId"
+              placeholder="首次增量使用"
+              style="width: 56%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="ID增量参数" prop="replaceParam">
+            <el-input
+              v-model="temp.replaceParam"
+              placeholder="-DstartId='%s' -DendId='%s'"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  label="reader数据源" prop="datasourceId">
+            <el-select
+              v-model="temp.datasourceId"
+              placeholder="reader数据源"
+              class="filter-item"
+            >
+              <el-option
+                v-for="item in dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="reader表" prop="readerTable">
+            <el-input v-model="temp.readerTable" placeholder="读表的表名" />
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="5">
+          <el-form-item  label="主键" label-width="40px" prop="primaryKey">
+            <el-input
+              v-model="temp.primaryKey"
+              placeholder="请填写主键字段名"
+            />
+          </el-form-item>
+        </el-col> -->
+      </el-row>
 
-        <div class="edit" @click="handlerUpdate(temp)">
-          <i class="el-icon-edit"></i>
-          编辑
-        </div>
-      </div>
-
-      <div class="detail">
-        <div class="detail_target">
-          <span class="key">执行器：</span>
-          <span class="value">{{ jobGroupName }}</span>
-        </div>
-         <div class="detail_target">
-          <span class="key">所属项目：</span>
-          <span class="value">{{ temp.projectName }}</span>
-        </div>
-         <div class="detail_target" v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" >
-          <span class="key">路由策略：</span>
-          <span class="value">{{ temp.executorRouteStrategy }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">子任务：</span>
-          <span class="value">{{ temp.childJobId }}</span>
-        </div>
-        <div class="detail_target" v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'">
-          <span class="key">阻塞处理：</span>
-          <span class="value">{{ temp.executorBlockStrategy }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">任务名称：</span>
-          <span class="value">{{ temp.jobDesc}}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">任务类型：</span>
-          <span class="value">{{ temp.jobType }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">Corn：</span>
-          <span class="value">{{ temp.jobCron }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">报警邮件：</span>
-          <span class="value">{{ temp.alarmEmail }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">失败重试次数：</span>
-          <span class="value">{{ temp.executorFailRetryCount }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">超时时间：</span>
-          <span class="value">{{ temp.executorTimeout }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">JVM启动参数：</span>
-          <span class="value">{{ temp.jvmParam }}</span>
-        </div>
-        <div class="detail_target" v-if="jobType === 'SQLJOB'">
-          <span class="key">schema：</span>
-          <span class="value">{{ temp.schema }}</span>
-        </div>
-      </div>
-
-      <div class="json_detail">
-        <p class="json_title">查看json：</p>
-      </div>
-      <div class="json_content">
-         <json-editor :caniEdit='false' v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
-      </div>
-
-      <div class="log_detail">
+      <el-row>
+      <el-col :span="8">
+          <el-form-item v-if="jobType === 'SQLJOB'" label="数据源连接：" prop="dataSourceId">
+            <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
+              <el-option
+                v-for="item in dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+      </el-col>
+      </el-row>
+      <el-row>
+      <el-col :span="8">
+          <el-form-item v-if="jobType === 'SQLJOB'" label="schema：" prop="schema">
+            <el-select v-model="temp.schema" placeholder="请选择schema">
+              <el-option
+                v-for="item in schemaList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+      </el-col>
+      </el-row>
+      <el-row
+        v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
+        :gutter="20"
+      >
+        <el-col :span="12">
+          <el-form-item label="增量开始时间" prop="incStartTime">
+            <el-date-picker
+              v-model="temp.incStartTime"
+              type="datetime"
+              placeholder="首次增量使用"
+              format="yyyy-MM-dd HH:mm:ss"
+              style="width: 57%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="增量时间字段" prop="replaceParam">
+            <el-input
+              v-model="temp.replaceParam"
+              placeholder="-DlastTime='%s' -DcurrentTime='%s'"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="增量时间格式" prop="replaceParamType">
+            <el-select
+              v-model="temp.replaceParamType"
+              placeholder="增量时间格式"
+              @change="incStartTimeFormat"
+            >
+              <el-option
+                v-for="item in replaceFormatTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row
+        v-if="temp.glueType === 'BEAN' && temp.incrementType === 3"
+        :gutter="20"
+      >
+        <el-col :span="12">
+          <el-form-item label="分区字段" prop="partitionField">
+            <el-input
+              v-model="partitionField"
+              placeholder="请输入分区字段"
+              style="width: 56%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="分区时间">
+            <el-select v-model="timeFormatType" placeholder="分区时间格式">
+              <el-option
+                v-for="item in timeFormatTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-input-number
+            v-model="timeOffset"
+            :min="-20"
+            :max="0"
+            style="width: 65%"
+          />
+        </el-col>
+      </el-row>
+      <el-row v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="JVM启动参数">
+            <el-input
+              v-model="temp.jvmParam"
+              placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div class="log_title">
+      <span>查看json</span>
+      <span @click="jsonshow = !jsonshow" class="unflod">
+        <i v-if="!jsonshow" class="el-icon-sort-up"></i>
+        <i v-else class="el-icon-sort-down"></i>
+      </span>
+    </div>
+    <transition name="fadejson">
+    <json-editor
+      v-if="jsonshow"
+      ref="jsonEditor"
+      v-model="temp.jobJson"
+      caniEdit='nocursor'
+    />
+    </transition>
+    <div slot="footer" class="dialog-footer ">
+      <div >
         <div class="log_title">
-          <p>运行日志</p>
+          <span>运行日志</span>
+          <span @click="showLog = !showLog" class="unflod">
+            <i v-if="!showLog" class="el-icon-sort-up"></i>
+            <i v-else class="el-icon-sort-down"></i>
+          </span>
         </div>
-        <div class="log_container">
+        <transition name="fade">
+        <div v-if="showLog" class="log_container">
           <span>{{newstlogContent}}</span>
         </div>
+        </transition>
       </div>
     </div>
+    <!-- </el-dialog> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
@@ -361,7 +602,8 @@
     <el-dialog title="日志信息" :visible.sync="logview">
       <jobLog ref="jobLog" :id='jobId' ></jobLog>
     </el-dialog>
-  </div>
+
+</div>
 </template>
 
 <script>
@@ -378,19 +620,10 @@ import PowershellEditor from "@/components/PowershellEditor";
 import * as datasourceApi from "@/api/datax-jdbcDatasource";
 import * as jobProjectApi from "@/api/datax-job-project";
 import { isJSON } from "@/utils/validate";
-import jobLog from "./jobLog";
+import jobLog from './jobLog';
 import { getTableSchema } from "@/api/metadata-query";
 
-import {
-  handlerExecute,
-  handlerViewLog,
-  handlerDelete,
-  handlerStart,
-  handlerStop,
-  loadById,
-  nextTriggerTime,
-  handlerUpdate,
-} from "../method";
+import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
 export default {
   name: "SimpleJob",
@@ -402,7 +635,7 @@ export default {
     PythonEditor,
     PowershellEditor,
     Cron,
-    jobLog,
+    jobLog
   },
   directives: { waves },
   filters: {
@@ -430,10 +663,10 @@ export default {
     };
     return {
       jsonshow: false,
-      newstlogContent: "",
-      jobId: "",
-      logview: false,
-      logData: [],
+      newstlogContent: '',
+      jobId:'',
+      logview:false,
+      logData:[],
       editFrom: true,
       switchVal: 1,
       showLog: false,
@@ -555,7 +788,7 @@ export default {
         this.timeFormatType = "yyyy-MM-dd";
         this.partitionField = "";
       },
-      executorList: [],
+      executorList: "",
       jobIdList: "",
       jobProjectList: "",
       dataSourceList: "",
@@ -577,10 +810,10 @@ export default {
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
-        { value: "BEAN", label: "DataX任务" },
+        { value: 'BEAN', label: 'DataX任务' },
         { value: "GLUE_SHELL", label: "Shell任务" },
-        { value: "GLUE_PYTHON", label: "Python任务" },
-        { value: "GLUE_POWERSHELL", label: "PowerShell任务" },
+        { value: 'GLUE_PYTHON', label: 'Python任务' },
+        { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
       incrementTypes: [
         { value: 0, label: "无" },
@@ -623,20 +856,21 @@ export default {
     this.getJobIdList();
     this.getJobProject();
     this.getDataSourceList();
-    this.getSchemaList();
+    this.getSchemaList()
     this.temp = this.jobInfo;
-    console.log(this.temp);
+    console.log(this.temp)
 
-    console.log("jobType", this.jobType);
+    console.log('jobType',this.jobType);
   },
 
   methods: {
     //执行一次
     handlerExecute(temp) {
-      handlerExecute.call(this, temp).then(() => {
+      handlerExecute.call(this, temp)
+      .then(() => {
         this.logList();
         this.showLog = true;
-      });
+      }) 
     },
 
     //查看日志
@@ -649,20 +883,19 @@ export default {
 
     //删除
     handlerDelete(temp) {
-      handlerDelete
-        .call(this, temp)
-        .then(() => {
-          this.$emit("deleteDetailTab", temp.id);
-          this.$emit("deleteJob", true);
-        })
-        .then(() => {});
+      handlerDelete.call(this, temp)
+      .then(()=>{
+        this.$emit('deleteDetailTab',temp.id);
+        this.$emit('deleteJob', true)
+      })
+      .then(()=>{
+        
+      })
     },
 
     //开关
     changeSwitch(temp) {
-      temp.triggerStatus === 1
-        ? handlerStart.call(this, temp)
-        : handlerStop.call(this, temp);
+      temp.triggerStatus === 1 ? handlerStart.call(this, temp) : handlerStop.call(this, temp)
     },
 
     //注册节点
@@ -678,47 +911,44 @@ export default {
     //编辑
     handlerUpdate(row) {
       console.log(row);
-      row.childJobId = row.childJobId?.join?.(",");
-      handlerUpdate.call(this, row);
+      row.childJobId = row.childJobId?.join?.(',')
+      handlerUpdate.call(this, row)
     },
 
     //实时更新日志
     logList() {
-      const param = Object.assign(
-        {},
-        {
-          current: 1,
-          size: 10,
-          jobGroup: 0,
-          jobId: this.temp.id,
-          logStatus: -1,
-          filterTime: "",
-        }
-      );
+      const param = Object.assign({},{
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        jobId: this.temp.id,
+        logStatus: -1,
+        filterTime: "",
+      });
       let status = 0;
-      log.getList(param).then((response) => {
+        log.getList(param).then((response) => {
         const { content } = response;
-
+        
         let newestLog = content.data[0] || {};
-        console.log("+++", content, newestLog);
-        if (!newestLog?.executorAddress) {
-          this.logList();
+        console.log('+++',content,newestLog);
+        if(!newestLog?.executorAddress){
+          this.logList()
           return;
         }
         status = newestLog.handleCode;
-        const triggerTime = Date.parse(newestLog?.triggerTime);
-        log
-          .viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
-          .then((response) => {
-            this.newstlogContent = response.content.logContent;
-          })
-          .then(() => {
-            if (status === 0) {
-              console.log("更新日志");
-              setTimeout(this.logList(), 1000);
-            }
-          });
+        const triggerTime = Date.parse(newestLog?.triggerTime)
+        log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
+        .then(response => {
+          this.newstlogContent = response.content.logContent
+        })
+        .then(() => {
+          if(status === 0){
+            console.log('更新日志');
+            setTimeout(this.logList(), 1000)
+          }
+        })
       });
+
     },
 
     //schema列表
@@ -728,6 +958,21 @@ export default {
       });
       this.schemaList = schemaList;
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -740,7 +985,6 @@ export default {
       job.getExecutorList().then((response) => {
         const { content } = response;
         this.executorList = content;
-        console.log('this.executorList',content);
       });
     },
     getJobIdList() {
@@ -757,7 +1001,7 @@ export default {
     getDataSourceList() {
       datasourceApi.getDataSourceList().then((response) => {
         this.dataSourceList = response;
-        console.log("this.dataSourceList", this.dataSourceList);
+        console.log('this.dataSourceList', this.dataSourceList);
       });
     },
     fetchData() {
@@ -778,11 +1022,11 @@ export default {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-      // this.$nextTick(() => {
-      //   this.$refs["dataForm"].clearValidate();
-      // });
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
     },
-
+    
     updateData() {
       this.temp.jobJson =
         typeof this.jobJson !== "string"
@@ -826,147 +1070,73 @@ export default {
               type: "success",
               duration: 2000,
             });
-            this.$emit("deleteDetailTab", tabName);
-            this.$emit("deleteJob");
+            this.$emit('deleteDetailTab', tabName)
+            this.$emit('deleteJob')
           });
         }
       });
     },
+    
+    
   },
 
   computed: {
-    jobType() {
-      return this.jobInfo.jobType;
-    },
-
-    jobGroupName(){
-      return this.executorList.find(element => element.id === this.temp.jobGroup)?.title;
+    jobType(){
+      return this.jobInfo.jobType
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-.header {
-  overflow: hidden;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(235, 235, 235, 1);
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
 }
-.header_action {
-  font-size: 14px;
-  font-family: PingFangHK-Regular, PingFangHK;
-  font-weight: 400;
-  color: #3d5fff;
-  line-height: 20px;
-  float: left;
+.el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.action_btn {
+  font-size:14px;
   cursor: pointer;
 }
-.header_action:not(:first-child) {
-  margin-left: 32px;
+.span_btn {
+  margin-left: 15px;
 }
-.header_action span {
-  margin-left: 8px;
+.span_btn > i {
+  color: gray;
 }
-.header_switch {
-  float: right;
-}
-.title {
-  margin-top: 31px;
-}
-.task_img {
-  width: 21px;
-}
-.jobDesc {
-  font-size: 24px;
-  font-family: PingFangHK-Medium, PingFangHK;
-  font-weight: 500;
-  color: #333333;
-  line-height: 33px;
-  margin-left: 10px;
-}
-.edit {
-  float:right;
-  font-size: 14px;
-  font-family: PingFangHK-Regular, PingFangHK;
-  font-weight: 400;
-  color: #3D5FFF;
-  height: 33px;
-  line-height: 33px;
-  cursor: pointer;
-}
-
-.detail {
-  margin-top: 20px;
-  display:flex;
-  flex-wrap: wrap;
-}
-
-.detail .key {
-  font-size: 14px;
-  font-family: PingFangHK-Regular, PingFangHK;
-  font-weight: 400;
-  color: #999999;
-  line-height: 20px;
-}
-
-.detail .value {
-
-  font-size: 14px;
-  font-family: PingFangHK-Regular, PingFangHK;
-  font-weight: 400;
-  line-height: 20px;
-}
-
-.detail_target {
-  width: 50%;
-  padding: 8px;
-  /* background: red; */
-}
-
-.json_title {
-  font-size: 14px;
-  font-family: PingFangHK-Regular, PingFangHK;
-  font-weight: 400;
-  color: #999999;
-  line-height: 20px;
-  padding: 8px;
-}
-
-.json_content >>> .CodeMirror {
-  background: white;
-  color: #333333;
-}
-.json_content >>> .CodeMirror-gutters {
-  background: #F8F8FA;
-  border:none;
-}
-.json_content >>> .CodeMirror-lint-markers {
-  width: 0;
-}
-.json_content >>> .CodeMirror-linenumber {
-  color: rgba(102, 102, 102, 1);
-  left: 0 !important;
-  /* width: 44px !important; */
-}
-
-.log_detail {
-  background: #F8F8FA;
-}
-
 .log_title {
-  height: 56px;
-  line-height: 56px;
-  font-size: 16px;
-  font-family: PingFangHK-Medium, PingFangHK;
-  font-weight: 500;
-  color: #333333;
-  padding-left: 24px;
-  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  color: #409eff;
+  font-size: 12px;
+  background: rgb(247, 247, 247);
+  padding: 10px;
+}
+.unflod {
+  color: black;
+  float: right;
+  cursor: pointer;
+}
+.log_container {
+  height: 350px;
+  border: 1px solid rgb(247, 247, 247);
+  background: white;
+  color: black;
+  font-size: 12px;
+  overflow-y: scroll;
+  padding: 10px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: height .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  height: 0;
 }
 
-.log_container {
-  padding:24px;
-  max-height: 400px;
-  overflow: scroll;
+.fadejson-enter-active, .fadejson-leave-active {
+  transition: opacity .5s;
+}
+.fadejson-enter, .fadejson-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

@@ -124,7 +124,7 @@ export function handlerUpdate(row) {
     }
     this.dialogStatus = 'update'
     this.dialogFormVisible = true
-    this.$nextTick(() => {
-      this.$refs['dataForm'].clearValidate()
-    })
+    // this.$nextTick(() => {
+    //   this.$refs['dataForm'].clearValidate()
+    // })
   }
