@@ -40,6 +40,8 @@ const translate = {
   'tag': '分类',
   'classification': '分类',
   'classifications': '分类',
+  'filter': '过滤器',
+  'query': '查找',
   'model': '模型',
   'pipeline': '管道',
   'createdtimestamp': '创建时间戳',
@@ -132,7 +134,8 @@ const translate = {
   'nonheapused': '非堆内存已使用',
   'includede': '包含已删除实体',
   'excludesc': '排除子分类',
-  'excludest': '排除子类型'
+  'excludest': '排除子类型',
+  'locationuri': 'URI地址'
 }
 // export default translate
 

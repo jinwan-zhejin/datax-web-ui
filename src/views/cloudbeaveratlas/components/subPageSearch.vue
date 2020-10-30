@@ -2,18 +2,20 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-29 19:15:23
+ * @LastEditTime: 2020-10-30 14:19:44
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageSearch.vue
  * @Description: 右半部分查找 子组件
 -->
 <template>
   <div>
-    <div style="height: 100%">
+    <el-row>
       <!-- <div id="create">
         <el-button type="primary" plain size="medium" icon="el-icon-plus" @click="createDialogShow = true">新建实体</el-button>
       </div> -->
-      <Search class="search" :entities="entities" @changedetail="changeDetail" @changeresult="changeResult" />
-    </div>
+      <el-col>
+        <Search class="search" :entities="entities" @changedetail="changeDetail" @changeresult="changeResult" />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -175,11 +177,17 @@ export default {
       right: 10px;
     }
   }
+  .el-row {
+    // overflow: hidden;
+    .el-col {
+      padding-top: calc(15vh)
+    }
+  }
   .search {
-    position: absolute;
-    top: 45%;
-    transform: translateY(-45%);
-    width: 72%;
+    // position: absolute;
+    // top: 45%;
+    // transform: translateY(-45%);
+    width: 100%;
     ::v-deep .searchBar {
       .el-input__inner {
         font-size: 16px;
