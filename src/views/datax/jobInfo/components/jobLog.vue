@@ -4,9 +4,13 @@
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
       fit
       highlight-current-row
+      :header-cell-style="{
+        background: '#F8F8FA',
+        'font-weight': 500,
+        color: '#333333',
+      }"
     >
       <el-table-column align="center" label="任务ID" width="80">
         <template slot-scope="scope">{{ scope.row.jobId }}</template>
@@ -19,7 +23,10 @@
       </el-table-column>
       <el-table-column label="调度结果" align="center" width="100">
         <template slot-scope="scope">
-          <span :style="`color:${scope.row.triggerCode == 500 ? 'red' : ''}`">{{
+          <span >
+            <div :style="`background:${scope.row.triggerCode == 500 ? 'rgba(254, 70, 70, 1)' : 'rgba(0, 182, 0, 1)'}`" class="yuan"></div>
+
+            {{
             statusList.find((t) => t.value === scope.row.triggerCode).label
           }}</span></template
         >
@@ -28,7 +35,7 @@
         <template slot-scope="scope">
           <el-popover placement="bottom" width="400" trigger="click">
             <h5 v-html="scope.row.triggerMsg" />
-            <el-button slot="reference">查看</el-button>
+            <el-link slot="reference" type="primary">查看</el-link>
           </el-popover>
         </template>
       </el-table-column>
@@ -37,7 +44,9 @@
       </el-table-column>
       <el-table-column label="执行结果" align="center">
         <template slot-scope="scope">
-          <span :style="`color:${scope.row.handleCode == 500 ? 'red' : ''}`">{{
+          <span >
+            <div :style="`background:${scope.row.handleCode == 500 ? 'rgba(254, 70, 70, 1)' : 'rgba(0, 182, 0, 1)'}`" class="yuan"></div>
+            {{
             statusList.find((t) => t.value === scope.row.handleCode).label
           }}</span></template
         >
@@ -46,18 +55,14 @@
         <template slot-scope="scope">
           <el-popover placement="bottom" width="400" trigger="click">
             <h5 v-html="scope.row.handleMsg" />
-            <el-button slot="reference">查看</el-button>
+            <el-link slot="reference" type="primary">查看</el-link>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="300">
         <template slot-scope="{ row }">
-          <el-button
-            v-show="row.executorAddress"
-            type="primary"
-            @click="handleViewJobLog(row)"
-            >日志查看</el-button
-          >
+          <el-link v-show="row.executorAddress"
+          @click="handleViewJobLog(row)" type="primary"><i class='el-icon-search'></i> 日志查看</el-link>
           <el-button
             v-show="row.handleCode === 0 && row.triggerCode === 200"
             type="primary"
@@ -180,5 +185,12 @@ export default {
 };
 </script>
 
-<style>
+<style scoped> 
+.yuan {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin: 2px;
+}
 </style>
