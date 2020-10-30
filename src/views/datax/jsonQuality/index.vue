@@ -944,6 +944,7 @@ export default {
           this.showNext = true;
           this.showSubmit = false;
           this.temp.jobJson = this.configJson;
+          this.temp.jobType = this.$store.state.taskAdmin.tabType;
           job.createJob(this.temp).then(() => {
             this.$notify({
               title: "Success",

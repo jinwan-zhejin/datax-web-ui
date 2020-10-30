@@ -652,6 +652,7 @@ export default {
 .el-bar-tab >>> .el-tabs__content {
   height: 660px;
   overflow: scroll;
+  padding: 0;
 }
 .el-bar-tab  {
   border: 0;

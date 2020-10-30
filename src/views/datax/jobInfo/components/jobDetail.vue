@@ -1,7 +1,8 @@
 <template>
   <div>
+    
     <div class="header">
-      <div class="header_action" @click="handlerExecute(temp)">
+      <div class="header_action" style="margin-left:10px;" @click="handlerExecute(temp)">
         <i class="el-icon-video-play"></i>
         <span>执行一次</span>
       </div>
@@ -41,7 +42,7 @@
         <i class="el-icon-delete-solid"></i>
         <span>删除</span>
       </div>
-      <div class="header_switch">
+      <div class="header_switch" style="margin-right:10px;">
         <el-switch
           v-model="temp.triggerStatus"
           active-color="#00A854"
@@ -147,14 +148,14 @@
       <div class="json_content">
          <json-editor :caniEdit='false' v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
       </div>
+    </div>
 
-      <div class="log_detail">
-        <div class="log_title">
-          <p>运行日志</p>
-        </div>
-        <div class="log_container">
-          <span>{{newstlogContent}}</span>
-        </div>
+    <div class="log_detail">
+      <div class="log_title">
+        <p>运行日志</p>
+      </div>
+      <div class="log_container">
+        <span>{{newstlogContent}}</span>
       </div>
     </div>
 
@@ -870,6 +871,11 @@ export default {
 .header_switch {
   float: right;
 }
+
+.content {
+  padding: 0 16px 16px;
+}
+
 .title {
   margin-top: 31px;
 }
@@ -951,22 +957,26 @@ export default {
 
 .log_detail {
   background: #F8F8FA;
+  border: 2px solid #F8F8FA;
+  border-left: none;
 }
 
 .log_title {
   height: 56px;
   line-height: 56px;
+  width: 110px;
   font-size: 16px;
   font-family: PingFangHK-Medium, PingFangHK;
   font-weight: 500;
   color: #333333;
   padding-left: 24px;
-  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  background: white;
 }
 
 .log_container {
   padding:24px;
   max-height: 400px;
   overflow: scroll;
+  background: white;
 }
 </style>
