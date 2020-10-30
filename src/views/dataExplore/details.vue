@@ -32,7 +32,7 @@
                     <el-table-column
                       v-for="item in tableData1"
                       :key="item.name"
-                      width="200"
+                      width="230"
                       :prop="item.name"
                       align="left"
                     >
@@ -67,7 +67,7 @@
                           <p v-show="item.type === 'date'" class="p2">{{ item.statistics }}</p>
                           <p v-show="item.type === 'date'">更新时间</p>
                           <!-- <v-chart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :options="polar" /> -->
-                          <vechart v-show="item.type === 'number'" style="width: 150px;height: 100px;margin: 0 auto;" :data="item.statistics" />
+                          <vechart v-show="item.type === 'number'" class="vc" style="width: 150px;height: 100px;" :data="item.statistics" />
                         </div>
                       </template>
                     </el-table-column>
@@ -666,9 +666,15 @@ export default {
                       }
                     }
                     .t_header_02 {
-                      height: 100px;
+                      height: 130px;
                       padding: 0px 10px;
                       position: relative;
+                      .vc {
+                        position: absolute;
+                        top: 21%;
+                        right: 50%;
+                        transform: translate(50%)
+                      }
                       .p1 {
                         font-weight: 700px;
                         position: absolute;
