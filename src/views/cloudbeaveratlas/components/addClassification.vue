@@ -2,17 +2,17 @@
  * @Date: 2020-10-16 10:22:36
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-26 16:51:02
+ * @LastEditTime: 2020-10-30 19:14:15
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addClassification.vue
  * @Description: 添加分类
 -->
 
 <template>
   <div>
-    <el-dialog width="70%" :visible.sync="addClassificationShow" :show-close="true" :before-close="cancelAdd">
-      <div slot="title" class="dialog-title">
+    <el-dialog width="70%" title="添加分类" :visible.sync="addClassificationShow" :show-close="true" :before-close="cancelAdd">
+      <!-- <div slot="title" class="dialog-title">
         添加分类
-      </div>
+      </div> -->
       <el-form ref="dataForm" :model="dataForm">
         <el-form-item prop="classificationSelected" :rules="[{ required: true, message: '请选择分类'}]" label="分类">
           <el-select v-model="dataForm.classificationSelected" filterable placeholder="-- 从下拉列表中选择一个分类 --" clearable>
@@ -78,7 +78,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" plain type="primary" @click="cancelAdd">取 消</el-button>
-        <el-button size="small" plain type="primary" @click="submitAdd('dataForm')">确 定</el-button>
+        <el-button size="small" type="primary" @click="submitAdd('dataForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
