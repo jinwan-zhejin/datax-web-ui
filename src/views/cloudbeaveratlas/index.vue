@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 18:01:32
+ * @LastEditTime: 2020-10-30 19:00:34
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -1149,11 +1149,15 @@ export default {
       }
       .el-collapse {
         height: calc(100vh - 230px);
-        overflow-y: auto;
+        overflow-y: hidden;
         border: 0;
         .el-collapse-item {
           .collapse-tree {
             max-height:400px;
+            overflow-y:hidden;
+          }
+          .collapse-tree:hover {
+            // max-height:400px;
             overflow-y:auto;
           }
           .collapse-more {
@@ -1196,6 +1200,9 @@ export default {
           }
         }
       }
+      .el-collapse:hover {
+        overflow-y: auto;
+      }
       .el-button {
         right: 5px;
       }
@@ -1236,7 +1243,10 @@ export default {
         // margin: 24px;
         margin: 24px 24px 24px 10px;
         padding: 0;
-        // overflow: hidden;
+        overflow: hidden;
+      }
+      .el-main:hover {
+        overflow: auto;
       }
     }
   }
@@ -1306,32 +1316,32 @@ export default {
 /*定义滑块颜色、内阴影及圆角*/
 ::-webkit-scrollbar-thumb { // 滚动的滑块
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -ms-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -o-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -ms-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -o-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
   background: rgba(58, 58, 58, 0.1);
 }
 ::-webkit-scrollbar-thumb:hover { // 滚动的滑块
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -ms-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -o-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -ms-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  -o-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
   background: rgba(0,0,0,0.3);
 }
 /*定义滚动条的轨道颜色、内阴影及圆角*/
-::-webkit-scrollbar-track { // 外层轨道
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -ms-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  -o-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  border-radius: 8px;
-  background: rgba(209, 209, 209, 0.1);
-}
+// ::-webkit-scrollbar-track { // 外层轨道
+  // -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  // -moz-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  // -ms-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  // -o-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  // box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  // border-radius: 8px;
+  // background: rgba(209, 209, 209, 0.1);
+// }
 
 ::v-deep .el-button--primary.is-plain {
   background: white;
