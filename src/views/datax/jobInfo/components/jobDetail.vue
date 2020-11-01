@@ -992,7 +992,7 @@ export default {
 }
 
 .log_container {
-  /* padding:24px; */
+  padding-left:24px;
   height: 400px;
   overflow: scroll;
   background: white;
