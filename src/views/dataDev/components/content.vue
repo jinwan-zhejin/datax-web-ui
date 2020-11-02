@@ -14,20 +14,20 @@
         <div class="table">
             <span>
                 查看表结构
-                <em>({{ tableList.length }} in {{ dataBaseid }})</em>
+                <em>({{ tableList.length }})</em>
             </span>
             <el-select v-model="tableId" style="margin-top:10px;width:100%" clearable placeholder="请选择表" @change="selectTable">
-                <el-option v-for="item in tableList" :key="item" :label="item.name + ' ' + item.comment" :value="item" />
+                <el-option v-for="item in tableList" :key="item.name" :label="item.name + ' ' + item.comment" :value="item.name + ' ' + item.comment" />
             </el-select>
         </div>
         <div>
             <el-collapse v-model="activeNames">
                 <el-collapse-item name="1">
                     <template slot="title">
-                        <p class="tableName">{{ tableName }}</p>
+                        <p class="tableName">{{ tableNameWithComment }}</p>
                     </template>
                     <div class="disnone" style="max-height:360px;overflow:scroll;">
-                        <div v-for="(item) in columnList" :key="item">{{ item }}</div>
+                        <div v-for="(item) in columnList" :key="item.COLUMN_NAME">{{ item.COLUMN_NAME + ' (' + item.DATA_TYPE + ') ' + item.COLUMN_COMMENT}}</div>
                     </div>
                 </el-collapse-item>
             </el-collapse>
@@ -49,7 +49,7 @@ import {
 } from '@/api/datax-jdbcDatasource';
 import {
     getTables,
-    getColumns,
+    getTableColumns,
     getTableSchema,
     getTableList,
     getTableListWithComment
@@ -75,7 +75,8 @@ export default {
             dragging: false, // 是否拖拽,
             sqlHeight: 200,
             tableHeight: 300,
-            tableId: ''
+            tableId: '',
+            tableNameWithComment: ''
         };
     },
     watch: {
@@ -126,16 +127,20 @@ export default {
         },
         // 获取字段
         getClo() {
-            getColumns({
+            getTableColumns({
+                // getColumns({
                 datasourceId: this.dataBaseid,
-                tableName: this.tableName
+                tableName: this.tableName,
+                schema: this.schemaId
             }).then((res) => {
-                this.columnList = res;
+                console.log(res)
+                this.columnList = res.datas;
             });
         },
         // 选择表
         selectTable(val) {
-            this.tableName = val;
+            this.tableNameWithComment = val
+            this.tableName = val.split(" ")[0];
             this.getClo();
             this.activeNames = ['1']
         },
@@ -191,7 +196,7 @@ export default {
 .tableName {
     color: green;
     font-weight: bolder;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .P-tit {
