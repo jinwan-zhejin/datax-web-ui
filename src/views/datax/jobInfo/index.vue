@@ -464,7 +464,7 @@ export default {
       } else {
         this.jobDetailIdx = a.content.id + '';
       }
-      this.jobType = 'SHOWDETAIL';
+      // this.jobType = 'SHOWDETAIL';
     },
 
     getList(data) {
