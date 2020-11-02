@@ -22,24 +22,26 @@
       />
       <el-table-column
         prop="name"
-        align="center"
+        align="left"
         label="规则名称"
+        width="220"
       />
       <el-table-column
         prop="code"
-        align="center"
+        align="left"
         label="规则编码"
-        width="120"
+        width="150"
       />
       <el-table-column
         prop="description"
-        align="center"
+        align="left"
         label="规则描述"
+        width="350"
       />
       <el-table-column
-        align="center"
+        align="left"
         prop="personaliseType"
-        wdith="120"
+        wdith="100"
         label="个性化规则"
       >
         <template v-slot:default="row">
@@ -48,8 +50,8 @@
         </template>a
       </el-table-column>
       <el-table-column
-        align="center"
-        wdith="120"
+        align="left"
+        wdith="80"
         label="操作"
       >
         <template v-slot:default="row">
@@ -72,11 +74,11 @@
       :visible.sync="AddVisible"
       width="40%"
     >
-      <el-form ref="addForm" :model="addForm" label-position="left" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="规则名称" prop="name">
+      <el-form ref="addForm" :model="addForm" label-position="right" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="规则名称:" prop="name">
           <el-input v-model="addForm.name" placeholder="请输入入参名称" />
         </el-form-item>
-        <el-form-item label="规则大类" prop="type">
+        <el-form-item label="规则大类:" prop="type">
           <el-select v-model="addForm.type" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in options"
@@ -86,10 +88,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="规则编码" prop="code">
+        <el-form-item label="规则编码:" prop="code">
           <el-input v-model="addForm.code" @input="checkRepeat" />
         </el-form-item>
-        <el-form-item label="规则描述" prop="desc">
+        <el-form-item label="规则描述:" prop="desc">
           <el-input v-model="addForm.desc" placeholder="请输入规则描述" type="textarea" />
         </el-form-item>
       </el-form>
@@ -104,11 +106,11 @@
       :visible.sync="EditVisible"
       width="40%"
     >
-      <el-form ref="addForm" :model="editForm" label-position="left" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="规则名称" prop="name">
+      <el-form ref="addForm" :model="editForm" label-position="right" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="规则名称:" prop="name">
           <el-input v-model="editForm.name" placeholder="请输入入参名称" />
         </el-form-item>
-        <el-form-item label="规则大类" prop="type">
+        <el-form-item label="规则大类:" prop="type">
           <el-select v-model="editForm.type" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in options"
@@ -118,10 +120,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="规则编码" prop="code">
+        <el-form-item label="规则编码:" prop="code">
           <el-input v-model="editForm.code" @input="checkRepeat" />
         </el-form-item>
-        <el-form-item label="规则描述" prop="desc">
+        <el-form-item label="规则描述:" prop="desc">
           <el-input v-model="editForm.desc" placeholder="请输入规则描述" type="textarea" />
         </el-form-item>
       </el-form>
@@ -136,8 +138,8 @@
       :visible.sync="RelateVisible"
       width="40%"
     >
-      <el-form ref="form" :model="form" label-position="left" label-width="120px" class="demo-ruleForm">
-        <el-form-item label="规则大类">
+      <el-form ref="form" :model="form" label-position="right" label-width="120px" class="demo-ruleForm">
+        <el-form-item label="规则大类:">
           <el-select v-model="form.class" style="width:100%" placeholder="请选择" @change="searchSubclass">
             <el-option
               v-for="item in options"
@@ -147,7 +149,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="规则名称">
+        <el-form-item label="规则名称:">
           <el-select v-model="form.subclass" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in Subclass"
@@ -157,7 +159,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="个性化规则分类">
+        <el-form-item label="个性化规则分类:">
           <el-select v-model="form.classify" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in Classify"
@@ -575,5 +577,24 @@ export default {
     float: right;
     padding: 20px;
   }
+  .el-dialog {
+      border-radius: 8px;
+      .el-dialog__title {
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+      }
+      .el-dialog__body {
+        padding: 20px;
+        .el-form {
+          padding-right: 20px;
+        }
+      }
+      .el-dialog__footer{
+        border-top: 1px solid #F3F3F3;
+        padding: 20px;
+      }
+    }
 }
 </style>
