@@ -9,7 +9,7 @@
       >
         <el-table-column
           label="源字段"
-          width="280"
+          
         >
           <template slot-scope="scope">
             <el-select
@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column
           label="目标字段"
-          width="280"
+          
         >
           <template slot-scope="scope">
             <el-select

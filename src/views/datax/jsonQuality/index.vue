@@ -19,6 +19,8 @@
         </div>
       </div>
 
+      <div class="main_content">
+
       <div v-show="active === 1" class="step1">
         <Reader ref="reader" />
       </div>
@@ -101,6 +103,8 @@
           ref="jsonEditor"
           v-model="configJson"
         />
+      </div>
+
       </div>
 
       <el-dialog
@@ -1084,5 +1088,14 @@ export default {
   text-align: right;
   border-top:1px solid #f3f3f3;
   margin-top: 0;
+}
+
+.main_content {
+  width: 60%;
+  margin:0 auto;
+}
+
+.main_content >>> .el-select {
+  width: 100%;
 }
 </style>

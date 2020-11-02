@@ -5,7 +5,7 @@
         <el-select
           v-model="writerForm.datasourceId"
           filterable
-          style="width: 300px;"
+          
           @change="wDsChange"
         >
           <el-option
@@ -33,7 +33,7 @@
           default-first-option
           filterable
           :disabled="writerForm.ifCreateTable"
-          style="width: 300px"
+          
           @change="wTbChange"
         >
           <el-option
@@ -56,10 +56,10 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="前置sql语句:">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" style="width: 42%" />
+        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea"  />
       </el-form-item>
       <el-form-item label="后置sql语句:">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" style="width: 42%" />
+        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" />
       </el-form-item>
     </el-form>
   </div>
