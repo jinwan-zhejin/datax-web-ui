@@ -111,17 +111,17 @@ module.exports = {
       //     ['^' + '/welcome']: '/datains/welcome'
       //   }
       // },
-      // '/dbeaver/gql': {
-      //   target: 'http://192.168.3.74:8979',
-      //   changeOrigin: true,
-      //   // headers: {
-      //   //   host: "http://192.168.3.74:8978",
-      //   //   origin: "http://192.168.3.74:8978"
-      //   // }
-      //   pathRewrite: {
-      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-      //   }
-      // },
+      '/dbeaver/gql': {
+        target: 'http://47.103.79.104:8979',
+        changeOrigin: true,
+        // headers: {
+        //   host: "http://192.168.3.74:8978",
+        //   origin: "http://192.168.3.74:8978"
+        // }
+        pathRewrite: {
+          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+        }
+      },
       // /api
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       // 代理 /dev-api/api 到 http://localhost:8066/api

@@ -11,7 +11,7 @@
         <el-select
           v-model="readerForm.datasourceId"
           filterable
-          style="width: 300px"
+          
           @change="rDsChange"
         >
           <el-option
@@ -37,7 +37,7 @@
           allow-create
           default-first-option
           filterable
-          style="width: 300px"
+          
           @change="schemaChange"
         >
           <el-option
@@ -54,7 +54,7 @@
           allow-create
           default-first-option
           filterable
-          style="width: 300px"
+          
           @change="rTbChange"
         >
           <el-option
@@ -66,7 +66,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="添加规则字段：">
-        <div style="border:1px solid #f3f3f3;width:80%;">
+        <div style="border:1px solid #f3f3f3;width:100%;">
           <el-table
             :data="tableData1"
             :header-cell-style="{
@@ -149,7 +149,7 @@
           :autosize="{ minRows: 3, maxRows: 20 }"
           type="textarea"
           placeholder="sql查询，一般用于多表关联查询时才用"
-          style="width: calc(80% - 100px)"
+          style="width: calc(100% - 102px)"
         />
         <el-button
           type="primary"
@@ -160,7 +160,6 @@
         <el-input
           v-model="readerForm.splitPk"
           placeholder="切分主键"
-          style="width: 80%"
         />
       </el-form-item>
       <el-form-item label="表所有字段：">
@@ -461,7 +460,7 @@ export default {
 .addRow_btn {
   color: rgba(61, 95, 255, 1);
   text-align: center;
-  width: 80%;
+  width: 100%;
   cursor: pointer;
   /* background: red; */
   border: 1px solid #F3F3F3;;

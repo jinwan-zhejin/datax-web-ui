@@ -236,6 +236,8 @@ export default {
         name: 'JdbcDatasource',
         params: row
       })
+      sessionStorage.setItem('projectId', row.id)
+      sessionStorage.setItem('JobName', row.name)
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
