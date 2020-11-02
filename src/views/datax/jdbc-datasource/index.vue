@@ -2602,7 +2602,7 @@ export default {
 
         .bgcForm {
             background-color: #f5f6fa;
-            padding: 10px 16px;
+            padding: 5px 16px;
             padding-bottom: 0px;
             overflow: hidden;
         }
@@ -2632,7 +2632,7 @@ export default {
                     margin: 0px auto;
 
                     .el-form-item {
-                        margin-bottom: 10px;
+                        margin-bottom: 5px;
                     }
                 }
             }
