@@ -1,3 +1,6 @@
+import * as job from '@/api/datax-job-info';
+
+
 const state = {
   allTabType: {
     'NORMAL': '普通任务',
@@ -91,9 +94,22 @@ const mutations = {
 }
 
 const actions = {
-// addErrorLog({ commit }, log) {
-//     commit('ADD_ERROR_LOG', log)
-// },
+
+  getTaskList({ commit, state }) { //获取任务列表
+    const listQuery = {
+      current: 1,
+      size: 10000,
+      jobGroup: 0,
+      projectIds: state.projectId,
+      triggerStatus: -1,
+      jobDesc: '',
+      glueType: ''
+    };
+
+    job.getList(listQuery).then(response => {
+      commit('SET_TASKDETAIL_LIST', response.content.data)
+    })
+  },
 }
 
 export default {
