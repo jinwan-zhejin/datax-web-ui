@@ -33,25 +33,26 @@
     >
       <el-table-column
         type="index"
-        align="left"
+        align="center"
         label="序号"
       />
       <el-table-column
         prop="name"
         align="left"
         label="入参名称"
-        width="180"
+        width="300"
       />
       <el-table-column
         prop="code"
         align="left"
         label="入参编码"
-        width="180"
+        width="300"
       />
       <el-table-column
         prop="joinType"
         align="left"
         label="入参类型"
+        width="150"
       >
         <template v-slot:default="row">
           {{ showType(row.row) }}
@@ -70,7 +71,7 @@
       <el-table-column
         align="left"
         label="操作栏"
-        wdith="100"
+        wdith="60"
       >
         <template v-slot:default="row">
           <!-- <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
@@ -105,11 +106,11 @@
       :visible.sync="AddVisible"
       width="40%"
     >
-      <el-form ref="addForm" :model="addForm" :rules="rules" label-position="left" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="入参名称" prop="name">
+      <el-form ref="addForm" :model="addForm" :rules="rules" label-position="right" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="入参名称:" prop="name">
           <el-input v-model="addForm.name" placeholder="请输入入参名称" />
         </el-form-item>
-        <el-form-item label="入参类型" prop="type">
+        <el-form-item label="入参类型:" prop="type">
           <el-select v-model="addForm.type" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in formOptions"
@@ -119,7 +120,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="入参编码" prop="code">
+        <el-form-item label="入参编码:" prop="code">
           <el-input v-model="addForm.code1" disabled style="width:30%;marginRight: 2px" />
           <el-input v-model="addForm.code2" placeholder="示例:XBWA" style="width:30%;marginRight: 2px" />
           <el-input v-model="addForm.code3" placeholder="示例:01" style="width:30%;" @input="checkRepeat" />
@@ -127,7 +128,7 @@
             <i class="el-icon-info" />
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="入参表达式" prop="expression">
+        <el-form-item label="入参表达式:" prop="expression">
           <el-input v-model="addForm.expression" placeholder="请输入入参表达式" type="textarea" />
         </el-form-item>
       </el-form>
@@ -142,11 +143,11 @@
       :visible.sync="EditVisible"
       width="40%"
     >
-      <el-form ref="editForm" :model="editForm" :rules="rules" label-position="left" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="入参名称" prop="name">
+      <el-form ref="editForm" :model="editForm" :rules="rules" label-position="right" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="入参名称:" prop="name">
           <el-input v-model="editForm.name" />
         </el-form-item>
-        <el-form-item label="入参类型" prop="type">
+        <el-form-item label="入参类型:" prop="type">
           <el-select v-model="editForm.type" style="width:100%" placeholder="请选择">
             <el-option
               v-for="item in formOptions"
@@ -156,12 +157,12 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="入参编码" prop="code">
+        <el-form-item label="入参编码:" prop="code">
           <el-input v-model="editForm.code1" disabled style="width:30%;marginRight: 2px" />
           <el-input v-model="editForm.code2" style="width:30%;marginRight: 2px" />
           <el-input v-model="editForm.code3" style="width:30%;" @input="checkRepeat_edit" /><i class="el-icon-info" />
         </el-form-item>
-        <el-form-item label="入参表达式" prop="expression">
+        <el-form-item label="入参表达式:" prop="expression">
           <el-input v-model="editForm.expression" type="textarea" />
         </el-form-item>
       </el-form>
@@ -543,12 +544,29 @@ export default {
       padding: 20px;
     }
     .el-dialog {
-      #h_200 {
-        .el-textarea__inner{
-          height: 200px;
-          overflow-y: auto;
-          /* overflow-y: auto;兼容ie  */
+      border-radius: 8px;
+      .el-dialog__title {
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+      }
+      .el-dialog__body {
+        padding: 20px;
+        .el-form {
+          padding-right: 20px;
         }
+        #h_200 {
+          .el-textarea__inner{
+            height: 200px;
+            overflow-y: auto;
+            /* overflow-y: auto;兼容ie  */
+          }
+        }
+      }
+      .el-dialog__footer{
+        border-top: 1px solid #F3F3F3;
+        padding: 20px;
       }
     }
   }
