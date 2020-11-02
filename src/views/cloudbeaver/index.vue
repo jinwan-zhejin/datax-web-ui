@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="container">
+  <div ref="container" class="container">
     <!-- <el-container :style="`height:${containerHeight}px`">
       <el-aside width="30%" class="left-container">
         <div class="leftBtn">
@@ -21,62 +21,66 @@
   </div>
 </template>
 <script>
-import { list } from "@/api/datax-jdbcDatasource";
-import { getTables } from "@/api/metadata-query";
-import CreateNewLink from "./components/createLink";
+import { list } from '@/api/datax-jdbcDatasource';
+import { getTables } from '@/api/metadata-query';
+import CreateNewLink from './components/createLink';
 export default {
-  name: "Dbeaver",
+  name: 'Dbeaver',
   components: {
-    CreateNewLink,
+    CreateNewLink
   },
   data() {
     return {
       openWin: false,
       containerHeight: 500,
       props: {
-        label: "datasourceName",
-        children: "zones",
-        isLeaf: "leaf",
-      },
+        label: 'datasourceName',
+        children: 'zones',
+        isLeaf: 'leaf'
+      }
     };
+  },
+  mounted() {
+    // 设置容器高度
+    this.containerHeight = this.$refs.container.parentElement.offsetHeight - 10;
   },
 
   methods: {
     async loadNode(node, resolve) {
       if (node.level === 0) {
-        //获取数据源列表
+        // 获取数据源列表
         list({ current: 1, size: 100000 }).then((res) => {
           return resolve(res.records || []);
         });
       }
       if (node.level === 1) {
-        //获取数据源列表
+        // 获取数据源列表
         return resolve([
           {
-            datasourceName: "数据库",
+            datasourceName: '数据库',
             id: node.data.id
           },
           {
-            datasourceName: "用户",
+            datasourceName: '用户',
             id: node.data.id
           },
           {
-            datasourceName: "管理员",
+            datasourceName: '管理员',
             id: node.data.id
           },
           {
-            datasourceName: "系统信息",
+            datasourceName: '系统信息',
             id: node.data.id
-          },
+          }
         ]);
       }
       if (node.level === 2 && node.data.datasourceName === '数据库') {
-        //获取数据源下的表
+        // 获取数据源下的表
         getTables({ datasourceId: node.data.id }).then((res) => {
           const result = res.map((item) => {
             return {
               datasourceName: item,
-              leaf: true,
+              leaf: true
             };
           });
           return resolve(result || []);
@@ -89,31 +93,27 @@ export default {
     renderContent(h, { node, data, store }) {
       if (node.level === 1 || node.level === 2) {
         return (
-          <span class="custom-tree-node" style="color:black">
+          <span class='custom-tree-node' style='color:black'>
             <i
-              class="el-icon-folder"
-              style="color:orange;margin-right:3px;"
+              class='el-icon-folder'
+              style='color:orange;margin-right:3px;'
             ></i>
             <span>{node.label}</span>
           </span>
         );
       } else if (node.level === 3) {
         return (
-          <span class="custom-tree-node" style="color:black">
+          <span class='custom-tree-node' style='color:black'>
             <i
-              class="el-icon-document"
-              style="color:blue;margin-right:3px;"
+              class='el-icon-document'
+              style='color:blue;margin-right:3px;'
             ></i>
             <span>{node.label}</span>
           </span>
         );
       }
-    },
-  },
-  mounted() {
-    //设置容器高度
-    this.containerHeight = this.$refs.container.parentElement.offsetHeight - 10;
-  },
+    }
+  }
 };
 </script>
 <style  scoped>

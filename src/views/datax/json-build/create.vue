@@ -106,9 +106,10 @@
         <cron v-model="temp.jobCron" />
         <span slot="footer" class="dialog-footer">
           <el-button @click="showCronBox = false">关闭</el-button>
-          <el-button type="primary" @click="showCronBox = false"
-            >确 定</el-button
-          >
+          <el-button
+            type="primary"
+            @click="showCronBox = false"
+          >确 定</el-button>
         </span>
       </el-dialog>
       <el-form-item label="Cron：" prop="jobCron">
@@ -166,87 +167,87 @@
 </template>
 
 <script>
-import * as job from "@/api/datax-job-info";
-import * as jobProjectApi from "@/api/datax-job-project";
-import * as datasourceApi from "@/api/datax-jdbcDatasource";
-import Cron from "@/components/Cron";
+import * as job from '@/api/datax-job-info';
+import * as jobProjectApi from '@/api/datax-job-project';
+import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import Cron from '@/components/Cron';
 
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
+import ShellEditor from '@/components/ShellEditor';
+import PythonEditor from '@/components/PythonEditor';
+import PowershellEditor from '@/components/PowershellEditor';
 
 export default {
-  name: "create",
+  name: 'Create',
   components: { Cron, ShellEditor, PythonEditor, PowershellEditor },
-  props: ["Fjson"],
+  props: ['fjson'],
   data() {
     return {
       showCronBox: false,
       temp: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
-        childJobIdArr: [],
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: '',
+        childJobIdArr: []
       },
 
       executorList: [],
 
       routeStrategies: [
-        { value: "FIRST", label: "第一个" },
-        { value: "LAST", label: "最后一个" },
-        { value: "ROUND", label: "轮询" },
-        { value: "RANDOM", label: "随机" },
-        { value: "CONSISTENT_HASH", label: "一致性HASH" },
-        { value: "LEAST_FREQUENTLY_USED", label: "最不经常使用" },
-        { value: "LEAST_RECENTLY_USED", label: "最近最久未使用" },
-        { value: "FAILOVER", label: "故障转移" },
-        { value: "BUSYOVER", label: "忙碌转移" },
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
 
       blockStrategies: [
-        { value: "SERIAL_EXECUTION", label: "单机串行" },
-        { value: "DISCARD_LATER", label: "丢弃后续调度" },
-        { value: "COVER_EARLY", label: "覆盖之前调度" },
+        { value: 'SERIAL_EXECUTION', label: '单机串行' },
+        { value: 'DISCARD_LATER', label: '丢弃后续调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
 
       glueTypes: [
-        { value: "BEAN", label: "DataX任务" },
-        { value: "GLUE_SHELL", label: "Shell任务" },
-        { value: "GLUE_PYTHON", label: "Python任务" },
-        { value: "GLUE_POWERSHELL", label: "PowerShell任务" },
+        { value: 'BEAN', label: 'DataX任务' },
+        { value: 'GLUE_SHELL', label: 'Shell任务' },
+        { value: 'GLUE_PYTHON', label: 'Python任务' },
+        { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
 
       incrementTypes: [
-        { value: 0, label: "无" },
-        { value: 1, label: "主键自增" },
-        { value: 2, label: "时间自增" },
-        { value: 3, label: "HIVE分区" },
+        { value: 0, label: '无' },
+        { value: 1, label: '主键自增' },
+        { value: 2, label: '时间自增' },
+        { value: 3, label: 'HIVE分区' }
       ],
 
       jobProjectList: [],
@@ -256,20 +257,27 @@ export default {
       dataSourceList: [],
 
       replaceFormatTypes: [
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "HH:mm:ss", label: "HH:mm:ss" },
-        { value: "yyyy/MM/dd HH:mm:ss", label: "yyyy/MM/dd HH:mm:ss" },
-        { value: "yyyy-MM-dd HH:mm:ss", label: "yyyy-MM-dd HH:mm:ss" },
-        { value: "Timestamp", label: "时间戳" },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'HH:mm:ss', label: 'HH:mm:ss' },
+        { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
+        { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
 
       timeFormatTypes: [
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "yyyyMMdd", label: "yyyyMMdd" },
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
-      ],
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'yyyyMMdd', label: 'yyyyMMdd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
+      ]
     };
+  },
+
+  beforeMount() {
+    this.getExecutor();
+    this.getJobProject();
+    this.getJobIdList();
+    this.getDataSourceList();
   },
   methods: {
     getExecutor() {
@@ -301,38 +309,31 @@ export default {
     createTask() {
       this.temp.jobJson = JSON.stringify(this.Fjson, null, 2);
       this.temp.projectId = this.$store.state.taskAdmin.projectId;
-      console.log("this.Fjson", this.Fjson);
-      let str = "";
+      console.log('this.Fjson', this.Fjson);
+      let str = '';
       this.temp.childJobIdArr.forEach((ele) => {
-        str = str + ele + ",";
+        str = str + ele + ',';
       });
       this.temp.childJobId = str;
       this.temp.executorHandler =
-        this.temp.glueType === "BEAN"
-          ? "executorJobHandler"
-          : "executorJobHandler";
+        this.temp.glueType === 'BEAN'
+          ? 'executorJobHandler'
+          : 'executorJobHandler';
 
       this.temp.jobType = this.$store.state.taskAdmin.tabType;
-      
+
       job.createJob(this.temp).then(() => {
         this.$notify({
-          title: "Success",
-          message: "Created Successfully",
-          type: "success",
-          duration: 2000,
+          title: 'Success',
+          message: 'Created Successfully',
+          type: 'success',
+          duration: 2000
         });
-        this.$emit("refresh");
-        this.$store.commit("SET_TAB_TYPE", "");
+        this.$emit('refresh');
+        this.$store.commit('SET_TAB_TYPE', '');
       });
-    },
-  },
-
-  beforeMount() {
-    this.getExecutor();
-    this.getJobProject();
-    this.getJobIdList();
-    this.getDataSourceList();
-  },
+    }
+  }
 };
 </script>
 

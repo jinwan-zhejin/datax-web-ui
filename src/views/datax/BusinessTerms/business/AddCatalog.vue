@@ -7,9 +7,9 @@
     append-to-body
   >
     <el-form
+      ref="addCataLogForm"
       :model="addCataLogForm"
       :rules="rules"
-      ref="addCataLogForm"
       size="small"
       label-width="80px"
       label-position="right"
@@ -19,15 +19,14 @@
           v-model="addCataLogForm.name"
           maxlength="20"
           placeholder="最大长度为20个字符"
-        ></el-input>
+        />
       </el-form-item>
       <el-form-item label="目录描述" prop="explanation">
         <el-input
           v-model="addCataLogForm.explanation"
           type="textarea"
           :rows="3"
-        >
-        </el-input>
+        />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -36,37 +35,63 @@
         type="danger"
         size="small"
         @click="submitCatalog('addCataLogForm')"
-        >确 定</el-button
-      >
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import * as businessTermsApi from "@/api/datax-business-terms";
+import * as businessTermsApi from '@/api/datax-business-terms';
 export default {
-  name: "",
+  name: '',
   components: {},
-  props: ["addCatalogVisible", "isEditCatalog"], // 接收父组件发来的dialog可视、编辑dialog参数
+  props: ['addCatalogVisible', 'isEditCatalog'], // 接收父组件发来的dialog可视、编辑dialog参数
   data() {
     return {
       isOuter: false,
       addCataLogForm: {
-        pid: "",
-        id: "",
-        name: "",
-        explanation: "",
-        iscodeset: "1"
+        pid: '',
+        id: '',
+        name: '',
+        explanation: '',
+        iscodeset: '1'
       },
       rules: {
-        name: [{ required: true, message: "请填写目录名称", trigger: "blur" }],
+        name: [{ required: true, message: '请填写目录名称', trigger: 'blur' }],
         explanation: [
-          { required: true, message: "请填写目录描述", trigger: "blur" },
-          { min: 1, max: 50, message: "长度在 1 到 50 个字符", trigger: "blur" }
+          { required: true, message: '请填写目录描述', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
         ]
       }
     };
   },
+  watch: {
+    isEditCatalog: {
+      // 深度监听，可监听到对象、数组的变化
+      handler(val, oldVal) {
+        // hander(修改后的值, 没被修改时候的值)
+        if (val.id === undefined) {
+          this.addCataLogForm.pid = -1;
+          this.addCataLogForm.id = '';
+          this.addCataLogForm.isCodeset = '1';
+        } else {
+          if (val.isEdit) {
+            this.addCataLogForm.pid = val.pid;
+            this.addCataLogForm.id = val.id;
+            this.addCataLogForm.name = val.name;
+            this.addCataLogForm.explanation = val.explanation;
+          } else {
+            this.addCataLogForm.pid = val.id;
+            this.addCataLogForm.id = '';
+            this.addCataLogForm.name = '';
+            this.addCataLogForm.explanation = '';
+          }
+        }
+      },
+      deep: true
+    }
+  },
+  mounted: function() {},
   methods: {
     /**
      * @description: 提交表单
@@ -88,12 +113,12 @@ export default {
             .updateAndAddCodeSet(this.addCataLogForm)
             .then(res => {
               this.$message({
-                message: "操作成功",
-                type: "success"
+                message: '操作成功',
+                type: 'success'
               });
-              this.$emit("addCatalogBack");
+              this.$emit('addCatalogBack');
               this.cleanAddCataLogForm();
-              this.$refs["addCataLogForm"].resetFields();
+              this.$refs['addCataLogForm'].resetFields();
             });
         } else {
           return false;
@@ -104,46 +129,19 @@ export default {
      * @description: 初始化表单
      */
     cleanAddCataLogForm() {
-      this.addCataLogForm.pid = "";
-      this.addCataLogForm.id = "";
-      this.addCataLogForm.name = "";
-      this.addCataLogForm.explanation = "";
-      this.addCataLogForm.iscodeset = "1";
+      this.addCataLogForm.pid = '';
+      this.addCataLogForm.id = '';
+      this.addCataLogForm.name = '';
+      this.addCataLogForm.explanation = '';
+      this.addCataLogForm.iscodeset = '1';
     },
     /**
      * @description: 关闭弹框 清空表单 清空表单数据
      */
     closeDialog() {
-      this.$refs["addCataLogForm"].resetFields();
+      this.$refs['addCataLogForm'].resetFields();
       this.cleanAddCataLogForm();
-      this.$emit("addCatalogBack"); // 通知父组件关闭dialog
-    }
-  },
-  mounted: function() {},
-  watch: {
-    isEditCatalog: {
-      //深度监听，可监听到对象、数组的变化
-      handler(val, oldVal) {
-        // hander(修改后的值, 没被修改时候的值)
-        if (val.id === undefined) {
-          this.addCataLogForm.pid = -1;
-          this.addCataLogForm.id = "";
-          this.addCataLogForm.isCodeset = "1";
-        } else {
-          if (val.isEdit) {
-            this.addCataLogForm.pid = val.pid;
-            this.addCataLogForm.id = val.id;
-            this.addCataLogForm.name = val.name;
-            this.addCataLogForm.explanation = val.explanation;
-          } else {
-            this.addCataLogForm.pid = val.id;
-            this.addCataLogForm.id = "";
-            this.addCataLogForm.name = "";
-            this.addCataLogForm.explanation = "";
-          }
-        }
-      },
-      deep: true
+      this.$emit('addCatalogBack'); // 通知父组件关闭dialog
     }
   }
 };

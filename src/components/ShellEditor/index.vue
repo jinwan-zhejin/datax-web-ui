@@ -25,7 +25,6 @@ export default {
     value(value) {
       const editorValue = this.shellEditor.getValue()
       if (value !== editorValue) {
-        
         this.shellEditor.setValue(this.value)
       }
     }

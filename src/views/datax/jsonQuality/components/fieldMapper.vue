@@ -1,14 +1,16 @@
 <template>
   <div class="app-container">
-     <div style="border: 1px solid #F3F3F3;">
+    <div style="border: 1px solid #F3F3F3;">
       <el-table
-      :data="tableData"
-      stripe
-      :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
-      style="width: 100%">
+        :data="tableData"
+        stripe
+        :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
+        style="width: 100%"
+      >
         <el-table-column
           label="源字段"
-          width="280">
+          width="280"
+        >
           <template slot-scope="scope">
             <el-select
               v-model="readerForm.lcolumns[scope.row.index]"
@@ -23,7 +25,8 @@
         </el-table-column>
         <el-table-column
           label="目标字段"
-          width="280">
+          width="280"
+        >
           <template slot-scope="scope">
             <el-select
               v-model="readerForm.rcolumns[scope.row.index]"
@@ -37,7 +40,8 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作">
+          label="操作"
+        >
           <template slot-scope="scope">
             <el-button
               type="infor"
@@ -74,6 +78,28 @@ export default {
         isIndeterminate: true
       }
     }
+  },
+  computed: {
+    tableData() {
+      return this.$store.state.taskAdmin.tableData
+    }
+  },
+  watch: {
+    fromColumnsListChecked(newval) {
+      const arr = []
+      newval.forEach((element, index) => {
+        const obj = {
+          sourceField: this.readerForm.lcolumns[index],
+          clearRule: this.readerForm.rules[index],
+          targetField: this.readerForm.rcolumns[index],
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
+      console.log(this.tableData);
+    }
+
   },
   mounted() {
   },
@@ -115,28 +141,6 @@ export default {
     getRules() {
       return this.readerForm.rules
     }
-  },
-  computed: {
-    tableData(){
-      return this.$store.state.taskAdmin.tableData 
-    }
-  },
-  watch: {
-    fromColumnsListChecked(newval){
-      let arr = []
-      newval.forEach((element,index) => {
-        let obj = {
-          sourceField: this.readerForm.lcolumns[index],
-          clearRule: this.readerForm.rules[index],
-          targetField: this.readerForm.rcolumns[index],
-          index:index
-        }
-        arr.push(obj)
-      })
-      this.$store.commit('SET_TABLEDATA', arr)
-      console.log(this.tableData);
-    },
-
   }
 }
 </script>

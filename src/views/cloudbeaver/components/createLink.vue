@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="openWin" width="800px" :show-close='false'>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="openWin" width="800px" :show-close="false">
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -103,8 +103,8 @@
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 
 export default {
-  name: "CreateNewLink",
-  props: ["openWin"],
+  name: 'CreateNewLink',
+  props: ['openWin'],
   data() {
     return {
       list: null,
@@ -112,97 +112,97 @@ export default {
       total: 0,
       listQuery: {
         current: 1,
-        size: 10,
+        size: 10
       },
-      pluginTypeOptions: ["reader", "writer"],
+      pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
       pluginData: [],
-      dialogStatus: "create",
+      dialogStatus: 'create',
       textMap: {
-        update: "Edit",
-        create: "Create",
+        update: 'Edit',
+        create: 'Create'
       },
       rules: {
         datasourceName: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         jdbcUsername: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         jdbcPassword: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         jdbcUrl: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         jdbcDriverClass: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         datasource: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: 'this is required', trigger: 'change' }
         ],
         zkAdress: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: 'this is required', trigger: 'blur' }
         ],
         databaseName: [
-          { required: true, message: "this is required", trigger: "blur" },
-        ],
+          { required: true, message: 'this is required', trigger: 'blur' }
+        ]
       },
       temp: {
         id: undefined,
-        datasourceName: "",
-        datasourceGroup: "Default",
-        jdbcUsername: "",
-        jdbcPassword: "",
-        jdbcUrl: "",
-        jdbcDriverClass: "",
-        comments: "",
-        datasource: "",
-        zkAdress: "",
-        databaseName: "",
+        datasourceName: '',
+        datasourceGroup: 'Default',
+        jdbcUsername: '',
+        jdbcPassword: '',
+        jdbcUrl: '',
+        jdbcDriverClass: '',
+        comments: '',
+        datasource: '',
+        zkAdress: '',
+        databaseName: ''
       },
       visible: true,
       dataSources: [
-        { value: "mysql", label: "mysql" },
-        { value: "oracle", label: "oracle" },
-        { value: "postgresql", label: "postgresql" },
-        { value: "sqlserver", label: "sqlserver" },
-        { value: "hive", label: "hive" },
-        { value: "hbase", label: "hbase" },
-        { value: "mongodb", label: "mongodb" },
-        { value: "clickhouse", label: "clickhouse" },
+        { value: 'mysql', label: 'mysql' },
+        { value: 'oracle', label: 'oracle' },
+        { value: 'postgresql', label: 'postgresql' },
+        { value: 'sqlserver', label: 'sqlserver' },
+        { value: 'hive', label: 'hive' },
+        { value: 'hbase', label: 'hbase' },
+        { value: 'mongodb', label: 'mongodb' },
+        { value: 'clickhouse', label: 'clickhouse' }
       ],
       jdbc: true,
       hbase: false,
-      mongodb: false,
+      mongodb: false
     };
   },
   methods: {
-      //测试连接
+    // 测试连接
     testDataSource() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           datasourceApi.test(this.temp).then((response) => {
             if (response.data === false) {
               this.$notify({
-                title: "Fail",
+                title: 'Fail',
                 message: response.data.msg,
-                type: "fail",
-                duration: 2000,
+                type: 'fail',
+                duration: 2000
               });
             } else {
               this.$notify({
-                title: "Success",
-                message: "Tested Successfully",
-                type: "success",
-                duration: 2000,
+                title: 'Success',
+                message: 'Tested Successfully',
+                type: 'success',
+                duration: 2000
               });
             }
           });
         }
       });
     },
-    //新建连接
+    // 新建连接
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -266,9 +266,9 @@ export default {
         this.jdbc = true
       }
     },
-    //关闭窗口
-    closeWin(){
-        this.$emit('close')
+    // 关闭窗口
+    closeWin() {
+      this.$emit('close')
     }
   }
 

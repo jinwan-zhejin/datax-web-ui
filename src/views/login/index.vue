@@ -1,30 +1,30 @@
 <template>
   <div class="container">
     <div class="nav">
-      <div class="logo"></div>
+      <div class="logo" />
     </div>
     <div class="login-container">
-      <div class="login" ref="login">
+      <div ref="login" class="login">
         <p class="title">一站式DW能力平台</p>
 
-        <span class="mes"
-          >集数据集成、数据开发、数据管理、数据治理于一体，助力企业专注数据价值的挖掘和探索</span
-        >
+        <span
+          class="mes"
+        >集数据集成、数据开发、数据管理、数据治理于一体，助力企业专注数据价值的挖掘和探索</span>
 
         <input
+          ref="username"
+          v-model="loginForm.username"
           class="login_Account"
           type="text"
           placeholder="请输入登录账户"
-          ref="username"
-          v-model="loginForm.username"
-        />
+        >
         <input
+          ref="password"
+          v-model="loginForm.password"
           class="login_Account"
           type="password"
           placeholder="请输入登录密码"
-          ref="password"
-          v-model="loginForm.password"
-        />
+        >
         <div class="login_error"><span v-if="errorMes">密码输入错误</span></div>
         <div class="login_btn" @click="handleLogin">登录</div>
       </div>
@@ -35,10 +35,10 @@
 
 <script>
 // import { validUsername } from '@/utils/validate'
-import SocialSign from "./components/SocialSignin";
+import SocialSign from './components/SocialSignin';
 
 export default {
-  name: "Login",
+  name: 'Login',
   components: { SocialSign },
   data() {
     // const validateUsername = (rule, value, callback) => {
@@ -50,46 +50,46 @@ export default {
     // }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
+        callback(new Error('The password can not be less than 6 digits'));
       } else {
         callback();
       }
     };
     return {
       loginForm: {
-        username: "",
-        password: "",
+        username: '',
+        password: ''
       },
       loginRules: {
         // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword },
-        ],
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
-      passwordType: "password",
+      passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      errorMes: false,
+      errorMes: false
     };
   },
   watch: {
     $route: {
-      handler: function (route) {
+      handler: function(route) {
         const query = route.query;
         if (query) {
           this.redirect = query.redirect;
           this.otherQuery = this.getOtherQuery(query);
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
-     document.addEventListener("keydown", (e) => {
+    document.addEventListener('keydown', (e) => {
       if (e.keyCode === 13) {
         this.handleLogin()
       }
@@ -98,27 +98,37 @@ export default {
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
+  mounted() {
+    const loginEle = this.$refs.login;
+    const _this = this;
+    function fontSize() {
+      var deviceWidth = loginEle.clientWidth;
+      _this.$refs.login.style.fontSize = deviceWidth * 0.068 + 'px';
+    }
+    fontSize();
+    window.onresize = fontSize;
+  },
   methods: {
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (
-          (shiftKey && key >= "a" && key <= "z") ||
-          (!shiftKey && key >= "A" && key <= "Z")
+          (shiftKey && key >= 'a' && key <= 'z') ||
+          (!shiftKey && key >= 'A' && key <= 'Z')
         ) {
           this.capsTooltip = true;
         } else {
           this.capsTooltip = false;
         }
       }
-      if (key === "CapsLock" && this.capsTooltip === true) {
+      if (key === 'CapsLock' && this.capsTooltip === true) {
         this.capsTooltip = false;
       }
     },
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = '';
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password';
       }
       this.$nextTick(() => {
         this.$refs.password.focus();
@@ -128,11 +138,11 @@ export default {
       if (!this.loginForm.username || !this.loginForm.password) return;
       this.loading = true;
       this.$store
-        .dispatch("user/login", this.loginForm)
+        .dispatch('user/login', this.loginForm)
         .then(() => {
           this.$router.push({
-            path: this.redirect || "/",
-            query: this.otherQuery,
+            path: this.redirect || '/',
+            query: this.otherQuery
           });
           this.loading = false;
           this.errorMes = false;
@@ -144,12 +154,12 @@ export default {
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
+        if (cur !== 'redirect') {
           acc[cur] = query[cur];
         }
         return acc;
       }, {});
-    },
+    }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)
@@ -168,17 +178,7 @@ export default {
     //     }
     //   }
     // }
-  },
-  mounted() {
-    const loginEle = this.$refs.login;
-    const _this = this;
-    function fontSize() {
-      var deviceWidth = loginEle.clientWidth;
-      _this.$refs.login.style.fontSize = deviceWidth * 0.068 + "px";
-    }
-    fontSize();
-    window.onresize = fontSize;
-  },
+  }
 };
 </script>
 

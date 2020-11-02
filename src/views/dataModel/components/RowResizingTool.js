@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*
 *  Copyright (C) 1998-2019 by Northwoods Software Corporation. All Rights Reserved.
 */
@@ -19,30 +19,29 @@
 * @class
 */
 function RowResizingTool() {
-	go.Tool.call(this);
-	this.name = "RowResizing";
+  go.Tool.call(this);
+  this.name = 'RowResizing';
 
-	var h = new go.Shape();
-  h.geometryString = "M0 0 H14 M0 2 H14";
+  var h = new go.Shape();
+  h.geometryString = 'M0 0 H14 M0 2 H14';
   h.desiredSize = new go.Size(14, 2);
-  h.cursor = "row-resize";
+  h.cursor = 'row-resize';
   h.geometryStretch = go.GraphObject.None;
-  h.background = "rgba(255,255,255,0.5)";
-  h.stroke = "rgba(30,144,255,0.5)";
+  h.background = 'rgba(255,255,255,0.5)';
+  h.stroke = 'rgba(30,144,255,0.5)';
   /** @type {GraphObject} */
-	this._handleArchetype = h;
+  this._handleArchetype = h;
 
   /** @type {string} */
-	this._tableName = "TABLE";
+  this._tableName = 'TABLE';
 
   // internal state
   /** @type {GraphObject} */
-	this._handle = null;
+  this._handle = null;
   /** @type {Panel} */
-	this._adornedTable = null;
+  this._adornedTable = null;
 }
 go.Diagram.inherit(RowResizingTool, go.Tool);
-
 
 /*
 * A small GraphObject used as a resize handle for each row.
@@ -51,7 +50,7 @@ go.Diagram.inherit(RowResizingTool, go.Tool);
 * @function.
 * @return {GraphObject}
 */
-Object.defineProperty(RowResizingTool.prototype, "handleArchetype", {
+Object.defineProperty(RowResizingTool.prototype, 'handleArchetype', {
   get: function() { return this._handleArchetype; },
   set: function(value) { this._handleArchetype = value; }
 });
@@ -62,7 +61,7 @@ Object.defineProperty(RowResizingTool.prototype, "handleArchetype", {
 * @function.
 * @return {string}
 */
-Object.defineProperty(RowResizingTool.prototype, "tableName", {
+Object.defineProperty(RowResizingTool.prototype, 'tableName', {
   get: function() { return this._tableName; },
   set: function(value) { this._tableName = value; }
 });
@@ -75,7 +74,7 @@ Object.defineProperty(RowResizingTool.prototype, "tableName", {
 * @function.
 * @return {GraphObject}
 */
-Object.defineProperty(RowResizingTool.prototype, "handle", {
+Object.defineProperty(RowResizingTool.prototype, 'handle', {
   get: function() { return this._handle; }
 });
 
@@ -86,10 +85,9 @@ Object.defineProperty(RowResizingTool.prototype, "handle", {
 * @function.
 * @return {Panel}
 */
-Object.defineProperty(RowResizingTool.prototype, "adornedTable", {
+Object.defineProperty(RowResizingTool.prototype, 'adornedTable', {
   get: function() { return this._adornedTable; }
 });
-
 
 /**
 * Show an {@link Adornment} with a resize handle at each row.
@@ -99,7 +97,7 @@ Object.defineProperty(RowResizingTool.prototype, "adornedTable", {
 * @param {Part} part the part.
 */
 RowResizingTool.prototype.updateAdornments = function(part) {
-  if (part === null || part instanceof go.Link) return;  // this tool never applies to Links
+  if (part === null || part instanceof go.Link) return; // this tool never applies to Links
   if (part.isSelected && !this.diagram.isReadOnly) {
     var selelt = part.findObject(this.tableName);
     if (selelt instanceof go.Panel && selelt.actualBounds.isReal() && selelt.isVisibleObject() &&
@@ -128,7 +126,7 @@ RowResizingTool.prototype.updateAdornments = function(part) {
             sep = table.getRowDefinition(idx).separatorStrokeWidth;
             if (isNaN(sep)) sep = table.defaultRowSeparatorStrokeWidth;
           }
-          h.alignment = new go.Spot(0, 0, pad.left + h.width/2, pad.top + rowdef.position + hgt + sep/2);
+          h.alignment = new go.Spot(0, 0, pad.left + h.width / 2, pad.top + rowdef.position + hgt + sep / 2);
         });
         adornment.locationObject.desiredSize = table.actualBounds.size;
         adornment.location = table.getDocumentPoint(adornment.locationSpot);
@@ -151,11 +149,11 @@ RowResizingTool.prototype.makeAdornment = function(table) {
   adornment.category = this.name;
   adornment.adornedObject = table;
   adornment.type = go.Panel.Spot;
-  adornment.locationObjectName = "BLOCK";
+  adornment.locationObjectName = 'BLOCK';
   // create the "main" element of the Spot Panel
-  var block = new go.TextBlock();  // doesn't matter much what this is
-  block.name = "BLOCK";
-  block.pickable = false;  // it's transparent and not pickable
+  var block = new go.TextBlock(); // doesn't matter much what this is
+  block.name = 'BLOCK';
+  block.pickable = false; // it's transparent and not pickable
   adornment.add(block);
   // now add resize handles for each row
   for (var i = 0; i < table.rowCount; i++) {
@@ -178,7 +176,6 @@ RowResizingTool.prototype.makeHandle = function(table, rowdef) {
   c.row = rowdef.index;
   return c;
 };
-
 
 /*
 * This predicate is true when there is a resize handle at the mouse down point.
@@ -242,7 +239,7 @@ RowResizingTool.prototype.doMouseUp = function() {
   if (this.isActive && diagram !== null) {
     var newpt = this.computeResize(diagram.lastInput.documentPoint);
     this.resize(newpt);
-    this.transactionResult = this.name;  // success
+    this.transactionResult = this.name; // success
   }
   this.stopTool();
 };
@@ -268,9 +265,8 @@ RowResizingTool.prototype.resize = function(newPoint) {
     sep = table.getRowDefinition(idx).separatorStrokeWidth;
     if (isNaN(sep)) sep = table.defaultRowSeparatorStrokeWidth;
   }
-  rowdef.height = Math.max(0, locpt.y - pad.top - rowdef.position - (rowdef.total - rowdef.actual) - sep/2);
+  rowdef.height = Math.max(0, locpt.y - pad.top - rowdef.position - (rowdef.total - rowdef.actual) - sep / 2);
 };
-
 
 /**
 * This can be overridden in order to customize the resizing process.
@@ -290,10 +286,10 @@ RowResizingTool.prototype.computeResize = function(p) {
 RowResizingTool.prototype.doKeyDown = function() {
   if (!this.isActive) return;
   var e = this.diagram.lastInput;
-  if (e.key === 'Del' || e.key === '\t') {  // remove height setting
+  if (e.key === 'Del' || e.key === '\t') { // remove height setting
     var rowdef = this.adornedTable.getRowDefinition(this.handle.row);
     rowdef.height = NaN;
-    this.transactionResult = this.name;  // success
+    this.transactionResult = this.name; // success
     this.stopTool();
   } else {
     go.Tool.prototype.doKeyDown.call(this);

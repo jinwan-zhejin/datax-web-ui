@@ -38,7 +38,6 @@
           v-model="readerForm.checkAll"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
-          
         >全选
         </el-checkbox>
         <div style="margin: 15px 0;" />
@@ -145,7 +144,6 @@ export default {
       }
       dsQueryApi.getTableSchema(obj).then(response => {
         this.schemaList = response
-        
       })
     },
     // schema 切换

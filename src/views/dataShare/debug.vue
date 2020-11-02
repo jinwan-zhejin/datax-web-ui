@@ -3,17 +3,17 @@
     <p>调用共享接口</p>
     <div class="box">
       <el-form ref="form" :model="form" label-width="80px">
-        <el-input placeholder="请输入接口地址" v-model="form.address" class="input-with-select">
-          <el-select style="width: 100px" v-model="form.select" slot="prepend" placeholder="请选择">
-            <el-option label="post" value="post"></el-option>
-            <el-option label="get" value="get"></el-option>
+        <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select">
+          <el-select slot="prepend" v-model="form.select" style="width: 100px" placeholder="请选择">
+            <el-option label="post" value="post" />
+            <el-option label="get" value="get" />
           </el-select>
-          <el-button @click="call" slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="call" />
         </el-input>
       </el-form>
-      <el-radio-group v-show="isBtn" style="marginTop: 20px" v-model="radio1">
-        <el-radio-button label="formData"></el-radio-button>
-        <el-radio-button label="params"></el-radio-button>
+      <el-radio-group v-show="isBtn" v-model="radio1" style="marginTop: 20px">
+        <el-radio-button label="formData" />
+        <el-radio-button label="params" />
       </el-radio-group>
       <el-tabs type="border-card">
         <el-tab-pane>
@@ -26,39 +26,43 @@
               <el-radio label="raw">raw</el-radio>
               <el-radio label="binary">binary</el-radio>
             </el-radio-group> -->
-            <el-button @click="addKeyValue" type="primary">add</el-button>
+            <el-button type="primary" @click="addKeyValue">add</el-button>
           </p>
           <el-table
             v-show="isSuccess"
             :data="callValue"
             border
-            style="width: 100%">
+            style="width: 100%"
+          >
             <el-table-column
-              width="50">
-            </el-table-column>
+              width="50"
+            />
             <el-table-column
               prop="date"
-              label="key">
+              label="key"
+            >
               <template scope="scope">
-                <el-input size="mini" v-model="scope.row.key"></el-input>
+                <el-input v-model="scope.row.key" size="mini" />
               </template>
             </el-table-column>
             <el-table-column
               prop="name"
-              label="value">
+              label="value"
+            >
               <template scope="scope">
-                <el-input size="mini" v-model="scope.row.value"></el-input>
+                <el-input v-model="scope.row.value" size="mini" />
               </template>
             </el-table-column>
             <el-table-column
-              label="action">
+              label="action"
+            >
               <template v-slot:default="{ row }">
-                <el-button @click="deleteKeyValue(row)"><i class="el-icon-delete"></i></el-button>
+                <el-button @click="deleteKeyValue(row)"><i class="el-icon-delete" /></el-button>
               </template>
             </el-table-column>
           </el-table>
-          <p v-show="showSuccess"><i class="el-icon-check"></i>调用成功<el-button v-show="showSuccess" @click="cancel" type=primary>关闭</el-button></p>
-          <el-input v-show="showSuccess" style="marginTop: 20px;" disabled type="textarea" autosize v-model="dataObj"></el-input>
+          <p v-show="showSuccess"><i class="el-icon-check" />调用成功<el-button v-show="showSuccess" type="primary" @click="cancel">关闭</el-button></p>
+          <el-input v-show="showSuccess" v-model="dataObj" style="marginTop: 20px;" disabled type="textarea" autosize />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -67,10 +71,7 @@
 
 <script>
 export default {
-  created () {
-    this.addKeyValue()
-  },
-  data () {
+  data() {
     return {
       form: {},
       callValue: [],
@@ -85,7 +86,7 @@ export default {
   },
   watch: {
     'form.select': {
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         console.log(newValue)
         if (newValue === 'post') {
           this.isBtn = true
@@ -97,12 +98,15 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.addKeyValue()
+  },
   methods: {
-    cancel () {
+    cancel() {
       this.showSuccess = false
       this.isSuccess = true
     },
-    addKeyValue () {
+    addKeyValue() {
       this.callValue.push(
         {
           id: Date.parse(new Date()),
@@ -112,12 +116,12 @@ export default {
       )
       console.log(this.callValue)
     },
-    deleteKeyValue (row) {
+    deleteKeyValue(row) {
       console.log(row)
       const index = this.callValue.indexOf(row)
       this.callValue.splice(index, 1)
     },
-    call () {
+    call() {
       for (let i = 0; i < this.callValue.length; i++) {
         this.obj[this.callValue[i].key] = this.callValue[i].value
       }

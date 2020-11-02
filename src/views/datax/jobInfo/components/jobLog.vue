@@ -4,9 +4,13 @@
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
       fit
       highlight-current-row
+      :header-cell-style="{
+        background: '#F8F8FA',
+        'font-weight': 500,
+        color: '#333333',
+      }"
     >
       <el-table-column align="center" label="任务ID" width="80">
         <template slot-scope="scope">{{ scope.row.jobId }}</template>
@@ -19,16 +23,18 @@
       </el-table-column>
       <el-table-column label="调度结果" align="center" width="100">
         <template slot-scope="scope">
-          <span :style="`color:${scope.row.triggerCode == 500 ? 'red' : ''}`">{{
-            statusList.find((t) => t.value === scope.row.triggerCode).label
-          }}</span></template
-        >
+          <span>
+            <div :style="`background:${scope.row.triggerCode == 500 ? 'rgba(254, 70, 70, 1)' : 'rgba(0, 182, 0, 1)'}`" class="yuan" />
+
+            {{
+              statusList.find((t) => t.value === scope.row.triggerCode).label
+            }}</span></template>
       </el-table-column>
       <el-table-column label="调度备注" align="center">
         <template slot-scope="scope">
           <el-popover placement="bottom" width="400" trigger="click">
             <h5 v-html="scope.row.triggerMsg" />
-            <el-button slot="reference">查看</el-button>
+            <el-link slot="reference" type="primary">查看</el-link>
           </el-popover>
         </template>
       </el-table-column>
@@ -37,27 +43,27 @@
       </el-table-column>
       <el-table-column label="执行结果" align="center">
         <template slot-scope="scope">
-          <span :style="`color:${scope.row.handleCode == 500 ? 'red' : ''}`">{{
-            statusList.find((t) => t.value === scope.row.handleCode).label
-          }}</span></template
-        >
+          <span>
+            <div :style="`background:${scope.row.handleCode == 500 ? 'rgba(254, 70, 70, 1)' : 'rgba(0, 182, 0, 1)'}`" class="yuan" />
+            {{
+              statusList.find((t) => t.value === scope.row.handleCode).label
+            }}</span></template>
       </el-table-column>
       <el-table-column label="执行备注" align="center">
         <template slot-scope="scope">
           <el-popover placement="bottom" width="400" trigger="click">
             <h5 v-html="scope.row.handleMsg" />
-            <el-button slot="reference">查看</el-button>
+            <el-link slot="reference" type="primary">查看</el-link>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="300">
         <template slot-scope="{ row }">
-          <el-button
+          <el-link
             v-show="row.executorAddress"
             type="primary"
             @click="handleViewJobLog(row)"
-            >日志查看</el-button
-          >
+          ><i class="el-icon-search" /> 日志查看</el-link>
           <el-button
             v-show="row.handleCode === 0 && row.triggerCode === 200"
             type="primary"
@@ -86,11 +92,11 @@
 </template>
 
 <script>
-import * as log from "@/api/datax-job-log";
+import * as log from '@/api/datax-job-log';
 import * as job from '@/api/datax-job-info'
 
 export default {
-  props: ["id"],
+  props: ['id'],
   data() {
     return {
       listLoading: false,
@@ -102,15 +108,15 @@ export default {
         jobGroup: 0,
         jobId: this.id,
         logStatus: -1,
-        filterTime: "",
+        filterTime: ''
       },
-     // 日志内容
+      // 日志内容
       logContent: '',
       // 显示日志
       logShow: false,
       // 日志显示加载中效果
       logLoading: false,
-       // 日志查询参数
+      // 日志查询参数
       jobLogQuery: {
         executorAddress: '',
         triggerTime: '',
@@ -118,14 +124,18 @@ export default {
         fromLineNum: 1
       },
       // handleViewJobLog: false,
-      dialogVisible:false,
+      dialogVisible: false,
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
         { value: 0, label: '无' }
-      ],
+      ]
     };
+  },
+
+  created() {
+    this.fetchData()
   },
   methods: {
     fetchData() {
@@ -171,14 +181,17 @@ export default {
         }
         this.logLoading = false
       })
-    },
-  },
-
-  created() {
-      this.fetchData()
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
+.yuan {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin: 2px;
+}
 </style>

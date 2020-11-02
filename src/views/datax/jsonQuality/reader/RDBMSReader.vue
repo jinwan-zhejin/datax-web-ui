@@ -25,9 +25,9 @@
       <el-form-item
         v-show="
           dataSource === 'postgresql' ||
-          dataSource === 'greenplum' ||
-          dataSource === 'oracle' ||
-          dataSource === 'sqlserver'
+            dataSource === 'greenplum' ||
+            dataSource === 'oracle' ||
+            dataSource === 'sqlserver'
         "
         label="Schema："
         prop="tableSchema"
@@ -67,81 +67,81 @@
       </el-form-item>
       <el-form-item label="添加规则字段：">
         <div style="border:1px solid #f3f3f3;width:80%;">
-        <el-table
-          :data="tableData1"
-          :header-cell-style="{
-            background: '#F8F8FA',
-            'font-size': '12px',
-            'font-family': 'PingFangHK-Medium, PingFangHK',
-            'font-weight': '500',
-            'color': '#333333',
-            'padding':0,
-            'padding-left':'25px',
-            'text-align':'left'
-          }"
-          :header-row-style="{'height':'40px','padding':0}"
-          style="width: 100%"
-        >
-          <el-table-column prop="columnName" align="center" label="字段名称">
-            <template v-slot:default="row">
-              <el-select
-                v-if="row.row.status"
-                v-model="readerForm.columnName"
-                filterable
-                label="请选择字段"
-              >
-                <el-option
-                  v-for="item in rColumnList"
-                  :key="item"
-                  :label="item"
-                  :value="item"
+          <el-table
+            :data="tableData1"
+            :header-cell-style="{
+              background: '#F8F8FA',
+              'font-size': '12px',
+              'font-family': 'PingFangHK-Medium, PingFangHK',
+              'font-weight': '500',
+              'color': '#333333',
+              'padding':0,
+              'padding-left':'25px',
+              'text-align':'left'
+            }"
+            :header-row-style="{'height':'40px','padding':0}"
+            style="width: 100%"
+          >
+            <el-table-column prop="columnName" align="center" label="字段名称">
+              <template v-slot:default="row">
+                <el-select
+                  v-if="row.row.status"
+                  v-model="readerForm.columnName"
+                  filterable
+                  label="请选择字段"
+                >
+                  <el-option
+                    v-for="item in rColumnList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+                <span v-else>{{ row.row.columnName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rules" align="center" label="规则名称">
+              <template v-slot:default="row">
+                <el-select
+                  v-if="row.row.status"
+                  v-model="readerForm.rule"
+                  clearable
+                  filterable
+                  multiple
+                  label="请选择规则名称"
+                >
+                  <el-option
+                    v-for="item in nameList"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  />
+                </el-select>
+                <p v-for="(my, index) in row.row.ruleId" v-else :key="index">
+                  {{ my.name }}
+                </p>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" width="120">
+              <template slot="header">
+                <span>操作</span>
+              </template>
+              <template v-slot:default="row">
+                <i
+                  style="cursor: pointer; margin-right: 10px;color:rgba(61, 95, 255, 1);"
+                  class="el-icon-edit"
+                  @click="editRow(row)"
                 />
-              </el-select>
-              <span v-else>{{ row.row.columnName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="rules" align="center" label="规则名称">
-            <template v-slot:default="row">
-              <el-select
-                v-if="row.row.status"
-                v-model="readerForm.rule"
-                clearable
-                filterable
-                multiple
-                label="请选择规则名称"
-              >
-                <el-option
-                  v-for="item in nameList"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
+                <i
+                  style="cursor: pointer;color:red;"
+                  class="el-icon-delete"
+                  @click="delRow(row)"
                 />
-              </el-select>
-              <p v-for="(my, index) in row.row.ruleId" :key="index" v-else>
-                {{ my.name }}
-              </p>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="120">
-            <template slot="header">
-              <span>操作</span>
-            </template>
-            <template v-slot:default="row">
-              <i
-                style="cursor: pointer; margin-right: 10px;color:rgba(61, 95, 255, 1);"
-                class="el-icon-edit"
-                @click="editRow(row)"
-              />
-              <i
-                style="cursor: pointer;color:red;"
-                class="el-icon-delete"
-                @click="delRow(row)"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        <div @click="addRow" class="addRow_btn"><span><i class="el-icon-plus"></i> 添加规则字段</span></div>
+        <div class="addRow_btn" @click="addRow"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
       </el-form-item>
       <el-form-item label="SQL语句：">
         <el-input
@@ -151,9 +151,10 @@
           placeholder="sql查询，一般用于多表关联查询时才用"
           style="width: calc(80% - 100px)"
         />
-        <el-button type="primary" @click.prevent="getColumns('reader')"
-          >解析字段</el-button
-        >
+        <el-button
+          type="primary"
+          @click.prevent="getColumns('reader')"
+        >解析字段</el-button>
       </el-form-item>
       <el-form-item label="切分字段：">
         <el-input
@@ -167,7 +168,7 @@
           v-model="readerForm.checkAll"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
-          >全选
+        >全选
         </el-checkbox>
         <div style="margin: 15px 0" />
         <el-checkbox-group
@@ -187,18 +188,18 @@
 </template>
 
 <script>
-import * as dsQueryApi from "@/api/metadata-query";
-import { list as jdbcDsList } from "@/api/datax-jdbcDatasource";
-import Bus from "../busReader";
+import * as dsQueryApi from '@/api/metadata-query';
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
+import Bus from '../busReader';
 
 export default {
-  name: "RDBMSReader",
+  name: 'RDBMSReader',
   data() {
     return {
       jdbcDsQuery: {
         current: 1,
         size: 200,
-        ascs: "datasource_name",
+        ascs: 'datasource_name'
       },
       arr: [],
       tableData1: [],
@@ -209,50 +210,50 @@ export default {
       nameList: [],
       loading: false,
       active: 1,
-      customFields: "",
-      customType: "",
-      customValue: "",
-      dataSource: "",
+      customFields: '',
+      customType: '',
+      customValue: '',
+      dataSource: '',
       readerForm: {
         datasourceId: undefined,
-        tableName: "",
+        tableName: '',
         columns: [],
-        where: "",
-        querySql: "",
+        where: '',
+        querySql: '',
         checkAll: false,
         isIndeterminate: true,
-        splitPk: "",
-        tableSchema: "",
-        rule: [],
+        splitPk: '',
+        tableSchema: '',
+        rule: []
       },
       rules: {
         datasourceId: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: 'this is required', trigger: 'change' }
         ],
         tableName: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: 'this is required', trigger: 'change' }
         ],
         tableSchema: [
-          { required: true, message: "this is required", trigger: "change" },
-        ],
-      },
+          { required: true, message: 'this is required', trigger: 'change' }
+        ]
+      }
     };
   },
   watch: {
-    "readerForm.datasourceId": function (oldVal, newVal) {
+    'readerForm.datasourceId': function(oldVal, newVal) {
       if (
-        this.dataSource === "postgresql" ||
-        this.dataSource === "greenplum" ||
-        this.dataSource === "oracle" ||
-        this.dataSource === "sqlserver"
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
       ) {
         this.getSchema();
       }
-      this.getTables("rdbmsReader");
+      this.getTables('rdbmsReader');
     },
-    "readerForm.rule": function (oldVal, newVal) {
+    'readerForm.rule': function(oldVal, newVal) {
       console.log(newVal);
-    },
+    }
   },
   created() {
     this.getJdbcDs();
@@ -260,10 +261,9 @@ export default {
   methods: {
     // 添加行
     addRow() {
-      
       this.tableData1.map((item) => {
         if (item.status) {
-          console.log('this.readerForm',this.readerForm);
+          console.log('this.readerForm', this.readerForm);
           item.columnName = this.readerForm.columnName;
           for (let i = 0; i < this.nameList.length; i++) {
             for (let j = 0; j < this.readerForm.rule.length; j++) {
@@ -275,16 +275,16 @@ export default {
               }
             }
           }
-          this.readerForm.columnName = "";
+          this.readerForm.columnName = '';
           item.status = 0;
         }
         return item;
       });
 
       this.tableData1.push({
-        columnName: "",
+        columnName: '',
         ruleId: [],
-        status: 1,
+        status: 1
       });
     },
     // 编辑行
@@ -320,21 +320,21 @@ export default {
     },
     // 获取表名
     getTables(type) {
-      if (type === "rdbmsReader") {
+      if (type === 'rdbmsReader') {
         let obj = {};
         if (
-          this.dataSource === "postgresql" ||
-          this.dataSource === "greenplum" ||
-          this.dataSource === "oracle" ||
-          this.dataSource === "sqlserver"
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
         ) {
           obj = {
             datasourceId: this.readerForm.datasourceId,
-            tableSchema: this.readerForm.tableSchema,
+            tableSchema: this.readerForm.tableSchema
           };
         } else {
           obj = {
-            datasourceId: this.readerForm.datasourceId,
+            datasourceId: this.readerForm.datasourceId
           };
         }
         // 组装
@@ -347,7 +347,7 @@ export default {
     },
     getSchema() {
       const obj = {
-        datasourceId: this.readerForm.datasourceId,
+        datasourceId: this.readerForm.datasourceId
       };
       dsQueryApi.getTableSchema(obj).then((response) => {
         this.schemaList = response;
@@ -357,12 +357,12 @@ export default {
     schemaChange(e) {
       this.readerForm.tableSchema = e;
       // 获取可用表
-      this.getTables("rdbmsReader");
+      this.getTables('rdbmsReader');
     },
     // reader 数据源切换
     rDsChange(e) {
       // 清空
-      this.readerForm.tableName = "";
+      this.readerForm.tableName = '';
       this.readerForm.datasourceId = e;
       this.rDsList.find((item) => {
         if (item.id === e) {
@@ -370,12 +370,12 @@ export default {
         }
       });
       Bus.dataSourceId = e;
-      this.$emit("selectDataSource", this.dataSource);
+      this.$emit('selectDataSource', this.dataSource);
     },
     getTableColumns() {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
-        tableName: this.readerForm.tableName,
+        tableName: this.readerForm.tableName
       };
       dsQueryApi.getColumns(obj).then((response) => {
         this.rColumnList = response;
@@ -407,7 +407,7 @@ export default {
     getColumnsByQuerySql() {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
-        querySql: this.readerForm.querySql,
+        querySql: this.readerForm.querySql
       };
       dsQueryApi.getColumnsByQuerySql(obj).then((response) => {
         this.rColumnList = response;
@@ -418,8 +418,8 @@ export default {
     },
     // 获取表字段
     getColumns(type) {
-      if (type === "reader") {
-        if (this.readerForm.querySql !== "") {
+      if (type === 'reader') {
+        if (this.readerForm.querySql !== '') {
           this.getColumnsByQuerySql();
         } else {
           this.getTableColumns();
@@ -432,7 +432,7 @@ export default {
       this.readerForm.tableName = t;
       this.rColumnList = [];
       this.readerForm.columns = [];
-      this.getColumns("reader");
+      this.getColumns('reader');
     },
     rHandleCheckAllChange(val) {
       this.readerForm.columns = val ? this.rColumnList : [];
@@ -449,8 +449,8 @@ export default {
         this.readerForm.datasourceId = Bus.dataSourceId;
       }
       return this.readerForm;
-    },
-  },
+    }
+  }
 };
 </script>
 

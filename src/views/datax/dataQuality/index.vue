@@ -1,202 +1,203 @@
 <template>
-    <section class="main-data-list">
-        <div class="main-data-t">
-            <el-row>
-                <el-form :model="ruleForm" ref="ruleForm"  label-width="100px" label-position="top">
-                    <el-row>
-                        <el-col style="width: 320px" class="mr20">
-                            <el-form-item label="数据库类型">
-                                <el-select v-model="ruleForm.type" size="small" placeholder="请选择数据库类型" @change="dataSelect" style="width: 330px;margin-right: 5px">
-                                    <el-option value="" label="全部"></el-option>
-                                    <el-option value="MySQL" label="MySQL"></el-option>
-                                    <el-option value="Oracle" label="Oracle"></el-option>
-                                    <el-option value="SqlServer" label="SqlServer"></el-option>
-                                    <el-option value="DB2" label="DB2"></el-option>
-                                    <el-option value="PostgreSQL" label="PostgreSQL"></el-option>
-                                    <el-option value="Sybase" label="Sybase"></el-option>
-                                    <el-option value="Teradata" label="Teradata"></el-option>
-                                  <!--  <el-option value="HDFS" label="HDFS"></el-option>
+  <section class="main-data-list">
+    <div class="main-data-t">
+      <el-row>
+        <el-form ref="ruleForm" :model="ruleForm" label-width="100px" label-position="top">
+          <el-row>
+            <el-col style="width: 320px" class="mr20">
+              <el-form-item label="数据库类型">
+                <el-select v-model="ruleForm.type" size="small" placeholder="请选择数据库类型" style="width: 330px;margin-right: 5px" @change="dataSelect">
+                  <el-option value="" label="全部" />
+                  <el-option value="MySQL" label="MySQL" />
+                  <el-option value="Oracle" label="Oracle" />
+                  <el-option value="SqlServer" label="SqlServer" />
+                  <el-option value="DB2" label="DB2" />
+                  <el-option value="PostgreSQL" label="PostgreSQL" />
+                  <el-option value="Sybase" label="Sybase" />
+                  <el-option value="Teradata" label="Teradata" />
+                  <!--  <el-option value="HDFS" label="HDFS"></el-option>
                                     <el-option value="Hive" label="Hive"></el-option>
                                     <el-option value="Hbase" label="Hbase"></el-option>-->
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col style="width: 320px">
-                            <el-form-item label="数据源名称">
-                                <el-input v-model="ruleForm.name" @keyup.enter.native="searchList" size="small"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-button type="danger" size="small" @click="searchList" class="ml10" style="margin-top: 38px">查 询</el-button>
-                    </el-row>
-                </el-form>
-            </el-row>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col style="width: 320px">
+              <el-form-item label="数据源名称">
+                <el-input v-model="ruleForm.name" size="small" @keyup.enter.native="searchList" />
+              </el-form-item>
+            </el-col>
+            <el-button type="danger" size="small" class="ml10" style="margin-top: 38px" @click="searchList">查 询</el-button>
+          </el-row>
+        </el-form>
+      </el-row>
+    </div>
+    <el-row>
+      <el-button class="grey-btn" size="small" @click="selectSource">选择数据源</el-button>
+    </el-row>
+    <ul class="main-data-b">
+      <li v-for="item in listInfo" :key="item.id">
+        <p class="check-header">{{ item.dataName }}</p>
+        <div class="check-body">
+          <span>{{ item.dataName }}</span><br>
+          数据源名称
         </div>
-        <el-row>
-            <el-button class="grey-btn" @click="selectSource" size="small">选择数据源</el-button>
-        </el-row>
-        <ul class="main-data-b">
-            <li :key="item.id" v-for="item in listInfo">
-                <p class="check-header">{{item.dataName}}</p>
-                <div class="check-body">
-                    <span>{{item.dataName}}</span><br/>
-                    数据源名称
-                </div>
-                <div class="check-footer">
-                    数据表个数：{{item.tableNumber}}个
-                </div>
-                <div class="check-set">
-                    <span @click="editTask(item.id)"><svg-icon iconClass="编辑1"></svg-icon></span>
-                    <span @click="deleteTask(item.id)"><svg-icon iconClass="删除"></svg-icon></span>
-                </div>
-            </li>
-        </ul>
-        <el-pagination
-            class="ar"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[10,20,30]"
-            :page-size="100"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-        </el-pagination>
-        <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
-            @open="openModal"
-            @close="closeModal"
-            width="536px">
-            <el-table
-                :data="sourceList"
-                stripe
-                @selection-change="handleSelectionChange"
-                height="350"
-                style="width: 100%"
-            >
-                <el-table-column
-                    type="selection"
-                    width="55">
-                </el-table-column>
-                <el-table-column
-                    prop="datasourceName"
-                    label="数据源名称">
-                </el-table-column>
-                <el-table-column
-                    prop="databaseType"
-                    label="数据库类型">
-                </el-table-column>
-            </el-table>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false"  type="info" size="small">取 消</el-button>
-                <el-button type="danger" size="small" @click="submitSource" >确 定</el-button>
-            </span>
-        </el-dialog>
-    </section>
+        <div class="check-footer">
+          数据表个数：{{ item.tableNumber }}个
+        </div>
+        <div class="check-set">
+          <span @click="editTask(item.id)"><svg-icon icon-class="编辑1" /></span>
+          <span @click="deleteTask(item.id)"><svg-icon icon-class="删除" /></span>
+        </div>
+      </li>
+    </ul>
+    <el-pagination
+      class="ar"
+      :current-page="currentPage"
+      :page-sizes="[10,20,30]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="536px"
+      @open="openModal"
+      @close="closeModal"
+    >
+      <el-table
+        :data="sourceList"
+        stripe
+        height="350"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          prop="datasourceName"
+          label="数据源名称"
+        />
+        <el-table-column
+          prop="databaseType"
+          label="数据库类型"
+        />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="info" size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button type="danger" size="small" @click="submitSource">确 定</el-button>
+      </span>
+    </el-dialog>
+  </section>
 </template>
 
 <script>
-    export default {
-        name: "",
-        components: {},
-        data() {
-            return {
-                propertyManage:[],
-                dialogVisible:false,
-                selectList:[],
-                sourceList:[
-                    {name:'tesk-ku',type:'ETL'},
-                    {name:'tesk-ku',type:'ETL'},
-                    {name:'tesk-ku',type:'ETL'},
-                    {name:'tesk-ku',type:'ETL'},
-                ],
-                ruleForm:{
-                    type:'',
-                    name:''
-                },
-                total: 0,
-                currentPage: 1,
-                pageLength:10,
-                listInfo:[],
-            }
-        },
-        methods: {
-            getList(){
-                let param={
-                    start:(this.currentPage-1)*10,
-                    length:this.pageLength,
-                    maindataName:this.ruleForm.name,
-                    type:this.ruleForm.type,
-                };
-                this.$urlApi.propertyManage.queryMainData(param).then((res)=>{
-                    this.listInfo=res.data;
-                    this.total=res.recordsFiltered
-                })
-            },
-            dataSelect(){
-                this.getList()
-            },
-            handleSizeChange(cb){
-                this.this.pageLength=cb;
-                this.getList()
-            },
-            handleCurrentChange(cb){
-                this.currentPage = cb;
-                this.getList()
-            },
-            searchList(){
-                this.getList()
-            },
-            selectSource(){
-                this.dialogVisible=true;
-            },
-            openModal(){
-                this.$urlApi.propertyManage.getDatasource().then((res)=>{
-                    this.sourceList=res.data;
-                })
-            },
-            closeModal(){
-                this.sourceList=[];
-                this.selectList=[];
-            },
-            handleSelectionChange(val){
-                this.selectList=val
-            },
-            submitSource(){
-                this.$urlApi.propertyManage.addMainData({dataSourceIds:this.selectList[0].id}).then((res)=>{
-                    this.sourceList=res.data;
-                    this.dialogVisible=false;
-                    this.$message({
-                        message:'新建成功',
-                        type:'success'
-                    });
-                    this.getList()
-                });
-            },
-            editTask(id){     //编辑
-                this.$router.push({path:"/property/default/maindata/detail",query:{id:id}})
-            },
-            deleteTask(id){   //删除
-                this.$confirm('确认要删除吗', '系统消息', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    cancelButtonClass:'cancelButton',
-                    confirmButtonClass:'confirmButton',
-                }).then(() => {
-                    this.$urlApi.propertyManage.deleteDataBase({id:id}).then((res)=>{
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功'
-                        });
-                        this.getList()
-                    });
-                }).catch(() => {});
-            },
-        },
-        mounted: function () {
-            this.getList()
-        }
+export default {
+  name: '',
+  components: {},
+  data() {
+    return {
+      propertyManage: [],
+      dialogVisible: false,
+      selectList: [],
+      sourceList: [
+        { name: 'tesk-ku', type: 'ETL' },
+        { name: 'tesk-ku', type: 'ETL' },
+        { name: 'tesk-ku', type: 'ETL' },
+        { name: 'tesk-ku', type: 'ETL' }
+      ],
+      ruleForm: {
+        type: '',
+        name: ''
+      },
+      total: 0,
+      currentPage: 1,
+      pageLength: 10,
+      listInfo: []
     }
+  },
+  mounted: function() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      const param = {
+        start: (this.currentPage - 1) * 10,
+        length: this.pageLength,
+        maindataName: this.ruleForm.name,
+        type: this.ruleForm.type
+      };
+      this.$urlApi.propertyManage.queryMainData(param).then((res) => {
+        this.listInfo = res.data;
+        this.total = res.recordsFiltered
+      })
+    },
+    dataSelect() {
+      this.getList()
+    },
+    handleSizeChange(cb) {
+      this.this.pageLength = cb;
+      this.getList()
+    },
+    handleCurrentChange(cb) {
+      this.currentPage = cb;
+      this.getList()
+    },
+    searchList() {
+      this.getList()
+    },
+    selectSource() {
+      this.dialogVisible = true;
+    },
+    openModal() {
+      this.$urlApi.propertyManage.getDatasource().then((res) => {
+        this.sourceList = res.data;
+      })
+    },
+    closeModal() {
+      this.sourceList = [];
+      this.selectList = [];
+    },
+    handleSelectionChange(val) {
+      this.selectList = val
+    },
+    submitSource() {
+      this.$urlApi.propertyManage.addMainData({ dataSourceIds: this.selectList[0].id }).then((res) => {
+        this.sourceList = res.data;
+        this.dialogVisible = false;
+        this.$message({
+          message: '新建成功',
+          type: 'success'
+        });
+        this.getList()
+      });
+    },
+    editTask(id) { // 编辑
+      this.$router.push({ path: '/property/default/maindata/detail', query: { id: id }})
+    },
+    deleteTask(id) { // 删除
+      this.$confirm('确认要删除吗', '系统消息', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton'
+      }).then(() => {
+        this.$urlApi.propertyManage.deleteDataBase({ id: id }).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+          this.getList()
+        });
+      }).catch(() => {});
+    }
+  }
+}
 </script>
 
 <style lang="scss">
