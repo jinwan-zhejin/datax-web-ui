@@ -646,6 +646,7 @@ export default {
     // 执行一次
     handlerExecute(temp) {
       handlerExecute.call(this, temp).then(() => {
+        this.newstlogContent = ''
         this.logList();
         this.showLog = true;
       });
@@ -708,7 +709,7 @@ export default {
         }
       );
       let status = 0;
-      this.newstlogContent = ''
+      
       log.getList(param).then((response) => {
         const { content } = response;
 
@@ -937,6 +938,7 @@ export default {
   padding: 8px;
 }
 
+
 .json_content >>> .CodeMirror {
   background: white;
   color: #333333;
@@ -953,6 +955,7 @@ export default {
   left: 0 !important;
   /* width: 44px !important; */
 }
+
 
 .job_detail {
   position: relative;
