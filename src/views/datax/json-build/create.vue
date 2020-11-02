@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <el-form
       ref="dataForm"
       :model="temp"
@@ -330,4 +330,5 @@ export default {
 .elFrom >>> .el-input--suffix .el-input__inner {
   padding-right: 100px;
 }
+
 </style>
