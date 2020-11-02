@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:35:47
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 14:19:44
+ * @LastEditTime: 2020-11-02 13:34:05
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageSearch.vue
  * @Description: 右半部分查找 子组件
 -->
@@ -178,15 +178,17 @@ export default {
     }
   }
   .el-row {
-    // overflow: hidden;
+    overflow: hidden;
     .el-col {
-      padding-top: calc(15vh)
+      padding-top: calc(15vh);
+      height: calc(100vh - 250px);
     }
   }
   .search {
     // position: absolute;
     // top: 45%;
     // transform: translateY(-45%);
+    // z-index: 999;
     width: 100%;
     ::v-deep .searchBar {
       .el-input__inner {

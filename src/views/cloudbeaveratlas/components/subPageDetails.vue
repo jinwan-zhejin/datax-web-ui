@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 19:05:31
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 14:44:46
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
 
@@ -51,6 +51,7 @@
         </el-col> -->
       </el-row>
       <!-- 底部 -->
+      <!-- {{ properties }} -->
       <el-row class="bottomBar">
         <el-col>
           <el-tabs v-model="tabActiveName" type="card" @tab-click="handleTabClick">
@@ -76,7 +77,7 @@
                             <a v-if="row.key === 'tables'" class="aClass" @click="gotoNextDetails(row.value[0])">{{ row.value[0].displayText }}</a>
                             <a v-else-if="row.key === 'instance'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.displayText }}</a>
                             <!-- <a v-else-if="row.key === 'databases'" class="aClass" @click="gotoNextDetails(row.value)">{{ row.value.name }}</a> -->
-                            <span v-else-if="row.key.toLowerCase().indexOf('time') > -1">{{ row.value | formatDate }}</span>
+                            <span v-else-if="row.key.toLowerCase().indexOf('time') > -1 && typeof row.value === 'number'">{{ row.value | formatDate }}</span>
                             <span v-else>{{ row.value }}</span>
                           </template>
                         </el-table-column>
@@ -97,10 +98,17 @@
                     <el-collapse-item name="properties2">
                       <div slot="title">
                         &nbsp;标签&nbsp;
-                        <!-- <el-button type="primary" plain size="mini" @click.stop.native>编辑</el-button> -->
+                        <el-button v-if="!labelEditable" type="primary" plain size="mini" @click.stop.native="labelEditable = !labelEditable">编辑</el-button>
+                        <el-button v-if="labelEditable" type="primary" plain size="mini" @click.stop.native="handleSaveLabels">保存</el-button>
+                        <el-button v-if="labelEditable" type="primary" plain size="mini" @click.stop.native="handleLabelCancel">取消</el-button>
                       </div>
+                      <!-- {{ propertyLabels }}
+                      {{ properties.entity.labels }} -->
                       <span v-if="properties.entity.labels.length <= 0">&nbsp;暂无数据</span>
-                      <el-tag v-for="(item, index) in properties.entity.labels" :key="index" style="margin: 2px;">{{ item }}</el-tag>
+                      <el-tag v-for="(item, index) in propertyLabels" :key="index" style="margin: 5px;" size="medium" :closable="labelEditable" @close="handleLabelClose(index)">{{ item }}</el-tag>
+                      <!-- <el-input v-if="labelInputVisible" ref="saveTagInput" v-model="labelInputVal" type="text" size="mini" style="width: 85px; height: 28px;" placeholder="输入标签名" @blur="handleInputConfirm" @keyup.enter.native="handleInputConfirm" /> -->
+                      <el-autocomplete v-if="labelInputVisible" ref="saveTagInput" v-model="labelInputVal" type="text" size="mini" :fetch-suggestions="handleFilterLabel" placeholder="输入标签名" @focus="handleGetSuggest" @blur="handleInputConfirm" @keyup.enter.native="handleInputConfirm" />
+                      <el-button v-if="labelEditable && !labelInputVisible" size="mini" type="primary" plain icon="el-icon-plus" @click="showLabelInput">新标签</el-button>
                     </el-collapse-item>
                   </el-collapse>
                   <!-- <el-collapse v-model="propertiesCollapseActive[3]">
@@ -425,7 +433,12 @@ export default {
       deleteClass: '',
       deleteTypeName: '',
       deleteGuid: '',
-      isLoading: false
+      isLoading: false,
+      labelEditable: false,
+      labelInputVisible: false,
+      labelInputVal: '',
+      labelSuggest: [],
+      propertyLabels: []
     }
   },
   computed: {
@@ -615,6 +628,7 @@ export default {
         this.techProp = []
         this.custProp = []
         this.relationshipList = []
+        this.propertyLabels = this.properties.entity.labels.concat()
         if (this.properties.entity.hasOwnProperty('classifications')) {
           for (var i in this.properties.entity.classifications) {
             this.classificationsOptions.push(this.properties.entity.classifications[i])
@@ -854,6 +868,76 @@ export default {
         });
         this.isLoading = false
       }
+    },
+    /**
+     * @description: 标签移除事件
+     */
+    handleLabelClose(delindex) {
+      this.propertyLabels = this.propertyLabels.filter((item, index) => delindex !== index)
+    },
+    /**
+     * @description: 取消
+     */
+    handleLabelCancel() {
+      this.labelEditable = false
+      this.propertyLabels = this.properties.entity.labels.concat()
+    },
+    showLabelInput() {
+      this.labelInputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm() {
+      const labelInputVal = this.labelInputVal
+      if (labelInputVal) {
+        this.propertyLabels.push(this.labelInputVal)
+      }
+      this.labelInputVisible = false
+      this.labelInputVal = ''
+    },
+    async handleSaveLabels() {
+      this.labelEditable = false
+      const res = await apiatlas.savePropertiesLabels(this.$route.params.guid, this.propertyLabels)
+      if (res.status === 204) {
+        this.$message({
+          message: '添加标签成功',
+          showClose: true,
+          type: 'success',
+          duration: 4000
+        });
+      } else {
+        this.$message({
+          message: '添加标签失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        });
+      }
+      this.init()
+    },
+    async handleGetSuggest() {
+      const res = await apiatlas.getSuggestParams({ fieldName: '__labels' })
+      // console.log(res);
+      if (res.status === 200) {
+        this.labelSuggest = []
+        for (var i = 0; i < res.data.suggestions.length; i++) {
+          this.labelSuggest.push({ value: res.data.suggestions[i] })
+        }
+        console.log(this.labelSuggest);
+      } else {
+        this.labelSuggest = []
+        this.$message({
+          message: '获取标签建议失败',
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        });
+      }
+    },
+    handleFilterLabel(queryString, cb) {
+      const result = queryString ? this.labelSuggest.filter(item => item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1) : this.labelSuggest;
+      cb(result)
     }
   }
 }
@@ -914,31 +998,29 @@ export default {
   text-decoration:underline;
 }
 .el-collapse {
-  border: 1px solid #EBEEF5;
-  border-radius: 5px;
-  padding: 5px;
+  // border: 1px solid #EBEEF5;
+  // border-radius: 5px;
+  // padding: 5px;
   margin: 5px;
   ::v-deep .el-collapse-item__header {
     color: #333333;
     font-size: 16px;
     font-weight: bold;
     border: 0;
-    background: #F8f8FA;
+    background: transparent;
   }
   ::v-deep .el-collapse-item__wrap {
     max-height: 400px;
-    overflow-y: hidden;
+    overflow-y: auto;
     border: 0;
     .el-table td {
       background: #F8F8FA;
       border: 0;
     }
   }
-  ::v-deep .el-collapse-item__wrap:hover {
-    overflow: auto;
-  }
   ::v-deep .el-collapse-item__content {
     background: #F8f8FA;
+    padding-bottom: 5px;
   }
 }
 .tableStyle {
