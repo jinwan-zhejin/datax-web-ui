@@ -17,9 +17,13 @@ export default {
     },
     key() {
       console.log(this.$route)
-      // if (this.$route.name !== 'JdbcDatasource') {
-      //   sessionStorage.removeItem('projectId')
-      //   sessionStorage.removeItem('JobName')
+      // if (this.$route.name === 'JdbcDatasource') {
+      //   let i = 0
+      //   if (i === 0) {
+      //     location.reload();
+      //     i++
+      //     console.log(i, 'i')
+      //   }
       // }
       return this.$route.path
     }

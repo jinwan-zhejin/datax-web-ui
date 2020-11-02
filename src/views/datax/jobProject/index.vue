@@ -232,12 +232,11 @@ export default {
     },
     handleDataSource(row) {
       console.log(row)
-      this.$router.push({
-        name: 'JdbcDatasource',
-        params: row
-      })
-      sessionStorage.setItem('projectId', row.id)
       sessionStorage.setItem('JobName', row.name)
+      sessionStorage.setItem('projectId', row.id)
+      this.$router.push('/datax/datasource/jdbcDatasource')
+      this.routerRefresh();
+      console.log('触发刷新')
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {

@@ -55,7 +55,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="任务类型：" prop="glueType">
+      <!-- <el-form-item label="任务类型：" prop="glueType">
         <el-select v-model="temp.glueType" placeholder="任务脚本类型">
           <el-option
             v-for="item in glueTypes"
@@ -64,22 +64,9 @@
             :value="item.value"
           />
         </el-select>
-      </el-form-item>
-
-      <!-- <el-form-item label="所属项目：" prop="projectId">
-        <el-select
-          v-model="temp.projectId"
-          placeholder="所属项目"
-          class="filter-item"
-        >
-          <el-option
-            v-for="item in jobProjectList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
       </el-form-item> -->
+
+      
 
       <el-form-item label="子任务：">
         <el-select
@@ -151,7 +138,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="超时时间(分钟)：">
+      <el-form-item label="超时时间(分)：">
         <el-input-number
           v-model="temp.executorTimeout"
           :min="0"
