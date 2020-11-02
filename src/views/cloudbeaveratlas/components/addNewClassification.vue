@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-10-23 14:05:25
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 10:13:10
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 18:51:32
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
  * @Description: 添加新分类
 -->
 <template>
@@ -56,6 +56,7 @@
           </el-col>
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" plain type="primary" @click="closeAddNewClassification">关 闭</el-button>
         <el-button v-loading="isLoading" size="small" type="primary" @click="submit('dataForm')">添 加</el-button>

@@ -2,7 +2,7 @@
  * @Date: 2020-10-23 10:25:52
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 16:24:33
+ * @LastEditTime: ,: 2020-11-02 18:52:25
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addCustomFilter.vue
  * @Description: 添加自定义过滤器
 -->
@@ -22,6 +22,7 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" plain type="primary" @click="closeAddCustomFilter">取 消</el-button>
         <el-button size="small" type="primary" @click="submit('dataForm')">确 定</el-button>
