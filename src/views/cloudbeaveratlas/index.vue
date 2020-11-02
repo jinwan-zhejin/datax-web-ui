@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 15:02:49
+ * @LastEditTime: ,: 2020-11-02 16:52:46
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -341,7 +341,7 @@
       </el-container>
     </el-container>
     <Statistics :statistics-show="statisticsShow" @closestatistics="statisticsShow=false" />
-    <el-dialog :visible.sync="filterRenameShow" title="重命名自定义过滤器" @close="()=>{this.$refs.filterInfo.resetFields()}">
+    <el-dialog width="40%" :visible.sync="filterRenameShow" title="重命名自定义过滤器" @close="()=>{this.$refs.filterInfo.resetFields()}">
       <el-form ref="filterInfo" :model="filterInfo">
         <el-form-item label="名称" prop="filterName" :rules="{ required: true, message: '请输入过滤器名称', trigger: 'blur' }">
           <el-input v-model="filterInfo.filterName" />
@@ -352,7 +352,7 @@
         <el-button v-loading="isLoading" size="small" type="primary" @click="submitFilterName('filterInfo')">更 新</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="filterDeleteShow" title="删除自定义过滤器" @close="filterDeleteShow=false">
+    <el-dialog width="40%" :visible.sync="filterDeleteShow" title="删除自定义过滤器" @close="filterDeleteShow=false">
       删除自定义过滤器 {{ filterInfo.filterName }} ?
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="filterDeleteShow=false">关 闭</el-button>
@@ -366,7 +366,7 @@
       @closeaddnewclassification="addNewClassificationShow=false"
       @refreshclassification="loadListClassifications"
     />
-    <el-dialog :visible.sync="classificationDeleteShow" title="删除分类" @close="classificationDeleteShow=false">
+    <el-dialog width="40%" :visible.sync="classificationDeleteShow" title="删除分类" @close="classificationDeleteShow=false">
       删除该分类 {{ classificationToDelete.description }} ?
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="classificationDeleteShow=false">关 闭</el-button>
@@ -1154,12 +1154,12 @@ export default {
       overflow-x: hidden;
       overflow-y: hidden;
       background: #F8F8FA;
-      padding: 24px;
+      padding: 24px 0 24px 24px;
       height: 100%;
       text-align: left;
       font-family: Arial, Helvetica, sans-serif;
       .top-search {
-        // height: 79px;
+        padding-right: 24px;
         margin-bottom: 10px;
         .title-label {
           font-size: 24px;
@@ -1170,6 +1170,7 @@ export default {
       .el-scrollbar {
         height: calc(100vh - 230px);
         .el-collapse {
+          padding-right: 20px;
           border: 0;
           .el-collapse-item {
             .collapse-tree {

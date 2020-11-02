@@ -1,14 +1,14 @@
 <!--
  * @Date: 2020-10-23 10:25:52
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 10:18:28
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addCustomFilter.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 16:24:33
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addCustomFilter.vue
  * @Description: 添加自定义过滤器
 -->
 <template>
   <div>
-    <el-dialog :visible="addCustomFilterShow" title="保存自定义过滤器" @close="closeAddCustomFilter">
+    <el-dialog width="40%" :visible="addCustomFilterShow" title="保存自定义过滤器" @close="closeAddCustomFilter">
       <el-form ref="dataForm" :model="dataForm">
         <el-form-item label="过滤器名称" prop="name" :rules="[{ required: true, message: '输入过滤器名' }]">
           <el-select v-model="dataForm.name" filterable placeholder="输入或选择过滤器名" clearable>
@@ -201,5 +201,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep .el-select {
+  width: 100%;
+}
 </style>

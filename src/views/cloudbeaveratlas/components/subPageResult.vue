@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-11-02 10:04:01
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 16:27:37
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
 
@@ -20,16 +20,16 @@
           <svg-icon :icon-class="openFilter?'filter-solid':'filter-regular'" /> 过滤器
         </el-button>
         <el-collapse-transition>
-          <el-card v-if="openFilter" style="position: absolute; z-index: 999; width: 100%;margin-top: 10px;" header="过滤器">
+          <el-card v-if="openFilter" style="position: absolute; z-index: 999; width: 60%; max-width: 650px; margin-top: 10px;" header="过滤器">
             <el-form label-position="top">
               <el-form-item label="包含/排除">
-                <el-col :span="12">
+                <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                   <el-checkbox v-model="showHistoricalEntities">显示历史实体</el-checkbox>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                   <el-checkbox v-model="excludeSubClassifications">排除子分类</el-checkbox>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                   <el-checkbox v-model="excludeSubTypes">排除子类型</el-checkbox>
                 </el-col>
               </el-form-item>
@@ -115,7 +115,7 @@
     </el-row>
     <el-row>
       <el-col :span="24">
-        <el-table class="tableStyle" :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
+        <el-table v-loading="tableLoading" class="tableStyle" :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
           <el-table-column key="名称" label="名称" prop="attributes.name" min-width="100" :show-overflow-tooltip="true" sortable>
             <template v-slot:default="{ row }">
               <a
@@ -239,7 +239,7 @@
         <el-pagination style="position: relative; float: right;" background :current-page="currentPage" :layout="pagerLayout" :page-sizes="[25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]" :page-size="pageSize" :pager-count="5" :total="tableTotal" @size-change="handlePageSizeChange" @current-change="handlePageCurrentChange" />
       </el-col>
     </el-row>
-    <el-dialog title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="false">
+    <el-dialog width="40%" title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="false">
       <el-form ref="compareParams" :model="compareParams" label-position="left">
         <el-form-item>
           <el-radio v-model="compareType" label="time">时间版本比对</el-radio>
@@ -287,7 +287,7 @@
       </div>
     </el-dialog>
     <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
-    <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
+    <el-dialog width="40%" title="删除分类" :visible.sync="deleteClassificationFlag">
       移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
@@ -455,7 +455,8 @@ export default {
       showHistoricalEntities: false,
       excludeSubClassifications: false,
       excludeSubTypes: false,
-      pagerLayout: 'total, prev, pager, next, sizes'
+      pagerLayout: 'total, prev, pager, next, sizes',
+      tableLoading: false
     };
   },
   computed: {
@@ -678,6 +679,7 @@ export default {
       ) {
         this.backToSearch();
       } else {
+        this.tableLoading = true
         const res = await apiatlas.getTableByItems({
           attributes: this.searchParamsAttributes.concat(
             this.tableColumnsSelected
@@ -702,6 +704,7 @@ export default {
           this.tableData = res.data.entities;
           this.tableTotal = res.data.approximateCount;
           this.openFilter = false;
+          this.tableLoading = false
         } else {
           this.$message({
             message: '获取对应记录出错',
@@ -709,6 +712,7 @@ export default {
             type: 'error',
             duration: 4000
           });
+          this.tableLoading = false
         }
       }
     },
@@ -739,6 +743,7 @@ export default {
           temp.query = this.resultQuery.query
         }
         // console.log(temp);
+        this.tableLoading = true
         const res = await apiatlas.getDSLResult(temp)
         // console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
@@ -755,6 +760,7 @@ export default {
             }
           }
           this.openFilter = false;
+          this.tableLoading = false
         } else {
           this.$message({
             message: res.status === 400 ? res.data.errorMessage : '获取对应记录出错',
@@ -762,6 +768,7 @@ export default {
             type: 'error',
             duration: 6000
           });
+          this.tableLoading = false
         }
       }
     },
