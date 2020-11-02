@@ -166,8 +166,8 @@
     </el-form>
     </div>
     <div class="from_btn">
-      <el-button @click="dialogFormVisible = false"> 取消 </el-button>
-      <el-button type="primary" @click="createData()"> 确定 </el-button>
+      <el-button size="small" @click="dialogFormVisible = false"> 取消 </el-button>
+      <el-button size="small" type="primary" @click="createData()"> 确定 </el-button>
     </div>
   </div>
 </template>
