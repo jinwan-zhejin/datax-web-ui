@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 16:52:46
+ * @LastEditTime: ,: 2020-11-02 18:50:19
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -33,14 +33,14 @@
                 </el-tooltip>
               </el-col>
               <el-col class="collapse-tree">
-                <el-scrollbar>
+                <!-- <el-scrollbar> -->
                   <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.switchStatus?entity.data:entity_Active" node-key="name" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity">
                     <span slot-scope="{ node, data }" class="custom-tree-node">
                       <!-- 显示的文字 -->
                       <span><i class="el-icon-document" /> {{ node.label }} {{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
                     </span>
                   </el-tree>
-                </el-scrollbar>
+                <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>
             <el-collapse-item v-if="collapseExistName.indexOf('classifications') > -1" name="classifications">
@@ -68,7 +68,7 @@
                 </el-tooltip>
               </el-col>
               <el-col class="collapse-tree">
-                <el-scrollbar>
+                <!-- <el-scrollbar> -->
                   <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:tag_Active" node-key="name" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
                     <span slot-scope="{ node, data }" class="custom-tree-node">
                       <!-- 显示的文字 -->
@@ -98,7 +98,7 @@
                       </span>
                     </span>
                   </el-tree>
-                </el-scrollbar>
+                <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>
             <el-collapse-item v-if="collapseExistName.indexOf('businessMetadata') > -1" name="businessMetadata">
@@ -191,7 +191,7 @@
                 </el-tooltip>
               </el-col>
               <el-col class="collapse-tree">
-                <el-scrollbar>
+                <!-- <el-scrollbar> -->
                   <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.data" node-key="searchParameters.guid" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
                     <span slot-scope="{ node, data }" class="custom-tree-node">
                       <!-- 显示的文字 -->
@@ -219,7 +219,7 @@
                       </span>
                     </span>
                   </el-tree>
-                </el-scrollbar>
+                <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>
           </el-collapse>
@@ -347,13 +347,19 @@
           <el-input v-model="filterInfo.filterName" />
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="filterRenameShow=false">关 闭</el-button>
         <el-button v-loading="isLoading" size="small" type="primary" @click="submitFilterName('filterInfo')">更 新</el-button>
       </div>
     </el-dialog>
     <el-dialog width="40%" :visible.sync="filterDeleteShow" title="删除自定义过滤器" @close="filterDeleteShow=false">
-      删除自定义过滤器 {{ filterInfo.filterName }} ?
+      <el-form>
+        <el-form-item>
+          删除自定义过滤器 {{ filterInfo.filterName }} ?
+        </el-form-item>
+      </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="filterDeleteShow=false">关 闭</el-button>
         <el-button v-loading="isLoading" size="small" type="primary" @click="submitDeleteFilter">删 除</el-button>
@@ -367,7 +373,12 @@
       @refreshclassification="loadListClassifications"
     />
     <el-dialog width="40%" :visible.sync="classificationDeleteShow" title="删除分类" @close="classificationDeleteShow=false">
-      删除该分类 {{ classificationToDelete.description }} ?
+      <el-form>
+        <el-form-item>
+          删除该分类 {{ classificationToDelete.description }} ?
+        </el-form-item>
+      </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="classificationDeleteShow=false">关 闭</el-button>
         <el-button v-loading="isLoading" size="small" type="primary" @click="deleteNewClassification">删 除</el-button>
@@ -1174,10 +1185,9 @@ export default {
           border: 0;
           .el-collapse-item {
             .collapse-tree {
-              overflow-x: hidden;
-              .el-scrollbar {
-                max-height:400px;
-              }
+              max-height:400px;
+              overflow-y: auto;
+              overflow-x: auto;
             }
             .collapse-more {
               margin-bottom: 5px;
@@ -1323,6 +1333,11 @@ export default {
   }
 }
 
+::-webkit-scrollbar {
+  width: 0;
+  height: 10px;
+}
+
 ::v-deep .el-button--primary.is-plain {
   background: white;
   color: #3D5FFF;
@@ -1406,5 +1421,8 @@ export default {
 }
 ::v-deep .el-dialog {
   border-radius: 10px;
+}
+::v-deep .el-divider--horizontal {
+  margin: 0 0;
 }
 </style>

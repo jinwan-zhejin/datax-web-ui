@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 14:44:46
+ * @LastEditTime: ,: 2020-11-02 18:52:47
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -331,7 +331,11 @@
       </el-row>
     </div>
     <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
-      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <el-form>
+        <el-form-item>
+          移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
