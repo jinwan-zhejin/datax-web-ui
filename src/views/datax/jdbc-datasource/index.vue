@@ -1616,15 +1616,13 @@ export default {
     }
   },
   created() {
+    this.jobName = sessionStorage.getItem('JobName')
+    this.fetchData();
+  },
+  activated() { // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
     console.log('123')
     console.log(this.$route)
     this.jobRow = this.$route.params
-    // if (sessionStorage.getItem('projectId')) {
-    //   console.log(sessionStorage.getItem('projectId'))
-    // } else {
-    //   sessionStorage.setItem('projectId', this.$route.params.id)
-    //   sessionStorage.setItem('JobName', this.$route.params.name)
-    // }
     this.jobName = sessionStorage.getItem('JobName')
     this.fetchData();
   },
@@ -1955,6 +1953,7 @@ export default {
         obj.comments = this.HiveForm.comments;
         obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
       }
+      obj.projectId = sessionStorage.getItem('projectId')
       datasourceApi.created(obj).then(() => {
         this.fetchData();
         this.dialogVisible = false;
@@ -2060,6 +2059,7 @@ export default {
         obj1.comments = this.DB2Form.comments;
         obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
       }
+      obj1.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
           this.$notify({
@@ -2135,6 +2135,7 @@ export default {
         this.temp.id = this.rowObj.id
         this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       }
+      this.temp.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(this.temp).then((response) => {
         if (response.data === false) {
           this.$notify({
@@ -2363,6 +2364,7 @@ export default {
           id: this.rowObj.id
         }
       }
+      this.paramsData.projectId = sessionStorage.getItem('projectId')
       datasourceApi.updated(this.paramsData).then(() => {
         this.fetchData();
         this.dialogEditVisible = false;
@@ -2393,7 +2395,6 @@ export default {
     fetchData() {
       this.listLoading = true;
       this.listQuery.projectId = sessionStorage.getItem('projectId')
-      console.log(this.listQuery, '1222222222222222222222222')
       datasourceApi.getJobList(this.listQuery).then((response) => {
         this.total = response.total;
         this.list = response.records;
@@ -2478,7 +2479,7 @@ export default {
         .el-card {
             .left {
                 float: left;
-                width: 250px;
+                width: 360px;
                 font-size: 24px;
                 font-family: PingFangHK-Medium, PingFangHK;
                 font-weight: 500;

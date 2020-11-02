@@ -212,8 +212,8 @@ export default {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              title: '成功',
+              message: '添加成功',
               type: 'success',
               duration: 2000
             });
@@ -232,12 +232,9 @@ export default {
     },
     handleDataSource(row) {
       console.log(row)
-      this.$router.push({
-        name: 'JdbcDatasource',
-        params: row
-      })
-      sessionStorage.setItem('projectId', row.id)
       sessionStorage.setItem('JobName', row.name)
+      sessionStorage.setItem('projectId', row.id)
+      this.$router.push('/datax/datasource/jdbcDatasource')
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -247,8 +244,8 @@ export default {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '编辑成功',
               type: 'success',
               duration: 2000
             });
@@ -299,7 +296,6 @@ export default {
         .el-card {
             .left {
                 float: left;
-                width: 120px;
                 font-size: 24px;
                 font-family: PingFangHK-Medium, PingFangHK;
                 font-weight: 500;
