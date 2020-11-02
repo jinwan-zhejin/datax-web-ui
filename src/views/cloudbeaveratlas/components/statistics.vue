@@ -1,130 +1,132 @@
 <!--
  * @Date: 2020-10-22 10:21:05
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-10-23 10:59:38
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\statistics.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 14:56:54
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\statistics.vue
  * @Description: 统计
 -->
 
 <template>
   <div>
-    <el-dialog :visible="statisticsShow" title="统计数据" width="80%" @close="closeStatistics">
+    <el-dialog :visible="statisticsShow" title="统计数据" width="60%" top="7.5vh" custom-class="dialog-border-radius" @close="closeStatistics">
       <el-button style="position: absolute;right: 55px;top: 15px;" size="mini" plain type="primary" icon="el-icon-refresh-left" @click="getStatistics" />
-      <el-collapse v-model="statistics.activeCollapse">
-        <el-collapse-item name="entity">
-          <div slot="title" class="collapse-title">
-            实体 ({{ statistics.entity.count }})
-          </div>
-          <el-table :data="statistics.entity.table" :default-sort="{prop: 'key'}">
-            <el-table-column label="实体类型" prop="key" />
-            <el-table-column :label="'有效 (' + statistics.entity.active + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-blue':row.active>0}">{{ row.active }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column :label="'已删除 (' + statistics.entity.deleted + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-red':row.deleted>0}">{{ row.deleted }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column :label="'Shell (' + statistics.entity.shell + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-red':row.shell>0}">{{ row.shell }}</a>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <el-collapse-item name="classification">
-          <div slot="title" class="collapse-title">
-            分类 ({{ statistics.classification.count }})
-          </div>
-          <el-table :data="statistics.classification.table" :default-sort="{prop: 'key'}">
-            <el-table-column label="名称" prop="key" />
-            <el-table-column :label="'数量 (' + statistics.classification.count + ')'">
-              <template v-slot:default="{row}">
-                <a :class="{'alink-blue':row.count>0}">{{ row.count }}</a>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <el-collapse-item name="server">
-          <div slot="title" class="collapse-title">
-            服务器统计
-          </div>
-          <el-col>
-            <el-table :data="statistics.server.server" :default-sort="{prop: 'key'}">
-              <el-table-column label="服务器详细信息" prop="key">
+      <el-scrollbar>
+        <el-collapse v-model="statistics.activeCollapse">
+          <el-collapse-item name="entity">
+            <div slot="title">
+              实体 ({{ statistics.entity.count }})
+            </div>
+            <el-table :data="statistics.entity.table" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+              <el-table-column label="实体类型" prop="key" />
+              <el-table-column :label="'有效 (' + statistics.entity.active + ')'">
+                <template v-slot:default="{row}">
+                  <a :class="{'alink-blue':row.active>0}">{{ row.active }}</a>
+                </template>
+              </el-table-column>
+              <el-table-column :label="'已删除 (' + statistics.entity.deleted + ')'">
+                <template v-slot:default="{row}">
+                  <a :class="{'alink-red':row.deleted>0}">{{ row.deleted }}</a>
+                </template>
+              </el-table-column>
+              <el-table-column :label="'Shell (' + statistics.entity.shell + ')'">
+                <template v-slot:default="{row}">
+                  <a :class="{'alink-red':row.shell>0}">{{ row.shell }}</a>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item name="classification">
+            <div slot="title">
+              分类 ({{ statistics.classification.count }})
+            </div>
+            <el-table :data="statistics.classification.table" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+              <el-table-column label="名称" prop="key" />
+              <el-table-column :label="'数量 (' + statistics.classification.count + ')'">
+                <template v-slot:default="{row}">
+                  <a :class="{'alink-blue':row.count>0}">{{ row.count }}</a>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item name="server">
+            <div slot="title">
+              服务器统计
+            </div>
+            <el-col>
+              <el-table :data="statistics.server.server" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+                <el-table-column label="服务器详细信息" prop="key">
+                  <template v-slot:default="{row}">
+                    {{ translater(row.key) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="" prop="value" />
+              </el-table>
+            </el-col>
+            <el-col>
+              <br>
+              <span style="font-size: 16px;font-weight: bold;">通知详情</span>
+              <el-table :header-cell-style="headerCellStyle">
+                <el-table-column label="Kafka主题分区" />
+                <el-table-column label="开始偏移" />
+                <el-table-column label="当前偏移" />
+                <el-table-column label="处理" />
+                <el-table-column label="失败" />
+                <el-table-column label="最后消息处理时间" />
+              </el-table>
+            </el-col>
+            <el-col>
+              <el-table :data="statistics.server.notification.table2" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+                <el-table-column label="期" prop="key" />
+                <el-table-column label="计数" prop="count" />
+                <el-table-column label="平均时间（毫秒）" prop="avg" />
+                <el-table-column label="创建" prop="creates" />
+                <el-table-column label="更新" prop="updates" />
+                <el-table-column label="删除" prop="deletes" />
+                <el-table-column label="失败" prop="failed" />
+              </el-table>
+            </el-col>
+          </el-collapse-item>
+          <el-collapse-item name="system">
+            <div slot="title">
+              系统详情
+            </div>
+            <el-table :data="statistics.system.os" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+              <el-table-column label="OS" prop="key">
                 <template v-slot:default="{row}">
                   {{ translater(row.key) }}
                 </template>
               </el-table-column>
               <el-table-column label="" prop="value" />
             </el-table>
-          </el-col>
-          <el-col>
-            <br>
-            通知详情
-            <el-table>
-              <el-table-column label="Kafka主题分区" />
-              <el-table-column label="开始偏移" />
-              <el-table-column label="当前偏移" />
-              <el-table-column label="处理" />
-              <el-table-column label="失败" />
-              <el-table-column label="最后消息处理时间" />
+            <el-table :data="statistics.system.runtime" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+              <el-table-column label="运行环境" prop="key">
+                <template v-slot:default="{row}">
+                  {{ translater(row.key) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="" prop="value" />
             </el-table>
-          </el-col>
-          <el-col>
-            <el-table :data="statistics.server.notification.table2" :default-sort="{prop: 'key'}">
-              <el-table-column label="期" prop="key" />
-              <el-table-column label="计数" prop="count" />
-              <el-table-column label="平均时间（毫秒）" prop="avg" />
-              <el-table-column label="创建" prop="creates" />
-              <el-table-column label="更新" prop="updates" />
-              <el-table-column label="删除" prop="deletes" />
-              <el-table-column label="失败" prop="failed" />
+            <el-table :data="statistics.system.memory" :default-sort="{prop: 'key'}" :header-cell-style="headerCellStyle">
+              <el-table-column label="内存" prop="key">
+                <template v-slot:default="{row}">
+                  {{ row.key.indexOf('_')>-1 ? translaterMaster(row.key):translater(row.key) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="">
+                <template v-slot:default="{row}">
+                  <!-- {{ (row.key==='memory_pool_usages'||row.key==='nonHeapMax') ? row.value : computeSize(row.value).concat(' MB') }} -->
+                  <span v-if="row.key==='nonHeapMax'">{{ row.value }}</span>
+                  <span v-else-if="row.key==='memory_pool_usages'">
+                    <json-viewer :value="row.value" :expand-depth="2" expanded :copyable="false" boxed sort />
+                  </span>
+                  <span v-else>{{ computeSize(row.value).concat(' MB') }}</span>
+                </template>
+              </el-table-column>
             </el-table>
-          </el-col>
-        </el-collapse-item>
-        <el-collapse-item name="system">
-          <div slot="title" class="collapse-title">
-            系统详情
-          </div>
-          <el-table :data="statistics.system.os" :default-sort="{prop: 'key'}">
-            <el-table-column label="OS" prop="key">
-              <template v-slot:default="{row}">
-                {{ translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="" prop="value" />
-          </el-table>
-          <el-table :data="statistics.system.runtime" :default-sort="{prop: 'key'}">
-            <el-table-column label="运行环境" prop="key">
-              <template v-slot:default="{row}">
-                {{ translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="" prop="value" />
-          </el-table>
-          <el-table :data="statistics.system.memory" :default-sort="{prop: 'key'}">
-            <el-table-column label="内存" prop="key">
-              <template v-slot:default="{row}">
-                {{ row.key.indexOf('_')>-1 ? translaterMaster(row.key):translater(row.key) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="">
-              <template v-slot:default="{row}">
-                <!-- {{ (row.key==='memory_pool_usages'||row.key==='nonHeapMax') ? row.value : computeSize(row.value).concat(' MB') }} -->
-                <span v-if="row.key==='nonHeapMax'">{{ row.value }}</span>
-                <span v-else-if="row.key==='memory_pool_usages'">
-                  <json-viewer :value="row.value" :expand-depth="2" expanded :copyable="false" boxed sort />
-                </span>
-                <span v-else>{{ computeSize(row.value).concat(' MB') }}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-      </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
+      </el-scrollbar>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="closeStatistics">关 闭</el-button>
       </div>
@@ -172,7 +174,8 @@ export default {
           runtime: [],
           memory: []
         }
-      }
+      },
+      headerCellStyle: { background: '#F8F8FA', color: '#333333', fontWeight: 'bold' }
     }
   },
   computed: {
@@ -421,22 +424,22 @@ export default {
 .alink:hover,.alink-red:hover {
   text-decoration:underline
 }
-.el-collapse {
-  height: calc(100vh - 219px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: white;
-  ::v-deep .el-collapse-item__header {
-    color: #3D5FFF;
-    font-size: 15px;
-    font-weight: bold;
-    flex: 1 0 auto;
-    order: -1;
-    // border-bottom: #3D5FFF;
-    .collapse-title {
-      flex: 1 0 100%;
-      order: 1;
+.el-scrollbar {
+  height: calc(63vh);
+  .el-collapse {
+    background: white;
+    ::v-deep .el-collapse-item__header {
+      color: #333333;
+      font-size: 16px;
+      font-weight: bold;
     }
   }
 }
+.el-table {
+  border: 2px solid #f8f8fa;
+}
+// .dialog-border-radius {
+//   border-radius: 8px;
+// }
+
 </style>

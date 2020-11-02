@@ -135,7 +135,8 @@ const translate = {
   'includede': '包含已删除实体',
   'excludesc': '排除子分类',
   'excludest': '排除子类型',
-  'locationuri': 'URI地址'
+  'locationuri': 'URI地址',
+  'foreign_keys': '外键'
 }
 // export default translate
 
