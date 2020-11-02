@@ -1,50 +1,56 @@
 <template>
   <div class="individuation">
-    <el-radio-group v-model="radio1">
-      <!-- <el-radio-button type="primary" label="代码入参集" /> -->
-      <el-radio-button type="primary" label="其他入参集" />
-    </el-radio-group>
+    <!-- <el-radio-group v-model="radio1">
+      <el-radio-button type="goon" size="small" label="其他入参集" />
+    </el-radio-group> -->
     <div class="top">
-      <el-button type="primary" size="small" @click="showAdd">新增</el-button>
-      <span class="tit_help">类型</span>
-      <el-select v-model="selectValue" placeholder="请选择">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      <el-input v-model="search" style="width:30%;margin: 0px 20px" prefix-icon="el-icon-search" palceholder="请输入入参名称或入参编码进行搜索" />
-      <el-button class="search" type="primary" size="small" @click="Search">查询</el-button>
-      <el-button class="reset" size="small" plain @click="reSet">重置</el-button>
+      <span class="titSpan">个性化规则</span>
+      <el-button type="goon" size="small" @click="showAdd"><i class="el-icon-plus" style="marginRight:8px;" />新建个性化规则</el-button>
+      <span class="line" />
+      <span>
+        类型:
+        <el-select v-model="selectValue" style="marginLeft: 8px;" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </span>
+      <!-- <el-input v-model="search" style="width:30%;margin: 0px 20px" prefix-icon="el-icon-search" palceholder="请输入入参名称或入参编码进行搜索" />
+      <el-button class="search" type="goon" size="small" @click="Search">查询</el-button> -->
+      <el-input v-model="search" clearable placeholder="请输入关键字进行搜索" style="width: 268px;marginLeft: 24px;" class="filter-item">
+        <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8px 0px;backgroundColor: #3D5FFF" class="filter-item" type="goon" @click="Search">搜索</el-button>
+      </el-input>
+      <!-- <el-button class="reset" size="small" plain @click="reSet">重置</el-button> -->
     </div>
     <!-- 表格 -->
     <el-table
       :data="tableData"
-      border
+      :header-cell-style="{ background: '#FAFAFC' }"
       style="width: 100%"
     >
       <el-table-column
         type="index"
-        align="center"
+        align="left"
         label="序号"
       />
       <el-table-column
         prop="name"
-        align="center"
+        align="left"
         label="入参名称"
         width="180"
       />
       <el-table-column
         prop="code"
-        align="center"
+        align="left"
         label="入参编码"
         width="180"
       />
       <el-table-column
         prop="joinType"
-        align="center"
+        align="left"
         label="入参类型"
       >
         <template v-slot:default="row">
@@ -52,21 +58,33 @@
         </template>
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         wdith="100"
         label="入参表达式"
       >
         <template v-slot:default="row">
-          <el-tag size="medium" style="cursor: pointer;" effect="dark" @click="view(row)">查看</el-tag>
+          <a style="color: #3D5FFF;" @click="view(row)"><i class="el-icon-search" style="marginRight: 8px;" />查看</a>
+          <!-- <el-tag size="medium" style="cursor: pointer;" effect="dark" @click="view(row)">查看</el-tag> -->
         </template>
       </el-table-column>
       <el-table-column
-        align="center"
+        align="left"
         label="操作栏"
+        wdith="100"
       >
         <template v-slot:default="row">
-          <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
-          <el-tag style="cursor: pointer;" size="medium" effect="dark" @click="open(row)">删除</el-tag>
+          <!-- <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
+          <el-tag style="cursor: pointer;" size="medium" effect="dark" @click="open(row)">删除</el-tag> -->
+          <a style="color: #3D5FFF;" @click="showEdit(row)">编辑</a>
+          <span
+            style="width: 1px;
+              height: 12px;
+              background: #e6e6e8;
+              display: inline-block;
+              margin: 0px 8px;
+            "
+          />
+          <a style="color: #FE4646;" @click="open(row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
@@ -76,7 +94,7 @@
       :current-page="pageNum"
       :page-sizes="[50, 100, 150, 200]"
       :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="total, prev, pager, next, sizes"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -114,8 +132,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add">确 定</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" type="goon" @click="add">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 编辑对话框 -->
@@ -148,8 +166,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="EditVisible = false">取 消</el-button>
-        <el-button type="primary" @click="edit">确 定</el-button>
+        <el-button size="small" @click="EditVisible = false">取 消</el-button>
+        <el-button size="small" type="goon" @click="edit">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 查看入参表达式 -->
@@ -464,17 +482,18 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .individuation {
-    padding: 30px;
+    margin: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
     .top {
-      height: 30px;
-      line-height: 30px;
-      margin: 20px 0px;
-      .tit_help {
-        margin-left: 20%;
-        margin-right: 20px;
-      }
+      height: 84px;
+      line-height: 84px;
+      overflow: hidden;
+      text-align: right;
+      position: relative;
       @media screen and (max-width:600px) {
         .search {
           display: none;
@@ -483,16 +502,45 @@ export default {
           display: none;
         }
       }
+      .line {
+        width: 1px;
+        height: 16px;
+        margin: 0px 24px;
+      }
+      .titSpan {
+        position: absolute;
+        left: 24px;
+        top: 50%;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        transform: translateY(-50%);
+      }
+      .el-input {
+        margin-right: 24px;
+        .el-input-group__append {
+          background-color: #3D5FFF;
+          color: #fff;
+        }
+      }
     }
     .el-table {
       .el-table-column {
         .el-tag {
           cursor: pointer;
         }
+        a {
+          font-size: 14px;
+          font-family: PingFangHK-Regular, PingFangHK;
+          font-weight: 400;
+          color: #3D5FFF;
+        }
       }
     }
     .el-pagination {
-      margin-top: 20px;
+      float: right;
+      padding: 20px;
     }
     .el-dialog {
       #h_200 {
