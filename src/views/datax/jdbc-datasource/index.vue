@@ -1616,8 +1616,8 @@ export default {
     }
   },
   created() {
-    // this.jobName = sessionStorage.getItem('JobName')
-    // this.fetchData();
+    this.jobName = sessionStorage.getItem('JobName')
+    this.fetchData();
   },
   activated() { // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
     console.log('123')
