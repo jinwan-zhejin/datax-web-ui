@@ -1,16 +1,18 @@
 <template>
   <div class="general">
     <div class="top">
-      <el-button type="primary" @click="showRelate">关联个性化规则</el-button>
-      <el-button type="primary" @click="showAdd">新增</el-button>
-      <el-input v-model="search" style="marginLeft: 20%;width: 40%;marginRight: 20px" placeholder="请输入关键字" />
-      <el-button type="primary" @click="getAllList">查询</el-button>
+      <span class="titSpan">通用规则</span>
+      <!-- <el-button type="goon" size="small" >关联个性化规则</el-button> -->
+      <el-button type="goon" size="small" @click="showAdd"><i class="el-icon-plus" style="marginRight:8px;" />新建通用规则</el-button>
+      <el-input v-model="search" clearable placeholder="数据源名称" style="width: 268px;" class="filter-item">
+        <el-button slot="append" size="small" style="margin: 0px;padding: 8px 0px;backgroundColor: #3D5FFF" class="filter-item" type="goon" @click="getAllList">搜索</el-button>
+      </el-input>
     </div>
     <!-- 表格 -->
     <el-table
       :data="tableData"
-      border
       style="width: 100%"
+      :header-cell-style="{ background: '#FAFAFC' }"
     >
       <el-table-column
         type="index"
@@ -41,8 +43,9 @@
         label="个性化规则"
       >
         <template v-slot:default="row">
-          <a style="color: skyblue;" @click="goIndividuation(row)">{{ showType(row.row) }}</a>
-        </template>
+          <a style="color: #333333;" @click="goIndividuation(row)">{{ showType(row.row) }}</a>
+          <a v-show="!row.row.personaliseType" style="color: #3D5FFF;" @click="showRelate"><i class="el-icon-plus" style="marginRight:8px;" />关联</a>
+        </template>a
       </el-table-column>
       <el-table-column
         align="center"
@@ -50,8 +53,16 @@
         label="操作"
       >
         <template v-slot:default="row">
-          <el-button type="primary" @click="showEdit(row)">编辑</el-button>
-          <el-button type="primary" @click="open(row)">删除</el-button>
+          <a style="color: #3D5FFF;" @click="showEdit(row)">编辑</a>
+          <span
+            style="width: 1px;
+              height: 12px;
+              background: #e6e6e8;
+              display: inline-block;
+              margin: 0px 8px;
+            "
+          />
+          <a style="color: #FE4646;" @click="open(row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
@@ -168,7 +179,7 @@
       :current-page="pageNum"
       :page-sizes="[50, 100, 150, 200]"
       :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="total, prev, pager, next, sizes"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -521,16 +532,48 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .general {
-  padding: 30px;
+  margin: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
   .top {
-    height: 30px;
-    line-height: 30px;
-    margin-bottom: 20px;
+    height: 84px;
+    line-height: 84px;
+    overflow: hidden;
+    text-align: right;
+    position: relative;
+    .titSpan {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      font-size: 24px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      font-weight: 500;
+      color: #333333;
+      transform: translateY(-50%);
+    }
+    .el-input {
+      margin-right: 24px;
+      .el-input-group__append {
+        background-color: #3D5FFF;
+        color: #fff;
+      }
+    }
+    .el-button {
+      margin-right: 24px;;
+    }
+    .lt {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
   }
   .el-pagination {
-    margin-top: 20px;
+    float: right;
+    padding: 20px;
   }
 }
 </style>
