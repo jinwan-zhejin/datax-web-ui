@@ -164,8 +164,8 @@
       </div>
 
       <div style="width:200px;float:right;">
-        <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
-        <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
+        <el-button size='small' :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
+        <el-button size='small' type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
       </div>
 
     </div>
