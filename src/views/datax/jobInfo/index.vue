@@ -608,6 +608,7 @@ export default {
             padding: 0px;
             li {
               height: 24px;
+              font-size: 15px;
               line-height: 24px;
               // background-color: rgb(218, 243, 253);
               text-align: left;
@@ -668,7 +669,7 @@ export default {
 .task_img {
   width: 16px;
   float: left;
-  margin-top: 5px;
+  margin-top: 4px;
   margin-right: 5px;
 }
 </style>

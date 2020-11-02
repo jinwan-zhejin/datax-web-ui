@@ -12,7 +12,8 @@
           </el-steps>
         </div>
       </div>
-
+      
+      <div class="main_content">
       <div v-show="active===1" class="step0">
         <Create ref="create" :fjson="configJson" v-on="$listeners" />
       </div>
@@ -160,6 +161,8 @@
         </div>
 
       </div>
+      </div>
+
       <div style="width:200px;float:right;">
         <el-button :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
         <el-button type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
@@ -460,5 +463,13 @@ export default {
 }
 .app-container {
   padding: 0;
+}
+.main_content {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.main_content >>> .el-select {
+  width: 100%;
 }
 </style>
