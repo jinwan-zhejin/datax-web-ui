@@ -5,7 +5,6 @@
         <el-select
           v-model="writerForm.datasourceId"
           filterable
-          style="width: 300px;"
           @change="wDsChange"
         >
           <el-option
@@ -17,7 +16,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
-        <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable style="width: 300px" @change="schemaChange">
+        <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable  @change="schemaChange">
           <el-option
             v-for="item in schemaList"
             :key="item"
@@ -33,7 +32,6 @@
           default-first-option
           filterable
           :disabled="writerForm.ifCreateTable"
-          style="width: 300px"
           @change="wTbChange"
         >
           <el-option
@@ -56,10 +54,10 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="前置sql语句：">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" style="width: 500px" />
+        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3"  />
       </el-form-item>
       <el-form-item label="postSql：">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" style="width: 500px" />
+        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3"  />
       </el-form-item>
     </el-form>
   </div>

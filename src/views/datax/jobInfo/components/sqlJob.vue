@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose"> -->
+    <div class="main-content">
     <el-form
       ref="dataForm"
       :rules="rules"
@@ -24,7 +24,6 @@
           v-model="temp.jobDesc"
           size="medium"
           placeholder="请输入任务描述"
-          style="width: 300px"
         />
       </el-form-item>
       <el-dialog
@@ -46,7 +45,7 @@
           v-model="temp.jobCron"
           auto-complete="off"
           placeholder="请输入Cron表达式"
-          style="width: 300px"
+          
         >
           <el-button
             v-if="!showCronBox"
@@ -164,7 +163,7 @@
         </div>
       </el-form-item>
     </el-form>
-
+    </div>
     <div class="from_btn">
       <el-button @click="dialogFormVisible = false"> 取消 </el-button>
       <el-button type="primary" @click="createData()"> 确定 </el-button>
@@ -818,9 +817,10 @@ export default {
   margin-top: 20px;
 }
 
-.input_from >>> .el-form-item {
+/* .input_from >>> .el-form-item {
   margin-bottom: 8px;
-}
+} */
+
 .input_from >>> .el-form-item__error {
   padding-top: 0;
   top: 90%;
@@ -830,6 +830,15 @@ export default {
   padding-top: 16px;
   margin-top: 16px;
   border-top: 1px solid rgb(233, 230, 230);
+}
+
+.main-content {
+  width: 60%;
+  margin:0 auto;
+}
+
+.main-content >>> .el-select {
+  width: 100%;
 }
 </style>
 

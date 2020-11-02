@@ -4,7 +4,7 @@
       ref="dataForm"
       :model="temp"
       label-position="right"
-      label-width="150px"
+      label-width="120px"
       class="elFrom"
     >
       <el-form-item label="任务名称：" prop="jobDesc">
@@ -12,7 +12,7 @@
           v-model="temp.jobDesc"
           size="medium"
           placeholder="请输入任务名称"
-          style="width: 263px"
+          
         />
       </el-form-item>
 
@@ -116,7 +116,6 @@
           v-model="temp.jobCron"
           auto-complete="off"
           placeholder="请输入Cron表达式"
-          style="width: 400px"
         >
           <el-button
             v-if="!showCronBox"
@@ -139,7 +138,6 @@
         <el-input
           v-model="temp.alarmEmail"
           placeholder="请输入报警邮件，多个用逗号分隔"
-          style="width: 400px"
         />
       </el-form-item>
 
@@ -338,7 +336,7 @@ export default {
 
 <style scoped>
 .elFrom >>> .el-form-item {
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 
 .elFrom >>> .el-input--suffix .el-input__inner {

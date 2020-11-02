@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
       <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select v-model="readerForm.datasourceId" filterable style="width: 300px" @change="rDsChange">
+        <el-select v-model="readerForm.datasourceId" filterable  @change="rDsChange">
           <el-option
             v-for="item in rDsList"
             :key="item.id"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
-        <el-select v-model="readerForm.tableSchema" allow-create default-first-option filterable style="width: 300px" @change="schemaChange">
+        <el-select v-model="readerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
           <el-option
             v-for="item in schemaList"
             :key="item"
@@ -22,16 +22,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
-        <el-select v-model="readerForm.tableName" allow-create default-first-option filterable style="width: 300px" @change="rTbChange">
+        <el-select v-model="readerForm.tableName" allow-create default-first-option filterable  @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item label="SQL语句：">
-        <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: 300px" />
+        <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 102px)" />
         <el-button style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
       </el-form-item>
       <el-form-item label="切分字段：">
-        <el-input v-model="readerForm.splitPk" placeholder="切分主键" style="width: 300px" />
+        <el-input v-model="readerForm.splitPk" placeholder="切分主键"  />
       </el-form-item>
       <el-form-item label="表所有字段：">
         <el-checkbox
@@ -47,7 +47,7 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="where条件：" prop="where">
-        <el-input v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea" style="width: 300px" />
+        <el-input v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea"  />
       </el-form-item>
     </el-form>
   </div>
