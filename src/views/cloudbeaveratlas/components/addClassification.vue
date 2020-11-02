@@ -2,7 +2,7 @@
  * @Date: 2020-10-16 10:22:36
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 16:24:02
+ * @LastEditTime: ,: 2020-11-02 18:51:58
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addClassification.vue
  * @Description: 添加分类
 -->
@@ -76,6 +76,7 @@
           <el-input v-model="dataForm.tag" />
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" plain type="primary" @click="cancelAdd">取 消</el-button>
         <el-button size="small" type="primary" @click="submitAdd('dataForm')">确 定</el-button>

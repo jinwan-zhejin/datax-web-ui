@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 16:27:37
+ * @LastEditTime: ,: 2020-11-02 18:53:41
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -20,7 +20,7 @@
           <svg-icon :icon-class="openFilter?'filter-solid':'filter-regular'" /> 过滤器
         </el-button>
         <el-collapse-transition>
-          <el-card v-if="openFilter" style="position: absolute; z-index: 999; width: 60%; max-width: 650px; margin-top: 10px;" header="过滤器">
+          <el-card v-if="openFilter" style="position: absolute; z-index: 2099; width: 60%; max-width: 650px; margin-top: 10px;" header="过滤器">
             <el-form label-position="top">
               <el-form-item label="包含/排除">
                 <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -34,6 +34,7 @@
                 </el-col>
               </el-form-item>
             </el-form>
+            <el-divider />
             <span style="margin: 15px;position: relative;float: right;">
               <el-button type="primary" plain size="small" @click="openFilter = false">取消</el-button>
               <el-button type="primary" size="small" @click="addOtherFilter">确认</el-button>
@@ -115,7 +116,7 @@
     </el-row>
     <el-row>
       <el-col :span="24">
-        <el-table v-loading="tableLoading" class="tableStyle" :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
+        <el-table v-loading="tableLoading" height="59vh" class="tableStyle" :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
           <el-table-column key="名称" label="名称" prop="attributes.name" min-width="100" :show-overflow-tooltip="true" sortable>
             <template v-slot:default="{ row }">
               <a
@@ -239,15 +240,16 @@
         <el-pagination style="position: relative; float: right;" background :current-page="currentPage" :layout="pagerLayout" :page-sizes="[25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]" :page-size="pageSize" :pager-count="5" :total="tableTotal" @size-change="handlePageSizeChange" @current-change="handlePageCurrentChange" />
       </el-col>
     </el-row>
-    <el-dialog width="40%" title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="false">
-      <el-form ref="compareParams" :model="compareParams" label-position="left">
+    <el-dialog width="40%" title="元数据比对" :visible.sync="metaCompareVisible" :before-close="initCompare" :show-close="true">
+      <el-form>
         <el-form-item>
           <el-radio v-model="compareType" label="time">时间版本比对</el-radio>
-          <!-- <el-radio v-model="compareType" label="dimen">空间版本比对</el-radio> -->
         </el-form-item>
+      </el-form>
+      <el-form ref="compareParams" :model="compareParams" label-position="right" label-width="150px">
         <el-form-item
           v-if="compareType === 'time'"
-          label="基线时间: "
+          label="基线时间 "
           prop="baselineTime"
           :rules="{
             required: true,
@@ -255,13 +257,13 @@
             trigger: 'blur'
           }"
         >
-          <el-select v-model="compareParams.baselineTime" placeholder="请选择比较基线时间点" clearable>
+          <el-select v-model="compareParams.baselineTime" style="width: 85%;" placeholder="请选择比较基线时间点" clearable>
             <el-option v-for="(item, index) in versionListLite(compareParams.toTime)" :key="index" :label="formatDate(item.timestamp)" :value="item.timestamp" />
           </el-select>
         </el-form-item>
         <el-form-item
           v-if="compareType === 'time'"
-          label="待比较时间点: "
+          label="待比较时间点 "
           prop="toTime"
           :rules="{
             required: true,
@@ -269,7 +271,7 @@
             trigger: 'blur'
           }"
         >
-          <el-select v-model="compareParams.toTime" placeholder="请选择待比较时间点" clearable>
+          <el-select v-model="compareParams.toTime" style="width: 85%;" placeholder="请选择待比较时间点" clearable>
             <el-option
               v-for="(item, index) in versionListLite(
                 compareParams.baselineTime
@@ -281,6 +283,7 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain size="small" @click="cancelCompareTask">取消</el-button>
         <el-button type="primary" size="small" @click="submitCompareTask('compareParams')">提交</el-button>
@@ -288,7 +291,12 @@
     </el-dialog>
     <AddClassification :add-classification-show="addClassificationShow" :classification-info="classificationInfo" :classification-list="classificationList" @addclassificationclose="addClassificationClose" />
     <el-dialog width="40%" title="删除分类" :visible.sync="deleteClassificationFlag">
-      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <el-form>
+        <el-form-item>
+          移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+        </el-form-item>
+      </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
         <el-button type="primary" @click="handledeleteClassification">提交</el-button>
@@ -1035,7 +1043,10 @@ export default {
     //   height: 50%;
     //   overflow-y: auto;
     // }
+}
 
+::v-deep .el-table th {
+  background-color: #F8f8FA;
 }
 
 .tableItemLink {

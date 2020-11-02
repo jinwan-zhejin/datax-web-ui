@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-10-26 16:24:24
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 19:11:20
- * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-02 18:48:31
+ * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
  * @Description: 查看编辑页
 -->
 <template>
@@ -126,7 +126,12 @@
       @addclassificationclose="addClassificationClose"
     />
     <el-dialog title="删除分类" :visible.sync="deleteClassificationFlag">
-      移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+      <el-form>
+        <el-form-item>
+          移除：{{ deleteClass }} 从 {{ deleteTypeName }} ?
+        </el-form-item>
+      </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
         <el-button v-loading="isLoading" type="primary" @click="handledeleteClassification">提交</el-button>
@@ -164,6 +169,7 @@
           </el-col>
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain @click="addAttributeShow = false">取消</el-button>
         <el-button v-loading="isLoading" type="primary" @click="handleAddAttribute('dataForm')">提交</el-button>
@@ -178,6 +184,7 @@
           <el-input v-model="editDescription" placeholder="描述" />
         </el-form-item>
       </el-form>
+      <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" plain @click="editDescriptionShow = false">取消</el-button>
         <el-button v-loading="isLoading" type="primary" @click="handleEditDescription('dataForm2')">提交</el-button>
