@@ -3,13 +3,13 @@
     <!-- 接口列表选择 -->
     <div class="choose">
       <div class="btn">
-        <el-button :header-cell-style="defaultColor" @click="gotoUse" type="primary">接口使用列表</el-button>
+        <el-button :header-cell-style="defaultColor" type="primary" @click="gotoUse">接口使用列表</el-button>
         <el-button @click="gotoRegister">接口注册列表</el-button>
       </div>
     </div>
     <!-- 条件筛选查询 -->
-    <div class="filter" v-show="isShowFilter">
-      <p><i style="margin-right:10px;" class="el-icon-search"></i><span>查询条件</span></p>
+    <div v-show="isShowFilter" class="filter">
+      <p><i style="margin-right:10px;" class="el-icon-search" /><span>查询条件</span></p>
       <el-form ref="form" :model="form">
         <!-- <el-form-item label="应用选择">
           <el-select v-model="form.apply" placeholder="请选择">
@@ -24,39 +24,41 @@
           </el-select>
         </el-form-item> -->
         <el-form-item>
-          <el-input placeholder="请输入接口名称" v-model="form.name"></el-input>
+          <el-input v-model="form.name" placeholder="请输入接口名称" />
         </el-form-item>
         <div class="sreach">
-          <el-button @click="search" type="primary" plain>查询</el-button>
+          <el-button type="primary" plain @click="search">查询</el-button>
           <!-- <el-button type="primary" plain>重置</el-button> -->
         </div>
       </el-form>
     </div>
     <!-- 表格 -->
-    <p style="margin-bottom:10px;"><i style="margin-right:10px;" class="el-icon-document"></i><span>查询结果</span></p>
+    <p style="margin-bottom:10px;"><i style="margin-right:10px;" class="el-icon-document" /><span>查询结果</span></p>
     <!-- 表格 -->
     <el-table
       :data="tableData"
       style="width: 100%"
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+    >
       <el-table-column
         type="index"
-        label="序号">
-      </el-table-column>
+        label="序号"
+      />
       <el-table-column
         prop="infoName"
         border
         label="接口名称"
-        width="230">
-      </el-table-column>
+        width="230"
+      />
       <el-table-column
         prop="infoExtract"
-        label="接口描述">
-      </el-table-column>
+        label="接口描述"
+      />
       <el-table-column
         prop="state"
         label="状态"
-        width="100">
+        width="100"
+      >
         <template v-slot:default="{ row }">
           <el-tag>{{ row.state }}</el-tag>
         </template>
@@ -64,11 +66,12 @@
       <el-table-column
         prop="resType"
         label="业务类型"
-        width="100">
-      </el-table-column>
+        width="100"
+      />
       <el-table-column
         label="操作"
-        width="100">
+        width="100"
+      >
         <template v-slot:default="{ row }">
           <a style="color: skyblue;cursor:pointer;" @click="gotoViewDetails(row)">查看详情</a>
         </template>
@@ -77,20 +80,20 @@
     <!-- 分页 -->
     <el-pagination
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
       :current-page="pageNum"
       :page-size="pageSize"
       :page-sizes="[30, 60, 90]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <!-- 新接口申请对话框 -->
     <el-dialog title="新接口申请" :visible.sync="dialogNewInter">
       <el-table :data="newData">
-        <el-table-column type="index"  width="50"></el-table-column>
-        <el-table-column label="描述" width="200"></el-table-column>
-        <el-table-column label="是/否"></el-table-column>
+        <el-table-column type="index" width="50" />
+        <el-table-column label="描述" width="200" />
+        <el-table-column label="是/否" />
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogNewInter = false">取 消</el-button>
@@ -157,14 +160,7 @@
 
 <script>
 export default {
-  created () {
-    this.getAllData()
-    if (window.location.href.split('#')[1].split('/')[1] !== 'viewDetails') {
-      localStorage.removeItem('row')
-      localStorage.removeItem('infoId')
-    }
-  },
-  data () {
+  data() {
     return {
       activeName: 'second',
       form: {},
@@ -186,34 +182,41 @@ export default {
       myObj: {}
     }
   },
+  created() {
+    this.getAllData()
+    if (window.location.href.split('#')[1].split('/')[1] !== 'viewDetails') {
+      localStorage.removeItem('row')
+      localStorage.removeItem('infoId')
+    }
+  },
   methods: {
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.pageSize = val
       this.pageNum = 1
       this.getAllData()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.pageNum = val
       this.getAllData()
     },
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       console.log(tab, event)
     },
-    gotoUse () {
+    gotoUse() {
       this.$router.push('/myInterface')
     },
-    gotoRegister () {
+    gotoRegister() {
       this.$router.push('/register')
     },
     // 接口注册
-    gotoInterface () {
+    gotoInterface() {
       this.$router.push('/infaceReg')
     },
     // 显示新接口对话框
-    isShowNew () {
+    isShowNew() {
       this.dialogNewInter = true
     },
-    gotoViewDetails (row) {
+    gotoViewDetails(row) {
       console.log(row)
       this.myObj = row
       console.log(this.myObj)
@@ -224,16 +227,16 @@ export default {
         }
       })
     },
-    onSubmit () {
+    onSubmit() {
       console.log('创建')
     },
     // 显示新增接口对话框
-    isShowAddNew () {
+    isShowAddNew() {
       this.dialogNewInter = false
       this.dialogAddNewInter = true
     },
     // 获取全部数据
-    async getAllData () {
+    async getAllData() {
       const res = await this.$axios.post('/applyResource/getMyApplyResourcePages', {
         dataCompany: '',
         infoName: '',
@@ -264,12 +267,12 @@ export default {
       // }
     },
     // token异常跳转到登录页
-    gotoLogin () {
+    gotoLogin() {
       window.location.href = 'http://localhost:8080/#/homePage?isOverdue=' + 'true'
       console.log(123)
     },
     // 查询
-    async search () {
+    async search() {
       const res = await this.$axios.post('/applyResource/getMyApplyResourcePages', {
         dataCompany: '',
         infoName: this.form.name,

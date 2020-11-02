@@ -6,10 +6,10 @@
           <el-input
             v-model="node.tableName"
             @blur="testField(node.tableName, '表英文名')"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="表中文名">
-          <el-input v-model="node.tableNameCN"></el-input>
+          <el-input v-model="node.tableNameCN" />
         </el-form-item>
         <!-- <el-form-item label="Commord">
           <el-input v-model="GeneralFrom.commord"></el-input>
@@ -28,12 +28,12 @@
         <el-table-column label="字段名" width="180">
           <template slot-scope="scope">
             <el-input
-              size="small"
               v-model="scope.row.name"
+              size="small"
               placeholder="请输入字段名"
               @change="handleEdit(scope.$index, scope.row)"
               @blur="testField(scope.row.name, '字段名')"
-            ></el-input>
+            />
             <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
@@ -41,11 +41,11 @@
         <el-table-column label="字段中文名" width="180">
           <template slot-scope="scope">
             <el-input
-              size="small"
               v-model="scope.row.info"
+              size="small"
               placeholder="请输入字段中文名"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-input>
+            />
             <span>{{ scope.row.info }}</span>
           </template>
         </el-table-column>
@@ -58,7 +58,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-              ></el-option>
+              />
             </el-select>
           </template>
         </el-table-column>
@@ -66,11 +66,11 @@
         <el-table-column prop="type" label="长度">
           <template slot-scope="scope">
             <el-input
-              size="small"
               v-model="scope.row.length"
+              size="small"
               placeholder="请输入长度"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-input>
+            />
             <span>{{ scope.row.length }}</span>
           </template>
         </el-table-column>
@@ -78,11 +78,11 @@
         <el-table-column prop="type" label="precison">
           <template slot-scope="scope">
             <el-input
-              size="small"
               v-model="scope.row.precison"
+              size="small"
               placeholder="请输入"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-input>
+            />
             <span>{{ scope.row.precison }}</span>
           </template>
         </el-table-column>
@@ -90,30 +90,30 @@
         <el-table-column prop="isPrimarykey" label="是否主键">
           <template slot-scope="scope">
             <el-checkbox
-              size="small"
               v-model="scope.row.isPrimarykey"
+              size="small"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-checkbox>
+            />
           </template>
         </el-table-column>
 
         <el-table-column prop="F" label="F">
           <template slot-scope="scope">
             <el-checkbox
-              size="small"
               v-model="scope.row.F"
+              size="small"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-checkbox>
+            />
           </template>
         </el-table-column>
 
         <el-table-column prop="M" label="M">
           <template slot-scope="scope">
             <el-checkbox
-              size="small"
               v-model="scope.row.M"
+              size="small"
               @change="handleEdit(scope.$index, scope.row)"
-            ></el-checkbox>
+            />
           </template>
         </el-table-column>
 
@@ -124,8 +124,7 @@
               size="small"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,26 +139,25 @@
             type="info"
             icon="el-icon-document-copy"
             circle
-          ></el-button>
+          />
         </el-tooltip>
         <el-tooltip class="item" effect="dark" content="执行" placement="top">
           <el-button
-            @click="innerVisible = true"
             type="info"
             icon="el-icon-video-play"
             circle
-          ></el-button
-          >\
+            @click="innerVisible = true"
+          />\
         </el-tooltip>
       </div>
       <el-input
+        ref="sqlArea"
+        v-model="sqlVal"
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 8 }"
         placeholder="请输入内容"
-        v-model="sqlVal"
         :disabled="true"
-        ref="sqlArea"
-      ></el-input>
+      />
 
       <el-dialog
         width="40%"
@@ -170,30 +168,31 @@
         <el-form :model="GeneralFrom">
           <el-form-item label="数据源">
             <el-select v-model="GeneralFrom.region" placeholder="请选择数据源">
-              <el-option label="数据源一" value="shanghai"></el-option>
-              <el-option label="数据源二" value="beijing"></el-option>
+              <el-option label="数据源一" value="shanghai" />
+              <el-option label="数据源二" value="beijing" />
             </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="innerVisible = false">取 消</el-button>
-          <el-button type="primary" @click="innerVisible = false"
-            >确 定</el-button
-          >
+          <el-button
+            type="primary"
+            @click="innerVisible = false"
+          >确 定</el-button>
         </div>
       </el-dialog>
     </el-tab-pane>
 
-    <el-tab-pane v-if='$store.state.dataModel.pNodeData.length' label="计算逻辑">
+    <el-tab-pane v-if="$store.state.dataModel.pNodeData.length" label="计算逻辑">
       <el-collapse>
         <el-collapse-item>
           <template slot="title">
             <span class="title">数据源</span>
           </template>
           <div
-            class="data-source"
             v-for="(item, index) in dataSourceList"
             :key="index"
+            class="data-source"
           >
             <el-popover placement="bottom" width="200" trigger="click">
               <ul>
@@ -221,18 +220,16 @@
                 circle
                 size="mini"
                 @click="showTableDetail(index)"
-              ></el-button>
+              />
             </el-tooltip>
-            <div class="tableSource" v-show="currentIndex === index">
+            <div v-show="currentIndex === index" class="tableSource">
               <el-card class="box-card">
                 <div slot="header" class="clearfix">
                   <span>{{ item.tableName }}</span>
                 </div>
                 <el-table :data="item.fields" style="width: 100%">
-                  <el-table-column prop="name" label="列" width="180">
-                  </el-table-column>
-                  <el-table-column prop="type" label="类型" width="180">
-                  </el-table-column>
+                  <el-table-column prop="name" label="列" width="180" />
+                  <el-table-column prop="type" label="类型" width="180" />
                 </el-table>
               </el-card>
             </div>
@@ -252,30 +249,30 @@
                   :key="index"
                   :label="item"
                   :value="item"
-                ></el-option>
+                />
               </el-select>
             </el-form-item>
 
             <el-form-item label="时间粒度">
               <el-select v-model="$store.state.dataModel.timeGranularity" placeholder="请选择粒度">
-                <el-option label="second" value="second"></el-option>
-                <el-option label="minute" value="minute"></el-option>
-                <el-option label="hour" value="hour"></el-option>
-                <el-option label="day" value="day"></el-option>
-                <el-option label="week" value="week"></el-option>
-                <el-option label="month" value="month"></el-option>
-                <el-option label="year" value="year"></el-option>
+                <el-option label="second" value="second" />
+                <el-option label="minute" value="minute" />
+                <el-option label="hour" value="hour" />
+                <el-option label="day" value="day" />
+                <el-option label="week" value="week" />
+                <el-option label="month" value="month" />
+                <el-option label="year" value="year" />
                 <el-option
                   label="week_ending_saturday"
                   value="week_ending_saturday"
-                ></el-option>
+                />
                 <el-option
                   label="week_start_sunday"
                   value="week_start_sunday"
-                ></el-option>
+                />
               </el-select>
             </el-form-item>
-            <br />
+            <br>
             <el-form-item label="时间范围">
               <TimeRange />
             </el-form-item>
@@ -290,19 +287,24 @@
           <p>过滤</p>
           <MyFilter />
           <p>分组</p>
-          <el-select  v-model="$store.state.dataModel.group" multiple placeholder="请选择">
+          <el-select v-model="$store.state.dataModel.group" multiple placeholder="请选择">
             <el-option
-              v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
-            >
-            </el-option>
+              v-for="(item, index) in $store.getters.allNodeFields"
+              :key="index"
+              :label="item"
+              :value="item"
+            />
           </el-select>
           <div class="array-bottom">
-            <el-form :inline="true"  class="demo-form-inline">
+            <el-form :inline="true" class="demo-form-inline">
               <el-form-item label="排序">
                 <el-select v-model="$store.state.dataModel.sortField" placeholder="排序">
                   <el-option
-                    v-for="(item, index) in $store.getters.allNodeFields" :key="index" :label="item" :value="item"
-                  ></el-option>
+                    v-for="(item, index) in $store.getters.allNodeFields"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  />
                 </el-select>
               </el-form-item>
               <el-form-item label="">
@@ -311,35 +313,35 @@
 
               <el-form-item label="行限制">
                 <el-select v-model="$store.state.dataModel.limit" placeholder="9选项">
-                  <el-option label="10" value="10"></el-option>
-                  <el-option label="50" value="50"></el-option>
-                  <el-option label="100" value="100"></el-option>
-                  <el-option label="250" value="250"></el-option>
-                  <el-option label="500" value="500"></el-option>
-                  <el-option label="1000" value="1000"></el-option>
-                  <el-option label="5000" value="5000"></el-option>
-                  <el-option label="10000" value="10000"></el-option>
-                  <el-option label="50000" value="50000"></el-option>
+                  <el-option label="10" value="10" />
+                  <el-option label="50" value="50" />
+                  <el-option label="100" value="100" />
+                  <el-option label="250" value="250" />
+                  <el-option label="500" value="500" />
+                  <el-option label="1000" value="1000" />
+                  <el-option label="5000" value="5000" />
+                  <el-option label="10000" value="10000" />
+                  <el-option label="50000" value="50000" />
                 </el-select>
               </el-form-item>
             </el-form>
           </div>
         </el-collapse-item>
         <div class="active_sql_btn">
-           <el-button @click="activeSelect">查看sql</el-button>
-           <el-button 
+          <el-button @click="activeSelect">查看sql</el-button>
+          <el-button
             v-clipboard:copy="associaTionSql"
             v-clipboard:success="onCopy"
-            >复制sql</el-button>
+          >复制sql</el-button>
         </div>
         <el-input
           v-show="associaTionSql"
+          v-model="associaTionSql"
           type="textarea"
           disabled
           autosize
           placeholder="请输入内容"
-          v-model="associaTionSql">
-        </el-input>
+        />
       </el-collapse>
     </el-tab-pane>
   </el-tabs>
@@ -347,195 +349,119 @@
 
 <script>
 // import fieldMapperVue from "../../datax/json-build/components/fieldMapper.vue";
-import { testTableName } from "@/utils/regExp";
-import TimeRange from "./timeRange";
-import MySelect from "./mySelect/mySelect";
-import MyFilter from "./mySelect/myFilter";
-import Association from "./association";
+import { testTableName } from '@/utils/regExp';
+import TimeRange from './timeRange';
+import MySelect from './mySelect/mySelect';
+import MyFilter from './mySelect/myFilter';
+import Association from './association';
 export default {
-  name: "EditField",
-  props: ["node", "tableData"],
+  name: 'EditField',
   components: {
     TimeRange,
     MySelect,
     Association,
-    MyFilter,
+    MyFilter
   },
+  props: ['node', 'tableData'],
   data() {
     return {
       GeneralFrom: {
-        name: "",
-        code: "",
-        commord: "",
+        name: '',
+        code: '',
+        commord: ''
       },
       dataTypeOptions: [
         {
-          value: "TINYINT",
-          label: "TINYINT",
+          value: 'TINYINT',
+          label: 'TINYINT'
         },
         {
-          value: "SMALLINT",
-          label: "SMALLINT",
+          value: 'SMALLINT',
+          label: 'SMALLINT'
         },
         {
-          value: "MEDIUMINT",
-          label: "MEDIUMINT",
+          value: 'MEDIUMINT',
+          label: 'MEDIUMINT'
         },
         {
-          value: "INT",
-          label: "INT",
+          value: 'INT',
+          label: 'INT'
         },
         {
-          value: "BIGINT",
-          label: "BIGINT",
+          value: 'BIGINT',
+          label: 'BIGINT'
         },
         {
-          value: "FLOAT",
-          label: "FLOAT",
+          value: 'FLOAT',
+          label: 'FLOAT'
         },
         {
-          value: "DOUBLE",
-          label: "DOUBLE",
+          value: 'DOUBLE',
+          label: 'DOUBLE'
         },
         {
-          value: "DECIMAL",
-          label: "DECIMAL",
+          value: 'DECIMAL',
+          label: 'DECIMAL'
         },
         {
-          value: "DATE",
-          label: "DATE",
+          value: 'DATE',
+          label: 'DATE'
         },
         {
-          value: "TIME",
-          label: "TIME",
+          value: 'TIME',
+          label: 'TIME'
         },
         {
-          value: "YEAR",
-          label: "YEAR",
+          value: 'YEAR',
+          label: 'YEAR'
         },
         {
-          value: "DATETIME",
-          label: "DATETIME",
+          value: 'DATETIME',
+          label: 'DATETIME'
         },
         {
-          value: "TIMESTAMP",
-          label: "TIMESTAMP",
+          value: 'TIMESTAMP',
+          label: 'TIMESTAMP'
         },
         {
-          value: "CHAR",
-          label: "CHAR",
+          value: 'CHAR',
+          label: 'CHAR'
         },
         {
-          value: "VARCHAR",
-          label: "VARCHAR",
+          value: 'VARCHAR',
+          label: 'VARCHAR'
         },
         {
-          value: "TINYBLOB",
-          label: "TINYBLOB",
+          value: 'TINYBLOB',
+          label: 'TINYBLOB'
         },
         {
-          value: "TEXT",
-          label: "TEXT",
+          value: 'TEXT',
+          label: 'TEXT'
         },
         {
-          value: "MEDIUMBLOB",
-          label: "MEDIUMBLOB",
+          value: 'MEDIUMBLOB',
+          label: 'MEDIUMBLOB'
         },
         {
-          value: "MEDIUMTEXT",
-          label: "MEDIUMTEXT",
+          value: 'MEDIUMTEXT',
+          label: 'MEDIUMTEXT'
         },
         {
-          value: "LONGBLOB",
-          label: "LONGBLOB",
+          value: 'LONGBLOB',
+          label: 'LONGBLOB'
         },
         {
-          value: "LONGTEXT",
-          label: "LONGTEXT",
-        },
+          value: 'LONGTEXT',
+          label: 'LONGTEXT'
+        }
       ],
       sqlVal: ``,
       innerVisible: false,
-      user: "",
+      user: '',
       currentIndex: -1,
       associaTionSql: ''
     };
-  },
-  created() {
-    this.sqlPreview();
-  },
-  methods: {
-    handleCurrentChange(row, event, column) {
-      // console.log("改变", row, event, column);
-    },
-    handleEdit(index, row) {
-      // console.log("修改", index, row);
-    },
-    handleDelete(index, row) {
-      this.$emit("deleteFidlds", index);
-    },
-    createFields() {
-      this.$emit("createFields");
-    },
-
-    testField(str, type) {
-      const res = testTableName(str);
-      console.log(res);
-      if (!res) {
-        this.$message.error(`${type}只能由字母、数字、_组成`);
-      }
-      return res;
-    },
-
-    //sql预览
-    sqlPreview() {
-      let fieldStr = ``;
-      let primarykeyStr = "";
-      for (let index = 0; index < this.tableData.length; index++) {
-        const field = this.tableData[index];
-        if (!field.name || !field.type || !field.info) {
-          continue;
-        }
-
-        fieldStr += `\t ${field.name || ""} ${field.type || ""}${
-          field.length ? "(" + field.length + ")" : ""
-        } COMMENT '${field.info || ""}'${
-          index === this.tableData.length - 1 ? "" : ",\n"
-        } `;
-
-        if (field.isPrimarykey) {
-          primarykeyStr += field.name + " ";
-        }
-      }
-
-      this.sqlVal = `
-    CREATE TABLE ${this.node.tableName} (
-    ${fieldStr} ${
-        primarykeyStr ? "\n\t PRIMARY KEY(" + primarykeyStr + ")" : ""
-      }
-    ) COMMENT '${this.node.tableNameCN}';
-    
-    `;
-    },
-
-    //复制sql
-    onCopy() {
-      this.$message.success("已复制到剪切板");
-    },
-
-    //打开折叠数据源配置
-    showTableDetail(index) {
-      if (this.currentIndex === index) {
-        this.currentIndex = -1;
-        return;
-      }
-      this.currentIndex = index;
-    },
-
-    //
-    activeSelect(){
-      this.associaTionSql = this.$store.getters.associaTionSql;
-    }
   },
   computed: {
     tableName() {
@@ -548,7 +474,7 @@ export default {
 
     dataSourceList() {
       return this.$store.state.dataModel.pNodeData;
-    },
+    }
   },
   watch: {
     tableData: {
@@ -557,11 +483,11 @@ export default {
           const result = obj.info && obj.type && this.testField(obj.name);
           return result;
         });
-        this.$emit("canUpdateFields", !disableOK); //确定按钮
+        this.$emit('canUpdateFields', !disableOK); // 确定按钮
         this.sqlPreview();
       },
       // 开启深度监听
-      deep: true,
+      deep: true
     },
 
     // tableData(val) {},
@@ -572,8 +498,84 @@ export default {
 
     tableNameCN(val) {
       this.sqlPreview();
-    },
+    }
   },
+  created() {
+    this.sqlPreview();
+  },
+  methods: {
+    handleCurrentChange(row, event, column) {
+      // console.log("改变", row, event, column);
+    },
+    handleEdit(index, row) {
+      // console.log("修改", index, row);
+    },
+    handleDelete(index, row) {
+      this.$emit('deleteFidlds', index);
+    },
+    createFields() {
+      this.$emit('createFields');
+    },
+
+    testField(str, type) {
+      const res = testTableName(str);
+      console.log(res);
+      if (!res) {
+        this.$message.error(`${type}只能由字母、数字、_组成`);
+      }
+      return res;
+    },
+
+    // sql预览
+    sqlPreview() {
+      let fieldStr = ``;
+      let primarykeyStr = '';
+      for (let index = 0; index < this.tableData.length; index++) {
+        const field = this.tableData[index];
+        if (!field.name || !field.type || !field.info) {
+          continue;
+        }
+
+        fieldStr += `\t ${field.name || ''} ${field.type || ''}${
+          field.length ? '(' + field.length + ')' : ''
+        } COMMENT '${field.info || ''}'${
+          index === this.tableData.length - 1 ? '' : ',\n'
+        } `;
+
+        if (field.isPrimarykey) {
+          primarykeyStr += field.name + ' ';
+        }
+      }
+
+      this.sqlVal = `
+    CREATE TABLE ${this.node.tableName} (
+    ${fieldStr} ${
+  primarykeyStr ? '\n\t PRIMARY KEY(' + primarykeyStr + ')' : ''
+}
+    ) COMMENT '${this.node.tableNameCN}';
+    
+    `;
+    },
+
+    // 复制sql
+    onCopy() {
+      this.$message.success('已复制到剪切板');
+    },
+
+    // 打开折叠数据源配置
+    showTableDetail(index) {
+      if (this.currentIndex === index) {
+        this.currentIndex = -1;
+        return;
+      }
+      this.currentIndex = index;
+    },
+
+    //
+    activeSelect() {
+      this.associaTionSql = this.$store.getters.associaTionSql;
+    }
+  }
 };
 </script>
 <style  scoped>

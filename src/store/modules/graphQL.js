@@ -1,6 +1,6 @@
 const state = {
-  codeMirrorVal: "", //sql语句
-  sqlBtnLoading: false //执行sql语句按钮是否加载中
+  codeMirrorVal: '', // sql语句
+  sqlBtnLoading: false // 执行sql语句按钮是否加载中
 };
 
 const mutations = {
@@ -14,7 +14,7 @@ const mutations = {
 
 const actions = {
   changeMirror({ commit }, val) {
-    commit("SET_CodeMirrorVal", val);
+    commit('SET_CodeMirrorVal', val);
   }
 };
 

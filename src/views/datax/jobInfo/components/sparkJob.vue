@@ -1,111 +1,111 @@
 <template>
   <div class="app-container">
     <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose"> -->
-      <el-form class="input_from" ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="140px">
-            <el-form-item label="任务类型：" prop="glueType">
-              {{ this.jobTypeLabel }}
-            </el-form-item>
-         
-            <!-- <el-form-item label="所属项目：" prop="projectId">
+    <el-form ref="dataForm" class="input_from" :rules="rules" :model="temp" label-position="right" label-width="140px">
+      <el-form-item label="任务类型：" prop="glueType">
+        {{ this.jobTypeLabel }}
+      </el-form-item>
+
+      <!-- <el-form-item label="所属项目：" prop="projectId">
               <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
                 <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item> -->
-          
-            <el-form-item label="任务名称：" prop="jobDesc">
-              <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" style="width:300px;" />
-            </el-form-item>
 
-            <el-form-item label="执行器" prop="jobGroup">
-              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-              </el-select>
-            </el-form-item>
+      <el-form-item label="任务名称：" prop="jobDesc">
+        <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" style="width:300px;" />
+      </el-form-item>
 
-         
-            <el-dialog
-              title="提示"
-              :visible.sync="showCronBox"
-              width="60%"
-              append-to-body
-            >
-              <cron v-model="temp.jobCron" />
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="showCronBox = false;">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false">确 定</el-button>
-              </span>
-            </el-dialog>
-           
-           <el-form-item label="Cron" prop="jobCron">
-              <el-input style="width:300px"  v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
-                <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
-                <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="路由策略" prop="executorRouteStrategy">
-              <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
-                <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
+      <el-form-item label="执行器" prop="jobGroup">
+        <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+        </el-select>
+      </el-form-item>
 
-             <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-        
-            <el-form-item label="程序名称：" prop="appName">
-             <el-input v-model="temp.appName" placeholder="请输入程序名称" style="width:300px;"/>
-            </el-form-item>
-          
-            <!-- <el-form-item label="SPARK MASTER：" prop="sparkMaster">
+      <el-dialog
+        title="提示"
+        :visible.sync="showCronBox"
+        width="60%"
+        append-to-body
+      >
+        <cron v-model="temp.jobCron" />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="showCronBox = false;">关闭</el-button>
+          <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <el-form-item label="Cron" prop="jobCron">
+        <el-input v-model="temp.jobCron" style="width:300px" auto-complete="off" placeholder="请输入Cron表达式">
+          <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+          <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+        </el-input>
+      </el-form-item>
+      <el-form-item label="路由策略" prop="executorRouteStrategy">
+        <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
+          <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+        <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
+          <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="程序名称：" prop="appName">
+        <el-input v-model="temp.appName" placeholder="请输入程序名称" style="width:300px;" />
+      </el-form-item>
+
+      <!-- <el-form-item label="SPARK MASTER：" prop="sparkMaster">
               <el-select v-model="temp.sparkMaster" placeholder="选择SPARK MASTER">
                 <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
               </el-select>
             </el-form-item> -->
-          
-            <el-form-item label="运行模式：">
-              <el-select v-model="temp.sparkMaster" placeholder="请选择运行模式">
-                <el-option value="LOCALN">LOCAL[N]</el-option>
-                <el-option value="STANDALONE">Standalone</el-option>
-                <el-option value="MESOS">Mesos</el-option>
-                <el-option value="YCLUSTER">YARN cluster</el-option>
-                <el-option value="YCLIENT">YARN client</el-option>
-              </el-select>
-            </el-form-item>
-          
-            <el-form-item label="Jar包/py文件：">
-               <el-upload
-                 class="upload-demo"
-                 action="https://jsonplaceholder.typicode.com/posts/"
-                 :file-list="fileList">
-                 <el-button size="small" type="primary">点击上传</el-button>
-               </el-upload>
-            </el-form-item>
-          
-            <el-form-item label="主类名称：" prop="mainclass" >
-              <el-input placeholder="请输入主类名称" style="width:300px;"></el-input>
-            </el-form-item>
-          
-            <el-form-item label="子任务：">
-              <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
-                <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
-              </el-select>
-            </el-form-item>
-      </el-form>
-      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="jobJson" />
-      <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
-      <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
-      <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" />
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="createData()">
+
+      <el-form-item label="运行模式：">
+        <el-select v-model="temp.sparkMaster" placeholder="请选择运行模式">
+          <el-option value="LOCALN">LOCAL[N]</el-option>
+          <el-option value="STANDALONE">Standalone</el-option>
+          <el-option value="MESOS">Mesos</el-option>
+          <el-option value="YCLUSTER">YARN cluster</el-option>
+          <el-option value="YCLIENT">YARN client</el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="Jar包/py文件：">
+        <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :file-list="fileList"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="主类名称：" prop="mainclass">
+        <el-input placeholder="请输入主类名称" style="width:300px;" />
+      </el-form-item>
+
+      <el-form-item label="子任务：">
+        <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
+          <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="jobJson" />
+    <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
+    <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
+    <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" />
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">
+        取消
+      </el-button>
+      <el-button type="primary" @click="createData()">
         <!-- <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()"> -->
-          确定
-        </el-button>
-      </div>
+        确定
+      </el-button>
+    </div>
     <!-- </el-dialog> -->
   </div>
 </template>
@@ -126,7 +126,6 @@ import { isJSON } from '@/utils/validate'
 
 export default {
   name: 'SparkJob',
-  props:['jobType', 'jobTypeLabel'],
   components: { Pagination, JsonEditor, ShellEditor, PythonEditor, PowershellEditor, Cron },
   directives: { waves },
   filters: {
@@ -139,6 +138,7 @@ export default {
       return statusMap[status]
     }
   },
+  props: ['jobType', 'jobTypeLabel'],
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
@@ -256,7 +256,7 @@ export default {
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: 'GLUE_SHELL', label: 'Shell任务' },
+        { value: 'GLUE_SHELL', label: 'Shell任务' }
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],

@@ -1,44 +1,44 @@
 <template>
   <div class="app-container">
     <div class="action_btn">
-      <span class="span_btn" @click="handlerExecute(temp)"><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行一次</span>
-      <span class="span_btn" @click="handlerViewLog(temp)"><i class="el-icon-tickets"></i>&nbsp;&nbsp;查询日志</span>
-      <span class="span_btn" @click="handlerUpdate(temp)"><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
+      <span class="span_btn" @click="handlerExecute(temp)"><i class="el-icon-video-play" />&nbsp;&nbsp;执行一次</span>
+      <span class="span_btn" @click="handlerViewLog(temp)"><i class="el-icon-tickets" />&nbsp;&nbsp;查询日志</span>
+      <span class="span_btn" @click="handlerUpdate(temp)"><i class="el-icon-edit" />&nbsp;&nbsp;编辑</span>
 
       <el-popover
-            placement="bottom"
-            width="500"
-            @show="loadById(temp)"
-          >
-            <el-table :data="registerNode">
-              <el-table-column width="150" property="title" label="执行器名称" />
-              <el-table-column width="150" property="appName" label="appName" />
-              <el-table-column width="150" property="registryList" label="机器地址" />
-            </el-table>
-            <span slot="reference" class="span_btn"><i class="el-icon-copy-document"></i>&nbsp;&nbsp;注册节点</span>
+        placement="bottom"
+        width="500"
+        @show="loadById(temp)"
+      >
+        <el-table :data="registerNode">
+          <el-table-column width="150" property="title" label="执行器名称" />
+          <el-table-column width="150" property="appName" label="appName" />
+          <el-table-column width="150" property="registryList" label="机器地址" />
+        </el-table>
+        <span slot="reference" class="span_btn"><i class="el-icon-copy-document" />&nbsp;&nbsp;注册节点</span>
       </el-popover>
       <el-popover
-            placement="bottom"
-            width="300"
-            @show="nextTriggerTime(temp)"
-          >
-            <h5 v-html="triggerNextTimes" />
-            <span slot="reference" class="span_btn"><i class="el-icon-time"></i>&nbsp;&nbsp;下次触发时间</span>
+        placement="bottom"
+        width="300"
+        @show="nextTriggerTime(temp)"
+      >
+        <h5 v-html="triggerNextTimes" />
+        <span slot="reference" class="span_btn"><i class="el-icon-time" />&nbsp;&nbsp;下次触发时间</span>
       </el-popover>
-      
-      <span class="span_btn" @click="handlerDelete(temp)"><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
-    <el-switch
-      v-model='temp.triggerStatus'
-      active-color="#00A854"
-      active-text="启动"
-      :active-value="1"
-      inactive-color="#F04134"
-      inactive-text="停止"
-      :inactive-value="0"
-      @change="changeSwitch(temp)"
-    ></el-switch>
+
+      <span class="span_btn" @click="handlerDelete(temp)"><i class="el-icon-delete" />&nbsp;&nbsp;删除</span>
+      <el-switch
+        v-model="temp.triggerStatus"
+        active-color="#00A854"
+        active-text="启动"
+        :active-value="1"
+        inactive-color="#F04134"
+        inactive-text="停止"
+        :inactive-value="0"
+        @change="changeSwitch(temp)"
+      />
     </div>
-    <el-divider></el-divider>
+    <el-divider />
     <el-form
       ref="dataForm"
       :rules="rules"
@@ -74,9 +74,10 @@
             <cron v-model="temp.jobCron" />
             <span slot="footer" class="dialog-footer">
               <el-button @click="showCronBox = false">关闭</el-button>
-              <el-button type="primary" @click="showCronBox = false"
-                >确 定</el-button
-              >
+              <el-button
+                type="primary"
+                @click="showCronBox = false"
+              >确 定</el-button>
             </span>
           </el-dialog>
           <el-form-item label="Cron" prop="jobCron">
@@ -155,7 +156,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL'  || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="超时时间(分钟)">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" label="超时时间(分钟)">
             <el-input-number
               v-model="temp.executorTimeout"
               :min="0"
@@ -182,13 +183,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item  label="子任务">
+          <el-form-item label="子任务">
             <el-select
               v-model="temp.childJobId"
               multiple
               placeholder="子任务"
               value-key="id"
-
             >
               <el-option
                 v-for="item in jobIdList"
@@ -223,7 +223,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'"  label="reader数据源" prop="datasourceId">
+          <el-form-item v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" label="reader数据源" prop="datasourceId">
             <el-select
               v-model="temp.datasourceId"
               placeholder="reader数据源"
@@ -254,7 +254,7 @@
       </el-row>
 
       <el-row>
-      <el-col :span="8">
+        <el-col :span="8">
           <el-form-item v-if="jobType === 'SQLJOB'" label="数据源连接：" prop="dataSourceId">
             <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
               <el-option
@@ -265,10 +265,10 @@
               />
             </el-select>
           </el-form-item>
-      </el-col>
+        </el-col>
       </el-row>
       <el-row>
-      <el-col :span="8">
+        <el-col :span="8">
           <el-form-item v-if="jobType === 'SQLJOB'" label="schema：" prop="schema">
             <el-select v-model="temp.schema" placeholder="请选择schema">
               <el-option
@@ -279,7 +279,7 @@
               />
             </el-select>
           </el-form-item>
-      </el-col>
+        </el-col>
       </el-row>
       <el-row
         v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
@@ -368,32 +368,32 @@
     </el-form>
     <div class="log_title">
       <span>查看json</span>
-      <span @click="jsonshow = !jsonshow" class="unflod">
-        <i v-if="!jsonshow" class="el-icon-sort-up"></i>
-        <i v-else class="el-icon-sort-down"></i>
+      <span class="unflod" @click="jsonshow = !jsonshow">
+        <i v-if="!jsonshow" class="el-icon-sort-up" />
+        <i v-else class="el-icon-sort-down" />
       </span>
     </div>
     <transition name="fadejson">
-    <json-editor
-      v-if="jsonshow"
-      ref="jsonEditor"
-      v-model="temp.jobJson"
-      caniEdit='nocursor'
-    />
+      <json-editor
+        v-if="jsonshow"
+        ref="jsonEditor"
+        v-model="temp.jobJson"
+        cani-edit="nocursor"
+      />
     </transition>
     <div slot="footer" class="dialog-footer ">
-      <div >
+      <div>
         <div class="log_title">
           <span>运行日志</span>
-          <span @click="showLog = !showLog" class="unflod">
-            <i v-if="!showLog" class="el-icon-sort-up"></i>
-            <i v-else class="el-icon-sort-down"></i>
+          <span class="unflod" @click="showLog = !showLog">
+            <i v-if="!showLog" class="el-icon-sort-up" />
+            <i v-else class="el-icon-sort-down" />
           </span>
         </div>
         <transition name="fade">
-        <div v-if="showLog" class="log_container">
-          <span>{{newstlogContent}}</span>
-        </div>
+          <div v-if="showLog" class="log_container">
+            <span>{{ newstlogContent }}</span>
+          </div>
         </transition>
       </div>
     </div>
@@ -468,7 +468,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="失败重试次数">
-              <el-input-number size="small" v-model="temp.executorFailRetryCount" :min="0" :max="20" />
+              <el-input-number v-model="temp.executorFailRetryCount" size="small" :min="0" :max="20" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -482,7 +482,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="超时时间(分钟)">
-              <el-input-number  size="small" v-model="temp.executorTimeout" :min="0" :max="120" />
+              <el-input-number v-model="temp.executorTimeout" size="small" :min="0" :max="120" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -585,7 +585,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <json-editor :caniEdit='false' v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" />
+      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
       <!-- <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
       <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
       <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" /> -->
@@ -600,34 +600,33 @@
     </el-dialog>
 
     <el-dialog title="日志信息" :visible.sync="logview">
-      <jobLog ref="jobLog" :id='jobId' ></jobLog>
+      <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
 
-</div>
+  </div>
 </template>
 
 <script>
-import * as executor from "@/api/datax-executor";
-import * as job from "@/api/datax-job-info";
-import * as log from "@/api/datax-job-log";
-import waves from "@/directive/waves"; // waves directive
-import Cron from "@/components/Cron";
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import JsonEditor from "@/components/JsonEditor";
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
-import * as datasourceApi from "@/api/datax-jdbcDatasource";
-import * as jobProjectApi from "@/api/datax-job-project";
-import { isJSON } from "@/utils/validate";
+import * as executor from '@/api/datax-executor';
+import * as job from '@/api/datax-job-info';
+import * as log from '@/api/datax-job-log';
+import waves from '@/directive/waves'; // waves directive
+import Cron from '@/components/Cron';
+import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
+import JsonEditor from '@/components/JsonEditor';
+import ShellEditor from '@/components/ShellEditor';
+import PythonEditor from '@/components/PythonEditor';
+import PowershellEditor from '@/components/PowershellEditor';
+import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import * as jobProjectApi from '@/api/datax-job-project';
+import { isJSON } from '@/utils/validate';
 import jobLog from './jobLog';
-import { getTableSchema } from "@/api/metadata-query";
+import { getTableSchema } from '@/api/metadata-query';
 
 import { handlerExecute, handlerViewLog, handlerDelete, handlerStart, handlerStop, loadById, nextTriggerTime, handlerUpdate } from '../method';
 
 export default {
-  name: "SimpleJob",
-  props: ["jobInfo"],
+  name: 'SimpleJob',
   components: {
     Pagination,
     JsonEditor,
@@ -641,36 +640,37 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
       };
       return statusMap[status];
-    },
+    }
   },
+  props: ['jobInfo'],
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("Increment parameters is required"));
+        callback(new Error('Increment parameters is required'));
       }
       callback();
     };
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error("Partition parameters is required"));
+        callback(new Error('Partition parameters is required'));
       }
       callback();
     };
     return {
       jsonshow: false,
       newstlogContent: '',
-      jobId:'',
-      logview:false,
-      logData:[],
+      jobId: '',
+      logview: false,
+      logData: [],
       editFrom: true,
       switchVal: 1,
       showLog: false,
-      projectIds: "",
+      projectIds: '',
       list: null,
       listLoading: true,
       total: 0,
@@ -680,174 +680,180 @@ export default {
         current: 1,
         size: 10,
         jobGroup: 0,
-        projectIds: "",
+        projectIds: '',
         triggerStatus: -1,
-        jobDesc: "",
-        glueType: "",
+        jobDesc: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
       pluginData: [],
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "Edit",
-        create: "Create",
+        update: 'Edit',
+        create: 'Create'
       },
       rules: {
         jobGroup: [
           {
             required: true,
-            message: "jobGroup is required",
-            trigger: "change",
-          },
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
-            message: "executorRouteStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
-            message: "executorBlockStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: "jobType is required", trigger: "change" },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
-            message: "projectId is required",
-            trigger: "change",
-          },
+            message: 'projectId is required',
+            trigger: 'change'
+          }
         ],
         jobDesc: [
-          { required: true, message: "jobDesc is required", trigger: "blur" },
+          { required: true, message: 'jobDesc is required', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
-            message: "jobProject is required",
-            trigger: "blur",
-          },
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: "jobCron is required", trigger: "blur" },
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
-        incStartId: [{ trigger: "blur", validator: validateIncParam }],
-        replaceParam: [{ trigger: "blur", validator: validateIncParam }],
-        primaryKey: [{ trigger: "blur", validator: validateIncParam }],
-        incStartTime: [{ trigger: "change", validator: validateIncParam }],
-        replaceParamType: [{ trigger: "change", validator: validateIncParam }],
+        incStartId: [{ trigger: 'blur', validator: validateIncParam }],
+        replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
+        primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
+        incStartTime: [{ trigger: 'change', validator: validateIncParam }],
+        replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: "blur", validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
-        datasourceId: [{ trigger: "change", validator: validateIncParam }],
-        readerTable: [{ trigger: "blur", validator: validateIncParam }],
+        datasourceId: [{ trigger: 'change', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       temp: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: ''
       },
       resetTemp() {
         this.temp = this.$options.data().temp;
-        this.jobJson = "";
-        this.glueSource = "";
+        this.jobJson = '';
+        this.glueSource = '';
         this.timeOffset = 0;
-        this.timeFormatType = "yyyy-MM-dd";
-        this.partitionField = "";
+        this.timeFormatType = 'yyyy-MM-dd';
+        this.partitionField = '';
       },
-      executorList: "",
-      jobIdList: "",
-      jobProjectList: "",
-      dataSourceList: "",
+      executorList: '',
+      jobIdList: '',
+      jobProjectList: '',
+      dataSourceList: '',
       blockStrategies: [
-        { value: "SERIAL_EXECUTION", label: "单机串行" },
-        { value: "DISCARD_LATER", label: "丢弃后续调度" },
-        { value: "COVER_EARLY", label: "覆盖之前调度" },
+        { value: 'SERIAL_EXECUTION', label: '单机串行' },
+        { value: 'DISCARD_LATER', label: '丢弃后续调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
-        { value: "FIRST", label: "第一个" },
-        { value: "LAST", label: "最后一个" },
-        { value: "ROUND", label: "轮询" },
-        { value: "RANDOM", label: "随机" },
-        { value: "CONSISTENT_HASH", label: "一致性HASH" },
-        { value: "LEAST_FREQUENTLY_USED", label: "最不经常使用" },
-        { value: "LEAST_RECENTLY_USED", label: "最近最久未使用" },
-        { value: "FAILOVER", label: "故障转移" },
-        { value: "BUSYOVER", label: "忙碌转移" },
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         { value: 'BEAN', label: 'DataX任务' },
-        { value: "GLUE_SHELL", label: "Shell任务" },
+        { value: 'GLUE_SHELL', label: 'Shell任务' },
         { value: 'GLUE_PYTHON', label: 'Python任务' },
         { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
       incrementTypes: [
-        { value: 0, label: "无" },
-        { value: 1, label: "主键自增" },
-        { value: 2, label: "时间自增" },
-        { value: 3, label: "HIVE分区" },
+        { value: 0, label: '无' },
+        { value: 1, label: '主键自增' },
+        { value: 2, label: '时间自增' },
+        { value: 3, label: 'HIVE分区' }
       ],
-      triggerNextTimes: "",
+      triggerNextTimes: '',
       registerNode: [],
-      jobJson: "",
-      glueSource: "",
+      jobJson: '',
+      glueSource: '',
       timeOffset: 0,
-      timeFormatType: "yyyy-MM-dd",
-      partitionField: "",
+      timeFormatType: 'yyyy-MM-dd',
+      partitionField: '',
       timeFormatTypes: [
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "yyyyMMdd", label: "yyyyMMdd" },
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'yyyyMMdd', label: 'yyyyMMdd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       replaceFormatTypes: [
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "HH:mm:ss", label: "HH:mm:ss" },
-        { value: "yyyy/MM/dd HH:mm:ss", label: "yyyy/MM/dd HH:mm:ss" },
-        { value: "yyyy-MM-dd HH:mm:ss", label: "yyyy-MM-dd HH:mm:ss" },
-        { value: "Timestamp", label: "时间戳" },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'HH:mm:ss', label: 'HH:mm:ss' },
+        { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
+        { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
       statusList: [
-        { value: 500, label: "失败" },
-        { value: 502, label: "失败(超时)" },
-        { value: 200, label: "成功" },
-        { value: 0, label: "无" },
-      ],
+        { value: 500, label: '失败' },
+        { value: 502, label: '失败(超时)' },
+        { value: 200, label: '成功' },
+        { value: 0, label: '无' }
+      ]
     };
+  },
+
+  computed: {
+    jobType() {
+      return this.jobInfo.jobType
+    }
   },
   created() {
     // console.log('this.temp',this.jobInfo);
@@ -860,20 +866,20 @@ export default {
     this.temp = this.jobInfo;
     console.log(this.temp)
 
-    console.log('jobType',this.jobType);
+    console.log('jobType', this.jobType);
   },
 
   methods: {
-    //执行一次
+    // 执行一次
     handlerExecute(temp) {
       handlerExecute.call(this, temp)
-      .then(() => {
-        this.logList();
-        this.showLog = true;
-      }) 
+        .then(() => {
+          this.logList();
+          this.showLog = true;
+        })
     },
 
-    //查看日志
+    // 查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
       this.logview = true;
@@ -881,101 +887,85 @@ export default {
       this.$refs.jobLog?.fetchData();
     },
 
-    //删除
+    // 删除
     handlerDelete(temp) {
       handlerDelete.call(this, temp)
-      .then(()=>{
-        this.$emit('deleteDetailTab',temp.id);
-        this.$emit('deleteJob', true)
-      })
-      .then(()=>{
-        
-      })
+        .then(() => {
+          this.$emit('deleteDetailTab', temp.id);
+          this.$emit('deleteJob', true)
+        })
+        .then(() => {
+
+        })
     },
 
-    //开关
+    // 开关
     changeSwitch(temp) {
       temp.triggerStatus === 1 ? handlerStart.call(this, temp) : handlerStop.call(this, temp)
     },
 
-    //注册节点
+    // 注册节点
     loadById(row) {
       loadById.call(this, row);
     },
 
-    //下次触发时间
+    // 下次触发时间
     nextTriggerTime(row) {
       nextTriggerTime.call(this, row);
     },
 
-    //编辑
+    // 编辑
     handlerUpdate(row) {
       console.log(row);
       row.childJobId = row.childJobId?.join?.(',')
       handlerUpdate.call(this, row)
     },
 
-    //实时更新日志
+    // 实时更新日志
     logList() {
-      const param = Object.assign({},{
+      const param = Object.assign({}, {
         current: 1,
         size: 10,
         jobGroup: 0,
         jobId: this.temp.id,
         logStatus: -1,
-        filterTime: "",
+        filterTime: ''
       });
       let status = 0;
-        log.getList(param).then((response) => {
+      log.getList(param).then((response) => {
         const { content } = response;
-        
-        let newestLog = content.data[0] || {};
-        console.log('+++',content,newestLog);
-        if(!newestLog?.executorAddress){
+
+        const newestLog = content.data[0] || {};
+        console.log('+++', content, newestLog);
+        if (!newestLog?.executorAddress) {
           this.logList()
           return;
         }
         status = newestLog.handleCode;
         const triggerTime = Date.parse(newestLog?.triggerTime)
         log.viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
-        .then(response => {
-          this.newstlogContent = response.content.logContent
-        })
-        .then(() => {
-          if(status === 0){
-            console.log('更新日志');
-            setTimeout(this.logList(), 1000)
-          }
-        })
+          .then(response => {
+            this.newstlogContent = response.content.logContent
+          })
+          .then(() => {
+            if (status === 0) {
+              console.log('更新日志');
+              setTimeout(this.logList(), 1000)
+            }
+          })
       });
-
     },
 
-    //schema列表
+    // schema列表
     async getSchemaList() {
-      let schemaList = await getTableSchema({
-        datasourceId: this.temp.datasourceId,
+      const schemaList = await getTableSchema({
+        datasourceId: this.temp.datasourceId
       });
       this.schemaList = schemaList;
     },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     handleClose(done) {
-      this.$confirm("确认关闭？")
+      this.$confirm('确认关闭？')
         .then((_) => {
           done();
         })
@@ -1020,28 +1010,28 @@ export default {
     incStartTimeFormat(vData) {},
     handleCreate() {
       this.resetTemp();
-      this.dialogStatus = "create";
+      this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs['dataForm'].clearValidate();
       });
     },
-    
+
     updateData() {
       this.temp.jobJson =
-        typeof this.jobJson !== "string"
+        typeof this.jobJson !== 'string'
           ? JSON.stringify(this.jobJson, null, 2)
           : this.jobJson;
-      if (this.temp.glueType === "BEAN" && !isJSON(this.temp.jobJson)) {
+      if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
-          title: "Fail",
-          message: "json格式错误",
-          type: "error",
-          duration: 2000,
+          title: 'Fail',
+          message: 'json格式错误',
+          type: 'error',
+          duration: 2000
         });
         return;
       }
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         const tabName = this.temp.id;
         if (valid) {
           if (this.temp.childJobId) {
@@ -1054,36 +1044,30 @@ export default {
           // this.temp.executorHandler =
           //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
           this.temp.glueSource = this.glueSource;
-          if (this.partitionField)
+          if (this.partitionField) {
             this.temp.partitionInfo =
               this.partitionField +
-              "," +
+              ',' +
               this.timeOffset +
-              "," +
+              ',' +
               this.timeFormatType;
+          }
           job.updateJob(this.temp).then(() => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: "Success",
-              message: "Update Successfully",
-              type: "success",
-              duration: 2000,
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
             });
             this.$emit('deleteDetailTab', tabName)
             this.$emit('deleteJob')
           });
         }
       });
-    },
-    
-    
-  },
-
-  computed: {
-    jobType(){
-      return this.jobInfo.jobType
     }
+
   }
 };
 </script>

@@ -11,100 +11,100 @@
           :label="item.title"
           :name="index + ''"
         >
-        <div class="btn_container">
-          <div class="btn-item">
-            <span><i class="el-icon-tickets"></i>&nbsp;&nbsp;保存</span>
+          <div class="btn_container">
+            <div class="btn-item">
+              <span><i class="el-icon-tickets" />&nbsp;&nbsp;保存</span>
+            </div>
+            <div class="btn-item">
+              <span><i class="el-icon-edit" />&nbsp;&nbsp;编辑</span>
+            </div>
+            <div class="btn-item">
+              <span><i class="el-icon-view" />&nbsp;&nbsp;查看模型SQL</span>
+            </div>
+            <div class="btn-item">
+              <span><i class="el-icon-video-play" />&nbsp;&nbsp;执行</span>
+            </div>
+            <div class="btn-item">
+              <span><i class="el-icon-delete" />&nbsp;&nbsp;构建SQL任务</span>
+            </div>
+            <div class="btn-item">
+              <span><i class="el-icon-delete" />&nbsp;&nbsp;删除</span>
+            </div>
           </div>
-          <div class="btn-item">
-            <span><i class="el-icon-edit"></i>&nbsp;&nbsp;编辑</span>
-          </div>
-          <div class="btn-item">
-            <span><i class="el-icon-view"></i>&nbsp;&nbsp;查看模型SQL</span>
-          </div>
-          <div class="btn-item">
-            <span><i class="el-icon-video-play"></i>&nbsp;&nbsp;执行</span>
-          </div>
-          <div class="btn-item">
-            <span><i class="el-icon-delete"></i>&nbsp;&nbsp;构建SQL任务</span>
-          </div>
-          <div class="btn-item">
-            <span><i class="el-icon-delete"></i>&nbsp;&nbsp;删除</span>
-          </div>
-        </div>
 
           <Modeling />
         </el-tab-pane>
       </el-tabs>
     </div>
 
-    <el-dialog width='50%' title="新建模型" :visible.sync="createModel">
+    <el-dialog width="50%" title="新建模型" :visible.sync="createModel">
       <el-form :model="form">
         <el-form-item label="模型名称" label-width="120px">
-          <el-input width='120px' placeholder="请输入模型名称" v-model="form.modelName" autocomplete="off"></el-input>
+          <el-input v-model="form.modelName" width="120px" placeholder="请输入模型名称" autocomplete="off" />
         </el-form-item>
         <el-form-item label="DBMS" label-width="120px">
           <el-select v-model="form.DBMS" placeholder="请选择DBMS">
-            <el-option label="MySql" value="MySql"></el-option>
-            <el-option label="Oracle" value="Oracle"></el-option>
-            <el-option label="Postgresql" value="Postgresql"></el-option>
-            <el-option label="Greenplum" value="Greenplum"></el-option>
-            <el-option label="sqlServer" value="sqlServer"></el-option>
-            <el-option label="hive" value="hive"></el-option>
-            <el-option label="hbase" value="hbase"></el-option>
-            <el-option label="mongodb" value="mongodb"></el-option>
-            <el-option label="clickhouse" value="clickhouse"></el-option>
+            <el-option label="MySql" value="MySql" />
+            <el-option label="Oracle" value="Oracle" />
+            <el-option label="Postgresql" value="Postgresql" />
+            <el-option label="Greenplum" value="Greenplum" />
+            <el-option label="sqlServer" value="sqlServer" />
+            <el-option label="hive" value="hive" />
+            <el-option label="hbase" value="hbase" />
+            <el-option label="mongodb" value="mongodb" />
+            <el-option label="clickhouse" value="clickhouse" />
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="createModel = false">取 消</el-button>
-        <el-button type="primary" @click="createTab()" :disabled='!(form.modelName && form.DBMS)'>确 定</el-button>
+        <el-button type="primary" :disabled="!(form.modelName && form.DBMS)" @click="createTab()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import LeftBar from "./components/leftBar";
-import Modeling from "./components/modeling";
+import LeftBar from './components/leftBar';
+import Modeling from './components/modeling';
 export default {
+  components: {
+    LeftBar,
+    Modeling
+  },
   data() {
     return {
       createModel: false,
       form: {
-        modelName: "",
-        DBMS: "",
+        modelName: '',
+        DBMS: ''
       },
-      editableTabsValue: "0",
+      editableTabsValue: '0',
       editableTabs: [{
-        title:'tablename'
-      }],
+        title: 'tablename'
+      }]
     };
-  },
-  components: {
-    LeftBar,
-    Modeling,
   },
   methods: {
     createTab() {
-      //新建模型
+      // 新建模型
       this.editableTabs.push({
-        title: this.form.modelName,
+        title: this.form.modelName
       });
-      this.editableTabsValue = this.editableTabs.length - 1 + "";
+      this.editableTabsValue = this.editableTabs.length - 1 + '';
       this.createModel = false;
       this.form = {
-        modelName: "",
-        DBMS: "",
+        modelName: '',
+        DBMS: ''
       };
     },
 
     removeTab(target) {
       this.editableTabs.splice(+target, 1);
       this.editableTabsValue =
-        +target === this.editableTabs.length ? target - 1 + "" : target;
-    },
-  },
+        +target === this.editableTabs.length ? target - 1 + '' : target;
+    }
+  }
 };
 </script>
 

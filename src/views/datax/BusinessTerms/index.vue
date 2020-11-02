@@ -19,8 +19,11 @@
               content="新建目录"
               placement="top"
             >
-              <span class="tree-t-set" @click="addNewLayer(-1)"
-                ><svg-icon iconClass="文件"
+              <span
+                class="tree-t-set"
+                @click="addNewLayer(-1)"
+              ><svg-icon
+                icon-class="文件"
               /></span>
             </el-tooltip>
           </div>
@@ -86,22 +89,19 @@
               class="grey-btn"
               :disabled="currNodeId === ''"
               @click="addNewMeta({ status: -1 })"
-              >新建</el-button
-            >
+            >新建</el-button>
             <el-button
               size="mini"
               class="grey-btn"
               :disabled="this.deleteSelection.length <= 0"
               @click="sendAudit"
-              >送审</el-button
-            >
+            >送审</el-button>
             <el-button
               size="mini"
               class="red-btn"
               :disabled="this.deleteSelection.length <= 0"
               @click="deleteList"
-              >删除</el-button
-            >
+            >删除</el-button>
           </el-row>
           <el-row class="box-operate-b">
             <el-table
@@ -112,7 +112,7 @@
               @selection-change="changeFun"
             >
               <el-table-column type="selection" width="55" />
-              <el-table-column prop="code" label="代码" align="center" show-overflow-tooltip/>
+              <el-table-column prop="code" label="代码" align="center" show-overflow-tooltip />
               <el-table-column
                 prop="name"
                 label="代码名称"
@@ -121,21 +121,26 @@
               />
               <el-table-column label="状态" align="center" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-tag v-if="scope.row.status == 0" class="new-tag"
-                    >草稿</el-tag
-                  >
-                  <el-tag v-if="scope.row.status == 1" class="going-tag"
-                    >待审核</el-tag
-                  >
-                  <el-tag v-if="scope.row.status == 2" class="success-tag"
-                    >已审核</el-tag
-                  >
-                  <el-tag v-if="scope.row.status == 3" class="error-tag"
-                    >变更中</el-tag
-                  >
-                  <el-tag v-if="scope.row.status == 4" class="quit-tag"
-                    >已退回</el-tag
-                  >
+                  <el-tag
+                    v-if="scope.row.status == 0"
+                    class="new-tag"
+                  >草稿</el-tag>
+                  <el-tag
+                    v-if="scope.row.status == 1"
+                    class="going-tag"
+                  >待审核</el-tag>
+                  <el-tag
+                    v-if="scope.row.status == 2"
+                    class="success-tag"
+                  >已审核</el-tag>
+                  <el-tag
+                    v-if="scope.row.status == 3"
+                    class="error-tag"
+                  >变更中</el-tag>
+                  <el-tag
+                    v-if="scope.row.status == 4"
+                    class="quit-tag"
+                  >已退回</el-tag>
                 </template>
               </el-table-column>
               <el-table-column label="操作" align="center" width="220">
@@ -151,8 +156,11 @@
                     content="编辑"
                     placement="top"
                   >
-                    <i class="table-icon-menu" @click="addNewMeta(scope.row)"
-                      ><svg-icon icon-class="编辑1"
+                    <i
+                      class="table-icon-menu"
+                      @click="addNewMeta(scope.row)"
+                    ><svg-icon
+                      icon-class="编辑1"
                     /></i>
                   </el-tooltip>
                   <el-tooltip
@@ -169,7 +177,8 @@
                     <i
                       class="table-icon-menu"
                       @click="deleteList(scope.row.id, 0)"
-                      ><svg-icon icon-class="删除"
+                    ><svg-icon
+                      icon-class="删除"
                     /></i>
                   </el-tooltip>
                   <el-tooltip
@@ -182,7 +191,8 @@
                     <i
                       class="table-icon-menu"
                       @click="changeStatus(scope.row.id)"
-                      ><svg-icon icon-class="g-更新"
+                    ><svg-icon
+                      icon-class="g-更新"
                     /></i>
                   </el-tooltip>
                 </template>
@@ -227,15 +237,16 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="info" size="small" @click="closeChangeModal"
-          >取 消</el-button
-        >
+        <el-button
+          type="info"
+          size="small"
+          @click="closeChangeModal"
+        >取 消</el-button>
         <el-button
           type="danger"
           size="small"
           @click="submitChange('addLayerForm')"
-          >确 定</el-button
-        >
+        >确 定</el-button>
       </span>
     </el-dialog>
     <add-edit-code

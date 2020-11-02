@@ -1,8 +1,8 @@
-import gql from "graphql-tag";
-import { apolloClient, requestGraphql } from "../utils/graphql";
+import gql from 'graphql-tag';
+import { apolloClient, requestGraphql } from '../utils/graphql';
 
 export function createConnection(params) {
-  //建立连接
+  // 建立连接
   return requestGraphql(
     gql`
       mutation createConnection($config: ConnectionConfig!) {
@@ -24,7 +24,7 @@ export function createConnection(params) {
 }
 
 export function initConnection(params) {
-  //初始化连接
+  // 初始化连接
   return requestGraphql(
     gql`
       mutation initConnection($id: ID!, $credentials: Object) {
@@ -43,11 +43,10 @@ export function initConnection(params) {
     `,
     params
   )
-  
 }
 
 export function sqlContextCreate(params) {
-  //创建上下文
+  // 创建上下文
   return requestGraphql(
     gql`
       mutation sqlContextCreate(
@@ -71,7 +70,7 @@ export function sqlContextCreate(params) {
 }
 
 export function asyncSqlExecuteQuery(params) {
-  //执行sql
+  // 执行sql
   return requestGraphql(
     gql`
       mutation asyncSqlExecuteQuery(
@@ -104,7 +103,7 @@ export function asyncSqlExecuteQuery(params) {
 }
 
 export function getAsyncTaskInfo(params) {
-  //获取sql执行情况
+  // 获取sql执行情况
   return requestGraphql(
     gql`
       mutation getAsyncTaskInfo($taskId: String!, $removeOnFinish: Boolean!) {
@@ -127,7 +126,7 @@ export function getAsyncTaskInfo(params) {
 }
 
 export function getSqlExecuteTaskResults(params) {
-  //获取sql执行结果
+  // 获取sql执行结果
   return requestGraphql(
     gql`
       mutation getSqlExecuteTaskResults($taskId: ID!) {

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*
 *  Copyright (C) 1998-2019 by Northwoods Software Corporation. All Rights Reserved.
 */
@@ -19,30 +19,29 @@
 * @class
 */
 function ColumnResizingTool() {
-	go.Tool.call(this);
-	this.name = "ColumnResizing";
+  go.Tool.call(this);
+  this.name = 'ColumnResizing';
 
-	var h = new go.Shape();
-  h.geometryString = "M0 0 V14 M2 0 V14";
+  var h = new go.Shape();
+  h.geometryString = 'M0 0 V14 M2 0 V14';
   h.desiredSize = new go.Size(2, 14);
-  h.cursor = "col-resize";
+  h.cursor = 'col-resize';
   h.geometryStretch = go.GraphObject.None;
-  h.background = "rgba(255,255,255,0.5)";
-  h.stroke = "rgba(30,144,255,0.5)";
-	/** @type {GraphObject} */
-	this._handleArchetype = h;
+  h.background = 'rgba(255,255,255,0.5)';
+  h.stroke = 'rgba(30,144,255,0.5)';
+  /** @type {GraphObject} */
+  this._handleArchetype = h;
 
   /** @type {string} */
-	this._tableName = "TABLE";
+  this._tableName = 'TABLE';
 
   // internal state
   /** @type {GraphObject} */
-	this._handle = null;
+  this._handle = null;
   /** @type {Panel} */
-	this._adornedTable = null;
+  this._adornedTable = null;
 }
 go.Diagram.inherit(ColumnResizingTool, go.Tool);
-
 
 /*
 * A small GraphObject used as a resize handle for each column.
@@ -51,7 +50,7 @@ go.Diagram.inherit(ColumnResizingTool, go.Tool);
 * @function.
 * @return {GraphObject}
 */
-Object.defineProperty(ColumnResizingTool.prototype, "handleArchetype", {
+Object.defineProperty(ColumnResizingTool.prototype, 'handleArchetype', {
   get: function() { return this._handleArchetype; },
   set: function(value) { this._handleArchetype = value; }
 });
@@ -62,7 +61,7 @@ Object.defineProperty(ColumnResizingTool.prototype, "handleArchetype", {
 * @function.
 * @return {string}
 */
-Object.defineProperty(ColumnResizingTool.prototype, "tableName", {
+Object.defineProperty(ColumnResizingTool.prototype, 'tableName', {
   get: function() { return this._tableName; },
   set: function(value) { this._tableName = value; }
 });
@@ -75,7 +74,7 @@ Object.defineProperty(ColumnResizingTool.prototype, "tableName", {
 * @function.
 * @return {GraphObject}
 */
-Object.defineProperty(ColumnResizingTool.prototype, "handle", {
+Object.defineProperty(ColumnResizingTool.prototype, 'handle', {
   get: function() { return this._handle; }
 });
 
@@ -86,10 +85,9 @@ Object.defineProperty(ColumnResizingTool.prototype, "handle", {
 * @function.
 * @return {Panel}
 */
-Object.defineProperty(ColumnResizingTool.prototype, "adornedTable", {
+Object.defineProperty(ColumnResizingTool.prototype, 'adornedTable', {
   get: function() { return this._adornedTable; }
 });
-
 
 /**
 * Show an {@link Adornment} with a resize handle at each column.
@@ -99,7 +97,7 @@ Object.defineProperty(ColumnResizingTool.prototype, "adornedTable", {
 * @param {Part} part the part.
 */
 ColumnResizingTool.prototype.updateAdornments = function(part) {
-  if (part === null || part instanceof go.Link) return;  // this tool never applies to Links
+  if (part === null || part instanceof go.Link) return; // this tool never applies to Links
   if (part.isSelected && !this.diagram.isReadOnly) {
     var selelt = part.findObject(this.tableName);
     if (selelt instanceof go.Panel && selelt.actualBounds.isReal() && selelt.isVisibleObject() &&
@@ -128,7 +126,7 @@ ColumnResizingTool.prototype.updateAdornments = function(part) {
             sep = table.getColumnDefinition(idx).separatorStrokeWidth;
             if (isNaN(sep)) sep = table.defaultColumnSeparatorStrokeWidth;
           }
-          h.alignment = new go.Spot(0, 0, pad.left + coldef.position + wid + sep/2, pad.top + h.height/2);
+          h.alignment = new go.Spot(0, 0, pad.left + coldef.position + wid + sep / 2, pad.top + h.height / 2);
         });
         adornment.locationObject.desiredSize = table.actualBounds.size;
         adornment.location = table.getDocumentPoint(adornment.locationSpot);
@@ -151,11 +149,11 @@ ColumnResizingTool.prototype.makeAdornment = function(table) {
   adornment.category = this.name;
   adornment.adornedObject = table;
   adornment.type = go.Panel.Spot;
-  adornment.locationObjectName = "BLOCK";
+  adornment.locationObjectName = 'BLOCK';
   // create the "main" element of the Spot Panel
-  var block = new go.TextBlock();  // doesn't matter much what this is
-  block.name = "BLOCK";
-  block.pickable = false;  // it's transparent and not pickable
+  var block = new go.TextBlock(); // doesn't matter much what this is
+  block.name = 'BLOCK';
+  block.pickable = false; // it's transparent and not pickable
   adornment.add(block);
   // now add resize handles for each column
   for (var i = 0; i < table.columnCount; i++) {
@@ -178,7 +176,6 @@ ColumnResizingTool.prototype.makeHandle = function(table, coldef) {
   c.column = coldef.index;
   return c;
 };
-
 
 /*
 * This predicate is true when there is a resize handle at the mouse down point.
@@ -242,7 +239,7 @@ ColumnResizingTool.prototype.doMouseUp = function() {
   if (this.isActive && diagram !== null) {
     var newpt = this.computeResize(diagram.lastInput.documentPoint);
     this.resize(newpt);
-    this.transactionResult = this.name;  // success
+    this.transactionResult = this.name; // success
   }
   this.stopTool();
 };
@@ -268,9 +265,8 @@ ColumnResizingTool.prototype.resize = function(newPoint) {
     sep = table.getColumnDefinition(idx).separatorStrokeWidth;
     if (isNaN(sep)) sep = table.defaultColumnSeparatorStrokeWidth;
   }
-  coldef.width = Math.max(0, locpt.x - pad.left - coldef.position - (coldef.total - coldef.actual) - sep/2);
+  coldef.width = Math.max(0, locpt.x - pad.left - coldef.position - (coldef.total - coldef.actual) - sep / 2);
 };
-
 
 /**
 * This can be overridden in order to customize the resizing process.
@@ -290,10 +286,10 @@ ColumnResizingTool.prototype.computeResize = function(p) {
 ColumnResizingTool.prototype.doKeyDown = function() {
   if (!this.isActive) return;
   var e = this.diagram.lastInput;
-  if (e.key === 'Del' || e.key === '\t') {  // remove width setting
+  if (e.key === 'Del' || e.key === '\t') { // remove width setting
     var coldef = this.adornedTable.getColumnDefinition(this.handle.column);
     coldef.width = NaN;
-    this.transactionResult = this.name;  // success
+    this.transactionResult = this.name; // success
     this.stopTool();
   } else {
     go.Tool.prototype.doKeyDown.call(this);

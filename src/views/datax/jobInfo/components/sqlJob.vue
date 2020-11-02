@@ -35,9 +35,10 @@
         <cron v-model="temp.jobCron" />
         <span slot="footer" class="dialog-footer">
           <el-button @click="showCronBox = false">关闭</el-button>
-          <el-button type="primary" @click="showCronBox = false"
-            >确 定</el-button
-          >
+          <el-button
+            type="primary"
+            @click="showCronBox = false"
+          >确 定</el-button>
         </span>
       </el-dialog>
       <el-form-item label="Cron：" prop="jobCron">
@@ -137,6 +138,7 @@
           />
         </el-select>
         <el-upload
+          v-if="radio === '2'"
           class="upload-demo"
           action="https://jsonplaceholder.typicode.com/posts/"
           :on-preview="handlePreview"
@@ -147,7 +149,6 @@
           :on-exceed="handleExceed"
           :file-list="fileList"
           :on-success="successFile"
-          v-if="radio === '2'"
         >
           <el-button size="small" type="primary">点击上传</el-button>
         </el-upload>
@@ -156,10 +157,10 @@
       <el-form-item>
         <div class="scriptJson">
           <textarea
-            v-model="jsonContent"
             ref="mycode"
+            v-model="jsonContent"
             class="codesql"
-          ></textarea>
+          />
         </div>
       </el-form-item>
     </el-form>
@@ -172,71 +173,71 @@
 </template>
 
 <script>
-import * as executor from "@/api/datax-executor";
-import * as job from "@/api/datax-job-info";
-import waves from "@/directive/waves"; // waves directive
-import Cron from "@/components/Cron";
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
-import * as datasourceApi from "@/api/datax-jdbcDatasource";
-import * as jobProjectApi from "@/api/datax-job-project";
-import { isJSON } from "@/utils/validate";
-import { getTableSchema } from "@/api/metadata-query";
+import * as executor from '@/api/datax-executor';
+import * as job from '@/api/datax-job-info';
+import waves from '@/directive/waves'; // waves directive
+import Cron from '@/components/Cron';
+import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
+import ShellEditor from '@/components/ShellEditor';
+import PythonEditor from '@/components/PythonEditor';
+import PowershellEditor from '@/components/PowershellEditor';
+import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import * as jobProjectApi from '@/api/datax-job-project';
+import { isJSON } from '@/utils/validate';
+import { getTableSchema } from '@/api/metadata-query';
 
-import "codemirror/theme/ambiance.css";
-import "codemirror/lib/codemirror.css";
-import "codemirror/addon/hint/show-hint.css";
+import 'codemirror/theme/ambiance.css';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/addon/hint/show-hint.css';
 
-let CodeMirror = require("codemirror/lib/codemirror");
-require("codemirror/addon/edit/matchbrackets");
-require("codemirror/addon/selection/active-line");
-require("codemirror/mode/sql/sql");
-require("codemirror/addon/hint/show-hint");
-require("codemirror/addon/hint/sql-hint");
+const CodeMirror = require('codemirror/lib/codemirror');
+require('codemirror/addon/edit/matchbrackets');
+require('codemirror/addon/selection/active-line');
+require('codemirror/mode/sql/sql');
+require('codemirror/addon/hint/show-hint');
+require('codemirror/addon/hint/sql-hint');
 
 export default {
-  name: "SqlJob",
-  props: ["jobType", "jobTypeLabel"],
+  name: 'SqlJob',
   components: {
     Pagination,
     ShellEditor,
     PythonEditor,
     PowershellEditor,
-    Cron,
+    Cron
   },
   directives: { waves },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
       };
       return statusMap[status];
-    },
+    }
   },
+  props: ['jobType', 'jobTypeLabel'],
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("Increment parameters is required"));
+        callback(new Error('Increment parameters is required'));
       }
       callback();
     };
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error("Partition parameters is required"));
+        callback(new Error('Partition parameters is required'));
       }
       callback();
     };
     return {
-      firstTime:true,
+      firstTime: true,
       schemaList: [],
-      jsonContent: "",
+      jsonContent: '',
       fileList: [],
-      radio: "1",
-      projectIds: "",
+      radio: '1',
+      projectIds: '',
       list: null,
       listLoading: true,
       total: 0,
@@ -245,179 +246,190 @@ export default {
         current: 1,
         size: 10000,
         jobGroup: 0,
-        projectIds: "",
+        projectIds: '',
         triggerStatus: -1,
-        jobDesc: "",
-        glueType: "",
+        jobDesc: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
       pluginData: [],
       dialogFormVisible: true,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "Edit",
-        create: "Create",
+        update: 'Edit',
+        create: 'Create'
       },
       rules: {
         jobGroup: [
           {
             required: true,
-            message: "jobGroup is required",
-            trigger: "change",
-          },
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
-            message: "executorRouteStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
-            message: "executorBlockStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: "jobType is required", trigger: "change" },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
-            message: "projectId is required",
-            trigger: "change",
-          },
+            message: 'projectId is required',
+            trigger: 'change'
+          }
         ],
         jobDesc: [
-          { required: true, message: "jobDesc is required", trigger: "blur" },
+          { required: true, message: 'jobDesc is required', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
-            message: "jobProject is required",
-            trigger: "blur",
-          },
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: "jobCron is required", trigger: "blur" },
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
-        incStartId: [{ trigger: "blur", validator: validateIncParam }],
-        replaceParam: [{ trigger: "blur", validator: validateIncParam }],
-        primaryKey: [{ trigger: "blur", validator: validateIncParam }],
-        incStartTime: [{ trigger: "change", validator: validateIncParam }],
-        replaceParamType: [{ trigger: "change", validator: validateIncParam }],
+        incStartId: [{ trigger: 'blur', validator: validateIncParam }],
+        replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
+        primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
+        incStartTime: [{ trigger: 'change', validator: validateIncParam }],
+        replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: "blur", validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
-        datasourceId: [{ trigger: "change", validator: validateIncParam }],
-        readerTable: [{ trigger: "blur", validator: validateIncParam }],
+        datasourceId: [{ trigger: 'change', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       temp: {
         id: undefined,
         jobGroup: '',
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "FIRST",
-        executorBlockStrategy: "SERIAL_EXECUTION",
-        childJobId: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: 'FIRST',
+        executorBlockStrategy: 'SERIAL_EXECUTION',
+        childJobId: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "sqlJobHandler",
-        glueType: "BEAN",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: 'sqlJobHandler',
+        glueType: 'BEAN',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: ''
       },
       resetTemp() {
         this.temp = this.$options.data().temp;
-        this.jobJson = "";
-        this.glueSource = "";
+        this.jobJson = '';
+        this.glueSource = '';
         this.timeOffset = 0;
-        this.timeFormatType = "yyyy-MM-dd";
-        this.partitionField = "";
+        this.timeFormatType = 'yyyy-MM-dd';
+        this.partitionField = '';
       },
-      executorList: "",
-      jobIdList: "",
-      jobProjectList: "",
-      dataSourceList: "",
+      executorList: '',
+      jobIdList: '',
+      jobProjectList: '',
+      dataSourceList: '',
       blockStrategies: [],
       routeStrategies: [
-        { value: "FIRST", label: "第一个" },
-        { value: "LAST", label: "最后一个" },
-        { value: "ROUND", label: "轮询" },
-        { value: "RANDOM", label: "随机" },
-        { value: "CONSISTENT_HASH", label: "一致性HASH" },
-        { value: "LEAST_FREQUENTLY_USED", label: "最不经常使用" },
-        { value: "LEAST_RECENTLY_USED", label: "最近最久未使用" },
-        { value: "FAILOVER", label: "故障转移" },
-        { value: "BUSYOVER", label: "忙碌转移" },
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: "GLUE_SHELL", label: "Shell任务" },
+        { value: 'GLUE_SHELL', label: 'Shell任务' }
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
       incrementTypes: [
-        { value: 0, label: "无" },
-        { value: 1, label: "主键自增" },
-        { value: 2, label: "时间自增" },
-        { value: 3, label: "HIVE分区" },
+        { value: 0, label: '无' },
+        { value: 1, label: '主键自增' },
+        { value: 2, label: '时间自增' },
+        { value: 3, label: 'HIVE分区' }
       ],
-      triggerNextTimes: "",
+      triggerNextTimes: '',
       registerNode: [],
-      jobJson: "",
-      glueSource: "",
+      jobJson: '',
+      glueSource: '',
       timeOffset: 0,
-      timeFormatType: "yyyy-MM-dd",
-      partitionField: "",
+      timeFormatType: 'yyyy-MM-dd',
+      partitionField: '',
       timeFormatTypes: [
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "yyyyMMdd", label: "yyyyMMdd" },
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'yyyyMMdd', label: 'yyyyMMdd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       replaceFormatTypes: [
-        { value: "yyyy/MM/dd", label: "yyyy/MM/dd" },
-        { value: "yyyy-MM-dd", label: "yyyy-MM-dd" },
-        { value: "HH:mm:ss", label: "HH:mm:ss" },
-        { value: "yyyy/MM/dd HH:mm:ss", label: "yyyy/MM/dd HH:mm:ss" },
-        { value: "yyyy-MM-dd HH:mm:ss", label: "yyyy-MM-dd HH:mm:ss" },
-        { value: "Timestamp", label: "时间戳" },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
+        { value: 'HH:mm:ss', label: 'HH:mm:ss' },
+        { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
+        { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
       statusList: [
-        { value: 500, label: "失败" },
-        { value: 502, label: "失败(超时)" },
-        { value: 200, label: "成功" },
-        { value: 0, label: "无" },
-      ],
+        { value: 500, label: '失败' },
+        { value: 502, label: '失败(超时)' },
+        { value: 200, label: '成功' },
+        { value: 0, label: '无' }
+      ]
     };
+  },
+
+  computed: {
+    datasourceIdSchema() {
+      return this.temp.datasourceId;
+    }
+  },
+
+  watch: {
+    datasourceIdSchema() {
+      this.getSchemaList();
+    }
   },
   created() {
     this.fetchData();
     this.getExecutor();
     this.getJobIdList();
     this.getJobProject();
-    this.getDataSourceList(), 
+    this.getDataSourceList(),
     this.fetchSourceData();
-    
   },
 
   mounted() {
@@ -426,7 +438,7 @@ export default {
 
   methods: {
     handleClose(done) {
-      this.$confirm("确认关闭？")
+      this.$confirm('确认关闭？')
         .then((_) => {
           done();
         })
@@ -458,7 +470,7 @@ export default {
       this.listLoading = true;
 
       this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
-      let response = await job.getList(this.listQuery);
+      const response = await job.getList(this.listQuery);
 
       const { content } = response;
       this.total = content.recordsTotal;
@@ -467,12 +479,12 @@ export default {
 
       const firstElement = content?.data[0] || {};
       const a = {};
-          
+
       a.title = firstElement.jobDesc;
       a.name = firstElement.jobDesc;
       a.content = firstElement;
       if (!this.firstTime) {
-          this.$store.commit('ADD_TASKDETAIL',a)
+        this.$store.commit('ADD_TASKDETAIL', a)
       } else {
         this.firstTime = false;
       }
@@ -481,10 +493,10 @@ export default {
     incStartTimeFormat(vData) {},
     handleCreate() {
       this.resetTemp();
-      this.dialogStatus = "create";
+      this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs['dataForm'].clearValidate();
       });
     },
     createData() {
@@ -497,8 +509,8 @@ export default {
       //   });
       //   return;
       // }
-      this.jobJson = this.$options.editor.getValue() || "";
-      this.$refs["dataForm"].validate((valid) => {
+      this.jobJson = this.$options.editor.getValue() || '';
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
             const auth = [];
@@ -511,8 +523,8 @@ export default {
           job
             .getDataSourceDetail(this.temp.datasourceId)
             .then((res) => {
-              console.log("dafa", res);
-              let jsonObj = Object.assign({sqlScript:this.jobJson}, { jobDatasource: res });
+              console.log('dafa', res);
+              const jsonObj = Object.assign({ sqlScript: this.jobJson }, { jobDatasource: res });
               this.jobJson = JSON.stringify(jsonObj, null, 2);
             })
             .then(() => {
@@ -522,9 +534,9 @@ export default {
               if (this.partitionField) {
                 this.temp.partitionInfo =
                   this.partitionField +
-                  "," +
+                  ',' +
                   this.timeOffset +
-                  "," +
+                  ',' +
                   this.timeFormatType;
               }
 
@@ -535,10 +547,10 @@ export default {
                 this.$store.commit('SET_TASKDETAIL_ID', res.content);
                 this.dialogFormVisible = false;
                 this.$notify({
-                  title: "成功",
-                  message: "新建成功",
-                  type: "success",
-                  duration: 2000,
+                  title: '成功',
+                  message: '新建成功',
+                  type: 'success',
+                  duration: 2000
                 });
               });
             });
@@ -562,7 +574,7 @@ export default {
       }
 
       if (this.temp.childJobId) {
-        const arrString = this.temp.childJobId.split(",");
+        const arrString = this.temp.childJobId.split(',');
         for (const i in arrString) {
           for (const n in this.jobIdList) {
             if (this.jobIdList[n].id === parseInt(arrString[i])) {
@@ -573,32 +585,32 @@ export default {
         this.temp.childJobId = arrchildSet;
       }
       if (this.temp.partitionInfo) {
-        const partition = this.temp.partitionInfo.split(",");
+        const partition = this.temp.partitionInfo.split(',');
         this.partitionField = partition[0];
         this.timeOffset = partition[1];
         this.timeFormatType = partition[2];
       }
-      this.dialogStatus = "update";
+      this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs['dataForm'].clearValidate();
       });
     },
     updateData() {
       this.temp.jobJson =
-        typeof this.jobJson !== "string"
+        typeof this.jobJson !== 'string'
           ? JSON.stringify(this.jobJson)
           : this.jobJson;
-      if (this.temp.glueType === "BEAN" && !isJSON(this.temp.jobJson)) {
+      if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
-          title: "Fail",
-          message: "json格式错误",
-          type: "error",
-          duration: 2000,
+          title: 'Fail',
+          message: 'json格式错误',
+          type: 'error',
+          duration: 2000
         });
         return;
       }
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.temp.childJobId) {
             const auth = [];
@@ -608,41 +620,42 @@ export default {
             this.temp.childJobId = auth.toString();
           }
           this.temp.executorHandler =
-            this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
+            this.temp.glueType === 'BEAN' ? 'executorJobHandler' : '';
           this.temp.glueSource = this.glueSource;
-          if (this.partitionField)
+          if (this.partitionField) {
             this.temp.partitionInfo =
               this.partitionField +
-              "," +
+              ',' +
               this.timeOffset +
-              "," +
+              ',' +
               this.timeFormatType;
+          }
           job.updateJob(this.temp).then(() => {
-             this.fetchData();
+            this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: "Success",
-              message: "Update Successfully",
-              type: "success",
-              duration: 2000,
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
             });
           });
         }
       });
     },
     handlerDelete(row) {
-      this.$confirm("确定删除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         job.removeJob(row.id).then((response) => {
           this.fetchData();
           this.$notify({
-            title: "Success",
-            message: "Delete Successfully",
-            type: "success",
-            duration: 2000,
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
           });
         });
       });
@@ -650,20 +663,20 @@ export default {
       // const index = this.list.indexOf(row)
     },
     handlerExecute(row) {
-      this.$confirm("确定执行吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定执行吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         const param = {};
         param.jobId = row.id;
         param.executorParam = row.executorParam;
         job.triggerJob(param).then((response) => {
           this.$notify({
-            title: "Success",
-            message: "Execute Successfully",
-            type: "success",
-            duration: 2000,
+            title: 'Success',
+            message: 'Execute Successfully',
+            type: 'success',
+            duration: 2000
           });
         });
       });
@@ -671,27 +684,27 @@ export default {
     // 查看日志
     handlerViewLog(row) {
       this.$router.push({
-        path: "/datax/log/jobLog",
-        query: { jobId: row.id },
+        path: '/datax/log/jobLog',
+        query: { jobId: row.id }
       });
     },
     handlerStart(row) {
       job.startJob(row.id).then((response) => {
         this.$notify({
-          title: "Success",
-          message: "Start Successfully",
-          type: "success",
-          duration: 2000,
+          title: 'Success',
+          message: 'Start Successfully',
+          type: 'success',
+          duration: 2000
         });
       });
     },
     handlerStop(row) {
       job.stopJob(row.id).then((response) => {
         this.$notify({
-          title: "Success",
-          message: "Start Successfully",
-          type: "success",
-          duration: 2000,
+          title: 'Success',
+          message: 'Start Successfully',
+          type: 'success',
+          duration: 2000
         });
       });
     },
@@ -701,7 +714,7 @@ export default {
     nextTriggerTime(row) {
       job.nextTriggerTime(row.jobCron).then((response) => {
         const { content } = response;
-        this.triggerNextTimes = content.join("<br>");
+        this.triggerNextTimes = content.join('<br>');
       });
     },
     loadById(row) {
@@ -712,7 +725,7 @@ export default {
       });
     },
 
-    //上传文件
+    // 上传文件
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -731,18 +744,18 @@ export default {
     },
     successFile(response, file, fileList) {
       const _this = this;
-      //FileReader读取文件内容
-      let reader = new FileReader();
-      reader.readAsText(file.raw, "UTF-8");
-      reader.onload = function (e) {
+      // FileReader读取文件内容
+      const reader = new FileReader();
+      reader.readAsText(file.raw, 'UTF-8');
+      reader.onload = function(e) {
         // urlData就是对应的文件内容
-        let urlData = this.result;
+        const urlData = this.result;
         _this.jsonContent = urlData;
         _this.$options.editor.getDoc().setValue(urlData);
       };
     },
 
-    //数据源列表
+    // 数据源列表
     fetchSourceData() {
       datasourceApi.getDataSourceList().then((response) => {
         const { records } = response;
@@ -750,19 +763,19 @@ export default {
         this.blockStrategies = response;
       });
     },
-    //schema列表
+    // schema列表
     async getSchemaList() {
-      let schemaList = await getTableSchema({
-        datasourceId: this.temp.datasourceId,
+      const schemaList = await getTableSchema({
+        datasourceId: this.temp.datasourceId
       });
       console.log(schemaList);
       this.schemaList = schemaList;
     },
 
-    //初始化sql编辑器
+    // 初始化sql编辑器
     mountCodeMirror() {
-      let mime = "text/x-sql";
-      let theme = "ambiance"; //设置主题，不设置的会使用默认主题
+      const mime = 'text/x-sql';
+      const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
       const _this = this;
       this.$options.editor = CodeMirror.fromTextArea(this.$refs.mycode, {
         mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
@@ -770,38 +783,26 @@ export default {
         smartIndent: true,
         lineNumbers: true,
         matchBrackets: true,
-        gutters: ["CodeMirror-linenumbers"],
+        gutters: ['CodeMirror-linenumbers'],
         // theme: theme,
         // autofocus: true,
         // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
         hintOptions: {
           // 自定义提示选项,
-          completeSingle: false,
+          completeSingle: false
           // tables: _this.tips,
         },
         configureMouse() {
           console.log(window.getSelection());
           return {
-            unit: "word",
+            unit: 'word'
           };
-        },
+        }
       });
-    },
+    }
   },
 
-  computed: {
-    datasourceIdSchema() {
-      return this.temp.datasourceId;
-    },
-  },
-
-  watch: {
-    datasourceIdSchema() {
-      this.getSchemaList();
-    },
-  },
-
-  editor: null,
+  editor: null
 };
 </script>
 

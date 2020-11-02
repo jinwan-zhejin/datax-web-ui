@@ -1,6 +1,6 @@
 <template>
   <div class="json-editor">
-    <textarea  ref="textarea" />
+    <textarea ref="textarea" />
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       if (value !== editorValue) {
         // this.jsonEditor.setValue(JSON.stringify(this.value, null, 2))
         // this.jsonEditor.setValue(`${this.value}`)
-        
+
         this.jsonEditor.setValue(this.value)
       }
     }
@@ -42,9 +42,9 @@ export default {
       theme: 'rubyblue',
       lint: true,
       // readOnly: 'nocursor'
-      readOnly:this.caniEdit
+      readOnly: this.caniEdit
     })
-    this.jsonEditor.setSize('auto','300px')
+    this.jsonEditor.setSize('auto', '300px')
     this.jsonEditor.setValue(`${this.value}`)
     this.jsonEditor.on('change', cm => {
       this.$emit('changed', cm.getValue())
@@ -56,8 +56,8 @@ export default {
       return this.jsonEditor.getValue()
     },
 
-    setEditorHeight(height){
-      this.jsonEditor.setSize('auto',height)
+    setEditorHeight(height) {
+      this.jsonEditor.setSize('auto', height)
     }
   }
 }

@@ -7,9 +7,9 @@
     append-to-body
   >
     <el-form
+      ref="addCataLogForm"
       :model="addCataLogForm"
       :rules="rules"
-      ref="addCataLogForm"
       size="small"
       label-width="80px"
       label-position="right"
@@ -19,7 +19,7 @@
           v-model="addCataLogForm.name"
           maxlength="20"
           placeholder="最大长度为20个字符"
-        ></el-input>
+        />
       </el-form-item>
       <!--<el-form-item label="目录编号" prop="code">
                 <el-input v-model="addCataLogForm.code"></el-input>
@@ -31,31 +31,51 @@
         type="danger"
         size="small"
         @click="submitCatalog('addCataLogForm')"
-        >确 定</el-button
-      >
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import * as documentManageApi from "@/api/datax-document-manage"
+import * as documentManageApi from '@/api/datax-document-manage'
 export default {
-  name: "",
+  name: '',
   components: {},
-  props: ["addCatalogVisible", "isEditCatalog"],
+  props: ['addCatalogVisible', 'isEditCatalog'],
   data() {
     return {
       isOuter: false,
       addCataLogForm: {
-        parentId: "",
-        id: "",
-        name: ""
+        parentId: '',
+        id: '',
+        name: ''
       },
       rules: {
-        name: [{ required: true, message: "请填写目录名称", trigger: "blur" }]
+        name: [{ required: true, message: '请填写目录名称', trigger: 'blur' }]
       }
     };
   },
+  watch: {
+    isEditCatalog: {
+      // 深度监听，可监听到对象、数组的变化
+      handler(val, oldVal) {
+        if (val.id === undefined) {
+          this.addCataLogForm.parentId = -1;
+          this.addCataLogForm.id = '';
+        } else {
+          if (val.isEdit) {
+            this.addCataLogForm.parentId = val.pid;
+            this.addCataLogForm.id = val.id;
+            this.addCataLogForm.name = val.name;
+          } else {
+            this.addCataLogForm.parentId = val.id;
+          }
+        }
+      },
+      deep: true
+    }
+  },
+  mounted: function() {},
   methods: {
     // 提交新建分层
     submitCatalog(formName) {
@@ -73,11 +93,11 @@ export default {
           //     });
           documentManageApi.addDocumentContent(this.addCataLogForm).then(res => {
             this.$message({
-              message: "操作成功",
-              type: "success"
+              message: '操作成功',
+              type: 'success'
             })
-            this.$emit("addCatalogBack") // 通知父组件关闭dialog
-            this.$refs["addCataLogForm"].resetFields()
+            this.$emit('addCatalogBack') // 通知父组件关闭dialog
+            this.$refs['addCataLogForm'].resetFields()
           })
         } else {
           return false;
@@ -86,29 +106,8 @@ export default {
     },
     // 关闭dialog
     closeDialog() {
-      this.$refs["addCataLogForm"].resetFields();
-      this.$emit("addCatalogBack");
-    }
-  },
-  mounted: function() {},
-  watch: {
-    isEditCatalog: {
-      //深度监听，可监听到对象、数组的变化
-      handler(val, oldVal) {
-        if (val.id === undefined) {
-          this.addCataLogForm.parentId = -1;
-          this.addCataLogForm.id = "";
-        } else {
-          if (val.isEdit) {
-            this.addCataLogForm.parentId = val.pid;
-            this.addCataLogForm.id = val.id;
-            this.addCataLogForm.name = val.name;
-          } else {
-            this.addCataLogForm.parentId = val.id;
-          }
-        }
-      },
-      deep: true
+      this.$refs['addCataLogForm'].resetFields();
+      this.$emit('addCatalogBack');
     }
   }
 };

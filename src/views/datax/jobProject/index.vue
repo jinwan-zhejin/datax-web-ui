@@ -1,105 +1,110 @@
 <template>
-<div class="app-container">
+  <div class="app-container">
     <div class="filter-container">
-        <el-card class="box-card">
-            <div class="text item">
-                <div class="left">项目管理</div>
-                <div class="right">
-                    <el-input v-model="listQuery.searchVal" clearable placeholder="项目名称" style="width: 268px" class="filter-item" @keyup.enter.native="handleFilter">
-                        <el-button slot="append" v-waves size="small" style="margin: 0px; padding: 8.5px 0px" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
-                    </el-input>
-                    <el-button class="filter-item" style="margin-left: 30px" type="goon" size="small" icon="el-icon-plus" @click="handleCreate">
-                        添加
-                    </el-button>
-                    <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">项目管理</div>
+          <div class="right">
+            <el-input v-model="listQuery.searchVal" clearable placeholder="项目名称" style="width: 268px" class="filter-item" @keyup.enter.native="handleFilter">
+              <el-button slot="append" v-waves size="small" style="margin: 0px; padding: 8.5px 0px" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
+            </el-input>
+            <el-button class="filter-item" style="margin-left: 30px" type="goon" size="small" icon="el-icon-plus" @click="handleCreate">
+              添加
+            </el-button>
+            <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
               reviewer
             </el-checkbox> -->
-                </div>
-            </div>
-        </el-card>
+          </div>
+        </div>
+      </el-card>
     </div>
+
     <div class="main">
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
-            <el-table-column align="center" label="序号" width="95">
-                <template slot-scope="scope"><span>{{ scope.$index + 1 }}</span></template>
-            </el-table-column>
-            <el-table-column label="项目名称" align="left">
-                <template slot-scope="scope">{{ scope.row.name }}</template>
-            </el-table-column>
-            <el-table-column label="项目描述" align="left">
-                <template slot-scope="scope">{{ scope.row.description }}</template>
-            </el-table-column>
-            <el-table-column label="所属用户" width="200" align="left">
-                <template slot-scope="scope">{{ scope.row.userName }} </template>
-            </el-table-column>
-            <el-table-column label="创建时间" width="200" align="left">
-                <template slot-scope="scope">{{ scope.row.createTime }}</template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" width=" 230" class-name="small-padding fixed-width">
-                <template slot-scope="{ row }">
-                    <a style="color: #3d5fff; margin: 0px 6px" @click="handleUpdate(row)">编辑</a>
-                    <span style="                width: 1px;
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
+        <el-table-column align="center" label="序号" width="95">
+          <template slot-scope="scope"><span>{{ scope.$index + 1 }}</span></template>
+        </el-table-column>
+        <el-table-column label="项目名称" align="left">
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column label="项目描述" align="left">
+          <template slot-scope="scope">{{ scope.row.description }}</template>
+        </el-table-column>
+        <el-table-column label="所属用户" width="160" align="left">
+          <template slot-scope="scope">{{ scope.row.userName }} </template>
+        </el-table-column>
+        <el-table-column label="创建时间" width="160" align="left">
+          <template slot-scope="scope">{{ scope.row.createTime }}</template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width=" 230" class-name="small-padding fixed-width">
+          <template slot-scope="{ row }">
+            <a style="color: #3d5fff; margin: 0px 6px" @click="handleUpdate(row)">编辑</a>
+            <span
+              style="                width: 1px;
                 height: 12px;
                 background: #e6e6e8;
                 display: inline-block;
-              " />
-                    <a v-if="row.status !== 'deleted'" style="color: #fe4646; margin: 0px 6px" @click="handleDelete(row)">删除</a>
-                    <span style="
+              "
+            />
+            <a v-if="row.status !== 'deleted'" style="color: #fe4646; margin: 0px 6px" @click="handleDelete(row)">删除</a>
+            <span
+              style="
                 width: 1px;
                 height: 12px;
                 background: #e6e6e8;
                 display: inline-block;
-              " />
-                    <a style="color: #3d5fff; margin: 0px 6px" @click="handleDataSource(row)">数据源管理</a>
-                </template>
-            </el-table-column>
-        </el-table>
-        <pagination v-show="total > 0" :total="total" style="float: right" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
+              "
+            />
+            <a style="color: #3d5fff; margin: 0px 6px" @click="handleDataSource(row)">数据源管理</a>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="total > 0" :total="total" style="float: right" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
     </div>
     <el-dialog :visible.sync="dialogFormVisible" width="500px">
-        <p slot="title" class="dialog_title">{{ textMap[dialogStatus] }}</p>
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
-            <el-form-item label="项目名称" prop="name">
-                <el-input v-model="temp.name" placeholder="项目名称" style="width: 99%" />
-            </el-form-item>
-            <el-form-item label="项目描述" prop="description">
-                <el-input v-model="temp.description" placeholder="项目描述" style="width: 99%" />
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogFormVisible = false">
-                取消
-            </el-button>
-            <el-button size="small" class="dialog_ok_btn" type="primary" @click="dialogStatus === 'create' ? createData() : updateData()">
-                完成
-            </el-button>
-        </div>
+      <p slot="title" class="dialog_title">{{ textMap[dialogStatus] }}</p>
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
+        <el-form-item label="项目名称" prop="name">
+          <el-input v-model="temp.name" placeholder="项目名称" style="width: 99%" />
+        </el-form-item>
+        <el-form-item label="项目描述" prop="description">
+          <el-input v-model="temp.description" placeholder="项目描述" style="width: 99%" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button size="small" class="dialog_ok_btn" type="primary" @click="dialogStatus === 'create' ? createData() : updateData()">
+          完成
+        </el-button>
+      </div>
     </el-dialog>
     <el-dialog :visible.sync="dialogPluginVisible" title="Reading statistics" width="624px">
-        <el-table :data="pluginData" border fit highlight-current-row style="width: 100%">
-            <el-table-column prop="key" label="Channel" />
-            <el-table-column prop="pv" label="Pv" />
-        </el-table>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-        </span>
+      <el-table :data="pluginData" border fit highlight-current-row style="width: 100%">
+        <el-table-column prop="key" label="Channel" />
+        <el-table-column prop="pv" label="Pv" />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
+      </span>
     </el-dialog>
     <!-- 数据源管理对话框 -->
     <el-dialog :visible.sync="dialogDataSource" title="数据源管理" width="500px">
-        <el-form :model="sourceForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="数据源:">
-                <el-select v-model="sourceForm.region" style="width: 100%;" placeholder="请选择数据源">
-                    <el-option label="数据源一" value="data1" />
-                    <el-option label="数据源二" value="data2" />
-                </el-select>
-            </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogDataSource = false">取 消</el-button>
-            <el-button type="goon" size="small" @click="dialogDataSource = false">完 成</el-button>
-        </span>
+      <el-form :model="sourceForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="数据源:">
+          <el-select v-model="sourceForm.region" style="width: 100%;" placeholder="请选择数据源">
+            <el-option label="数据源一" value="data1" />
+            <el-option label="数据源二" value="data2" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogDataSource = false">取 消</el-button>
+        <el-button type="goon" size="small" @click="dialogDataSource = false">完 成</el-button>
+      </span>
     </el-dialog>
-</div>
+  </div>
 </template>
 
 <script>
@@ -109,173 +114,173 @@ import Pagination from '@/components/Pagination';
 // import * as datasourceApi from '@/api/datax-jdbcDatasource';
 
 export default {
-    name: 'JobProject',
-    components: {
-        Pagination
-    },
-    directives: {
-        waves
-    },
-    filters: {
-        statusFilter(status) {
-            const statusMap = {
-                published: 'success',
-                draft: 'gray',
-                deleted: 'danger'
-            };
-            return statusMap[status];
-        }
-    },
-    data() {
-        return {
-            list: null,
-            listLoading: true,
-            total: 0,
-            listQuery: {
-                pageNo: 1,
-                pageSize: 10,
-                searchVal: ''
-            },
-            pluginTypeOptions: ['reader', 'writer'],
-            dialogPluginVisible: false,
-            pluginData: [],
-            dialogFormVisible: false,
-            dialogDataSource: false,
-            sourceForm: {},
-            dialogStatus: '',
-            textMap: {
-                update: '编辑',
-                create: '+添加'
-            },
-            rules: {
-                name: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                description: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }]
-            },
-            temp: {
-                id: undefined,
-                name: '',
-                description: ''
-            },
-            visible: true
-        };
-    },
-    created() {
-        this.fetchData();
-    },
-    methods: {
-        fetchData() {
-            this.listLoading = true;
-            jobProjectApi.list(this.listQuery).then((response) => {
-                const {
-                    records
-                } = response;
-                const {
-                    total
-                } = response;
-                this.total = total;
-                this.list = records;
-                this.listLoading = false;
-            });
-        },
-        resetTemp() {
-            this.temp = {
-                id: undefined,
-                name: '',
-                description: ''
-            };
-        },
-        handleCreate() {
-            this.resetTemp();
-            this.dialogStatus = 'create';
-            this.dialogFormVisible = true;
-            this.$nextTick(() => {
-                this.$refs['dataForm'].clearValidate();
-            });
-        },
-        createData() {
-            this.$refs['dataForm'].validate((valid) => {
-                if (valid) {
-                    jobProjectApi.created(this.temp).then(() => {
-                        this.fetchData();
-                        this.dialogFormVisible = false;
-                        this.$notify({
-                            title: 'Success',
-                            message: 'Created Successfully',
-                            type: 'success',
-                            duration: 2000
-                        });
-                    });
-                }
-            });
-        },
-        handleUpdate(row) {
-            console.log(row)
-            this.temp = Object.assign({}, row); // copy obj
-            this.dialogStatus = 'update';
-            this.dialogFormVisible = true;
-            this.$nextTick(() => {
-                this.$refs['dataForm'].clearValidate();
-            });
-        },
-        handleDataSource(row) {
-            console.log(row)
-            this.$router.push({
-                name: 'JdbcDatasource',
-                params: row
-            })
-        },
-        updateData() {
-            this.$refs['dataForm'].validate((valid) => {
-                if (valid) {
-                    const tempData = Object.assign({}, this.temp);
-                    jobProjectApi.updated(tempData).then(() => {
-                        this.fetchData();
-                        this.dialogFormVisible = false;
-                        this.$notify({
-                            title: 'Success',
-                            message: 'Update Successfully',
-                            type: 'success',
-                            duration: 2000
-                        });
-                    });
-                }
-            });
-        },
-        handleDelete(row) {
-            this.$confirm('确定删除吗？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const idList = [];
-                idList.push(row.id);
-                jobProjectApi.deleted({
-                    idList: row.id
-                }).then((response) => {
-                    this.fetchData();
-                    this.$notify({
-                        title: '成功',
-                        message: '删除成功',
-                        type: 'success',
-                        duration: 2000
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    })
-                })
-            })
-        }
+  name: 'JobProject',
+  components: {
+    Pagination
+  },
+  directives: {
+    waves
+  },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
+      };
+      return statusMap[status];
     }
+  },
+  data() {
+    return {
+      list: null,
+      listLoading: true,
+      total: 0,
+      listQuery: {
+        pageNo: 1,
+        pageSize: 10,
+        searchVal: ''
+      },
+      pluginTypeOptions: ['reader', 'writer'],
+      dialogPluginVisible: false,
+      pluginData: [],
+      dialogFormVisible: false,
+      dialogDataSource: false,
+      sourceForm: {},
+      dialogStatus: '',
+      textMap: {
+        update: '编辑',
+        create: '+添加'
+      },
+      rules: {
+        name: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        description: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }]
+      },
+      temp: {
+        id: undefined,
+        name: '',
+        description: ''
+      },
+      visible: true
+    };
+  },
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      this.listLoading = true;
+      jobProjectApi.list(this.listQuery).then((response) => {
+        const {
+          records
+        } = response;
+        const {
+          total
+        } = response;
+        this.total = total;
+        this.list = records;
+        this.listLoading = false;
+      });
+    },
+    resetTemp() {
+      this.temp = {
+        id: undefined,
+        name: '',
+        description: ''
+      };
+    },
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = 'create';
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate();
+      });
+    },
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          jobProjectApi.created(this.temp).then(() => {
+            this.fetchData();
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
+            });
+          });
+        }
+      });
+    },
+    handleUpdate(row) {
+      console.log(row)
+      this.temp = Object.assign({}, row); // copy obj
+      this.dialogStatus = 'update';
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate();
+      });
+    },
+    handleDataSource(row) {
+      console.log(row)
+      this.$router.push({
+        name: 'JdbcDatasource',
+        params: row
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp);
+          jobProjectApi.updated(tempData).then(() => {
+            this.fetchData();
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            });
+          });
+        }
+      });
+    },
+    handleDelete(row) {
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const idList = [];
+        idList.push(row.id);
+        jobProjectApi.deleted({
+          idList: row.id
+        }).then((response) => {
+          this.fetchData();
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      })
+    }
+  }
 };
 </script>
 
