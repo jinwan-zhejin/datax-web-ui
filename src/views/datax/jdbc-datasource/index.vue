@@ -1953,6 +1953,7 @@ export default {
         obj.comments = this.HiveForm.comments;
         obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
       }
+      obj.projectId = sessionStorage.getItem('projectId')
       datasourceApi.created(obj).then(() => {
         this.fetchData();
         this.dialogVisible = false;
@@ -2058,6 +2059,7 @@ export default {
         obj1.comments = this.DB2Form.comments;
         obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
       }
+      obj1.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(obj1).then((response) => {
         if (response.data === false) {
           this.$notify({
@@ -2133,6 +2135,7 @@ export default {
         this.temp.id = this.rowObj.id
         this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       }
+      this.temp.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(this.temp).then((response) => {
         if (response.data === false) {
           this.$notify({
@@ -2361,6 +2364,7 @@ export default {
           id: this.rowObj.id
         }
       }
+      this.paramsData.projectId = sessionStorage.getItem('projectId')
       datasourceApi.updated(this.paramsData).then(() => {
         this.fetchData();
         this.dialogEditVisible = false;
@@ -2475,7 +2479,7 @@ export default {
         .el-card {
             .left {
                 float: left;
-                width: 250px;
+                width: 360px;
                 font-size: 24px;
                 font-family: PingFangHK-Medium, PingFangHK;
                 font-weight: 500;
