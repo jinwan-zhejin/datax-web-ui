@@ -95,7 +95,12 @@ const mutations = {
 
 const actions = {
 
-  getTaskList({ commit, state }) { //获取任务列表
+  /**
+   * @method getTaskList
+   * @param {*} param0 
+   * @param {*} isAddTask 是否是新建任务，并设置当前选中任务为添加的任务
+   */
+  getTaskList({ commit, state }, isAddTask) {
     const listQuery = {
       current: 1,
       size: 10000,
@@ -107,9 +112,19 @@ const actions = {
     };
 
     job.getList(listQuery).then(response => {
-      commit('SET_TASKDETAIL_LIST', response.content.data)
+      commit('SET_TASKDETAIL_LIST', response.content.data);
+      if (isAddTask) {
+        const firstElement = response.content.data[0] || {};
+        const a = {};
+        a.title = firstElement.jobDesc;
+        a.name = firstElement.jobDesc;
+        a.content = firstElement;
+        commit('ADD_TASKDETAIL', a);
+        commit('SET_TASKDETAIL_ID', a.content.id + '');
+      }
     })
   },
+
 }
 
 export default {

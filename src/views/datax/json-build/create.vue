@@ -314,8 +314,8 @@ export default {
           type: 'success',
           duration: 2000
         });
-        // this.$emit('refresh');
-        this.$store.dispatch('getTaskList')
+
+        this.$store.dispatch('getTaskList', true)
         this.$store.commit('SET_TAB_TYPE', '');
       });
     }
