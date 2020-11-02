@@ -235,8 +235,6 @@ export default {
       sessionStorage.setItem('JobName', row.name)
       sessionStorage.setItem('projectId', row.id)
       this.$router.push('/datax/datasource/jdbcDatasource')
-      this.routerRefresh();
-      console.log('触发刷新')
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -298,7 +296,6 @@ export default {
         .el-card {
             .left {
                 float: left;
-                width: 120px;
                 font-size: 24px;
                 font-family: PingFangHK-Medium, PingFangHK;
                 font-weight: 500;
