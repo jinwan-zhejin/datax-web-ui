@@ -466,6 +466,7 @@ export default {
 }
 .main_content {
   width: 60%;
+  min-height: 480px;
   margin: 0 auto;
 }
 
