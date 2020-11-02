@@ -569,12 +569,14 @@
           :disabled="active === 1"
           style="margin-top: 12px"
           @click="last"
+          size="small"
         >上一步</el-button>
         <el-button
           v-show="showNext"
           type="primary"
           style="margin-top: 12px; margin-bottom: 12px"
           @click="next"
+          size="small"
         >下一步</el-button>
         <el-button
           v-show="showSubmit"
@@ -582,6 +584,7 @@
           type="primary"
           style="margin-top: 12px; margin-bottom: 12px"
           @click="next"
+          size="small"
         >提 交</el-button>
       </div>
     </div>
@@ -1093,6 +1096,7 @@ export default {
 .main_content {
   width: 60%;
   margin:0 auto;
+  min-height: 500px;
 }
 
 .main_content >>> .el-select {
