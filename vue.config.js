@@ -40,88 +40,88 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         // ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        target: 'http://47.103.79.104:9527',
+        // target: 'http://47.103.79.104:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:9090', // 刘向前
-        // target: 'http://192.168.3.74:7000', // 侯峰
+        target: 'http://192.168.3.74:7000', // 侯峰
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
-      // 数据共享接口 - share
-      '/mock': {
-        ws: false,
-        target: 'http://47.103.79.104:3000',
-        changeOrigin: true
-        // pathRewrite: {
-        //   ['^' + '/share']: '/share'
-        // }
-      },
-      // 元数据接口 - Atlas
-      '/atlasApi': {
-        ws: false,
-        target: 'http://123.56.96.151:8079',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/atlasApi']: '/api/atlas'
-        }
-      },
-      // Atlas登录
-      '/j_spring_security_check': {
-        ws: false,
-        target: 'http://123.56.96.151:8079',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/j_spring_security_check']: '/j_spring_security_check'
-        }
-      },
-      // Atlas登录 session
-      '/session': {
-        ws: false,
-        target: 'http://123.56.96.151:8079',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/session']: '/api/atlas/admin/session'
-        }
-      },
-      // '/login': {
-      //   target: 'http://47.103.79.104:8080',
+      // // 数据共享接口 - share
+      // '/mock': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:3000',
+      //   changeOrigin: true
+      //   // pathRewrite: {
+      //   //   ['^' + '/share']: '/share'
+      //   // }
+      // },
+      // // 元数据接口 - Atlas
+      // '/atlasApi': {
+      //   ws: false,
+      //   target: 'http://123.56.96.151:8079',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     ['^' + '/login']: '/login'
+      //     ['^' + '/atlasApi']: '/api/atlas'
       //   }
       // },
-      '/test': {
-        ws: false,
-        // target: 'http://192.168.3.60:9000', // 韩家敏
-        // target: 'http://192.168.3.74:7000', // 侯峰
-        target: 'http://47.103.79.104:9528',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/test']: '/api'
-        }
-      },
-      // Datains接口
-      // '/welcome': {
-      //   target: 'http://47.103.79.104:8080',
+      // // Atlas登录
+      // '/j_spring_security_check': {
+      //   ws: false,
+      //   target: 'http://123.56.96.151:8079',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     ['^' + '/welcome']: '/datains/welcome'
+      //     ['^' + '/j_spring_security_check']: '/j_spring_security_check'
       //   }
       // },
-      '/dbeaver/gql': {
-        target: 'http://47.103.79.104:8979',
-        changeOrigin: true,
-        // headers: {
-        //   host: "http://192.168.3.74:8978",
-        //   origin: "http://192.168.3.74:8978"
-        // }
-        pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-        }
-      },
+      // // Atlas登录 session
+      // '/session': {
+      //   ws: false,
+      //   target: 'http://123.56.96.151:8079',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/session']: '/api/atlas/admin/session'
+      //   }
+      // },
+      // // '/login': {
+      // //   target: 'http://47.103.79.104:8080',
+      // //   changeOrigin: true,
+      // //   pathRewrite: {
+      // //     ['^' + '/login']: '/login'
+      // //   }
+      // // },
+      // '/test': {
+      //   ws: false,
+      //   // target: 'http://192.168.3.60:9000', // 韩家敏
+      //   // target: 'http://192.168.3.74:7000', // 侯峰
+      //   target: 'http://47.103.79.104:9528',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/test']: '/api'
+      //   }
+      // },
+      // // Datains接口
+      // // '/welcome': {
+      // //   target: 'http://47.103.79.104:8080',
+      // //   changeOrigin: true,
+      // //   pathRewrite: {
+      // //     ['^' + '/welcome']: '/datains/welcome'
+      // //   }
+      // // },
+      // '/dbeaver/gql': {
+      //   target: 'http://47.103.79.104:8979',
+      //   changeOrigin: true,
+      //   // headers: {
+      //   //   host: "http://192.168.3.74:8978",
+      //   //   origin: "http://192.168.3.74:8978"
+      //   // }
+      //   pathRewrite: {
+      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+      //   }
+      // },
       // /api
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       // 代理 /dev-api/api 到 http://localhost:8066/api
@@ -130,14 +130,14 @@ module.exports = {
       // mock 的代理
       // change xxx-api/login => mock/login
 
-      [process.env.VUE_APP_BASE_API]: {
-        // target: `http://localhost:${port}/mock`,
-        target: 'http://47.103.79.104:9527',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
-      }
+      // [process.env.VUE_APP_BASE_API]: {
+      //   // target: `http://localhost:${port}/mock`,
+      //   target: 'http://47.103.79.104:9527',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + process.env.VUE_APP_BASE_API]: ''
+      //   }
+      // }
     },
     after: require('./mock/mock-server.js')
   },

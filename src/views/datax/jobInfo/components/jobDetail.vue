@@ -350,7 +350,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
+      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor1" v-model="temp.jobJson" :cani-edit="false" />
       <!-- <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
       <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
       <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" /> -->
@@ -451,7 +451,7 @@ export default {
       // jobTypeLabel: '',
       listQuery: {
         current: 1,
-        size: 10,
+        size: 10000,
         jobGroup: 0,
         projectIds: '',
         triggerStatus: -1,
@@ -633,7 +633,6 @@ export default {
     }
   },
   created() {
-    // console.log('this.temp',this.jobInfo);
     this.fetchData();
     this.getExecutor();
     this.getJobIdList();
@@ -641,9 +640,6 @@ export default {
     this.getDataSourceList();
     this.getSchemaList();
     this.temp = this.jobInfo;
-    console.log(this.temp);
-
-    console.log('jobType', this.jobType);
   },
 
   methods: {
@@ -712,11 +708,11 @@ export default {
         }
       );
       let status = 0;
+      this.newstlogContent = ''
       log.getList(param).then((response) => {
         const { content } = response;
 
         const newestLog = content.data[0] || {};
-        console.log('+++', content, newestLog);
         if (!newestLog?.executorAddress) {
           this.logList();
           return;
@@ -726,11 +722,11 @@ export default {
         log
           .viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
           .then((response) => {
+
             this.newstlogContent = response.content.logContent;
           })
           .then(() => {
             if (status === 0) {
-              console.log('更新日志');
               setTimeout(this.logList(), 1000);
             }
           });
@@ -778,10 +774,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-      if (this.projectIds) {
-        this.listQuery.projectIds = this.projectIds.toString();
-      }
-
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
       job.getList(this.listQuery).then((response) => {
         const { content } = response;
         this.total = content.recordsTotal;
@@ -802,10 +795,8 @@ export default {
     },
 
     updateData() {
-      this.temp.jobJson =
-        typeof this.jobJson !== 'string'
-          ? JSON.stringify(this.jobJson, null, 2)
-          : this.jobJson;
+      this.temp.jobJson = this.$refs.jsonEditor1.jsonEditor.getValue();
+
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
           title: 'Fail',
