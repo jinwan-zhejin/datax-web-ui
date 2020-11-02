@@ -2,14 +2,14 @@
  * @Date: 2020-10-22 10:21:05
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 14:56:54
+ * @LastEditTime: ,: 2020-11-02 16:01:31
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\statistics.vue
  * @Description: 统计
 -->
 
 <template>
   <div>
-    <el-dialog :visible="statisticsShow" title="统计数据" width="60%" top="7.5vh" custom-class="dialog-border-radius" @close="closeStatistics">
+    <el-dialog :visible="statisticsShow" title="统计数据" top="7.5vh" custom-class="dialog-border-radius" @close="closeStatistics">
       <el-button style="position: absolute;right: 55px;top: 15px;" size="mini" plain type="primary" icon="el-icon-refresh-left" @click="getStatistics" />
       <el-scrollbar>
         <el-collapse v-model="statistics.activeCollapse">
