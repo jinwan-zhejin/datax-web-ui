@@ -44,7 +44,7 @@ export default {
       // readOnly: 'nocursor'
       readOnly: this.caniEdit
     })
-    this.jsonEditor.setSize('auto', '300px')
+    this.jsonEditor.setSize('auto', '200px')
     this.jsonEditor.setValue(`${this.value}`)
     this.jsonEditor.on('change', cm => {
       this.$emit('changed', cm.getValue())
@@ -70,13 +70,14 @@ export default {
 }
 .json-editor >>> .CodeMirror {
   height: auto;
-  min-height: 300px;
+  min-height: 230px;
 }
 .json-editor >>> .CodeMirror-scroll{
-  min-height: 300px;
+  min-height: 230px;
 }
 .json-editor >>> .cm-s-rubyblue span.cm-string {
   color: #F08047;
 }
+
 
 </style>
