@@ -56,3 +56,12 @@ export function getDataSourceList(params) {
     params
   })
 }
+
+// 查询项目下数据源接口
+export function getJobList(params) {
+  return request({
+    url: '/api/jobJdbcDatasource/project',
+    method: 'get',
+    params
+  })
+}

@@ -1,44 +1,44 @@
 <template>
-<div class="app-container">
+  <div class="app-container">
     <div class="filter-container">
-        <el-card class="box-card">
-            <div class="text item">
-                <div class="left">数据源管理</div>
-                <div class="right">
-                    <el-input v-model="listQuery.datasourceName" clearable placeholder="数据源名称" style="width: 268px" class="filter-item" @keyup.enter.native="handleFilter">
-                        <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
-                    </el-input>
-                    <el-button class="filter-item" style="margin-left: 30px;" type="goon" size="small" icon="el-icon-plus" @click="showAdd">
-                        添加
-                    </el-button>
-                    <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">数据源管理({{ jobName }})</div>
+          <div class="right">
+            <el-input v-model="listQuery.datasourceName" clearable placeholder="数据源名称" style="width: 268px" class="filter-item" @keyup.enter.native="handleFilter">
+              <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8.5px 0px;" class="filter-item" type="goon" @click="fetchData">搜索</el-button>
+            </el-input>
+            <el-button class="filter-item" style="margin-left: 30px;" type="goon" size="small" icon="el-icon-plus" @click="showAdd">
+              添加
+            </el-button>
+            <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
               reviewer
             </el-checkbox> -->
-                </div>
-            </div>
-        </el-card>
+          </div>
+        </div>
+      </el-card>
     </div>
     <div class="main">
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
-            <!-- <el-table-column align="center" label="序号" width="95">
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
+        <!-- <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index }}</template>
         </el-table-column> -->
-            <el-table-column label="数据源" width="100" align="center">
-                <template slot-scope="scope">{{ scope.row.datasource === 'phoenix' ? 'hbase' : scope.row.datasource }}</template>
-            </el-table-column>
-            <el-table-column label="数据源名称" min-width="120" align="left">
-                <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
-            </el-table-column>
-            <el-table-column label="数据源分组" width="140" align="left">
-                <template slot-scope="scope">{{ scope.row.datasourceGroup }}
-                </template>
-            </el-table-column>
-            <el-table-column label="jdbc连接串" min-width="200" align="left" :show-overflow-tooltip="true">
-                <template slot-scope="scope">{{
+        <el-table-column label="数据源" width="100" align="center">
+          <template slot-scope="scope">{{ scope.row.datasource === 'phoenix' ? 'hbase' : scope.row.datasource }}</template>
+        </el-table-column>
+        <el-table-column label="数据源名称" min-width="120" align="left">
+          <template slot-scope="scope">{{ scope.row.datasourceName }}</template>
+        </el-table-column>
+        <el-table-column label="数据源分组" width="140" align="left">
+          <template slot-scope="scope">{{ scope.row.datasourceGroup }}
+          </template>
+        </el-table-column>
+        <el-table-column label="jdbc连接串" min-width="200" align="left" :show-overflow-tooltip="true">
+          <template slot-scope="scope">{{
             scope.row.jdbcUrl ? scope.row.jdbcUrl : "-"
           }}</template>
-            </el-table-column>
-            <!-- <el-table-column
+        </el-table-column>
+        <!-- <el-table-column
           label="ZK地址"
           width="190"
           align="left"
@@ -48,2399 +48,2415 @@
             scope.row.zkAdress ? scope.row.zkAdress : "-"
           }}</template>
         </el-table-column> -->
-            <el-table-column label="数据库名" width="150" align="left" :show-overflow-tooltip="true">-->
-                <template slot-scope="scope">{{
+        <el-table-column label="数据库名" width="150" align="left" :show-overflow-tooltip="true">-->
+          <template slot-scope="scope">{{
             scope.row.database ? scope.row.database : "-"
           }}</template>-->
-            </el-table-column>
-            <el-table-column label="备注" width="230" align="left">
-                <template slot-scope="scope">{{ scope.row.comments }}</template>
-            </el-table-column>
-            <el-table-column min-width="240" label="操作" align="center" class-name="small-padding fixed-width">
-                <template slot-scope="{ row }">
-                    <a style="color: #3d5fff; margin: 0px 6px" @click="handleUpdate(row)">编辑</a>
-                    <span style="
+        </el-table-column>
+        <el-table-column label="备注" width="230" align="left">
+          <template slot-scope="scope">{{ scope.row.comments }}</template>
+        </el-table-column>
+        <el-table-column min-width="240" label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="{ row }">
+            <a style="color: #3d5fff; margin: 0px 6px" @click="handleUpdate(row)">编辑</a>
+            <span
+              style="
                 width: 1px;
                 height: 12px;
                 background: #e6e6e8;
                 display: inline-block;
-              " />
-                    <a style="color: #fe4646; margin: 0px 6px" @click="open(row)">删除</a>
-                    <span style="
+              "
+            />
+            <a style="color: #fe4646; margin: 0px 6px" @click="open(row)">删除</a>
+            <span
+              style="
                 width: 1px;
                 height: 12px;
                 background: #e6e6e8;
                 display: inline-block;
-              " />
-                    <a style="color: #3d5fff; margin: 0px 6px" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
-                    <span style="
+              "
+            />
+            <a style="color: #3d5fff; margin: 0px 6px" :disabled="gathering" @click="gatherMetadata(row)">元数据采集</a>
+            <span
+              style="
                 width: 1px;
                 height: 12px;
                 background: #e6e6e8;
                 display: inline-block;
-              " />
-                    <a style="color: #3d5fff; margin: 0px 6px">构建</a>
-                </template>
-            </el-table-column>
-        </el-table>
-        <pagination v-show="total > 0" style="float: right" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
+              "
+            />
+            <a style="color: #3d5fff; margin: 0px 6px">构建</a>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="total > 0" style="float: right" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
     </div>
     <!-- 原添加编辑对话框 -->
     <el-dialog :title="textMap[dialogStatus] === 'Edit' ? '编辑' : ''" :visible.sync="dialogFormVisible" width="50%">
-        <div class="set">
-            <p style="marginTop: 0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
-                    <el-form-item label="数据源名称" prop="datasourceName">
-                        <el-input v-model="temp.datasourceName" placeholder="数据源名称" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组" prop="datasourceGroup">
-                        <el-input v-model="temp.datasourceGroup" placeholder="数据源分组" />
-                    </el-form-item>
-                    <el-form-item label="注释">
-                        <el-input v-model="temp.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>一般</p>
-            <div class="bgcForm">
-                <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
-                    <el-form-item label="数据源" prop="datasource">
-                        <el-select v-model="temp.datasource" placeholder="数据源" style="width: 100%" @change="selectDataSource(temp.datasource)">
-                            <el-option v-for="item in dataSources" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item v-if="jdbc" label="jdbc url" prop="jdbcUrl">
-                        <el-input v-model="temp.jdbcUrl" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" placeholder="jdbc url" />
-                    </el-form-item>
-                    <el-form-item v-if="mongodb" label="地址" prop="jdbcUrl">
-                        <el-input v-model="temp.jdbcUrl" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" placeholder="127.0.0.1:27017" />
-                    </el-form-item>
-                    <el-form-item v-if="jdbc" label="jdbc驱动类" prop="jdbcDriverClass">
-                        <el-input v-model="temp.jdbcDriverClass" placeholder="jdbc驱动类" />
-                    </el-form-item>
-                    <el-form-item v-if="hbase" label="ZK地址" prop="zkAdress">
-                        <el-input v-model="temp.zkAdress" placeholder="127.0.0.1:2181" />
-                    </el-form-item>
-                    <el-form-item v-if="mongodb" label="数据库名称" prop="database">
-                        <el-input v-model="temp.database" placeholder="数据库名称" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p v-show="temp.datasource !== 'mongodb'">高级</p>
-            <div v-show="temp.datasource !== 'mongodb'" class="bgcForm">
-                <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
-                    <el-form-item v-if="jdbc" label="用户名">
-                        <el-input v-model="temp.userName" placeholder="用户名" />
-                    </el-form-item>
-                    <el-form-item v-if="visible" v-show="jdbc" label="密码">
-                        <el-input v-model="temp.password" type="password" placeholder="密码">
-                            <i slot="suffix" title="显示密码" style="cursor: pointer" class="el-icon-view" @click="changePass('show')" />
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item v-show="jdbc" v-else label="密码">
-                        <el-input v-model="temp.password" type="text" placeholder="密码">
-                            <i slot="suffix" title="隐藏密码" style="cursor: pointer" class="el-icon-check" @click="changePass('hide')" />
-                        </el-input>
-                    </el-form-item>
-                </el-form>
-            </div>
+      <div class="set">
+        <p style="marginTop: 0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
+            <el-form-item label="数据源名称" prop="datasourceName">
+              <el-input v-model="temp.datasourceName" placeholder="数据源名称" />
+            </el-form-item>
+            <el-form-item label="数据源分组" prop="datasourceGroup">
+              <el-input v-model="temp.datasourceGroup" placeholder="数据源分组" />
+            </el-form-item>
+            <el-form-item label="注释">
+              <el-input v-model="temp.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogFormVisible = false"> 取消 </el-button>
-            <el-button type="goon" size="small" @click="dialogStatus === 'create' ? createData() : updateData()">
-                确认
-            </el-button>
-            <el-button size="small" type="goon" @click="testDataSource()"> 测试连接 </el-button>
+        <p>一般</p>
+        <div class="bgcForm">
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
+            <el-form-item label="数据源" prop="datasource">
+              <el-select v-model="temp.datasource" placeholder="数据源" style="width: 100%" @change="selectDataSource(temp.datasource)">
+                <el-option v-for="item in dataSources" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="jdbc" label="jdbc url" prop="jdbcUrl">
+              <el-input v-model="temp.jdbcUrl" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" placeholder="jdbc url" />
+            </el-form-item>
+            <el-form-item v-if="mongodb" label="地址" prop="jdbcUrl">
+              <el-input v-model="temp.jdbcUrl" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" placeholder="127.0.0.1:27017" />
+            </el-form-item>
+            <el-form-item v-if="jdbc" label="jdbc驱动类" prop="jdbcDriverClass">
+              <el-input v-model="temp.jdbcDriverClass" placeholder="jdbc驱动类" />
+            </el-form-item>
+            <el-form-item v-if="hbase" label="ZK地址" prop="zkAdress">
+              <el-input v-model="temp.zkAdress" placeholder="127.0.0.1:2181" />
+            </el-form-item>
+            <el-form-item v-if="mongodb" label="数据库名称" prop="database">
+              <el-input v-model="temp.database" placeholder="数据库名称" />
+            </el-form-item>
+          </el-form>
         </div>
+        <p v-show="temp.datasource !== 'mongodb'">高级</p>
+        <div v-show="temp.datasource !== 'mongodb'" class="bgcForm">
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
+            <el-form-item v-if="jdbc" label="用户名">
+              <el-input v-model="temp.userName" placeholder="用户名" />
+            </el-form-item>
+            <el-form-item v-if="visible" v-show="jdbc" label="密码">
+              <el-input v-model="temp.password" type="password" placeholder="密码">
+                <i slot="suffix" title="显示密码" style="cursor: pointer" class="el-icon-view" @click="changePass('show')" />
+              </el-input>
+            </el-form-item>
+            <el-form-item v-show="jdbc" v-else label="密码">
+              <el-input v-model="temp.password" type="text" placeholder="密码">
+                <i slot="suffix" title="隐藏密码" style="cursor: pointer" class="el-icon-check" @click="changePass('hide')" />
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogFormVisible = false"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="dialogStatus === 'create' ? createData() : updateData()">
+          确认
+        </el-button>
+        <el-button size="small" type="goon" @click="testDataSource()"> 测试连接 </el-button>
+      </div>
     </el-dialog>
     <el-dialog :visible.sync="dialogPluginVisible" title="Reading statistics">
-        <el-table :data="pluginData" border fit highlight-current-row style="width: 100%">
-            <el-table-column prop="key" label="Channel" />
-            <el-table-column prop="pv" label="Pv" />
-        </el-table>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="goon" @click="dialogPvVisible = false">Confirm</el-button>
-        </span>
+      <el-table :data="pluginData" border fit highlight-current-row style="width: 100%">
+        <el-table-column prop="key" label="Channel" />
+        <el-table-column prop="pv" label="Pv" />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="goon" @click="dialogPvVisible = false">Confirm</el-button>
+      </span>
     </el-dialog>
     <!-- UI添加对话框 -->
     <el-dialog :visible.sync="dialogVisible" width="50%" top="51px">
-        <div slot="title" class="add_dialog_title">
-            <span v-show="currentStep === 2">{{ sqlName }}连接设置</span>
-            <span v-show="currentStep === 1">选择新连接类型</span>
+      <div slot="title" class="add_dialog_title">
+        <span v-show="currentStep === 2">{{ sqlName }}连接设置</span>
+        <span v-show="currentStep === 1">选择新连接类型</span>
+      </div>
+      <!-- 第一步选择连接类型 -->
+      <div v-show="currentStep === 1" class="topSelect">
+        <!-- <span>选择数据源:</span><el-input v-model="sqlName" style="width: 80%;float: right;" disabled /> -->
+        <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
+          <el-button slot="append" style="backgroundColor: #3D5FFF;border-radius: 0px 4px 4px 0px;color: #FFFFFF;" size="small" @click="searchSQL">搜索</el-button>
+        </el-input>
+      </div>
+      <el-tabs v-show="currentStep === 1" v-model="activeName" type="border-card" @tab-click="handleClick">
+        <el-tab-pane label="所有类型" name="first">
+          <ul>
+            <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
+              <a>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
+              </a>
+            </li>
+          </ul>
+        </el-tab-pane>
+        <el-tab-pane label="常用类型" name="second">
+          <ul>
+            <li v-for="item in CommonType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
+              <a>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
+              </a>
+            </li>
+          </ul>
+        </el-tab-pane>
+        <el-tab-pane label="SQL" name="third">
+          <ul>
+            <li v-for="item in SQLType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
+              <a>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
+              </a>
+            </li>
+          </ul>
+        </el-tab-pane>
+        <el-tab-pane label="分析型" name="fourth">
+          <ul>
+            <li v-for="item in AssType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
+              <a>
+                <img :src="item.url" :alt="item.name">
+                <p>{{ item.name }}</p>
+              </a>
+            </li>
+          </ul>
+        </el-tab-pane>
+      </el-tabs>
+      <!-- 第二步表单 -->
+      <!-- SQL Server连接设置表单 -->
+      <div class="sqlserForm">
+        <el-form v-show="sqlserver" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="ruleForm.datasourceName" placeholder="请输入数据源名称" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="ruleForm.comments" placeholder="请输入备注" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="ruleForm.datasourceGroup" />
+          </el-form-item>
+          <el-form-item label="主机:">
+            <el-input v-model="ruleForm.master" />
+          </el-form-item>
+          <el-form-item label="端口:">
+            <el-input v-model="ruleForm.serverPort" />
+          </el-form-item>
+          <el-form-item label="数据库/架构:">
+            <el-input v-model="ruleForm.database" />
+          </el-form-item>
+          <el-form-item label="认证:">
+            <el-select v-model="ruleForm.authentication" style="width: 100%;" placeholder="请选择">
+              <el-option label="master" value="master" />
+              <el-option label="master1" value="master1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="用户名:">
+            <el-input v-model="ruleForm.username" />
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input v-model="ruleForm.password" type="password" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- MongoDB 连接设置表单 -->
+      <div v-show="Mdb" class="sqlserForm">
+        <el-form :model="MdbForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="MdbForm.datasourceName" placeholder="请输入数据源名称" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="MdbForm.comments" placeholder="请输入备注" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="MdbForm.datasourceGroup" />
+          </el-form-item>
+          <el-form-item label="地址:">
+            <el-input v-model="MdbForm.serverUrl" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]" />
+          </el-form-item>
+          <el-form-item label="数据库:">
+            <el-input v-model="MdbForm.database" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- MariaDB MYSQL连接设置表单 -->
+      <div v-show="mm" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="MySQLForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="MySQLForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="MySQLForm.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- 第一步选择连接类型 -->
-        <div v-show="currentStep === 1" class="topSelect">
-            <!-- <span>选择数据源:</span><el-input v-model="sqlName" style="width: 80%;float: right;" disabled /> -->
-            <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
-                <el-button slot="append" style="backgroundColor: #3D5FFF;border-radius: 0px 4px 4px 0px;color: #FFFFFF;" size="small" @click="searchSQL">搜索</el-button>
-            </el-input>
+        <p>服务器</p>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="服务器地址:">
+              <el-input v-model="MySQLForm.serverUrl" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="MySQLForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="MySQLForm.database" />
+            </el-form-item>
+          </el-form>
         </div>
-        <el-tabs v-show="currentStep === 1" v-model="activeName" type="border-card" @tab-click="handleClick">
-            <el-tab-pane label="所有类型" name="first">
-                <ul>
-                    <li v-for="item in iconTXT" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
-                        <a>
-                            <img :src="item.url" :alt="item.name">
-                            <p>{{ item.name }}</p>
-                        </a>
-                    </li>
-                </ul>
-            </el-tab-pane>
-            <el-tab-pane label="常用类型" name="second">
-                <ul>
-                    <li v-for="item in CommonType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
-                        <a>
-                            <img :src="item.url" :alt="item.name">
-                            <p>{{ item.name }}</p>
-                        </a>
-                    </li>
-                </ul>
-            </el-tab-pane>
-            <el-tab-pane label="SQL" name="third">
-                <ul>
-                    <li v-for="item in SQLType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
-                        <a>
-                            <img :src="item.url" :alt="item.name">
-                            <p>{{ item.name }}</p>
-                        </a>
-                    </li>
-                </ul>
-            </el-tab-pane>
-            <el-tab-pane label="分析型" name="fourth">
-                <ul>
-                    <li v-for="item in AssType" v-show="isShowSQL" :id="item.type + item.name" :key="item.name" @click="getInfo" @dblclick="dbClickNext">
-                        <a>
-                            <img :src="item.url" :alt="item.name">
-                            <p>{{ item.name }}</p>
-                        </a>
-                    </li>
-                </ul>
-            </el-tab-pane>
-        </el-tabs>
-        <!-- 第二步表单 -->
-        <!-- SQL Server连接设置表单 -->
-        <div class="sqlserForm">
-            <el-form v-show="sqlserver" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="数据源名称:">
-                    <el-input v-model="ruleForm.datasourceName" placeholder="请输入数据源名称" />
-                </el-form-item>
-                <el-form-item label="备注:">
-                    <el-input v-model="ruleForm.comments" placeholder="请输入备注" />
-                </el-form-item>
-                <el-form-item label="数据源分组:">
-                    <el-input v-model="ruleForm.datasourceGroup" />
-                </el-form-item>
-                <el-form-item label="主机:">
-                    <el-input v-model="ruleForm.master" />
-                </el-form-item>
-                <el-form-item label="端口:">
-                    <el-input v-model="ruleForm.serverPort" />
-                </el-form-item>
-                <el-form-item label="数据库/架构:">
-                    <el-input v-model="ruleForm.database" />
-                </el-form-item>
-                <el-form-item label="认证:">
-                    <el-select v-model="ruleForm.authentication" style="width: 100%;" placeholder="请选择">
-                        <el-option label="master" value="master" />
-                        <el-option label="master1" value="master1" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="用户名:">
-                    <el-input v-model="ruleForm.username" />
-                </el-form-item>
-                <el-form-item label="密码:">
-                    <el-input v-model="ruleForm.password" type="password" />
-                </el-form-item>
-            </el-form>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="MySQLForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="MySQLForm.password" type="password" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- MongoDB 连接设置表单 -->
-        <div v-show="Mdb" class="sqlserForm">
-            <el-form :model="MdbForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="数据源名称:">
-                    <el-input v-model="MdbForm.datasourceName" placeholder="请输入数据源名称" />
-                </el-form-item>
-                <el-form-item label="备注:">
-                    <el-input v-model="MdbForm.comments" placeholder="请输入备注" />
-                </el-form-item>
-                <el-form-item label="数据源分组:">
-                    <el-input v-model="MdbForm.datasourceGroup" />
-                </el-form-item>
-                <el-form-item label="地址:">
-                    <el-input v-model="MdbForm.serverUrl" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]" />
-                </el-form-item>
-                <el-form-item label="数据库:">
-                    <el-input v-model="MdbForm.database" />
-                </el-form-item>
-            </el-form>
+        <p>高级</p>
+        <div class="bgcForm">
+          <el-form :model="MySQLForm" label-width="100px">
+            <el-form-item label="服务器时区:">
+              <el-select v-model="MySQLForm.serverTime" style="height: 32px;width: 100%;" placeholder="请选择服务器时区">
+                <el-option label="Asia/Shanghai" value="shanghai" />
+              </el-select>
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- MariaDB MYSQL连接设置表单 -->
-        <div v-show="mm" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="MySQLForm" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="MySQLForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="MySQLForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="MySQLForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>服务器</p>
-            <div class="bgcForm">
-                <el-form :model="MySQLForm" label-width="100px">
-                    <el-form-item label="服务器地址:">
-                        <el-input v-model="MySQLForm.serverUrl" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="MySQLForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="MySQLForm.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="MySQLForm" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="MySQLForm.username" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="MySQLForm.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>高级</p>
-            <div class="bgcForm">
-                <el-form :model="MySQLForm" label-width="100px">
-                    <el-form-item label="服务器时区:">
-                        <el-select v-model="MySQLForm.serverTime" style="height: 32px;width: 100%;" placeholder="请选择服务器时区">
-                            <el-option label="Asia/Shanghai" value="shanghai" />
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
+      </div>
+      <!-- Greenplum PostqreSQL连接设置表单 -->
+      <div v-show="gp" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="GPForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="GPForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="GPForm.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- Greenplum PostqreSQL连接设置表单 -->
-        <div v-show="gp" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="GPForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="GPForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="GPForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="GPForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>服务器</p>
-            <div class="bgcForm">
-                <el-form :model="GPForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="主机:">
-                        <el-input v-model="GPForm.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="GPForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="GPForm.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="GPForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="GPForm.username" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="GPForm.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>高级</p>
-            <div class="bgcForm">
-                <el-form :model="GPForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="用户角色:">
-                        <el-input v-model="GPForm.userRole" />
-                    </el-form-item>
-                    <el-form-item label="本地客户端:">
-                        <el-input v-model="GPForm.client" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>服务器</p>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="主机:">
+              <el-input v-model="GPForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="GPForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="GPForm.database" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
-        <div v-show="threeSQL" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="HiveForm" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="HiveForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="HiveForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="HiveForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>一般</p>
-            <div class="bgcForm">
-                <el-form :model="HiveForm" label-width="100px">
-                    <el-form-item label="JDBC URL:">
-                        <el-input v-model="HiveForm.jdbcUrl" disabled />
-                    </el-form-item>
-                    <el-form-item label="主机:">
-                        <el-input v-model="HiveForm.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="HiveForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="HiveForm.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="HiveForm" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="HiveForm.username" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="HiveForm.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户名:">
+              <el-input v-model="GPForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="GPForm.password" type="password" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- oracle连接设置表单 -->
-        <div v-show="oracle" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="OracleForm" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="OracleForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="OracleForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="OracleForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>连接类型</p>
-            <div class="bgcForm">
-                <el-form :model="OracleForm" label-width="100px">
-                    <el-form-item label="主机:">
-                        <el-input v-model="OracleForm.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="OracleForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="Database:">
-                        <el-select v-model="OracleForm.database" style="width: 100%" placeholder="ORCL">
-                            <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select v-model="OracleForm.role" style="width: 100%" placeholder="ORCL">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="OracleForm" label-width="100px">
-                    <el-form-item label="认证:">
-                        <el-select v-model="OracleForm.advanced" style="width: 100%" placeholder="请选择认证">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="用户名:">
-                        <el-input v-model="OracleForm.username" />
-                    </el-form-item>
-                    <el-form-item label="角色:">
-                        <el-select v-model="OracleForm.role" style="width: 100%" placeholder="请选择角色">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="OracleForm.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>高级</p>
+        <div class="bgcForm">
+          <el-form :model="GPForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户角色:">
+              <el-input v-model="GPForm.userRole" />
+            </el-form-item>
+            <el-form-item label="本地客户端:">
+              <el-input v-model="GPForm.client" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- DB2 LUW 连接设置表单 -->
-        <div v-show="DB2" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Form" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="DB2Form.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="DB2Form.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="DB2Form.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>数据库</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Form" label-width="100px">
-                    <el-form-item label="主机:">
-                        <el-input v-model="DB2Form.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="DB2Form.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:" prop="username">
-                        <el-input v-model="DB2Form.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Form" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="DB2Form.username" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="DB2Form.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+      </div>
+      <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
+      <div v-show="threeSQL" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="HiveForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="HiveForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="HiveForm.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- ClickHouse HBase 连接设置表单 -->
-        <div v-show="ch" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="CHForm" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="CHForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="CHForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="CHForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>一般</p>
-            <div class="bgcForm">
-                <el-form :model="CHForm" label-width="100px">
-                    <el-form-item label="JDBC URL:">
-                        <el-input v-model="CHForm.jdbcUrl" disabled />
-                    </el-form-item>
-                    <el-form-item label="主机:">
-                        <el-input v-model="CHForm.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="CHForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="CHForm.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="CHForm" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="CHForm.username" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="CHForm.password" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>一般</p>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="HiveForm.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="HiveForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="HiveForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="HiveForm.database" />
+            </el-form-item>
+          </el-form>
         </div>
-        <div slot="footer" class="dialog-footer">
-            <el-button v-show="currentStep === 2" size="small" style="float: left;" @click="testLink">测试连接...</el-button>
-            <el-button v-show="currentStep !== 1" size="small" @click="lastStep">上一步</el-button>
-            <el-button v-show="currentStep === 1" size="small" type="goon" @click="nextStep">下一步</el-button>
-            <el-button size="small" @click="cancel">取 消</el-button>
-            <el-button size="small" :disabled="isBanAdd" @click="addData">完 成</el-button>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="HiveForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="HiveForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="HiveForm.password" type="password" />
+            </el-form-item>
+          </el-form>
         </div>
+      </div>
+      <!-- oracle连接设置表单 -->
+      <div v-show="oracle" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="OracleForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="OracleForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="OracleForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>连接类型</p>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="OracleForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="OracleForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="Database:">
+              <el-select v-model="OracleForm.database" style="width: 100%" placeholder="ORCL">
+                <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select v-model="OracleForm.role" style="width: 100%" placeholder="ORCL">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="OracleForm" label-width="100px">
+            <el-form-item label="认证:">
+              <el-select v-model="OracleForm.advanced" style="width: 100%" placeholder="请选择认证">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="用户名:">
+              <el-input v-model="OracleForm.username" />
+            </el-form-item>
+            <el-form-item label="角色:">
+              <el-select v-model="OracleForm.role" style="width: 100%" placeholder="请选择角色">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="OracleForm.password" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- DB2 LUW 连接设置表单 -->
+      <div v-show="DB2" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="DB2Form.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="DB2Form.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="DB2Form.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>数据库</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="DB2Form.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="DB2Form.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:" prop="username">
+              <el-input v-model="DB2Form.database" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Form" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="DB2Form.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="DB2Form.password" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- ClickHouse HBase 连接设置表单 -->
+      <div v-show="ch" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="CHForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="CHForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="CHForm.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>一般</p>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="CHForm.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="CHForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="CHForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="CHForm.database" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="CHForm" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="CHForm.username" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="CHForm.password" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-show="currentStep === 2" size="small" style="float: left;" @click="testLink">测试连接...</el-button>
+        <el-button v-show="currentStep !== 1" size="small" @click="lastStep">上一步</el-button>
+        <el-button v-show="currentStep === 1" size="small" type="goon" @click="nextStep">下一步</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" :disabled="isBanAdd" @click="addData">完 成</el-button>
+      </div>
     </el-dialog>
     <!-- UI编辑对话框 -->
     <el-dialog :visible.sync="dialogEditVisible" width="50%" top="51px">
-        <div slot="title" class="add_dialog_title">
-            <span>编辑</span>
+      <div slot="title" class="add_dialog_title">
+        <span>编辑</span>
+      </div>
+      <!-- SQL Server连接设置表单 -->
+      <div v-show="selectType === 'sqlserver'" class="sqlserForm">
+        <el-form :model="sqlserverEdit" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="sqlserverEdit.datasourceName" placeholder="请输入数据源名称" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="sqlserverEdit.comments" placeholder="请输入备注" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="sqlserverEdit.datasourceGroup" />
+          </el-form-item>
+          <el-form-item label="主机:">
+            <el-input v-model="sqlserverEdit.master" />
+          </el-form-item>
+          <el-form-item label="端口:">
+            <el-input v-model="sqlserverEdit.serverPort" />
+          </el-form-item>
+          <el-form-item label="数据库/架构:">
+            <el-input v-model="sqlserverEdit.database" />
+          </el-form-item>
+          <el-form-item label="认证:">
+            <el-select v-model="sqlserverEdit.authentication" style="width: 100%;" placeholder="请选择">
+              <el-option label="master" value="master" />
+              <el-option label="master1" value="master1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="用户名:">
+            <el-input v-model="sqlserverEdit.jdbcUsername" />
+          </el-form-item>
+          <el-form-item label="密码:">
+            <el-input v-model="sqlserverEdit.jdbcPassword" type="password" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- MongoDB 连接设置表单 -->
+      <div v-show="selectType === 'mongodb'" class="sqlserForm">
+        <el-form :model="MdbEdit" :rules="rules" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="数据源名称:">
+            <el-input v-model="MdbEdit.datasourceName" placeholder="请输入数据源名称" />
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input v-model="MdbEdit.comments" placeholder="请输入备注" />
+          </el-form-item>
+          <el-form-item label="数据源分组:">
+            <el-input v-model="MdbEdit.datasourceGroup" />
+          </el-form-item>
+          <el-form-item label="地址:">
+            <el-input v-model="MdbEdit.serverUrl" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]" />
+          </el-form-item>
+          <el-form-item label="数据库:">
+            <el-input v-model="MdbEdit.database" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- MariaDB MYSQL连接设置表单 -->
+      <div v-show="selectType === 'mysql'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="mysqlEdit" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="mysqlEdit.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="mysqlEdit.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="mysqlEdit.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- SQL Server连接设置表单 -->
-        <div v-show="selectType === 'sqlserver'" class="sqlserForm">
-            <el-form :model="sqlserverEdit" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="数据源名称:">
-                    <el-input v-model="sqlserverEdit.datasourceName" placeholder="请输入数据源名称" />
-                </el-form-item>
-                <el-form-item label="备注:">
-                    <el-input v-model="sqlserverEdit.comments" placeholder="请输入备注" />
-                </el-form-item>
-                <el-form-item label="数据源分组:">
-                    <el-input v-model="sqlserverEdit.datasourceGroup" />
-                </el-form-item>
-                <el-form-item label="主机:">
-                    <el-input v-model="sqlserverEdit.master" />
-                </el-form-item>
-                <el-form-item label="端口:">
-                    <el-input v-model="sqlserverEdit.serverPort" />
-                </el-form-item>
-                <el-form-item label="数据库/架构:">
-                    <el-input v-model="sqlserverEdit.database" />
-                </el-form-item>
-                <el-form-item label="认证:">
-                    <el-select v-model="sqlserverEdit.authentication" style="width: 100%;" placeholder="请选择">
-                        <el-option label="master" value="master" />
-                        <el-option label="master1" value="master1" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="用户名:">
-                    <el-input v-model="sqlserverEdit.jdbcUsername" />
-                </el-form-item>
-                <el-form-item label="密码:">
-                    <el-input v-model="sqlserverEdit.jdbcPassword" type="password" />
-                </el-form-item>
-            </el-form>
+        <p>服务器</p>
+        <div class="bgcForm">
+          <el-form :model="mysqlEdit" label-width="100px">
+            <el-form-item label="服务器地址:">
+              <el-input v-model="mysqlEdit.serverUrl" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="mysqlEdit.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="mysqlEdit.database" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- MongoDB 连接设置表单 -->
-        <div v-show="selectType === 'mongodb'" class="sqlserForm">
-            <el-form :model="MdbEdit" :rules="rules" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="数据源名称:">
-                    <el-input v-model="MdbEdit.datasourceName" placeholder="请输入数据源名称" />
-                </el-form-item>
-                <el-form-item label="备注:">
-                    <el-input v-model="MdbEdit.comments" placeholder="请输入备注" />
-                </el-form-item>
-                <el-form-item label="数据源分组:">
-                    <el-input v-model="MdbEdit.datasourceGroup" />
-                </el-form-item>
-                <el-form-item label="地址:">
-                    <el-input v-model="MdbEdit.serverUrl" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]" />
-                </el-form-item>
-                <el-form-item label="数据库:">
-                    <el-input v-model="MdbEdit.database" />
-                </el-form-item>
-            </el-form>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="mysqlEdit" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="mysqlEdit.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="mysqlEdit.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- MariaDB MYSQL连接设置表单 -->
-        <div v-show="selectType === 'mysql'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="mysqlEdit" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="mysqlEdit.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="mysqlEdit.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="mysqlEdit.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>服务器</p>
-            <div class="bgcForm">
-                <el-form :model="mysqlEdit" label-width="100px">
-                    <el-form-item label="服务器地址:">
-                        <el-input v-model="mysqlEdit.serverUrl" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="mysqlEdit.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="mysqlEdit.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="mysqlEdit" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="mysqlEdit.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="mysqlEdit.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>高级</p>
-            <div class="bgcForm">
-                <el-form :model="mysqlEdit" label-width="100px">
-                    <el-form-item label="服务器时区:">
-                        <el-select v-model="mysqlEdit.serverTime" style="height: 32px;width: 100%;" placeholder="请选择服务器时区">
-                            <el-option label="Asia/Shanghai" value="shanghai" />
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>高级</p>
+        <div class="bgcForm">
+          <el-form :model="mysqlEdit" label-width="100px">
+            <el-form-item label="服务器时区:">
+              <el-select v-model="mysqlEdit.serverTime" style="height: 32px;width: 100%;" placeholder="请选择服务器时区">
+                <el-option label="Asia/Shanghai" value="shanghai" />
+              </el-select>
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- Greenplum PostqreSQL连接设置表单 -->
-        <div v-show="selectType === 'greenplum' || selectType === 'postgresql'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="GPEditForm.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="GPEditForm.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="GPEditForm.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>服务器</p>
-            <div class="bgcForm">
-                <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="主机:">
-                        <el-input v-model="GPEditForm.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="GPEditForm.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="GPEditForm.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="GPEditForm.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="GPEditForm.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>高级</p>
-            <div class="bgcForm">
-                <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
-                    <el-form-item label="用户角色:">
-                        <el-input v-model="GPEditForm.userRole" />
-                    </el-form-item>
-                    <el-form-item label="本地客户端:">
-                        <el-input v-model="GPEditForm.client" />
-                    </el-form-item>
-                </el-form>
-            </div>
+      </div>
+      <!-- Greenplum PostqreSQL连接设置表单 -->
+      <div v-show="selectType === 'greenplum' || selectType === 'postgresql'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="GPEditForm.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="GPEditForm.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="GPEditForm.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
-        <div v-show="selectType === 'hive' || selectType === 'spark' || selectType === 'impala'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="hiveEdit" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="hiveEdit.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="hiveEdit.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="hiveEdit.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>一般</p>
-            <div class="bgcForm">
-                <el-form :model="hiveEdit" label-width="100px">
-                    <el-form-item label="JDBC URL:">
-                        <el-input v-model="hiveEdit.jdbcUrl" disabled />
-                    </el-form-item>
-                    <el-form-item label="主机:">
-                        <el-input v-model="hiveEdit.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="hiveEdit.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="hiveEdit.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="hiveEdit" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="hiveEdit.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="hiveEdit.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>服务器</p>
+        <div class="bgcForm">
+          <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
+            <el-form-item label="主机:">
+              <el-input v-model="GPEditForm.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="GPEditForm.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="GPEditForm.database" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- oracle连接设置表单 -->
-        <div v-show="selectType === 'oracle'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="oracleEdit" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="oracleEdit.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="oracleEdit.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="oracleEdit.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>连接类型</p>
-            <div class="bgcForm">
-                <el-form :model="oracleEdit" label-width="100px">
-                    <el-form-item label="主机:">
-                        <el-input v-model="oracleEdit.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="oracleEdit.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="Database:">
-                        <el-select v-model="oracleEdit.database" style="width: 100%" placeholder="ORCL">
-                            <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="ORCL">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="oracleEdit" label-width="100px">
-                    <el-form-item label="认证:">
-                        <el-select v-model="oracleEdit.advanced" style="width: 100%" placeholder="请选择认证">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="用户名:">
-                        <el-input v-model="oracleEdit.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="角色:">
-                        <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="请选择角色">
-                            <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="oracleEdit.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户名:">
+              <el-input v-model="GPEditForm.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="GPEditForm.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- DB2 LUW 连接设置表单 -->
-        <div v-show="selectType === 'db2'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Edit" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="DB2Edit.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="DB2Edit.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="DB2Edit.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>数据库</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Edit" label-width="100px">
-                    <el-form-item label="主机:">
-                        <el-input v-model="DB2Edit.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="DB2Edit.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:" prop="username">
-                        <el-input v-model="DB2Edit.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="DB2Edit" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="DB2Edit.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="DB2Edit.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+        <p>高级</p>
+        <div class="bgcForm">
+          <el-form :model="GPEditForm" label-width="100px" class="bgcForm">
+            <el-form-item label="用户角色:">
+              <el-input v-model="GPEditForm.userRole" />
+            </el-form-item>
+            <el-form-item label="本地客户端:">
+              <el-input v-model="GPEditForm.client" />
+            </el-form-item>
+          </el-form>
         </div>
-        <!-- ClickHouse HBase 连接设置表单 -->
-        <div v-show="selectType === 'clickhouse' || selectType === 'hbase' || selectType === 'phoenix'" class="set">
-            <p style="margin-top:0px;">基本信息</p>
-            <div class="bgcForm">
-                <el-form :model="chEdit" label-width="100px">
-                    <el-form-item label="数据源名称:">
-                        <el-input v-model="chEdit.datasourceName" />
-                    </el-form-item>
-                    <el-form-item label="数据源分组:">
-                        <el-input v-model="chEdit.datasourceGroup" />
-                    </el-form-item>
-                    <el-form-item label="备注:">
-                        <el-input v-model="chEdit.comments" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>一般</p>
-            <div class="bgcForm">
-                <el-form :model="chEdit" label-width="100px">
-                    <el-form-item label="JDBC URL:">
-                        <el-input v-model="chEdit.jdbcUrl" disabled />
-                    </el-form-item>
-                    <el-form-item label="主机:">
-                        <el-input v-model="chEdit.master" />
-                    </el-form-item>
-                    <el-form-item label="端口:">
-                        <el-input v-model="chEdit.serverPort" />
-                    </el-form-item>
-                    <el-form-item label="数据库:">
-                        <el-input v-model="chEdit.database" />
-                    </el-form-item>
-                </el-form>
-            </div>
-            <p>认证</p>
-            <div class="bgcForm">
-                <el-form :model="chEdit" label-width="100px">
-                    <el-form-item label="用户名:">
-                        <el-input v-model="chEdit.jdbcUsername" />
-                    </el-form-item>
-                    <el-form-item label="密码:">
-                        <el-input v-model="chEdit.jdbcPassword" type="password" />
-                    </el-form-item>
-                </el-form>
-            </div>
+      </div>
+      <!-- Apache Hive,Apache Spark,Cloudera Impala连接设置表单 -->
+      <div v-show="selectType === 'hive' || selectType === 'spark' || selectType === 'impala'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="hiveEdit" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="hiveEdit.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="hiveEdit.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="hiveEdit.comments" />
+            </el-form-item>
+          </el-form>
         </div>
-        <div slot="footer" class="dialog-footer">
-            <el-button size="small" style="float: left;" @click="testDataSource()">测试连接...</el-button>
-            <el-button size="small" @click="cancelEdit">取 消</el-button>
-            <el-button size="small" @click="updateData">确 定</el-button>
+        <p>一般</p>
+        <div class="bgcForm">
+          <el-form :model="hiveEdit" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="hiveEdit.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="hiveEdit.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="hiveEdit.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="hiveEdit.database" />
+            </el-form-item>
+          </el-form>
         </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="hiveEdit" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="hiveEdit.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="hiveEdit.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- oracle连接设置表单 -->
+      <div v-show="selectType === 'oracle'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="oracleEdit" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="oracleEdit.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="oracleEdit.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="oracleEdit.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>连接类型</p>
+        <div class="bgcForm">
+          <el-form :model="oracleEdit" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="oracleEdit.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="oracleEdit.serverPort" />
+            </el-form-item>
+            <el-form-item label="Database:">
+              <el-select v-model="oracleEdit.database" style="width: 100%" placeholder="ORCL">
+                <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="ORCL">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="oracleEdit" label-width="100px">
+            <el-form-item label="认证:">
+              <el-select v-model="oracleEdit.advanced" style="width: 100%" placeholder="请选择认证">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="用户名:">
+              <el-input v-model="oracleEdit.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="角色:">
+              <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="请选择角色">
+                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="oracleEdit.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- DB2 LUW 连接设置表单 -->
+      <div v-show="selectType === 'db2'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Edit" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="DB2Edit.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="DB2Edit.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="DB2Edit.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>数据库</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Edit" label-width="100px">
+            <el-form-item label="主机:">
+              <el-input v-model="DB2Edit.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="DB2Edit.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:" prop="username">
+              <el-input v-model="DB2Edit.database" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="DB2Edit" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="DB2Edit.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="DB2Edit.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- ClickHouse HBase 连接设置表单 -->
+      <div v-show="selectType === 'clickhouse' || selectType === 'hbase' || selectType === 'phoenix'" class="set">
+        <p style="margin-top:0px;">基本信息</p>
+        <div class="bgcForm">
+          <el-form :model="chEdit" label-width="100px">
+            <el-form-item label="数据源名称:">
+              <el-input v-model="chEdit.datasourceName" />
+            </el-form-item>
+            <el-form-item label="数据源分组:">
+              <el-input v-model="chEdit.datasourceGroup" />
+            </el-form-item>
+            <el-form-item label="备注:">
+              <el-input v-model="chEdit.comments" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>一般</p>
+        <div class="bgcForm">
+          <el-form :model="chEdit" label-width="100px">
+            <el-form-item label="JDBC URL:">
+              <el-input v-model="chEdit.jdbcUrl" disabled />
+            </el-form-item>
+            <el-form-item label="主机:">
+              <el-input v-model="chEdit.master" />
+            </el-form-item>
+            <el-form-item label="端口:">
+              <el-input v-model="chEdit.serverPort" />
+            </el-form-item>
+            <el-form-item label="数据库:">
+              <el-input v-model="chEdit.database" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <p>认证</p>
+        <div class="bgcForm">
+          <el-form :model="chEdit" label-width="100px">
+            <el-form-item label="用户名:">
+              <el-input v-model="chEdit.jdbcUsername" />
+            </el-form-item>
+            <el-form-item label="密码:">
+              <el-input v-model="chEdit.jdbcPassword" type="password" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" style="float: left;" @click="testDataSource()">测试连接...</el-button>
+        <el-button size="small" @click="cancelEdit">取 消</el-button>
+        <el-button size="small" @click="updateData">确 定</el-button>
+      </div>
     </el-dialog>
-</div>
+  </div>
 </template>
 
 <script>
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import waves from '@/directive/waves'; // waves directive
 import {
-    parseTime
+  parseTime
 } from '@/utils';
 import Pagination from '@/components/Pagination';
 import * as meta from '@/api/metadata-query';
 
 export default {
-    name: 'JdbcDatasource',
-    components: {
-        Pagination
-    },
-    directives: {
-        waves
-    },
-    filters: {
-        statusFilter(status) {
-            const statusMap = {
-                published: 'success',
-                draft: 'gray',
-                deleted: 'danger'
-            };
-            return statusMap[status];
-        }
-    },
-    data() {
-        return {
-            gathering: false,
-            list: null,
-            listLoading: true,
-            isBanAdd: true,
-            total: 0,
-            listQuery: {
-                current: 1,
-                size: 10
-            },
-            isShowSQL: true, // SQL的显示
-            checked: false, // 是否保存本地密码
-            iconTXT: [{
-                    name: 'MySQL',
-                    url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'MongoDB',
-                    url: require('@/assets/dataSourceIcon/MongoDB.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Greenplum',
-                    url: require('@/assets/dataSourceIcon/GREEN.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Sql Server',
-                    url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'PostgreSQL',
-                    url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Oracle',
-                    url: require('@/assets/dataSourceIcon/oracle.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'ClickHouse',
-                    url: require('@/assets/dataSourceIcon/clickhouse.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'DB2',
-                    url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'HBase',
-                    url: require('@/assets/dataSourceIcon/hbase.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Hive',
-                    url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Spark',
-                    url: require('@/assets/dataSourceIcon/spark.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Impala',
-                    url: require('@/assets/dataSourceIcon/Impala.png'),
-                    selected: 0,
-                    type: 'all'
-                },
-                {
-                    name: 'Flink',
-                    url: require('@/assets/dataSourceIcon/Flink.png'),
-                    selected: 0,
-                    type: 'all'
-                }
-            ],
-            CommonType: [{
-                    name: 'MySQL',
-                    url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'Common'
-                },
-                {
-                    name: 'MongoDB',
-                    url: require('@/assets/dataSourceIcon/MongoDB.png'),
-                    selected: 0,
-                    type: 'Common'
-                },
-                {
-                    name: 'Oracle',
-                    url: require('@/assets/dataSourceIcon/oracle.png'),
-                    selected: 0,
-                    type: 'Common'
-                }
-            ],
-            SQLType: [{
-                    name: 'MySQL',
-                    url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'SQL'
-                },
-                {
-                    name: 'Greenplum',
-                    url: require('@/assets/dataSourceIcon/GREEN.png'),
-                    selected: 0,
-                    type: 'SQL'
-                },
-                {
-                    name: 'Sql Server',
-                    url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'SQL'
-                },
-                {
-                    name: 'PostgreSQL',
-                    url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'SQL'
-                },
-                {
-                    name: 'Oracle',
-                    url: require('@/assets/dataSourceIcon/oracle.png'),
-                    selected: 0,
-                    type: 'SQL'
-                },
-                {
-                    name: 'DB2',
-                    url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
-                    selected: 0,
-                    type: 'SQL'
-                }
-            ],
-            AssType: [{
-                    name: 'Greenplum',
-                    url: require('@/assets/dataSourceIcon/GREEN.png'),
-                    selected: 0,
-                    type: 'ass'
-                },
-                {
-                    name: 'ClickHouse',
-                    url: require('@/assets/dataSourceIcon/clickhouse.png'),
-                    selected: 0,
-                    type: 'ass'
-                }
-            ],
-            roclData: [{
-                    name: 'orcl',
-                    value: 'orcl'
-                },
-                {
-                    name: 'helowin',
-                    value: 'helowin'
-                }
-            ],
-            roleList: [{
-                value: '123',
-                label: '管理员'
-            }],
-            input3: '',
-            pluginTypeOptions: ['reader', 'writer'],
-            dialogPluginVisible: false,
-            pluginData: [],
-            dialogFormVisible: false,
-            dialogStatus: '',
-            textMap: {
-                update: 'Edit',
-                create: 'Create'
-            },
-            rules: {
-                datasourceName: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                userName: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                password: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                jdbcUrl: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                datasource: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'change'
-                }],
-                zkAdress: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }],
-                database: [{
-                    required: true,
-                    message: 'this is required',
-                    trigger: 'blur'
-                }]
-            },
-            temp: {
-                id: undefined,
-                datasourceName: '',
-                datasourceGroup: 'Default',
-                userName: '',
-                password: '',
-                jdbcUrl: '',
-                comments: '',
-                datasource: '',
-                zkAdress: '',
-                database: ''
-            },
-            visible: true,
-            dataSources: [{
-                    value: 'MYSQL',
-                    label: 'MYSQL'
-                },
-                {
-                    value: 'oracle',
-                    label: 'oracle'
-                },
-                {
-                    value: 'postgresql',
-                    label: 'postgresql'
-                },
-                {
-                    value: 'greenplum',
-                    label: 'greenplum'
-                },
-                {
-                    value: 'sqlserver',
-                    label: 'sqlserver'
-                },
-                {
-                    value: 'hive',
-                    label: 'hive'
-                },
-                {
-                    value: 'hbase',
-                    label: 'hbase'
-                },
-                {
-                    value: 'mongodb',
-                    label: 'mongodb'
-                },
-                {
-                    value: 'clickhouse',
-                    label: 'clickhouse'
-                }
-            ],
-            jdbc: true,
-            hbase: false,
-            mongodb: false,
-            dialogVisible: false,
-            dialogEditVisible: false,
-            diaTit: '选中新连接类型',
-            currentStep: 1,
-            activeName: 'first',
-            ruleForm: {
-                datasourceName: '',
-                userName: '',
-                password: '',
-                jdbcUrl: '',
-                comments: '',
-                datasource: '',
-                zkAdress: '',
-                database: ''
-            },
-            AdvancedForm: {},
-            MySQLForm: {},
-            GPForm: {}, // greenplum, postgresql
-            HiveForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
-            OracleForm: {}, // oracle
-            DB2Form: {}, // OracleForm
-            CHForm: {}, // ClickHouse HBase
-            MdbForm: {
-                serverUrl: ''
-            }, // MongoDB
-            userForm: {},
-            sqlName: '',
-            params: {
-                comments: '',
-                datasource: '',
-                datasourceGroup: '',
-                datasourceName: '',
-                jdbcDriverClass: '',
-                jdbcUrl: '',
-                jdbcPassword: '',
-                jdbcUsername: ''
-            },
-            lastSelect: '',
-            currentSelect: '',
-            tabType: 'all',
-            typeArr: [],
-            selectType: '',
-            mysqlEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                serverUrl: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: '',
-                serverTime: ''
-            },
-            oracleEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                master: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: '',
-                role: '',
-                advanced: ''
-            },
-            MdbEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                database: '',
-                serverUrl: ''
-            },
-            sqlserverEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                master: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: '',
-                authentication: ''
-            },
-            GPEditForm: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                master: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: '',
-                userRole: '',
-                client: ''
-            },
-            chEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                master: '',
-                jdbcUrl: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: ''
-            },
-            hiveEdit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                jdbcUrl: '',
-                master: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: ''
-            },
-            DB2Edit: {
-                datasourceName: '',
-                datasourceGroup: '',
-                comments: '',
-                master: '',
-                serverPort: '',
-                database: '',
-                jdbcUsername: '',
-                jdbcPassword: ''
-            },
-            paramsData: {},
-            rowObj: {}
-        }
-    },
-    // 计算属性
-    computed: {
-        // ClickHouse HBase
-        ch() {
-            return (
-                this.currentStep === 2 &&
+  name: 'JdbcDatasource',
+  components: {
+    Pagination
+  },
+  directives: {
+    waves
+  },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
+      };
+      return statusMap[status];
+    }
+  },
+  data() {
+    return {
+      gathering: false,
+      list: null,
+      listLoading: true,
+      isBanAdd: true,
+      total: 0,
+      listQuery: {
+        current: 1,
+        size: 10,
+        projectId: '',
+        datasourceName: ''
+      },
+      isShowSQL: true, // SQL的显示
+      checked: false, // 是否保存本地密码
+      iconTXT: [{
+        name: 'MySQL',
+        url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'MongoDB',
+        url: require('@/assets/dataSourceIcon/MongoDB.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Greenplum',
+        url: require('@/assets/dataSourceIcon/GREEN.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Sql Server',
+        url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'PostgreSQL',
+        url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Oracle',
+        url: require('@/assets/dataSourceIcon/oracle.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'ClickHouse',
+        url: require('@/assets/dataSourceIcon/clickhouse.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'DB2',
+        url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'HBase',
+        url: require('@/assets/dataSourceIcon/hbase.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Hive',
+        url: require('@/assets/dataSourceIcon/hive_icon_big@2x.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Spark',
+        url: require('@/assets/dataSourceIcon/spark.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Impala',
+        url: require('@/assets/dataSourceIcon/Impala.png'),
+        selected: 0,
+        type: 'all'
+      },
+      {
+        name: 'Flink',
+        url: require('@/assets/dataSourceIcon/Flink.png'),
+        selected: 0,
+        type: 'all'
+      }
+      ],
+      CommonType: [{
+        name: 'MySQL',
+        url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+        selected: 0,
+        type: 'Common'
+      },
+      {
+        name: 'MongoDB',
+        url: require('@/assets/dataSourceIcon/MongoDB.png'),
+        selected: 0,
+        type: 'Common'
+      },
+      {
+        name: 'Oracle',
+        url: require('@/assets/dataSourceIcon/oracle.png'),
+        selected: 0,
+        type: 'Common'
+      }
+      ],
+      SQLType: [{
+        name: 'MySQL',
+        url: require('@/assets/dataSourceIcon/mysql_icon_big@2x.png'),
+        selected: 0,
+        type: 'SQL'
+      },
+      {
+        name: 'Greenplum',
+        url: require('@/assets/dataSourceIcon/GREEN.png'),
+        selected: 0,
+        type: 'SQL'
+      },
+      {
+        name: 'Sql Server',
+        url: require('@/assets/dataSourceIcon/mssql_icon_big@2x.png'),
+        selected: 0,
+        type: 'SQL'
+      },
+      {
+        name: 'PostgreSQL',
+        url: require('@/assets/dataSourceIcon/postgresql_icon_big@2x.png'),
+        selected: 0,
+        type: 'SQL'
+      },
+      {
+        name: 'Oracle',
+        url: require('@/assets/dataSourceIcon/oracle.png'),
+        selected: 0,
+        type: 'SQL'
+      },
+      {
+        name: 'DB2',
+        url: require('@/assets/dataSourceIcon/db2_i_icon_big@2x.png'),
+        selected: 0,
+        type: 'SQL'
+      }
+      ],
+      AssType: [{
+        name: 'Greenplum',
+        url: require('@/assets/dataSourceIcon/GREEN.png'),
+        selected: 0,
+        type: 'ass'
+      },
+      {
+        name: 'ClickHouse',
+        url: require('@/assets/dataSourceIcon/clickhouse.png'),
+        selected: 0,
+        type: 'ass'
+      }
+      ],
+      roclData: [{
+        name: 'orcl',
+        value: 'orcl'
+      },
+      {
+        name: 'helowin',
+        value: 'helowin'
+      }
+      ],
+      roleList: [{
+        value: '123',
+        label: '管理员'
+      }],
+      input3: '',
+      pluginTypeOptions: ['reader', 'writer'],
+      dialogPluginVisible: false,
+      pluginData: [],
+      dialogFormVisible: false,
+      dialogStatus: '',
+      textMap: {
+        update: 'Edit',
+        create: 'Create'
+      },
+      rules: {
+        datasourceName: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        userName: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        password: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        jdbcUrl: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        datasource: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'change'
+        }],
+        zkAdress: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }],
+        database: [{
+          required: true,
+          message: 'this is required',
+          trigger: 'blur'
+        }]
+      },
+      temp: {
+        id: undefined,
+        datasourceName: '',
+        datasourceGroup: 'Default',
+        userName: '',
+        password: '',
+        jdbcUrl: '',
+        comments: '',
+        datasource: '',
+        zkAdress: '',
+        database: ''
+      },
+      visible: true,
+      dataSources: [{
+        value: 'MYSQL',
+        label: 'MYSQL'
+      },
+      {
+        value: 'oracle',
+        label: 'oracle'
+      },
+      {
+        value: 'postgresql',
+        label: 'postgresql'
+      },
+      {
+        value: 'greenplum',
+        label: 'greenplum'
+      },
+      {
+        value: 'sqlserver',
+        label: 'sqlserver'
+      },
+      {
+        value: 'hive',
+        label: 'hive'
+      },
+      {
+        value: 'hbase',
+        label: 'hbase'
+      },
+      {
+        value: 'mongodb',
+        label: 'mongodb'
+      },
+      {
+        value: 'clickhouse',
+        label: 'clickhouse'
+      }
+      ],
+      jdbc: true,
+      hbase: false,
+      mongodb: false,
+      dialogVisible: false,
+      dialogEditVisible: false,
+      diaTit: '选中新连接类型',
+      currentStep: 1,
+      activeName: 'first',
+      ruleForm: {
+        datasourceName: '',
+        userName: '',
+        password: '',
+        jdbcUrl: '',
+        comments: '',
+        datasource: '',
+        zkAdress: '',
+        database: ''
+      },
+      AdvancedForm: {},
+      MySQLForm: {},
+      GPForm: {}, // greenplum, postgresql
+      HiveForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
+      OracleForm: {}, // oracle
+      DB2Form: {}, // OracleForm
+      CHForm: {}, // ClickHouse HBase
+      MdbForm: {
+        serverUrl: ''
+      }, // MongoDB
+      userForm: {},
+      sqlName: '',
+      params: {
+        comments: '',
+        datasource: '',
+        datasourceGroup: '',
+        datasourceName: '',
+        jdbcDriverClass: '',
+        jdbcUrl: '',
+        jdbcPassword: '',
+        jdbcUsername: ''
+      },
+      lastSelect: '',
+      currentSelect: '',
+      tabType: 'all',
+      typeArr: [],
+      selectType: '',
+      mysqlEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        serverUrl: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: '',
+        serverTime: ''
+      },
+      oracleEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        master: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: '',
+        role: '',
+        advanced: ''
+      },
+      MdbEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        database: '',
+        serverUrl: ''
+      },
+      sqlserverEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        master: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: '',
+        authentication: ''
+      },
+      GPEditForm: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        master: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: '',
+        userRole: '',
+        client: ''
+      },
+      chEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        master: '',
+        jdbcUrl: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: ''
+      },
+      hiveEdit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        jdbcUrl: '',
+        master: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: ''
+      },
+      DB2Edit: {
+        datasourceName: '',
+        datasourceGroup: '',
+        comments: '',
+        master: '',
+        serverPort: '',
+        database: '',
+        jdbcUsername: '',
+        jdbcPassword: ''
+      },
+      paramsData: {},
+      rowObj: {},
+      jobName: ''
+    }
+  },
+  // 计算属性
+  computed: {
+    // ClickHouse HBase
+    ch() {
+      return (
+        this.currentStep === 2 &&
                 (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase')
-            );
-        },
-        // Greenplum PostqreSQL
-        gp() {
-            return (
-                (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') &&
+      );
+    },
+    // Greenplum PostqreSQL
+    gp() {
+      return (
+        (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') &&
                 this.currentStep === 2
-            );
-        },
-        // oracle
-        oracle() {
-            return this.sqlName === 'Oracle' && this.currentStep === 2;
-        },
-        // MariaDB MYSQL
-        mm() {
-            return (
-                (this.sqlName === 'MariaDB' || this.sqlName === 'MySQL') &&
+      );
+    },
+    // oracle
+    oracle() {
+      return this.sqlName === 'Oracle' && this.currentStep === 2;
+    },
+    // MariaDB MYSQL
+    mm() {
+      return (
+        (this.sqlName === 'MariaDB' || this.sqlName === 'MySQL') &&
                 this.currentStep === 2
-            );
-        },
-        // DB2
-        DB2() {
-            return this.sqlName === 'DB2' && this.currentStep === 2;
-        },
-        // Apache Hive,Apache Spark,Cloudera Impala
-        threeSQL() {
-            return (
-                (this.sqlName === 'Hive' ||
+      );
+    },
+    // DB2
+    DB2() {
+      return this.sqlName === 'DB2' && this.currentStep === 2;
+    },
+    // Apache Hive,Apache Spark,Cloudera Impala
+    threeSQL() {
+      return (
+        (this.sqlName === 'Hive' ||
                     this.sqlName === 'Spark' ||
                     this.sqlName === 'Impala' || this.sqlName === 'Flink') &&
                 this.currentStep === 2
-            );
-        },
-        // sqlserver
-        sqlserver() {
-            return (
-                (this.sqlName === 'Sql Server') &&
+      );
+    },
+    // sqlserver
+    sqlserver() {
+      return (
+        (this.sqlName === 'Sql Server') &&
                 this.currentStep === 2
-            );
-        },
-        // MongoDB
-        Mdb() {
-            return (
-                (this.sqlName === 'MongoDB') &&
+      );
+    },
+    // MongoDB
+    Mdb() {
+      return (
+        (this.sqlName === 'MongoDB') &&
                 this.currentStep === 2
-            );
-        }
-    },
-    watch: {
-        sqlName: function (val) {
-            console.log(val.replace(/\s*/g, ''));
-            console.log(this.params, '----------');
-            if (val === 'MYSQL') {
-                this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
-                console.log(this.params.jdbcUrl);
-            } else if (val.toLowerCase() === 'oracle') {
-                this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
-            } else if (val.toLowerCase() === 'postgresql') {
-                this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-                this.ruleForm.driver = 'org.postgresql.Driver';
-            } else if (val.toLowerCase() === 'greenplum') {
-                this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-                this.ruleForm.driver = 'org.postgresql.Driver';
-            } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
-                this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
-            } else if (val.toLowerCase() === 'clickhouse') {
-                this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
-            } else if (val === 'hive') {
-                this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
-            } else if (val.toLowerCase() === 'mongodb') {
-                this.MdbForm.serverUrl = 'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
-            } else {
-                this.isBanAdd = false
-            }
-        },
-        'CHForm.master': {
-            handler(val) {
-                if (val) {
-                    this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
-                } else {
-                    this.CHForm.jdbcUrl = ''
-                }
-            },
-            deep: true
-        },
-        'CHForm.serverPort': {
-            handler(val) {
-                if (val && this.CHForm.master) {
-                    if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1]) {
-                        this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
-                    } else {
-                        this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.CHForm.master) {
-                    this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0]
-                }
-            },
-            deep: true
-        },
-        'CHForm.database': {
-            handler(val) {
-                if (val && this.CHForm.master && this.CHForm.serverPort) {
-                    if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
-                        this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.CHForm.serverPort + '/' + val
-                    }
-                } else if (!val && this.CHForm.master && this.CHForm.serverPort) {
-                    this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.master + ':' + this.CHForm.serverPort
-                }
-            },
-            deep: true
-        },
-        'chEdit.master': {
-            handler(val) {
-                if (val) {
-                    this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + val
-                } else {
-                    this.chEdit.jdbcUrl = ''
-                }
-            },
-            deep: true
-        },
-        'chEdit.serverPort': {
-            handler(val) {
-                if (val && this.chEdit.master) {
-                    if (this.chEdit.jdbcUrl.split('//')[1].split(':')[1]) {
-                        this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
-                    } else {
-                        this.chEdit.jdbcUrl = this.chEdit.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.chEdit.master) {
-                    this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0]
-                }
-            },
-            deep: true
-        },
-        'chEdit.database': {
-            handler(val) {
-                if (val && this.chEdit.master && this.chEdit.serverPort) {
-                    if (this.chEdit.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
-                        this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.chEdit.serverPort + '/' + val
-                    }
-                } else if (!val && this.chEdit.master && this.chEdit.serverPort) {
-                    this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.master + ':' + this.chEdit.serverPort
-                }
-            },
-            deep: true
-        },
-        'HiveForm.master': {
-            handler(val) {
-                if (val) {
-                    this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
-                } else {
-                    this.HiveForm.jdbcUrl = ''
-                }
-            },
-            deep: true
-        },
-        'HiveForm.serverPort': {
-            handler(val) {
-                if (val && this.HiveForm.master) {
-                    if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1]) {
-                        this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
-                    } else {
-                        this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.HiveForm.master) {
-                    this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0]
-                }
-            },
-            deep: true
-        },
-        'HiveForm.database': {
-            handler(val) {
-                if (val && this.HiveForm.master && this.HiveForm.serverPort) {
-                    if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
-                        this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.HiveForm.serverPort + '/' + val
-                    } else {
-                        this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.HiveForm.master && this.HiveForm.serverPort) {
-                    this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort
-                }
-            },
-            deep: true
-        },
-        'hiveEdit.master': {
-            handler(val) {
-                if (val) {
-                    this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + val
-                } else {
-                    this.hiveEdit.jdbcUrl = ''
-                }
-            },
-            deep: true
-        },
-        'hiveEdit.serverPort': {
-            handler(val) {
-                if (val && this.hiveEdit.master) {
-                    if (this.hiveEdit.jdbcUrl.split('//')[1].split(':')[1]) {
-                        this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
-                    } else {
-                        this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.hiveEdit.master) {
-                    this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0]
-                }
-            },
-            deep: true
-        },
-        'hiveEdit.database': {
-            handler(val) {
-                if (val && this.hiveEdit.master && this.hiveEdit.serverPort) {
-                    if (this.hiveEdit.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
-                        this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.hiveEdit.serverPort + '/' + val
-                    } else {
-                        this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
-                    }
-                } else if (!val && this.hiveEdit.master && this.hiveEdit.serverPort) {
-                    this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort
-                }
-            },
-            deep: true
-        }
-    },
-    created() {
-        this.fetchData();
-    },
-    methods: {
-        gatherMetadata(row) {
-            this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
-                    confirmButtonText: '继续',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                })
-                .then(() => {
-                    console.log(row);
-                    const param = {};
-                    param.id = row.id;
-                    console.log(param);
-                    meta.getDbMetadata(param).then((res) => {
-                        console.log(res);
-                        this.gathering = false;
-                        this.$message({
-                            type: 'success',
-                            message: '元数据采集成功'
-                        });
-                        this.$router.push('/cloudbeaveratlas/management')
-                        console.log('跳转成功')
-                    });
-                    this.gathering = true;
-                    this.$message({
-                        type: 'info',
-                        message: '采集任务开始!'
-                    });
-                    this.$router.push('/cloudbeaveratlas/management')
-                    console.log('跳转失败')
-                })
-                .catch(() => {
-                    this.$message({
-                        type: 'warning',
-                        message: '已取消元数据采集'
-                    });
-                });
-        },
-        // 搜索数据源类型
-        searchSQL() {
-            for (let i = 0; i < this.typeArr.length; i++) {
-                console.log(this.typeArr[i].name.indexOf(this.input3))
-                if (this.typeArr[i].name.toLowerCase().indexOf(this.input3.toLowerCase()) === 0) {
-                    document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'block'
-                } else {
-                    document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'none'
-                }
-            }
-        },
-        selectDataSource(datasource) {
-            if (datasource === 'MYSQL') {
-                this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
-            } else if (datasource === 'oracle') {
-                this.temp.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
-            } else if (datasource === 'postgresql') {
-                this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-                this.temp.jdbcDriverClass = 'org.postgresql.Driver';
-            } else if (datasource === 'greenplum') {
-                this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-                this.temp.jdbcDriverClass = 'org.postgresql.Driver';
-            } else if (datasource === 'sqlserver') {
-                this.temp.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
-            } else if (datasource === 'clickhouse') {
-                this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
-            } else if (datasource === 'hive') {
-                this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
-            }
-            this.getShowStrategy(datasource);
-        },
-        resetTemp() {
-            this.temp = {
-                id: undefined,
-                datasourceName: '',
-                datasourceGroup: 'Default',
-                userName: '',
-                password: '',
-                jdbcUrl: '',
-                jdbcDriverClass: '',
-                comments: ''
-            };
-        },
-        // 显示添加对话框
-        showAdd() {
-            this.currentStep = 1
-            this.dialogVisible = true;
-            this.MySQLForm.serverTime = 'Asia/Shanghai'
-        },
-        // 获取点击当前数据源名称方法
-        getInfo(e) {
-            // window.clearTimeout(time) // 首先清除计时器
-            // time = setTimeout(() => {
-            this.sqlName = e.path[1].textContent.trim()
-            if (this.sqlName !== this.lastSelect) {
-                this.currentSelect = this.sqlName
-                if (this.lastSelect !== '') {
-                    document.getElementById(this.tabType + this.lastSelect).style.backgroundColor = '#fff'
-                    console.log(document.getElementById(this.tabType + this.lastSelect), '-------------')
-                }
-                document.getElementById(this.tabType + this.currentSelect).style.backgroundColor = '#C4CFFF'
-                this.lastSelect = this.sqlName
-            }
-            console.log(this.sqlName)
-            // }, 1000); // 大概时间300ms
-        },
-        // tabs标签页方法
-        handleClick(tab, event) {
-            console.log(tab.label);
-            console.log(tab.index);
-            if (tab.index === '3') {
-                this.lastSelect = ''
-                this.currentSelect = ''
-                this.sqlName = ''
-                this.tabType = 'ass'
-                for (let i = 0; i < this.SQLType.length; i++) {
-                    document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.iconTXT.length; i++) {
-                    document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.CommonType.length; i++) {
-                    document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
-                }
-                this.typeArr = this.AssType
-            } else if (tab.index === '2') {
-                this.lastSelect = ''
-                this.currentSelect = ''
-                this.sqlName = ''
-                for (let i = 0; i < this.AssType.length; i++) {
-                    document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.iconTXT.length; i++) {
-                    document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.CommonType.length; i++) {
-                    document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
-                }
-                this.tabType = 'SQL'
-                this.typeArr = this.SQLType
-            } else if (tab.index === '1') {
-                this.lastSelect = ''
-                this.currentSelect = ''
-                this.sqlName = ''
-                for (let i = 0; i < this.AssType.length; i++) {
-                    document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.iconTXT.length; i++) {
-                    document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.SQLType.length; i++) {
-                    document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
-                }
-                this.tabType = 'Common'
-                this.typeArr = this.CommonType
-            } else if (tab.index === '0') {
-                this.lastSelect = ''
-                this.currentSelect = ''
-                this.sqlName = ''
-                for (let i = 0; i < this.AssType.length; i++) {
-                    document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.CommonType.length; i++) {
-                    document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
-                }
-                for (let i = 0; i < this.SQLType.length; i++) {
-                    document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
-                }
-                this.tabType = 'all'
-                this.typeArr = this.iconTXT
-            }
-        },
-        // 取消
-        cancel() {
-            this.dialogVisible = false;
-            this.currentStep = 1;
-            this.MySQLForm = {}
-            this.OracleForm = {}
-            this.MdbForm = {}
-            this.sqlName = ''
-            for (let i = 0; i < this.SQLType.length; i++) {
-                document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
-            }
-            for (let i = 0; i < this.iconTXT.length; i++) {
-                document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
-            }
-            for (let i = 0; i < this.CommonType.length; i++) {
-                document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
-            }
-            for (let i = 0; i < this.AssType.length; i++) {
-                document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
-            }
-        },
-        cancelEdit() {
-            this.dialogEditVisible = false;
-            this.MySQLForm = {}
-            this.OracleForm = {}
-            this.MdbForm = {}
-        },
-        // 下一步
-        nextStep() {
-            if (this.currentStep < 2) {
-                if (this.sqlName !== '') {
-                    this.currentStep++;
-                } else {
-                    this.$message.warning('请选择数据源类型');
-                }
-            }
-            console.log(this.currentStep);
-        },
-        // 双击下一步
-        dbClickNext() {
-            // window.clearTimeout(time) // 首先清除计时器
-            if (this.currentStep < 2) {
-                if (this.sqlName !== '') {
-                    this.currentStep++
-                } else {
-                    this.$message.warning('请选择数据源类型')
-                }
-            }
-            console.log(this.currentStep)
-            console.log('双击下一步')
-        },
-        lastStep() {
-            console.log(this.currentStep);
-            if (this.currentStep > 1) {
-                this.currentStep--;
-            }
-        },
-        // 添加数据源（原方法）
-        createData() {
-            this.$refs['dataForm'].validate((valid) => {
-                if (valid) {
-                    datasourceApi.created(this.temp).then(() => {
-                        this.fetchData();
-                        this.dialogFormVisible = false;
-                        this.$notify({
-                            title: 'Success',
-                            message: 'Created Successfully',
-                            type: 'success',
-                            duration: 2000
-                        });
-                    });
-                }
-            });
-        },
-        handleCreate() {
-            this.resetTemp();
-            this.dialogStatus = 'create';
-            this.dialogFormVisible = true;
-            // this.$nextTick(() => {
-            //   this.$refs['dataForm'].clearValidate();
-            // });
-        },
-        // 添加数据源
-        addData() {
-            const obj = {}
-            if (this.sqlName === 'MySQL') {
-                obj.datasourceName = this.MySQLForm.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
-                obj.jdbcUsername = this.MySQLForm.username;
-                obj.jdbcPassword = this.MySQLForm.password;
-                obj.datasourceGroup = this.MySQLForm.datasourceGroup;
-                obj.comments = this.MySQLForm.comments;
-                obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
-            } else if (this.sqlName === 'Oracle') {
-                obj.datasourceName = this.OracleForm.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
-                obj.jdbcUsername = this.OracleForm.username;
-                obj.jdbcPassword = this.OracleForm.password;
-                obj.datasourceGroup = this.OracleForm.datasourceGroup;
-                obj.comments = this.OracleForm.comments;
-                obj.jdbcDriverClass = '';
-            } else if (this.sqlName === 'MongoDB') {
-                obj.datasourceName = this.MdbForm.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = this.MdbForm.serverUrl;
-                obj.datasourceGroup = this.MdbForm.datasourceGroup;
-                obj.comments = this.MdbForm.comments;
-                obj.databaseName = this.MdbForm.database;
-                obj.jdbcDriverClass = '';
-            } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
-                console.log(this.GPForm)
-                obj.datasourceName = this.GPForm.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
-                obj.jdbcUsername = this.GPForm.username;
-                obj.jdbcPassword = this.GPForm.password;
-                obj.datasourceGroup = this.GPForm.datasourceGroup;
-                obj.comments = this.GPForm.comments;
-                obj.jdbcDriverClass = 'org.postgresql.Driver';
-            } else if (this.sqlName === 'Sql Server') {
-                obj.datasourceName = this.ruleForm.datasourceName;
-                obj.datasourceGroup = this.ruleForm.datasourceGroup;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
-                obj.jdbcUsername = this.ruleForm.username;
-                obj.jdbcPassword = this.ruleForm.password;
-                obj.comments = this.ruleForm.comments;
-                obj.jdbcDriverClass = '';
-            } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
-                obj.datasourceName = this.CHForm.datasourceName;
-                obj.datasourceGroup = this.CHForm.datasourceGroup;
-                obj.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
-                this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database : obj.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database
-                obj.jdbcUsername = this.CHForm.username;
-                obj.jdbcPassword = this.CHForm.password;
-                obj.comments = this.CHForm.comments;
-                this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
-            } else if (this.sqlName === 'DB2') {
-                obj.datasourceName = this.DB2Form.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
-                obj.jdbcUsername = this.DB2Form.username;
-                obj.jdbcPassword = this.DB2Form.password;
-                obj.datasourceGroup = this.DB2Form.datasourceGroup;
-                obj.comments = this.DB2Form.comments;
-                obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
-            } else if (this.sqlName === 'Hive') {
-                obj.datasourceName = this.HiveForm.datasourceName;
-                obj.datasource = this.sqlName.toLowerCase();
-                obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
-                obj.jdbcUsername = this.HiveForm.username;
-                obj.jdbcPassword = this.HiveForm.password;
-                obj.datasourceGroup = this.HiveForm.datasourceGroup;
-                obj.comments = this.HiveForm.comments;
-                obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
-            }
-            datasourceApi.created(obj).then(() => {
-                this.fetchData();
-                this.dialogVisible = false;
-                this.$notify({
-                    title: '提示',
-                    message: '数据源添加成功',
-                    type: 'success',
-                    duration: 2000
-                })
-                this.MySQLForm = {}
-                this.OracleForm = {}
-                this.MdbForm = {}
-                this.ruleForm = {}
-                this.CHForm = {}
-                this.GPForm = {}
-                this.DB2Form = {}
-                this.currentStep = 1
-                this.isBanAdd = true
-            }).catch(err => {
-                if (err) {
-                    this.$notify({
-                        title: '提示',
-                        message: '数据源添加失败',
-                        type: 'fail',
-                        duration: 2000
-                    })
-                }
-            })
-        },
-        // 测试连接
-        testLink() {
-            const obj1 = {}
-            if (this.sqlName === 'MySQL') {
-                obj1.datasourceName = this.MySQLForm.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
-                obj1.jdbcUsername = this.MySQLForm.username;
-                obj1.jdbcPassword = this.MySQLForm.password;
-                obj1.datasourceGroup = this.MySQLForm.datasourceGroup;
-                obj1.comments = this.MySQLForm.comments;
-                obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver';
-            } else if (this.sqlName === 'Oracle') {
-                obj1.datasourceName = this.OracleForm.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
-                obj1.jdbcUsername = this.OracleForm.username;
-                obj1.jdbcPassword = this.OracleForm.password;
-                obj1.datasourceGroup = this.OracleForm.datasourceGroup;
-                obj1.comments = this.OracleForm.comments;
-                obj1.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
-            } else if (this.sqlName === 'MongoDB') {
-                obj1.datasourceName = this.MdbForm.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = this.MdbForm.serverUrl;
-                obj1.datasourceGroup = this.MdbForm.datasourceGroup;
-                obj1.comments = this.MdbForm.comments;
-                obj1.databaseName = this.MdbForm.database;
-                obj1.jdbcDriverClass = '';
-            } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
-                console.log(this.GPForm)
-                obj1.datasourceName = this.GPForm.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = 'jdbc:postgresql' + '://' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
-                obj1.jdbcUsername = this.GPForm.username;
-                obj1.jdbcPassword = this.GPForm.password;
-                obj1.datasourceGroup = this.GPForm.datasourceGroup;
-                obj1.comments = this.GPForm.comments;
-                obj1.jdbcDriverClass = 'org.postgresql.Driver'
-            } else if (this.sqlName === 'Sql Server') {
-                obj1.datasourceName = this.ruleForm.datasourceName;
-                obj1.datasourceGroup = this.ruleForm.datasourceGroup;
-                obj1.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
-                obj1.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
-                obj1.jdbcUsername = this.ruleForm.username;
-                obj1.jdbcPassword = this.ruleForm.password;
-                obj1.comments = this.ruleForm.comments;
-                obj1.jdbcDriverClass = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
-            } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
-                obj1.datasourceName = this.CHForm.datasourceName;
-                obj1.datasourceGroup = this.CHForm.datasourceGroup;
-                obj1.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
-                this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl : obj1.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database;
-                obj1.jdbcUsername = this.CHForm.username;
-                obj1.jdbcPassword = this.CHForm.password;
-                obj1.comments = this.CHForm.comments;
-                this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
-            } else if (this.sqlName === 'Hive') {
-                obj1.datasourceName = this.HiveForm.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
-                obj1.jdbcUsername = this.HiveForm.username;
-                obj1.jdbcPassword = this.HiveForm.password;
-                obj1.datasourceGroup = this.HiveForm.datasourceGroup;
-                obj1.comments = this.HiveForm.comments;
-                obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
-            } else if (this.sqlName === 'DB2') {
-                obj1.datasourceName = this.DB2Form.datasourceName;
-                obj1.datasource = this.sqlName.toLowerCase();
-                obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
-                obj1.jdbcUsername = this.DB2Form.username;
-                obj1.jdbcPassword = this.DB2Form.password;
-                obj1.datasourceGroup = this.DB2Form.datasourceGroup;
-                obj1.comments = this.DB2Form.comments;
-                obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
-            }
-            datasourceApi.test(obj1).then((response) => {
-                if (response.data === false) {
-                    this.$notify({
-                        title: '提示',
-                        message: response.data.msg,
-                        type: 'fail',
-                        duration: 2000
-                    });
-                } else {
-                    this.$notify({
-                        title: '提示',
-                        message: '数据库测试连接成功',
-                        type: 'success',
-                        duration: 2000
-                    });
-                    this.isBanAdd = false
-                }
-            })
-        },
-        // 编辑测试连接
-        testDataSource() {
-            this.temp = {}
-            if (this.selectType === 'mysql') {
-                this.temp = this.mysqlEdit
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'oracle') {
-                this.temp = {
-                    ...this.oracleEdit
-                }
-                this.temp.jdbcUrl = 'jdbc:' + this.selectType + ':thin:@//' + this.oracleEdit.master + ':' + this.oracleEdit.serverPort + '/' + this.oracleEdit.database;
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'mongodb') {
-                this.temp = {
-                    ...this.MdbEdit
-                }
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'sqlserver') {
-                this.temp = {
-                    ...this.sqlserverEdit
-                }
-                this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database;
-                this.temp.databaseName = this.sqlserverEdit.database;
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
-                this.temp = {
-                    ...this.GPEditForm
-                }
-                this.temp.jdbcUrl = 'jdbc:postgresql' + '://' + this.GPEditForm.master + ':' + this.GPEditForm.serverPort + '/' + this.GPEditForm.database;
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
-                this.temp = {
-                    ...this.chEdit
-                }
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
-                this.temp = {
-                    ...this.hiveEdit
-                }
-                this.temp.jdbcUrl = 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            } else if (this.selectType === 'db2') {
-                this.temp = {
-                    ...this.DB2Edit
-                }
-                this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.DB2Edit.master + ':' + this.DB2Edit.serverPort + '/' + this.DB2Edit.database
-                this.temp.id = this.rowObj.id
-                this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
-            }
-            datasourceApi.test(this.temp).then((response) => {
-                if (response.data === false) {
-                    this.$notify({
-                        title: 'Fail',
-                        message: response.data.msg,
-                        type: 'fail',
-                        duration: 2000
-                    });
-                } else {
-                    this.$notify({
-                        title: '成功',
-                        message: '测试连接成功',
-                        type: 'success',
-                        duration: 2000
-                    });
-                }
-            });
-        },
-        // 显示编辑对话框回显数据
-        handleUpdate(row) {
-            this.getShowStrategy(row.datasource);
-            this.temp = Object.assign({}, row); // copy obj
-            this.dialogStatus = 'update';
-            console.log(row, 'row________')
-            this.rowObj = row
-            console.log(this.temp)
-            this.selectType = row.datasource
-            // if (this.temp.datasource === 'phoenix') {
-            //   this.temp.datasource = 'hbase'
-            // }
-            if (this.selectType === 'mysql') {
-                this.mysqlEdit.datasourceName = row.datasourceName
-                this.mysqlEdit.datasource = row.datasource
-                this.mysqlEdit.serverUrl = row.jdbcUrl.split('//')[1].split(':')[0]
-                this.mysqlEdit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
-                this.mysqlEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
-                this.mysqlEdit.jdbcUsername = row.jdbcUsername;
-                this.mysqlEdit.jdbcPassword = row.jdbcPassword;
-                this.mysqlEdit.datasourceGroup = row.datasourceGroup;
-                this.mysqlEdit.comments = row.comments;
-                this.mysqlEdit.jdbcDriverClass = row.jdbcDriverClass;
-                this.mysqlEdit.serverTime = 'Asia/Shanghai';
-            } else if (this.selectType === 'oracle') {
-                this.oracleEdit.datasourceName = row.datasourceName
-                this.oracleEdit.datasource = row.datasource
-                this.oracleEdit.master = row.jdbcUrl.split('//')[1].split(':')[0]
-                this.oracleEdit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
-                this.oracleEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
-                this.oracleEdit.jdbcUsername = row.jdbcUsername;
-                this.oracleEdit.jdbcPassword = row.jdbcPassword;
-                this.oracleEdit.datasourceGroup = row.datasourceGroup;
-                this.oracleEdit.comments = row.comments;
-                this.oracleEdit.jdbcDriverClass = row.jdbcDriverClass;
-            } else if (this.selectType === 'mongodb') {
-                this.MdbEdit.datasourceName = row.datasourceName
-                this.MdbEdit.serverUrl = row.jdbcUrl
-                this.MdbEdit.datasource = row.datasource
-                this.MdbEdit.datasourceGroup = row.datasourceGroup
-                this.MdbEdit.comments = row.comments
-                this.MdbEdit.database = row.databaseName
-            } else if (this.selectType === 'sqlserver') {
-                this.sqlserverEdit.datasourceName = row.datasourceName
-                this.sqlserverEdit.master = row.jdbcUrl.split('//')[1].split(';')[0].split(':')[0]
-                this.sqlserverEdit.serverPort = row.jdbcUrl.split('//')[1].split(';')[0].split(':')[1]
-                this.sqlserverEdit.database = row.jdbcUrl.split(';')[1].split('=')[1]
-                this.sqlserverEdit.datasource = row.datasource
-                this.sqlserverEdit.datasourceGroup = row.datasourceGroup
-                this.sqlserverEdit.comments = row.comments
-                this.sqlserverEdit.jdbcUsername = row.jdbcUsername;
-                this.sqlserverEdit.jdbcPassword = row.jdbcPassword;
-                this.sqlserverEdit.authentication = 'master'
-            } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
-                this.GPEditForm.datasource = row.datasource
-                this.GPEditForm.datasourceGroup = row.datasourceGroup
-                this.GPEditForm.datasourceName = row.datasourceName
-                this.GPEditForm.comments = row.comments
-                this.GPEditForm.master = row.jdbcUrl.split('//')[1].split(':')[0]
-                this.GPEditForm.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
-                this.GPEditForm.database = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
-                this.GPEditForm.jdbcUsername = row.jdbcUsername;
-                this.GPEditForm.jdbcPassword = row.jdbcPassword;
-            } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
-                this.chEdit.datasource = row.datasource
-                this.chEdit.datasourceGroup = row.datasourceGroup
-                this.chEdit.datasourceName = row.datasourceName
-                this.chEdit.comments = row.comments
-                this.chEdit.master = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[0] : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[0]
-                this.chEdit.serverPort = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0] : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[1]
-                this.chEdit.database = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1] : row.databaseName
-                this.chEdit.jdbcUsername = row.jdbcUsername;
-                this.chEdit.jdbcPassword = row.jdbcPassword;
-            } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
-                this.hiveEdit.datasource = row.datasource
-                this.hiveEdit.datasourceGroup = row.datasourceGroup
-                this.hiveEdit.datasourceName = row.datasourceName
-                this.hiveEdit.comments = row.comments
-                this.hiveEdit.master = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[0] : row.jdbcUrl.split('//')[1].split(':')[0]
-                this.hiveEdit.serverPort = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0] : row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
-                this.hiveEdit.database = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1] : row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
-                this.hiveEdit.jdbcUsername = row.jdbcUsername;
-                this.hiveEdit.jdbcPassword = row.jdbcPassword;
-            } else if (this.selectType === 'db2') {
-                this.DB2Edit.datasource = row.datasource
-                this.DB2Edit.datasourceGroup = row.datasourceGroup
-                this.DB2Edit.datasourceName = row.datasourceName
-                this.DB2Edit.comments = row.comments
-                this.DB2Edit.master = row.jdbcUrl.split('//')[1].split(':')[0]
-                this.DB2Edit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
-                this.DB2Edit.database = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
-                this.DB2Edit.jdbcUsername = row.jdbcUsername;
-                this.DB2Edit.jdbcPassword = row.jdbcPassword;
-            }
-            console.log(this.MySQLForm, 'mysqlform')
-            this.temp.userName = this.temp.jdbcUsername
-            this.temp.password = this.temp.jdbcPassword
-            // this.dialogFormVisible = true;
-            this.dialogEditVisible = true
-            // this.$nextTick(() => {
-            //   this.$refs['dataForm'].clearValidate();
-            // });
-        },
-        // 编辑对话框确认更新数据
-        updateData() {
-            if (this.selectType === 'mysql') {
-                // MySQL
-                this.paramsData = {
-                    datasourceName: this.mysqlEdit.datasourceName,
-                    datasource: this.mysqlEdit.datasource,
-                    jdbcUrl: 'jdbc:' + this.selectType + '://' + this.mysqlEdit.serverUrl + ':' + this.mysqlEdit.serverPort + '/' + this.mysqlEdit.database,
-                    database: this.mysqlEdit.database,
-                    jdbcUsername: this.mysqlEdit.jdbcUsername,
-                    jdbcPassword: this.mysqlEdit.jdbcPassword,
-                    datasourceGroup: this.mysqlEdit.datasourceGroup,
-                    comments: this.mysqlEdit.comments,
-                    jdbcDriverClass: this.mysqlEdit.jdbcDriverClass,
-                    serverTime: 'Asia/Shanghai',
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'oracle') {
-                this.paramsData = {
-                    datasourceName: this.oracleEdit.datasourceName,
-                    datasource: this.oracleEdit.datasource,
-                    jdbcUrl: 'jdbc:' + this.selectType + '://' + this.oracleEdit.master + ':' + this.oracleEdit.serverPort + '/' + this.oracleEdit.database,
-                    database: this.oracleEdit.database,
-                    jdbcUsername: this.oracleEdit.jdbcUsername,
-                    jdbcPassword: this.oracleEdit.jdbcPassword,
-                    datasourceGroup: this.oracleEdit.datasourceGroup,
-                    comments: this.oracleEdit.comments,
-                    jdbcDriverClass: this.oracleEdit.jdbcDriverClass,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'mongodb') {
-                this.paramsData = {
-                    datasourceName: this.MdbEdit.datasourceName,
-                    datasource: this.MdbEdit.datasource,
-                    jdbcUrl: this.MdbEdit.serverUrl,
-                    databaseName: this.MdbEdit.database,
-                    datasourceGroup: this.MdbEdit.datasourceGroup,
-                    comments: this.MdbEdit.comments,
-                    jdbcDriverClass: this.MdbEdit.jdbcDriverClass,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'sqlserver') {
-                this.paramsData = {
-                    datasourceName: this.sqlserverEdit.datasourceName,
-                    datasource: this.sqlserverEdit.datasource,
-                    jdbcUrl: 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database,
-                    databaseName: this.sqlserverEdit.database,
-                    datasourceGroup: this.sqlserverEdit.datasourceGroup,
-                    comments: this.sqlserverEdit.comments,
-                    jdbcDriverClass: this.sqlserverEdit.jdbcDriverClass,
-                    jdbcUsername: this.sqlserverEdit.jdbcUsername,
-                    jdbcPassword: this.sqlserverEdit.jdbcPassword,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
-                this.paramsData = {
-                    datasourceName: this.GPEditForm.datasourceName,
-                    datasource: this.GPEditForm.datasource,
-                    jdbcUrl: 'jdbc:postgresql' + '://' + this.GPEditForm.master + ':' + this.GPEditForm.serverPort + '/' + this.GPEditForm.database,
-                    databaseName: this.GPEditForm.database,
-                    datasourceGroup: this.GPEditForm.datasourceGroup,
-                    comments: this.GPEditForm.comments,
-                    jdbcDriverClass: this.GPEditForm.jdbcDriverClass,
-                    jdbcUsername: this.GPEditForm.jdbcUsername,
-                    jdbcPassword: this.GPEditForm.jdbcPassword,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
-                this.paramsData = {
-                    datasourceName: this.chEdit.datasourceName,
-                    datasource: this.chEdit.datasource,
-                    jdbcUrl: this.selectType === 'clickhouse' ? this.chEdit.jdbcUrl : 'jdbc:phoenix:' + this.chEdit.master + ':' + this.chEdit.serverPort + '/' + this.chEdit.database,
-                    databaseName: this.chEdit.database,
-                    datasourceGroup: this.chEdit.datasourceGroup,
-                    comments: this.chEdit.comments,
-                    jdbcDriverClass: this.chEdit.jdbcDriverClass,
-                    jdbcUsername: this.chEdit.jdbcUsername,
-                    jdbcPassword: this.chEdit.jdbcPassword,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
-                this.paramsData = {
-                    datasourceName: this.hiveEdit.datasourceName,
-                    datasource: this.hiveEdit.datasource,
-                    jdbcUrl: 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database,
-                    databaseName: this.hiveEdit.database,
-                    datasourceGroup: this.hiveEdit.datasourceGroup,
-                    comments: this.hiveEdit.comments,
-                    jdbcDriverClass: this.hiveEdit.jdbcDriverClass,
-                    jdbcUsername: this.hiveEdit.jdbcUsername,
-                    jdbcPassword: this.hiveEdit.jdbcPassword,
-                    id: this.rowObj.id
-                }
-            } else if (this.selectType === 'db2') {
-                this.paramsData = {
-                    datasourceName: this.DB2Edit.datasourceName,
-                    datasource: this.DB2Edit.datasource,
-                    jdbcUrl: 'jdbc:' + this.selectType + '://' + this.DB2Edit.master + ':' + this.DB2Edit.serverPort + '/' + this.DB2Edit.database,
-                    databaseName: this.DB2Edit.database,
-                    datasourceGroup: this.DB2Edit.datasourceGroup,
-                    comments: this.DB2Edit.comments,
-                    jdbcDriverClass: this.DB2Edit.jdbcDriverClass,
-                    jdbcUsername: this.DB2Edit.jdbcUsername,
-                    jdbcPassword: this.DB2Edit.jdbcPassword,
-                    id: this.rowObj.id
-                }
-            }
-            datasourceApi.updated(this.paramsData).then(() => {
-                this.fetchData();
-                this.dialogEditVisible = false;
-                this.$notify({
-                    title: '成功',
-                    message: '编辑数据成功',
-                    type: 'success',
-                    duration: 2000
-                });
-            });
-            // }
-            // });
-        },
-        open(row) {
-            this.$confirm('您确定删除此条数据源?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.handleDelete(row)
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                })
-            })
-        },
-        fetchData() {
-            this.listLoading = true;
-            datasourceApi.list(this.listQuery).then((response) => {
-                const {
-                    records
-                } = response;
-                const {
-                    total
-                } = response;
-                this.total = total;
-                this.list = records;
-                this.listLoading = false;
-            });
-        },
-        getShowStrategy(datasource) {
-            if (datasource === 'hbase') {
-                this.jdbc = this.mongodb = false;
-                this.hbase = true;
-            } else if (datasource === 'mongodb') {
-                this.jdbc = this.hbase = false;
-                this.mongodb = true;
-                this.temp.jdbcUrl =
-                    'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]';
-            } else {
-                this.hbase = this.mongodb = false;
-                this.jdbc = true;
-            }
-        },
-        handleDelete(row) {
-            console.log('删除');
-            const idList = [];
-            idList.push(row.id);
-            // 拼成 idList=xx
-            // 多个比较麻烦，这里不处理
-            datasourceApi
-                .deleted({
-                    idList: row.id
-                })
-                .then((response) => {
-                    this.fetchData();
-                    this.$notify({
-                        title: '提示',
-                        message: '删除成功',
-                        type: 'success',
-                        duration: 2000
-                    });
-                });
-            // const index = this.list.indexOf(row)
-        },
-        handleFetchPv(id) {
-            datasourceApi.fetched(id).then((response) => {
-                this.pluginData = response;
-                this.dialogPvVisible = true;
-            });
-        },
-        formatJson(filterVal, jsonData) {
-            return jsonData.map((v) =>
-                filterVal.map((j) => {
-                    if (j === 'timestamp') {
-                        return parseTime(v[j]);
-                    } else {
-                        return v[j];
-                    }
-                })
-            );
-        },
-        changePass(value) {
-            this.visible = !(value === 'show');
-        }
+      );
     }
+  },
+  watch: {
+    sqlName: function(val) {
+      console.log(val.replace(/\s*/g, ''));
+      console.log(this.params, '----------');
+      if (val === 'MYSQL') {
+        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
+        console.log(this.params.jdbcUrl);
+      } else if (val.toLowerCase() === 'oracle') {
+        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+      } else if (val.toLowerCase() === 'postgresql') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.ruleForm.driver = 'org.postgresql.Driver';
+      } else if (val.toLowerCase() === 'greenplum') {
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.ruleForm.driver = 'org.postgresql.Driver';
+      } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
+        this.params.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+      } else if (val.toLowerCase() === 'clickhouse') {
+        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+      } else if (val === 'hive') {
+        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+      } else if (val.toLowerCase() === 'mongodb') {
+        this.MdbForm.serverUrl = 'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
+      } else {
+        this.isBanAdd = false
+      }
+    },
+    'CHForm.master': {
+      handler(val) {
+        if (val) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
+        } else {
+          this.CHForm.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'CHForm.serverPort': {
+      handler(val) {
+        if (val && this.CHForm.master) {
+          if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.CHForm.master) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'CHForm.database': {
+      handler(val) {
+        if (val && this.CHForm.master && this.CHForm.serverPort) {
+          if (this.CHForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.CHForm.serverPort + '/' + val
+          }
+        } else if (!val && this.CHForm.master && this.CHForm.serverPort) {
+          this.CHForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.CHForm.master + ':' + this.CHForm.serverPort
+        }
+      },
+      deep: true
+    },
+    'chEdit.master': {
+      handler(val) {
+        if (val) {
+          this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + val
+        } else {
+          this.chEdit.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'chEdit.serverPort': {
+      handler(val) {
+        if (val && this.chEdit.master) {
+          if (this.chEdit.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.chEdit.jdbcUrl = this.chEdit.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.chEdit.master) {
+          this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'chEdit.database': {
+      handler(val) {
+        if (val && this.chEdit.master && this.chEdit.serverPort) {
+          if (this.chEdit.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.chEdit.serverPort + '/' + val
+          }
+        } else if (!val && this.chEdit.master && this.chEdit.serverPort) {
+          this.chEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.chEdit.master + ':' + this.chEdit.serverPort
+        }
+      },
+      deep: true
+    },
+    'HiveForm.master': {
+      handler(val) {
+        if (val) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + val
+        } else {
+          this.HiveForm.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'HiveForm.serverPort': {
+      handler(val) {
+        if (val && this.HiveForm.master) {
+          if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.HiveForm.master) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'HiveForm.database': {
+      handler(val) {
+        if (val && this.HiveForm.master && this.HiveForm.serverPort) {
+          if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.HiveForm.serverPort + '/' + val
+          } else {
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.HiveForm.master && this.HiveForm.serverPort) {
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort
+        }
+      },
+      deep: true
+    },
+    'hiveEdit.master': {
+      handler(val) {
+        if (val) {
+          this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + val
+        } else {
+          this.hiveEdit.jdbcUrl = ''
+        }
+      },
+      deep: true
+    },
+    'hiveEdit.serverPort': {
+      handler(val) {
+        if (val && this.hiveEdit.master) {
+          if (this.hiveEdit.jdbcUrl.split('//')[1].split(':')[1]) {
+            this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + val
+          } else {
+            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.hiveEdit.master) {
+          this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0]
+        }
+      },
+      deep: true
+    },
+    'hiveEdit.database': {
+      handler(val) {
+        if (val && this.hiveEdit.master && this.hiveEdit.serverPort) {
+          if (this.hiveEdit.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
+            this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.hiveEdit.serverPort + '/' + val
+          } else {
+            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
+          }
+        } else if (!val && this.hiveEdit.master && this.hiveEdit.serverPort) {
+          this.hiveEdit.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort
+        }
+      },
+      deep: true
+    }
+  },
+  created() {
+    console.log('123')
+    console.log(this.$route)
+    this.jobRow = this.$route.params
+    // if (sessionStorage.getItem('projectId')) {
+    //   console.log(sessionStorage.getItem('projectId'))
+    // } else {
+    //   sessionStorage.setItem('projectId', this.$route.params.id)
+    //   sessionStorage.setItem('JobName', this.$route.params.name)
+    // }
+    this.jobName = sessionStorage.getItem('JobName')
+    this.fetchData();
+  },
+  methods: {
+    gatherMetadata(row) {
+      this.$confirm('即将开始元数据采集, 是否继续?', '提示', {
+        confirmButtonText: '继续',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          console.log(row);
+          const param = {};
+          param.id = row.id;
+          console.log(param);
+          meta.getDbMetadata(param).then((res) => {
+            console.log(res);
+            this.gathering = false;
+            this.$message({
+              type: 'success',
+              message: '元数据采集成功'
+            });
+            this.$router.push('/cloudbeaveratlas/management')
+            console.log('跳转成功')
+          });
+          this.gathering = true;
+          this.$message({
+            type: 'info',
+            message: '采集任务开始!'
+          });
+          this.$router.push('/cloudbeaveratlas/management')
+          console.log('跳转失败')
+        })
+        .catch(() => {
+          this.$message({
+            type: 'warning',
+            message: '已取消元数据采集'
+          });
+        });
+    },
+    // 搜索数据源类型
+    searchSQL() {
+      for (let i = 0; i < this.typeArr.length; i++) {
+        console.log(this.typeArr[i].name.indexOf(this.input3))
+        if (this.typeArr[i].name.toLowerCase().indexOf(this.input3.toLowerCase()) === 0) {
+          document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'block'
+        } else {
+          document.getElementById(this.typeArr[i].type + this.typeArr[i].name).style.display = 'none'
+        }
+      }
+    },
+    selectDataSource(datasource) {
+      if (datasource === 'MYSQL') {
+        this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
+      } else if (datasource === 'oracle') {
+        this.temp.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+      } else if (datasource === 'postgresql') {
+        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.temp.jdbcDriverClass = 'org.postgresql.Driver';
+      } else if (datasource === 'greenplum') {
+        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
+        this.temp.jdbcDriverClass = 'org.postgresql.Driver';
+      } else if (datasource === 'sqlserver') {
+        this.temp.jdbcUrl = 'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+      } else if (datasource === 'clickhouse') {
+        this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+      } else if (datasource === 'hive') {
+        this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+      }
+      this.getShowStrategy(datasource);
+    },
+    resetTemp() {
+      this.temp = {
+        id: undefined,
+        datasourceName: '',
+        datasourceGroup: 'Default',
+        userName: '',
+        password: '',
+        jdbcUrl: '',
+        jdbcDriverClass: '',
+        comments: ''
+      };
+    },
+    // 显示添加对话框
+    showAdd() {
+      this.currentStep = 1
+      this.dialogVisible = true;
+      this.MySQLForm.serverTime = 'Asia/Shanghai'
+    },
+    // 获取点击当前数据源名称方法
+    getInfo(e) {
+      // window.clearTimeout(time) // 首先清除计时器
+      // time = setTimeout(() => {
+      this.sqlName = e.path[1].textContent.trim()
+      if (this.sqlName !== this.lastSelect) {
+        this.currentSelect = this.sqlName
+        if (this.lastSelect !== '') {
+          document.getElementById(this.tabType + this.lastSelect).style.backgroundColor = '#fff'
+          console.log(document.getElementById(this.tabType + this.lastSelect), '-------------')
+        }
+        document.getElementById(this.tabType + this.currentSelect).style.backgroundColor = '#C4CFFF'
+        this.lastSelect = this.sqlName
+      }
+      console.log(this.sqlName)
+      // }, 1000); // 大概时间300ms
+    },
+    // tabs标签页方法
+    handleClick(tab, event) {
+      console.log(tab.label);
+      console.log(tab.index);
+      if (tab.index === '3') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        this.tabType = 'ass'
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        this.typeArr = this.AssType
+      } else if (tab.index === '2') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'SQL'
+        this.typeArr = this.SQLType
+      } else if (tab.index === '1') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.iconTXT.length; i++) {
+          document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'Common'
+        this.typeArr = this.CommonType
+      } else if (tab.index === '0') {
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        for (let i = 0; i < this.AssType.length; i++) {
+          document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.CommonType.length; i++) {
+          document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+        }
+        for (let i = 0; i < this.SQLType.length; i++) {
+          document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+        }
+        this.tabType = 'all'
+        this.typeArr = this.iconTXT
+      }
+    },
+    // 取消
+    cancel() {
+      this.dialogVisible = false;
+      this.currentStep = 1;
+      this.MySQLForm = {}
+      this.OracleForm = {}
+      this.MdbForm = {}
+      this.sqlName = ''
+      for (let i = 0; i < this.SQLType.length; i++) {
+        document.getElementById(this.SQLType[i].type + this.SQLType[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.iconTXT.length; i++) {
+        document.getElementById(this.iconTXT[i].type + this.iconTXT[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.CommonType.length; i++) {
+        document.getElementById(this.CommonType[i].type + this.CommonType[i].name).style.backgroundColor = '#fff'
+      }
+      for (let i = 0; i < this.AssType.length; i++) {
+        document.getElementById(this.AssType[i].type + this.AssType[i].name).style.backgroundColor = '#fff'
+      }
+    },
+    cancelEdit() {
+      this.dialogEditVisible = false;
+      this.MySQLForm = {}
+      this.OracleForm = {}
+      this.MdbForm = {}
+    },
+    // 下一步
+    nextStep() {
+      if (this.currentStep < 2) {
+        if (this.sqlName !== '') {
+          this.currentStep++;
+        } else {
+          this.$message.warning('请选择数据源类型');
+        }
+      }
+      console.log(this.currentStep);
+    },
+    // 双击下一步
+    dbClickNext() {
+      // window.clearTimeout(time) // 首先清除计时器
+      if (this.currentStep < 2) {
+        if (this.sqlName !== '') {
+          this.currentStep++
+        } else {
+          this.$message.warning('请选择数据源类型')
+        }
+      }
+      console.log(this.currentStep)
+      console.log('双击下一步')
+    },
+    lastStep() {
+      console.log(this.currentStep);
+      if (this.currentStep > 1) {
+        this.currentStep--;
+      }
+    },
+    // 添加数据源（原方法）
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          datasourceApi.created(this.temp).then(() => {
+            this.fetchData();
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
+            });
+          });
+        }
+      });
+    },
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = 'create';
+      this.dialogFormVisible = true;
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate();
+      // });
+    },
+    // 添加数据源
+    addData() {
+      const obj = {}
+      if (this.sqlName === 'MySQL') {
+        obj.datasourceName = this.MySQLForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
+        obj.jdbcUsername = this.MySQLForm.username;
+        obj.jdbcPassword = this.MySQLForm.password;
+        obj.datasourceGroup = this.MySQLForm.datasourceGroup;
+        obj.comments = this.MySQLForm.comments;
+        obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      } else if (this.sqlName === 'Oracle') {
+        obj.datasourceName = this.OracleForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
+        obj.jdbcUsername = this.OracleForm.username;
+        obj.jdbcPassword = this.OracleForm.password;
+        obj.datasourceGroup = this.OracleForm.datasourceGroup;
+        obj.comments = this.OracleForm.comments;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'MongoDB') {
+        obj.datasourceName = this.MdbForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = this.MdbForm.serverUrl;
+        obj.datasourceGroup = this.MdbForm.datasourceGroup;
+        obj.comments = this.MdbForm.comments;
+        obj.databaseName = this.MdbForm.database;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
+        console.log(this.GPForm)
+        obj.datasourceName = this.GPForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
+        obj.jdbcUsername = this.GPForm.username;
+        obj.jdbcPassword = this.GPForm.password;
+        obj.datasourceGroup = this.GPForm.datasourceGroup;
+        obj.comments = this.GPForm.comments;
+        obj.jdbcDriverClass = 'org.postgresql.Driver';
+      } else if (this.sqlName === 'Sql Server') {
+        obj.datasourceName = this.ruleForm.datasourceName;
+        obj.datasourceGroup = this.ruleForm.datasourceGroup;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
+        obj.jdbcUsername = this.ruleForm.username;
+        obj.jdbcPassword = this.ruleForm.password;
+        obj.comments = this.ruleForm.comments;
+        obj.jdbcDriverClass = '';
+      } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
+        obj.datasourceName = this.CHForm.datasourceName;
+        obj.datasourceGroup = this.CHForm.datasourceGroup;
+        obj.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+        this.sqlName === 'ClickHouse' ? obj.jdbcUrl = 'jdbc:clickhouse://' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database : obj.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database
+        obj.jdbcUsername = this.CHForm.username;
+        obj.jdbcPassword = this.CHForm.password;
+        obj.comments = this.CHForm.comments;
+        this.sqlName === 'ClickHouse' ? obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
+      } else if (this.sqlName === 'DB2') {
+        obj.datasourceName = this.DB2Form.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
+        obj.jdbcUsername = this.DB2Form.username;
+        obj.jdbcPassword = this.DB2Form.password;
+        obj.datasourceGroup = this.DB2Form.datasourceGroup;
+        obj.comments = this.DB2Form.comments;
+        obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
+      } else if (this.sqlName === 'Hive') {
+        obj.datasourceName = this.HiveForm.datasourceName;
+        obj.datasource = this.sqlName.toLowerCase();
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj.jdbcUsername = this.HiveForm.username;
+        obj.jdbcPassword = this.HiveForm.password;
+        obj.datasourceGroup = this.HiveForm.datasourceGroup;
+        obj.comments = this.HiveForm.comments;
+        obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+      }
+      datasourceApi.created(obj).then(() => {
+        this.fetchData();
+        this.dialogVisible = false;
+        this.$notify({
+          title: '提示',
+          message: '数据源添加成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.MySQLForm = {}
+        this.OracleForm = {}
+        this.MdbForm = {}
+        this.ruleForm = {}
+        this.CHForm = {}
+        this.GPForm = {}
+        this.DB2Form = {}
+        this.currentStep = 1
+        this.isBanAdd = true
+      }).catch(err => {
+        if (err) {
+          this.$notify({
+            title: '提示',
+            message: '数据源添加失败',
+            type: 'fail',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 测试连接
+    testLink() {
+      const obj1 = {}
+      if (this.sqlName === 'MySQL') {
+        obj1.datasourceName = this.MySQLForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.MySQLForm.serverUrl + ':' + this.MySQLForm.serverPort + '/' + this.MySQLForm.database;
+        obj1.jdbcUsername = this.MySQLForm.username;
+        obj1.jdbcPassword = this.MySQLForm.password;
+        obj1.datasourceGroup = this.MySQLForm.datasourceGroup;
+        obj1.comments = this.MySQLForm.comments;
+        obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+      } else if (this.sqlName === 'Oracle') {
+        obj1.datasourceName = this.OracleForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + ':thin:@//' + this.OracleForm.master + ':' + this.OracleForm.serverPort + '/' + this.OracleForm.database;
+        obj1.jdbcUsername = this.OracleForm.username;
+        obj1.jdbcPassword = this.OracleForm.password;
+        obj1.datasourceGroup = this.OracleForm.datasourceGroup;
+        obj1.comments = this.OracleForm.comments;
+        obj1.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
+      } else if (this.sqlName === 'MongoDB') {
+        obj1.datasourceName = this.MdbForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = this.MdbForm.serverUrl;
+        obj1.datasourceGroup = this.MdbForm.datasourceGroup;
+        obj1.comments = this.MdbForm.comments;
+        obj1.databaseName = this.MdbForm.database;
+        obj1.jdbcDriverClass = '';
+      } else if (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') {
+        console.log(this.GPForm)
+        obj1.datasourceName = this.GPForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:postgresql' + '://' + this.GPForm.master + ':' + this.GPForm.serverPort + '/' + this.GPForm.database;
+        obj1.jdbcUsername = this.GPForm.username;
+        obj1.jdbcPassword = this.GPForm.password;
+        obj1.datasourceGroup = this.GPForm.datasourceGroup;
+        obj1.comments = this.GPForm.comments;
+        obj1.jdbcDriverClass = 'org.postgresql.Driver'
+      } else if (this.sqlName === 'Sql Server') {
+        obj1.datasourceName = this.ruleForm.datasourceName;
+        obj1.datasourceGroup = this.ruleForm.datasourceGroup;
+        obj1.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
+        obj1.jdbcUsername = this.ruleForm.username;
+        obj1.jdbcPassword = this.ruleForm.password;
+        obj1.comments = this.ruleForm.comments;
+        obj1.jdbcDriverClass = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
+      } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
+        obj1.datasourceName = this.CHForm.datasourceName;
+        obj1.datasourceGroup = this.CHForm.datasourceGroup;
+        obj1.datasource = this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+        this.sqlName === 'ClickHouse' ? obj1.jdbcUrl = this.CHForm.jdbcUrl : obj1.jdbcUrl = 'jdbc:phoenix:' + this.CHForm.master + ':' + this.CHForm.serverPort + '/' + this.CHForm.database;
+        obj1.jdbcUsername = this.CHForm.username;
+        obj1.jdbcPassword = this.CHForm.password;
+        obj1.comments = this.CHForm.comments;
+        this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
+      } else if (this.sqlName === 'Hive') {
+        obj1.datasourceName = this.HiveForm.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj1.jdbcUsername = this.HiveForm.username;
+        obj1.jdbcPassword = this.HiveForm.password;
+        obj1.datasourceGroup = this.HiveForm.datasourceGroup;
+        obj1.comments = this.HiveForm.comments;
+        obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+      } else if (this.sqlName === 'DB2') {
+        obj1.datasourceName = this.DB2Form.datasourceName;
+        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.DB2Form.master + ':' + this.DB2Form.serverPort + '/' + this.DB2Form.database;
+        obj1.jdbcUsername = this.DB2Form.username;
+        obj1.jdbcPassword = this.DB2Form.password;
+        obj1.datasourceGroup = this.DB2Form.datasourceGroup;
+        obj1.comments = this.DB2Form.comments;
+        obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
+      }
+      datasourceApi.test(obj1).then((response) => {
+        if (response.data === false) {
+          this.$notify({
+            title: '提示',
+            message: response.data.msg,
+            type: 'fail',
+            duration: 2000
+          });
+        } else {
+          this.$notify({
+            title: '提示',
+            message: '数据库测试连接成功',
+            type: 'success',
+            duration: 2000
+          });
+          this.isBanAdd = false
+        }
+      })
+    },
+    // 编辑测试连接
+    testDataSource() {
+      this.temp = {}
+      if (this.selectType === 'mysql') {
+        this.temp = this.mysqlEdit
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'oracle') {
+        this.temp = {
+          ...this.oracleEdit
+        }
+        this.temp.jdbcUrl = 'jdbc:' + this.selectType + ':thin:@//' + this.oracleEdit.master + ':' + this.oracleEdit.serverPort + '/' + this.oracleEdit.database;
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'mongodb') {
+        this.temp = {
+          ...this.MdbEdit
+        }
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'sqlserver') {
+        this.temp = {
+          ...this.sqlserverEdit
+        }
+        this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database;
+        this.temp.databaseName = this.sqlserverEdit.database;
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
+        this.temp = {
+          ...this.GPEditForm
+        }
+        this.temp.jdbcUrl = 'jdbc:postgresql' + '://' + this.GPEditForm.master + ':' + this.GPEditForm.serverPort + '/' + this.GPEditForm.database;
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
+        this.temp = {
+          ...this.chEdit
+        }
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
+        this.temp = {
+          ...this.hiveEdit
+        }
+        this.temp.jdbcUrl = 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      } else if (this.selectType === 'db2') {
+        this.temp = {
+          ...this.DB2Edit
+        }
+        this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.DB2Edit.master + ':' + this.DB2Edit.serverPort + '/' + this.DB2Edit.database
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
+      }
+      datasourceApi.test(this.temp).then((response) => {
+        if (response.data === false) {
+          this.$notify({
+            title: 'Fail',
+            message: response.data.msg,
+            type: 'fail',
+            duration: 2000
+          });
+        } else {
+          this.$notify({
+            title: '成功',
+            message: '测试连接成功',
+            type: 'success',
+            duration: 2000
+          });
+        }
+      });
+    },
+    // 显示编辑对话框回显数据
+    handleUpdate(row) {
+      this.getShowStrategy(row.datasource);
+      this.temp = Object.assign({}, row); // copy obj
+      this.dialogStatus = 'update';
+      console.log(row, 'row________')
+      this.rowObj = row
+      console.log(this.temp)
+      this.selectType = row.datasource
+      // if (this.temp.datasource === 'phoenix') {
+      //   this.temp.datasource = 'hbase'
+      // }
+      if (this.selectType === 'mysql') {
+        this.mysqlEdit.datasourceName = row.datasourceName
+        this.mysqlEdit.datasource = row.datasource
+        this.mysqlEdit.serverUrl = row.jdbcUrl.split('//')[1].split(':')[0]
+        this.mysqlEdit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
+        this.mysqlEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
+        this.mysqlEdit.jdbcUsername = row.jdbcUsername;
+        this.mysqlEdit.jdbcPassword = row.jdbcPassword;
+        this.mysqlEdit.datasourceGroup = row.datasourceGroup;
+        this.mysqlEdit.comments = row.comments;
+        this.mysqlEdit.jdbcDriverClass = row.jdbcDriverClass;
+        this.mysqlEdit.serverTime = 'Asia/Shanghai';
+      } else if (this.selectType === 'oracle') {
+        this.oracleEdit.datasourceName = row.datasourceName
+        this.oracleEdit.datasource = row.datasource
+        this.oracleEdit.master = row.jdbcUrl.split('//')[1].split(':')[0]
+        this.oracleEdit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
+        this.oracleEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
+        this.oracleEdit.jdbcUsername = row.jdbcUsername;
+        this.oracleEdit.jdbcPassword = row.jdbcPassword;
+        this.oracleEdit.datasourceGroup = row.datasourceGroup;
+        this.oracleEdit.comments = row.comments;
+        this.oracleEdit.jdbcDriverClass = row.jdbcDriverClass;
+      } else if (this.selectType === 'mongodb') {
+        this.MdbEdit.datasourceName = row.datasourceName
+        this.MdbEdit.serverUrl = row.jdbcUrl
+        this.MdbEdit.datasource = row.datasource
+        this.MdbEdit.datasourceGroup = row.datasourceGroup
+        this.MdbEdit.comments = row.comments
+        this.MdbEdit.database = row.databaseName
+      } else if (this.selectType === 'sqlserver') {
+        this.sqlserverEdit.datasourceName = row.datasourceName
+        this.sqlserverEdit.master = row.jdbcUrl.split('//')[1].split(';')[0].split(':')[0]
+        this.sqlserverEdit.serverPort = row.jdbcUrl.split('//')[1].split(';')[0].split(':')[1]
+        this.sqlserverEdit.database = row.jdbcUrl.split(';')[1].split('=')[1]
+        this.sqlserverEdit.datasource = row.datasource
+        this.sqlserverEdit.datasourceGroup = row.datasourceGroup
+        this.sqlserverEdit.comments = row.comments
+        this.sqlserverEdit.jdbcUsername = row.jdbcUsername;
+        this.sqlserverEdit.jdbcPassword = row.jdbcPassword;
+        this.sqlserverEdit.authentication = 'master'
+      } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
+        this.GPEditForm.datasource = row.datasource
+        this.GPEditForm.datasourceGroup = row.datasourceGroup
+        this.GPEditForm.datasourceName = row.datasourceName
+        this.GPEditForm.comments = row.comments
+        this.GPEditForm.master = row.jdbcUrl.split('//')[1].split(':')[0]
+        this.GPEditForm.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
+        this.GPEditForm.database = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
+        this.GPEditForm.jdbcUsername = row.jdbcUsername;
+        this.GPEditForm.jdbcPassword = row.jdbcPassword;
+      } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
+        this.chEdit.datasource = row.datasource
+        this.chEdit.datasourceGroup = row.datasourceGroup
+        this.chEdit.datasourceName = row.datasourceName
+        this.chEdit.comments = row.comments
+        this.chEdit.master = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[0] : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[0]
+        this.chEdit.serverPort = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0] : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[1]
+        this.chEdit.database = this.selectType === 'clickhouse' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1] : row.databaseName
+        this.chEdit.jdbcUsername = row.jdbcUsername;
+        this.chEdit.jdbcPassword = row.jdbcPassword;
+      } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
+        this.hiveEdit.datasource = row.datasource
+        this.hiveEdit.datasourceGroup = row.datasourceGroup
+        this.hiveEdit.datasourceName = row.datasourceName
+        this.hiveEdit.comments = row.comments
+        this.hiveEdit.master = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[0] : row.jdbcUrl.split('//')[1].split(':')[0]
+        this.hiveEdit.serverPort = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0] : row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
+        this.hiveEdit.database = this.selectType === 'hive' ? row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1] : row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
+        this.hiveEdit.jdbcUsername = row.jdbcUsername;
+        this.hiveEdit.jdbcPassword = row.jdbcPassword;
+      } else if (this.selectType === 'db2') {
+        this.DB2Edit.datasource = row.datasource
+        this.DB2Edit.datasourceGroup = row.datasourceGroup
+        this.DB2Edit.datasourceName = row.datasourceName
+        this.DB2Edit.comments = row.comments
+        this.DB2Edit.master = row.jdbcUrl.split('//')[1].split(':')[0]
+        this.DB2Edit.serverPort = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[0]
+        this.DB2Edit.database = row.jdbcUrl.split('//')[1].split(':')[1].split('/')[1]
+        this.DB2Edit.jdbcUsername = row.jdbcUsername;
+        this.DB2Edit.jdbcPassword = row.jdbcPassword;
+      }
+      console.log(this.MySQLForm, 'mysqlform')
+      this.temp.userName = this.temp.jdbcUsername
+      this.temp.password = this.temp.jdbcPassword
+      // this.dialogFormVisible = true;
+      this.dialogEditVisible = true
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate();
+      // });
+    },
+    // 编辑对话框确认更新数据
+    updateData() {
+      if (this.selectType === 'mysql') {
+        // MySQL
+        this.paramsData = {
+          datasourceName: this.mysqlEdit.datasourceName,
+          datasource: this.mysqlEdit.datasource,
+          jdbcUrl: 'jdbc:' + this.selectType + '://' + this.mysqlEdit.serverUrl + ':' + this.mysqlEdit.serverPort + '/' + this.mysqlEdit.database,
+          database: this.mysqlEdit.database,
+          jdbcUsername: this.mysqlEdit.jdbcUsername,
+          jdbcPassword: this.mysqlEdit.jdbcPassword,
+          datasourceGroup: this.mysqlEdit.datasourceGroup,
+          comments: this.mysqlEdit.comments,
+          jdbcDriverClass: this.mysqlEdit.jdbcDriverClass,
+          serverTime: 'Asia/Shanghai',
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'oracle') {
+        this.paramsData = {
+          datasourceName: this.oracleEdit.datasourceName,
+          datasource: this.oracleEdit.datasource,
+          jdbcUrl: 'jdbc:' + this.selectType + '://' + this.oracleEdit.master + ':' + this.oracleEdit.serverPort + '/' + this.oracleEdit.database,
+          database: this.oracleEdit.database,
+          jdbcUsername: this.oracleEdit.jdbcUsername,
+          jdbcPassword: this.oracleEdit.jdbcPassword,
+          datasourceGroup: this.oracleEdit.datasourceGroup,
+          comments: this.oracleEdit.comments,
+          jdbcDriverClass: this.oracleEdit.jdbcDriverClass,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'mongodb') {
+        this.paramsData = {
+          datasourceName: this.MdbEdit.datasourceName,
+          datasource: this.MdbEdit.datasource,
+          jdbcUrl: this.MdbEdit.serverUrl,
+          databaseName: this.MdbEdit.database,
+          datasourceGroup: this.MdbEdit.datasourceGroup,
+          comments: this.MdbEdit.comments,
+          jdbcDriverClass: this.MdbEdit.jdbcDriverClass,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'sqlserver') {
+        this.paramsData = {
+          datasourceName: this.sqlserverEdit.datasourceName,
+          datasource: this.sqlserverEdit.datasource,
+          jdbcUrl: 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database,
+          databaseName: this.sqlserverEdit.database,
+          datasourceGroup: this.sqlserverEdit.datasourceGroup,
+          comments: this.sqlserverEdit.comments,
+          jdbcDriverClass: this.sqlserverEdit.jdbcDriverClass,
+          jdbcUsername: this.sqlserverEdit.jdbcUsername,
+          jdbcPassword: this.sqlserverEdit.jdbcPassword,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
+        this.paramsData = {
+          datasourceName: this.GPEditForm.datasourceName,
+          datasource: this.GPEditForm.datasource,
+          jdbcUrl: 'jdbc:postgresql' + '://' + this.GPEditForm.master + ':' + this.GPEditForm.serverPort + '/' + this.GPEditForm.database,
+          databaseName: this.GPEditForm.database,
+          datasourceGroup: this.GPEditForm.datasourceGroup,
+          comments: this.GPEditForm.comments,
+          jdbcDriverClass: this.GPEditForm.jdbcDriverClass,
+          jdbcUsername: this.GPEditForm.jdbcUsername,
+          jdbcPassword: this.GPEditForm.jdbcPassword,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'clickhouse' || this.selectType === 'hbase' || this.selectType === 'phoenix') {
+        this.paramsData = {
+          datasourceName: this.chEdit.datasourceName,
+          datasource: this.chEdit.datasource,
+          jdbcUrl: this.selectType === 'clickhouse' ? this.chEdit.jdbcUrl : 'jdbc:phoenix:' + this.chEdit.master + ':' + this.chEdit.serverPort + '/' + this.chEdit.database,
+          databaseName: this.chEdit.database,
+          datasourceGroup: this.chEdit.datasourceGroup,
+          comments: this.chEdit.comments,
+          jdbcDriverClass: this.chEdit.jdbcDriverClass,
+          jdbcUsername: this.chEdit.jdbcUsername,
+          jdbcPassword: this.chEdit.jdbcPassword,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'hive' || this.selectType === 'spark' || this.selectType === 'impala') {
+        this.paramsData = {
+          datasourceName: this.hiveEdit.datasourceName,
+          datasource: this.hiveEdit.datasource,
+          jdbcUrl: 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database,
+          databaseName: this.hiveEdit.database,
+          datasourceGroup: this.hiveEdit.datasourceGroup,
+          comments: this.hiveEdit.comments,
+          jdbcDriverClass: this.hiveEdit.jdbcDriverClass,
+          jdbcUsername: this.hiveEdit.jdbcUsername,
+          jdbcPassword: this.hiveEdit.jdbcPassword,
+          id: this.rowObj.id
+        }
+      } else if (this.selectType === 'db2') {
+        this.paramsData = {
+          datasourceName: this.DB2Edit.datasourceName,
+          datasource: this.DB2Edit.datasource,
+          jdbcUrl: 'jdbc:' + this.selectType + '://' + this.DB2Edit.master + ':' + this.DB2Edit.serverPort + '/' + this.DB2Edit.database,
+          databaseName: this.DB2Edit.database,
+          datasourceGroup: this.DB2Edit.datasourceGroup,
+          comments: this.DB2Edit.comments,
+          jdbcDriverClass: this.DB2Edit.jdbcDriverClass,
+          jdbcUsername: this.DB2Edit.jdbcUsername,
+          jdbcPassword: this.DB2Edit.jdbcPassword,
+          id: this.rowObj.id
+        }
+      }
+      datasourceApi.updated(this.paramsData).then(() => {
+        this.fetchData();
+        this.dialogEditVisible = false;
+        this.$notify({
+          title: '成功',
+          message: '编辑数据成功',
+          type: 'success',
+          duration: 2000
+        });
+      });
+      // }
+      // });
+    },
+    open(row) {
+      this.$confirm('您确定删除此条数据源?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    fetchData() {
+      this.listLoading = true;
+      this.listQuery.projectId = sessionStorage.getItem('projectId')
+      console.log(this.listQuery, '1222222222222222222222222')
+      datasourceApi.getJobList(this.listQuery).then((response) => {
+        this.total = response.total;
+        this.list = response.records;
+        this.listLoading = false;
+        console.log(response);
+      });
+    },
+    getShowStrategy(datasource) {
+      if (datasource === 'hbase') {
+        this.jdbc = this.mongodb = false;
+        this.hbase = true;
+      } else if (datasource === 'mongodb') {
+        this.jdbc = this.hbase = false;
+        this.mongodb = true;
+        this.temp.jdbcUrl =
+                    'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]';
+      } else {
+        this.hbase = this.mongodb = false;
+        this.jdbc = true;
+      }
+    },
+    handleDelete(row) {
+      console.log('删除');
+      const idList = [];
+      idList.push(row.id);
+      // 拼成 idList=xx
+      // 多个比较麻烦，这里不处理
+      datasourceApi
+        .deleted({
+          idList: row.id
+        })
+        .then((response) => {
+          this.fetchData();
+          this.$notify({
+            title: '提示',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          });
+        });
+      // const index = this.list.indexOf(row)
+    },
+    handleFetchPv(id) {
+      datasourceApi.fetched(id).then((response) => {
+        this.pluginData = response;
+        this.dialogPvVisible = true;
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) =>
+        filterVal.map((j) => {
+          if (j === 'timestamp') {
+            return parseTime(v[j]);
+          } else {
+            return v[j];
+          }
+        })
+      );
+    },
+    changePass(value) {
+      this.visible = !(value === 'show');
+    }
+  }
 };
 </script>
 
@@ -2462,7 +2478,7 @@ export default {
         .el-card {
             .left {
                 float: left;
-                width: 120px;
+                width: 250px;
                 font-size: 24px;
                 font-family: PingFangHK-Medium, PingFangHK;
                 font-weight: 500;
