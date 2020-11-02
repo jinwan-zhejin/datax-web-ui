@@ -109,6 +109,8 @@ export default {
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
+
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         this.rDsList = records
