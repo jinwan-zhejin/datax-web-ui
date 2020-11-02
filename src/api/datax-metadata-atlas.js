@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 16:33:15
+ * @LastEditTime: 2020-11-02 13:24:31
  * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
@@ -316,6 +316,24 @@ export async function getDetailsProperties(guid) {
 }
 
 /**
+ * @description: 保存修改label信息
+ * @param {String} guid
+ * @return {object} axios返回值
+ */
+export async function savePropertiesLabels(guid, labelArray) {
+  const res = await axios({
+    url: '/atlasApi/v2/entity/guid/'.concat(guid).concat('/labels'),
+    method: 'post',
+    data: labelArray,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRF-HEADER': ''
+    }
+  })
+  return res
+}
+
+/**
  * @description: 获取details页面系谱Lineage信息
  * @param {String} guid
  * @return {object} axios返回值
@@ -361,6 +379,23 @@ export async function getQuickSuggest(searchText) {
     method: 'get',
     params: {
       prefixString: searchText
+    }
+  })
+  return res
+}
+
+/**
+ * @description: 获取快速查找框内建议结果
+ * @param {String} searchText 查找词
+ * @return {object} axios返回值
+ */
+export async function getSuggestParams(param) {
+  const res = await axios({
+    url: '/atlasApi/v2/search/suggestions',
+    method: 'get',
+    params: param,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
     }
   })
   return res
