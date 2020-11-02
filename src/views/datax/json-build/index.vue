@@ -14,19 +14,19 @@
       </div>
       
       <div class="main_content">
-      <div v-show="active===1" class="step0">
+      <div v-show="active===1" class="step0 first_content">
         <Create ref="create" :fjson="configJson" v-on="$listeners" />
       </div>
-      <div v-show="active===2" class="step1">
+      <div v-show="active===2" class="step1 first_content">
         <Reader ref="reader" />
       </div>
-      <div v-show="active===3" class="step2">
+      <div v-show="active===3" class="step2 first_content">
         <Writer ref="writer" />
       </div>
       <div v-show="active===4" class="step3">
         <Mapper ref="mapper" />
       </div>
-      <div v-show="active===5" class="step4">
+      <div v-show="active===5" class="step4 last_content">
         <div style="margin-top:20px;">
           <p>1.新建任务</p>
           <div class="step5content">
@@ -56,7 +56,7 @@
             </div>
             <div>
               <span class="step5content_key">任务类型：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.glueType || '-' }}</span>
+              <span class="step5content_value">{{ $store.state.taskAdmin.tabType }}</span>
             </div>
             <div>
               <span class="step5content_key">Cron：</span>
@@ -465,12 +465,22 @@ export default {
   padding: 0;
 }
 .main_content {
-  width: 60%;
+  /* width: 60%; */
   min-height: 480px;
-  margin: 0 auto;
+  
 }
 
 .main_content >>> .el-select {
   width: 100%;
+}
+
+.first_content {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.last_content {
+  width: 90%;
+  margin: 0 auto;
 }
 </style>
