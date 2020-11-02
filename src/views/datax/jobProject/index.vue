@@ -212,8 +212,8 @@ export default {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              title: '成功',
+              message: '添加成功',
               type: 'success',
               duration: 2000
             });
@@ -246,8 +246,8 @@ export default {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '编辑成功',
               type: 'success',
               duration: 2000
             });
