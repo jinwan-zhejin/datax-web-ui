@@ -1,3 +1,6 @@
+import * as job from '@/api/datax-job-info';
+
+
 const state = {
   allTabType: {
     'NORMAL': '普通任务',
@@ -91,9 +94,37 @@ const mutations = {
 }
 
 const actions = {
-// addErrorLog({ commit }, log) {
-//     commit('ADD_ERROR_LOG', log)
-// },
+
+  /**
+   * @method getTaskList
+   * @param {*} param0 
+   * @param {*} isAddTask 是否是新建任务，并设置当前选中任务为添加的任务
+   */
+  getTaskList({ commit, state }, isAddTask) {
+    const listQuery = {
+      current: 1,
+      size: 10000,
+      jobGroup: 0,
+      projectIds: state.projectId,
+      triggerStatus: -1,
+      jobDesc: '',
+      glueType: ''
+    };
+
+    job.getList(listQuery).then(response => {
+      commit('SET_TASKDETAIL_LIST', response.content.data);
+      if (isAddTask) {
+        const firstElement = response.content.data[0] || {};
+        const a = {};
+        a.title = firstElement.jobDesc;
+        a.name = firstElement.jobDesc;
+        a.content = firstElement;
+        commit('ADD_TASKDETAIL', a);
+        commit('SET_TASKDETAIL_ID', a.content.id + '');
+      }
+    })
+  },
+
 }
 
 export default {

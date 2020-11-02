@@ -15,7 +15,7 @@
       
       <div class="main_content">
       <div v-show="active===1" class="step0 first_content">
-        <Create ref="create" :fjson="configJson" v-on="$listeners" />
+        <Create ref="create" :fjson="configJson" />
       </div>
       <div v-show="active===2" class="step1 first_content">
         <Reader ref="reader" />

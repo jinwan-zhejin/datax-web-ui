@@ -171,7 +171,7 @@
           :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]"
         >
           <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
-            <JsonBuild @refresh="freshItem" />
+            <JsonBuild />
           </div>
 
           <div v-if="jobType === 'SQLJOB'" class="rg">
@@ -464,7 +464,7 @@ export default {
       } else {
         this.jobDetailIdx = a.content.id + '';
       }
-      this.jobType = 'SHOWDETAIL';
+      // this.jobType = 'SHOWDETAIL';
     },
 
     getList(data) {
