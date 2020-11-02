@@ -102,7 +102,7 @@ export function batchAddJob(data) {
 export function getDataSourceDetail(id) {
   return request({
     url: `/api/jobJdbcDatasource/${id}`,
-    method: 'get',
+    method: 'get'
   })
 }
 

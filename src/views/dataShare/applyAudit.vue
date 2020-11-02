@@ -6,148 +6,155 @@
     </div> -->
     <!-- 菜单栏 -->
     <div class="Menu">
-        <!-- 切换按钮 -->
-        <div class="btn">
-          <el-radio-group v-model="radio" size="small">
-            <el-radio-button label="待审批"></el-radio-button>
-            <el-radio-button label="已同意"></el-radio-button>
-            <el-radio-button label="已驳回"></el-radio-button>
-          </el-radio-group>
+      <!-- 切换按钮 -->
+      <div class="btn">
+        <el-radio-group v-model="radio" size="small">
+          <el-radio-button label="待审批" />
+          <el-radio-button label="已同意" />
+          <el-radio-button label="已驳回" />
+        </el-radio-group>
+      </div>
+      <!-- 时间日期 -->
+      <div class="time">
+        <div class="search">
+          <el-input
+            v-model="infoName"
+            placeholder="请输入内容"
+          >
+            <i slot="suffix" style="margin-right: 5px;" class="el-icon-search" @click="search" />
+          </el-input>
         </div>
-        <!-- 时间日期 -->
-        <div class="time">
-            <div class="search">
-              <el-input
-                placeholder="请输入内容"
-                v-model="infoName">
-                <i slot="suffix" style="margin-right: 5px;" class="el-icon-search" @click="search"></i>
-              </el-input>
-            </div>
-            <div class="block">
-              <el-date-picker
-                format="yyyy-MM-dd HH:mm:ss"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                v-model="value2"
-                type="datetimerange"
-                :picker-options="pickerOptions"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                align="right">
-              </el-date-picker>
-            </div>
+        <div class="block">
+          <el-date-picker
+            v-model="value2"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            type="datetimerange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
         </div>
+      </div>
     </div>
     <!-- 表格 -->
     <div class="tabel">
       <!-- 待审核 -->
       <el-table
-      v-show="wait"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="wait"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="infoName"
-          label="资源名称">
-        </el-table-column>
+          label="资源名称"
+        />
         <el-table-column
           prop="contacts"
-          label="申请联系人">
-        </el-table-column>
+          label="申请联系人"
+        />
         <el-table-column
           prop="telephone"
-          label="联系方式">
-        </el-table-column>
+          label="联系方式"
+        />
         <el-table-column
           prop="departmentName"
-          label="申请部门">
-        </el-table-column>
+          label="申请部门"
+        />
         <el-table-column
           prop="applyTime"
-          label="申请时间">
-        </el-table-column>
+          label="申请时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowBatch(row)" href="#">审核</a>
+            <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
           </template>
         </el-table-column>
       </el-table>
       <!-- 已同意 -->
       <el-table
-      v-show="agree"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="agree"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="infoName"
-          label="资源名称">
-        </el-table-column>
+          label="资源名称"
+        />
         <el-table-column
           prop="contacts"
-          label="申请联系人">
-        </el-table-column>
+          label="申请联系人"
+        />
         <el-table-column
           prop="telephone"
-          label="联系方式">
-        </el-table-column>
+          label="联系方式"
+        />
         <el-table-column
           prop="departmentName"
-          label="申请部门">
-        </el-table-column>
+          label="申请部门"
+        />
         <el-table-column
           prop="applyTime"
-          label="申请时间">
-        </el-table-column>
+          label="申请时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowViewBatch(row)" href="#">已审核(通过)</a>
+            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
           </template>
         </el-table-column>
       </el-table>
       <!-- 已驳回 -->
       <el-table
-      v-show="dismiss"
-      :data="tabelList"
-      stripe
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+        v-show="dismiss"
+        :data="tabelList"
+        stripe
+        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      >
         <el-table-column
           type="index"
-          label="序号">
-        </el-table-column>
+          label="序号"
+        />
         <el-table-column
           prop="infoName"
-          label="资源名称">
-        </el-table-column>
+          label="资源名称"
+        />
         <el-table-column
           prop="contacts"
-          label="申请联系人">
-        </el-table-column>
+          label="申请联系人"
+        />
         <el-table-column
           prop="telephone"
-          label="联系方式">
-        </el-table-column>
+          label="联系方式"
+        />
         <el-table-column
           prop="departmentName"
-          label="申请部门">
-        </el-table-column>
+          label="申请部门"
+        />
         <el-table-column
           prop="applyTime"
-          label="申请时间">
-        </el-table-column>
+          label="申请时间"
+        />
         <el-table-column
-          label="操作栏">
+          label="操作栏"
+        >
           <template v-slot:default="{ row }">
-            <a style="color:skyblue;" @click="isShowViewBatch(row)" href="#">已审核(驳回)</a>
+            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
           </template>
         </el-table-column>
       </el-table>
@@ -156,14 +163,14 @@
     <el-dialog class="useBatch" title="使用审批" :visible.sync="dialogBatch">
       <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 400px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="申请人信息:">
-          <el-input :disabled="isBan" style="width: 45%;float: left;" v-model="batchForm.contacts"></el-input>
-          <el-input :disabled="isBan" style="width: 45%;float: right;" v-model="batchForm.telephone"></el-input>
+          <el-input v-model="batchForm.contacts" :disabled="isBan" style="width: 45%;float: left;" />
+          <el-input v-model="batchForm.telephone" :disabled="isBan" style="width: 45%;float: right;" />
         </el-form-item>
         <el-form-item label="资源名称:">
-          <el-input :disabled="isBan" v-model="batchForm.infoName"></el-input>
+          <el-input v-model="batchForm.infoName" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="资源类型:">
-          <el-input :disabled="isBan" v-model="batchForm.resType"></el-input>
+          <el-input v-model="batchForm.resType" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="返回数据格式:">
           <el-tag type="success">JSON</el-tag>
@@ -171,17 +178,17 @@
         <!-- <el-form-item label="查询条件:">
         </el-form-item> -->
         <el-form-item label="申请文件地址:">
-          <a @click="link" style="cursor:pointer">{{ url }}</a>
+          <a style="cursor:pointer" @click="link">{{ url }}</a>
         </el-form-item>
         <el-form-item label="应用场景:">
-          <el-input :disabled="isBan" type="textarea" v-model="batchForm.useScene"></el-input>
+          <el-input v-model="batchForm.useScene" :disabled="isBan" type="textarea" />
         </el-form-item>
         <!-- <el-form-item label="附件">
           <span>数据申请.doc</span>
           <a href="#">下载附件</a>
         </el-form-item> -->
         <el-form-item label="部门审批意见:">
-          <el-input type="textarea" v-model="batchForm.exaDescribe"></el-input>
+          <el-input v-model="batchForm.exaDescribe" type="textarea" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -191,16 +198,16 @@
     </el-dialog>
     <!-- 查看审批对话框 -->
     <el-dialog class="useBatch" title="查看审批情况" :visible.sync="dialogViewBatch">
-     <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 400px;overflow: hidden;overflow-y: auto;padding-right:30px">
+      <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 400px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="申请人信息:">
-          <el-input :disabled="isBan" style="width: 45%;float: left;" v-model="batchForm.contacts"></el-input>
-          <el-input :disabled="isBan" style="width: 45%;float: right;" v-model="batchForm.telephone"></el-input>
+          <el-input v-model="batchForm.contacts" :disabled="isBan" style="width: 45%;float: left;" />
+          <el-input v-model="batchForm.telephone" :disabled="isBan" style="width: 45%;float: right;" />
         </el-form-item>
         <el-form-item label="资源名称:">
-          <el-input :disabled="isBan" v-model="batchForm.infoName"></el-input>
+          <el-input v-model="batchForm.infoName" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="资源类型:">
-          <el-input :disabled="isBan" v-model="batchForm.resType"></el-input>
+          <el-input v-model="batchForm.resType" :disabled="isBan" />
         </el-form-item>
         <el-form-item label="返回数据格式:">
           <el-tag type="success">JSON</el-tag>
@@ -208,17 +215,17 @@
         <!-- <el-form-item label="查询条件:">
         </el-form-item> -->
         <el-form-item label="申请文件地址:">
-          <a @click="link" style="cursor:pointer">{{ url }}</a>
+          <a style="cursor:pointer" @click="link">{{ url }}</a>
         </el-form-item>
         <el-form-item label="应用场景:">
-          <el-input :disabled="isBan" type="textarea" v-model="batchForm.useScene"></el-input>
+          <el-input v-model="batchForm.useScene" :disabled="isBan" type="textarea" />
         </el-form-item>
         <!-- <el-form-item label="附件">
           <span>数据申请.doc</span>
           <a href="#">下载附件</a>
         </el-form-item> -->
         <el-form-item label="部门审批意见:">
-          <el-input placeholder="同意" :disabled="isBan" type="textarea" v-model="batchForm.exaDescribe"></el-input>
+          <el-input v-model="batchForm.exaDescribe" placeholder="同意" :disabled="isBan" type="textarea" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -230,10 +237,7 @@
 
 <script>
 export default {
-  created () {
-    this.radio = this.radio1
-  },
-  data () {
+  data() {
     return {
       radio: '',
       radio1: '待审批',
@@ -251,7 +255,7 @@ export default {
         shortcuts: [
           {
             text: '最近一周',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
@@ -260,7 +264,7 @@ export default {
           },
           {
             text: '最近一个月',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
@@ -269,7 +273,7 @@ export default {
           },
           {
             text: '最近三个月',
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
@@ -294,7 +298,7 @@ export default {
     }
   },
   watch: {
-    radio: function (val) {
+    radio: function(val) {
       if (val === '待审批') {
         this.wait = true
         this.agree = false
@@ -319,21 +323,24 @@ export default {
       }
     }
   },
+  created() {
+    this.radio = this.radio1
+  },
   methods: {
     // 跳转查看地址
-    link () {
+    link() {
       window.open(this.url)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.pageSize = val
       this.pageNum = 1
       this.getAllResult()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.pageNum = val
       this.getAllResult()
     },
-    isShowBatch (row) {
+    isShowBatch(row) {
       console.log(row)
       this.resId = row.resId
       this.exaResult = row.exaResult
@@ -345,7 +352,7 @@ export default {
       this.url = row.applyImg
       this.dialogBatch = true
     },
-    isShowViewBatch (row) {
+    isShowViewBatch(row) {
       console.log(row)
       this.batchForm.contacts = row.contacts
       this.batchForm.telephone = row.telephone
@@ -359,7 +366,7 @@ export default {
       this.dialogViewBatch = true
     },
     // 获取全部数据
-    async getAllResult () {
+    async getAllResult() {
       const res = await this.$axios.post('/resExamine/getResourceExamPages', {
         endTime: '',
         infoName: '',
@@ -378,7 +385,7 @@ export default {
       }
     },
     // 查询
-    async search () {
+    async search() {
       console.log(this.radio)
       const res = await this.$axios.post('/resExamine/getResourceExamPages', {
         endTime: this.value2[0],
@@ -395,7 +402,7 @@ export default {
       }
     },
     // 审核通过
-    async pass () {
+    async pass() {
       this.exaResult = 0
       const res = await this.$axios.post('/resExamine/approveResource', {
         resId: this.resId,
@@ -416,7 +423,7 @@ export default {
       }
     },
     // 审核驳回
-    async dismissM () {
+    async dismissM() {
       this.exaResult = 1
       const res = await this.$axios.post('/resExamine/approveResource', {
         resId: this.resId,

@@ -25,7 +25,6 @@ export default {
     value(value) {
       const editorValue = this.pythonEditor.getValue()
       if (value !== editorValue) {
-        
         this.pythonEditor.setValue(this.value)
       }
     }

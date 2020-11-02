@@ -634,9 +634,9 @@ export default {
     },
     handlerDelete(row) {
       handlerDelete.call(this, row)
-      .then(() => {
-        this.fetchData
-      })
+        .then(() => {
+          this.fetchData
+        })
     },
     handlerExecute(row) {
       handlerExecute.call(this, row);

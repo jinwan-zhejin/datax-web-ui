@@ -113,29 +113,29 @@
                 :key="item.id"
                 @click="getJobDetail(item)"
               >
-              <img v-if="item.jobType === 'NORMAL'" class="task_img" src="./taskAdmin_png/normal.png">
-              <img v-if="item.jobType === 'IMPORT'"  class="task_img" src="./taskAdmin_png/import.png">
-              <img v-if="item.jobType === 'EXPORT'"  class="task_img" src="./taskAdmin_png/export.png">
-              <img v-if="item.jobType === 'COMPUTE'"  class="task_img" src="./taskAdmin_png/computed.png">
-              <img v-if="item.jobType === 'SQLJOB'"  class="task_img" src="./taskAdmin_png/sql.png">
-              <img v-if="item.jobType === 'SPARK'"  class="task_img" src="./taskAdmin_png/spark.png">
-              <img v-if="item.jobType === 'DQCJOB'"  class="task_img" src="./taskAdmin_png/质量.png">
-              <img v-if="item.jobType === 'METACOLLECT'"  class="task_img" src="./taskAdmin_png/元数据采集.png">
-              <img v-if="item.jobType === 'METACOMPARE'"  class="task_img" src="./taskAdmin_png/元数据比较.png">
-              <img v-if="item.jobType === 'SHELL'"  class="task_img" src="./taskAdmin_png/shell.png">
-              <img v-if="item.jobType === 'POWERSHELL'"  class="task_img" src="./taskAdmin_png/powershell.png">
-              <img v-if="item.jobType === 'PYTHON'"  class="task_img" src="./taskAdmin_png/python.png">
-              <img v-if="item.jobType === 'VJOB'"  class="task_img" src="./taskAdmin_png/虚.png">
-              <img v-if="item.jobType === 'JAVA'"  class="task_img" src="./taskAdmin_png/java.png">
-              <img v-if="item.jobType === 'SCALA'"  class="task_img" src="./taskAdmin_png/scala.png">
-              <img v-if="item.jobType === 'PYSPARK'"  class="task_img" src="./taskAdmin_png/pyspark.png">
-              <img v-if="item.jobType === 'R'"  class="task_img" src="./taskAdmin_png/R.png">
-              <img v-if="item.jobType === 'BATCH'"  class="task_img" src="./taskAdmin_png/任务批量构建.png">
-              <img v-if="item.jobType === 'TEMPLATE'"  class="task_img" src="./taskAdmin_png/普通任务模板.png">
+                <img v-if="item.jobType === 'NORMAL'" class="task_img" src="./taskAdmin_png/normal.png">
+                <img v-if="item.jobType === 'IMPORT'" class="task_img" src="./taskAdmin_png/import.png">
+                <img v-if="item.jobType === 'EXPORT'" class="task_img" src="./taskAdmin_png/export.png">
+                <img v-if="item.jobType === 'COMPUTE'" class="task_img" src="./taskAdmin_png/computed.png">
+                <img v-if="item.jobType === 'SQLJOB'" class="task_img" src="./taskAdmin_png/sql.png">
+                <img v-if="item.jobType === 'SPARK'" class="task_img" src="./taskAdmin_png/spark.png">
+                <img v-if="item.jobType === 'DQCJOB'" class="task_img" src="./taskAdmin_png/质量.png">
+                <img v-if="item.jobType === 'METACOLLECT'" class="task_img" src="./taskAdmin_png/元数据采集.png">
+                <img v-if="item.jobType === 'METACOMPARE'" class="task_img" src="./taskAdmin_png/元数据比较.png">
+                <img v-if="item.jobType === 'SHELL'" class="task_img" src="./taskAdmin_png/shell.png">
+                <img v-if="item.jobType === 'POWERSHELL'" class="task_img" src="./taskAdmin_png/powershell.png">
+                <img v-if="item.jobType === 'PYTHON'" class="task_img" src="./taskAdmin_png/python.png">
+                <img v-if="item.jobType === 'VJOB'" class="task_img" src="./taskAdmin_png/虚.png">
+                <img v-if="item.jobType === 'JAVA'" class="task_img" src="./taskAdmin_png/java.png">
+                <img v-if="item.jobType === 'SCALA'" class="task_img" src="./taskAdmin_png/scala.png">
+                <img v-if="item.jobType === 'PYSPARK'" class="task_img" src="./taskAdmin_png/pyspark.png">
+                <img v-if="item.jobType === 'R'" class="task_img" src="./taskAdmin_png/R.png">
+                <img v-if="item.jobType === 'BATCH'" class="task_img" src="./taskAdmin_png/任务批量构建.png">
+                <img v-if="item.jobType === 'TEMPLATE'" class="task_img" src="./taskAdmin_png/普通任务模板.png">
                 <a
                   style="color: rgba(102, 102, 102, 1)"
                 >
-                {{ item.jobDesc }}
+                  {{ item.jobDesc }}
                 </a>
               </li>
             </ul>
@@ -148,9 +148,9 @@
         v-model="jobDetailIdx"
         type="border-card"
         closable
+        class="el-bar-tab"
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
-        class="el-bar-tab"
       >
         <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
           欢迎
@@ -227,7 +227,7 @@
 
       </el-tabs>
     </div>
-    
+
   </div>
 </template>
 

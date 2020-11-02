@@ -1,11 +1,11 @@
-import go from "gojs";
-import ColumnResizingTool from "./ColumnResizingTool";
-import RowResizingTool from "./RowResizingTool";
+import go from 'gojs';
+import ColumnResizingTool from './ColumnResizingTool';
+import RowResizingTool from './RowResizingTool';
 function init(_this, timestamp) {
   const $ = go.GraphObject.make; // for conciseness in defining templates
-  var myDiagram = $(go.Diagram, "myDiagramDiv" + timestamp, {
+  var myDiagram = $(go.Diagram, 'myDiagramDiv' + timestamp, {
     validCycle: go.Diagram.CycleNotDirected, // don't allow loops
-    "undoManager.isEnabled": true
+    'undoManager.isEnabled': true
   });
   myDiagram.toolManager.mouseDownTools.add(new RowResizingTool());
   myDiagram.toolManager.mouseDownTools.add(new ColumnResizingTool());
@@ -13,10 +13,10 @@ function init(_this, timestamp) {
   // The Panel is data bound to the item object.
   var fieldTemplate = $(
     go.Panel,
-    "TableRow", // this Panel is a row in the containing Table
-    new go.Binding("portId", "name"), // this Panel is a "port"
+    'TableRow', // this Panel is a row in the containing Table
+    new go.Binding('portId', 'name'), // this Panel is a "port"
     {
-      background: "transparent", // so this port's background can be picked by the mouse
+      background: 'transparent', // so this port's background can be picked by the mouse
       fromSpot: go.Spot.Right, // links only go from the right side to the left side
       toSpot: go.Spot.Left,
       // allow drawing links from or to this port:
@@ -34,8 +34,8 @@ function init(_this, timestamp) {
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("figure", "figure"),
-      new go.Binding("fill", "color")
+      new go.Binding('figure', 'figure'),
+      new go.Binding('fill', 'color')
     ),
     $(
       go.TextBlock,
@@ -43,14 +43,14 @@ function init(_this, timestamp) {
         column: 1,
         margin: new go.Margin(0, 2),
         stretch: go.GraphObject.Horizontal,
-        font: "bold 13px sans-serif",
+        font: 'bold 13px sans-serif',
         wrap: go.TextBlock.None,
         overflow: go.TextBlock.OverflowEllipsis,
         // and disallow drawing links from or to this text:
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "name")
+      new go.Binding('text', 'name')
     ),
     $(
       go.TextBlock,
@@ -58,12 +58,12 @@ function init(_this, timestamp) {
         column: 2,
         margin: new go.Margin(0, 2),
         stretch: go.GraphObject.Horizontal,
-        font: "13px sans-serif",
+        font: '13px sans-serif',
         maxLines: 3,
         overflow: go.TextBlock.OverflowEllipsis,
         editable: true
       },
-      new go.Binding("text", "info").makeTwoWay()
+      new go.Binding('text', 'info').makeTwoWay()
     ),
     $(
       go.TextBlock,
@@ -71,14 +71,14 @@ function init(_this, timestamp) {
         column: 3,
         margin: new go.Margin(0, 2),
         stretch: go.GraphObject.Horizontal,
-        font: "bold 13px sans-serif",
+        font: 'bold 13px sans-serif',
         wrap: go.TextBlock.None,
         overflow: go.TextBlock.OverflowEllipsis,
         // and disallow drawing links from or to this text:
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "type")
+      new go.Binding('text', 'type')
     ),
     $(
       go.TextBlock,
@@ -86,14 +86,14 @@ function init(_this, timestamp) {
         column: 4,
         margin: new go.Margin(0, 2),
         stretch: go.GraphObject.Horizontal,
-        font: "bold 13px sans-serif",
+        font: 'bold 13px sans-serif',
         wrap: go.TextBlock.None,
         overflow: go.TextBlock.OverflowEllipsis,
         // and disallow drawing links from or to this text:
         fromLinkable: false,
         toLinkable: false
       },
-      new go.Binding("text", "isPrimarykey")
+      new go.Binding('text', 'isPrimarykey')
     )
   );
   // Return initialization for a RowColumnDefinition, specifying a particular column
@@ -117,76 +117,76 @@ function init(_this, timestamp) {
     }
     return [
       { column: idx },
-      new go.Binding("width", "widths", getColumnWidth).makeTwoWay(
+      new go.Binding('width', 'widths', getColumnWidth).makeTwoWay(
         setColumnWidth
       )
     ];
   }
   // This template represents a whole "record".
-  //节点样式
+  // 节点样式
   myDiagram.nodeTemplate = $(
     go.Node,
-    "Auto",
-    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(
+    'Auto',
+    new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(
       go.Point.stringify
     ),
     // this rectangular shape surrounds the content of the node
-    $(go.Shape, { fill: "#EEEEEE" }),
+    $(go.Shape, { fill: '#EEEEEE' }),
     // the content consists of a header and a list of items
     $(
       go.Panel,
-      "Vertical",
+      'Vertical',
       { stretch: go.GraphObject.Horizontal, alignment: go.Spot.TopLeft },
       // this is the header for the whole node
       $(
         go.Panel,
-        "Auto",
+        'Auto',
         { stretch: go.GraphObject.Horizontal }, // as wide as the whole node
-        $(go.Shape, { fill: "#1570A6", stroke: null }),
+        $(go.Shape, { fill: '#1570A6', stroke: null }),
         $(
           go.TextBlock,
           {
             alignment: go.Spot.Center,
             margin: 3,
-            stroke: "white",
-            textAlign: "center",
-            font: "bold 12pt sans-serif"
+            stroke: 'white',
+            textAlign: 'center',
+            font: 'bold 12pt sans-serif'
           },
-          new go.Binding("text", "tableName")
+          new go.Binding('text', 'tableName')
         )
       ),
       // this Panel holds a Panel for each item object in the itemArray;
       // each item Panel is defined by the itemTemplate to be a TableRow in this Table
       $(
         go.Panel,
-        "Table",
+        'Table',
         {
-          name: "TABLE",
+          name: 'TABLE',
           stretch: go.GraphObject.Horizontal,
           minSize: new go.Size(100, 10),
           defaultAlignment: go.Spot.Left,
           defaultStretch: go.GraphObject.Horizontal,
-          defaultColumnSeparatorStroke: "gray",
-          defaultRowSeparatorStroke: "gray",
+          defaultColumnSeparatorStroke: 'gray',
+          defaultRowSeparatorStroke: 'gray',
           itemTemplate: fieldTemplate
         },
         $(go.RowColumnDefinition, makeWidthBinding(0)),
         $(go.RowColumnDefinition, makeWidthBinding(1)),
         $(go.RowColumnDefinition, makeWidthBinding(2)),
-        new go.Binding("itemArray", "fields")
+        new go.Binding('itemArray', 'fields')
       ) // end Table Panel of items
     ), // end Vertical Panel
     {
       // define a context menu for each node
       contextMenu: $(
-        "ContextMenu", // that has one button
-        $("ContextMenuButton", $(go.TextBlock, "编辑"), { click: editFields })
+        'ContextMenu', // that has one button
+        $('ContextMenuButton', $(go.TextBlock, '编辑'), { click: editFields })
         // more ContextMenuButtons would go here
       ) // end Adornment
     }
   ); // end Node
 
-  //连线样式
+  // 连线样式
   myDiagram.linkTemplate = $(
     go.Link, // the whole link panel
     {
@@ -200,192 +200,192 @@ function init(_this, timestamp) {
       resegmentable: true,
       // mouse-overs subtly highlight links:
       mouseEnter: function(e, link) {
-        link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)";
+        link.findObject('HIGHLIGHT').stroke = 'rgba(30,144,255,0.2)';
       },
       mouseLeave: function(e, link) {
-        link.findObject("HIGHLIGHT").stroke = "transparent";
+        link.findObject('HIGHLIGHT').stroke = 'transparent';
       },
       selectionAdorned: false
     },
-    new go.Binding("points").makeTwoWay(),
+    new go.Binding('points').makeTwoWay(),
     $(
       go.Shape, // the highlight shape, normally transparent
       {
         isPanelMain: true,
         strokeWidth: 8,
-        stroke: "transparent",
-        name: "HIGHLIGHT"
+        stroke: 'transparent',
+        name: 'HIGHLIGHT'
       }
     ),
     $(
       go.Shape, // the link path shape
-      { isPanelMain: true, stroke: "gray", strokeWidth: 2 },
-      new go.Binding("stroke", "isSelected", function(sel) {
-        return sel ? "dodgerblue" : "gray";
+      { isPanelMain: true, stroke: 'gray', strokeWidth: 2 },
+      new go.Binding('stroke', 'isSelected', function(sel) {
+        return sel ? 'dodgerblue' : 'gray';
       }).ofObject()
     ),
     $(
       go.Shape, // the arrowhead
-      { toArrow: "standard", strokeWidth: 0, fill: "gray" }
+      { toArrow: 'standard', strokeWidth: 0, fill: 'gray' }
     ),
     $(
       go.Panel,
-      "Auto", // the link label, normally not visible
-      { visible: false, name: "LABEL", segmentIndex: 2, segmentFraction: 0.5 },
-      new go.Binding("visible", "visible").makeTwoWay(),
+      'Auto', // the link label, normally not visible
+      { visible: false, name: 'LABEL', segmentIndex: 2, segmentFraction: 0.5 },
+      new go.Binding('visible', 'visible').makeTwoWay(),
       $(
         go.Shape,
-        "RoundedRectangle", // the label shape
-        { fill: "#F8F8F8", strokeWidth: 0 }
+        'RoundedRectangle', // the label shape
+        { fill: '#F8F8F8', strokeWidth: 0 }
       ),
       $(
         go.TextBlock,
-        "Filter", // the label
+        'Filter', // the label
         {
-          textAlign: "center",
-          font: "10pt helvetica, arial, sans-serif",
-          stroke: "#333333",
+          textAlign: 'center',
+          font: '10pt helvetica, arial, sans-serif',
+          stroke: '#333333',
           editable: true
         },
-        new go.Binding("text").makeTwoWay()
+        new go.Binding('text').makeTwoWay()
       )
     ),
     $(
       go.TextBlock,
-      "Filter", // the label
+      'Filter', // the label
       {
-        textAlign: "center",
-        font: "10pt helvetica, arial, sans-serif",
-        stroke: "#333333",
+        textAlign: 'center',
+        font: '10pt helvetica, arial, sans-serif',
+        stroke: '#333333',
         editable: true
       },
-      new go.Binding("text").makeTwoWay()
+      new go.Binding('text').makeTwoWay()
     )
   );
   myDiagram.model = $(go.GraphLinksModel, {
     copiesArrays: true,
     copiesArrayObjects: true,
-    linkFromPortIdProperty: "fromPort",
-    linkToPortIdProperty: "toPort",
+    linkFromPortIdProperty: 'fromPort',
+    linkToPortIdProperty: 'toPort',
     // automatically update the model that is shown on this page
     Changed: function(e) {},
     nodeDataArray: [
       {
-        key: "Record1",
-        tableName: "tablename1",
+        key: 'Record1',
+        tableName: 'tablename1',
         widths: [NaN, NaN, 60],
         fields: [
           {
-            name: "field1",
-            info: "first field",
-            color: "#F7B84B",
-            figure: "Ellipse",
-            type: "int",
+            name: 'field1',
+            info: 'first field',
+            color: '#F7B84B',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           },
           {
-            name: "field2",
-            info: "the second one",
-            color: "#F25022",
-            figure: "Ellipse",
-            type: "int",
+            name: 'field2',
+            info: 'the second one',
+            color: '#F25022',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           },
-          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+          { name: 'fieldThree', info: '3rd', color: '#00BCF2' }
         ],
-        loc: "0 0"
+        loc: '0 0'
       },
       {
-        key: "Record2",
-        tableName: "tablename2",
+        key: 'Record2',
+        tableName: 'tablename2',
         widths: [NaN, NaN, 60],
         fields: [
           {
-            name: "field1",
-            info: "first field",
-            color: "#F7B84B",
-            figure: "Ellipse",
-            type: "int",
+            name: 'field1',
+            info: 'first field',
+            color: '#F7B84B',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           },
           {
-            name: "yuwenjie",
-            info: "the second one",
-            color: "#F25022",
-            figure: "Ellipse",
-            type: "int",
+            name: 'yuwenjie',
+            info: 'the second one',
+            color: '#F25022',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           }
         ],
-        loc: "300 0"
+        loc: '300 0'
       },
       {
-        key: "Record3",
-        tableName: "tablename3",
+        key: 'Record3',
+        tableName: 'tablename3',
         widths: [NaN, NaN, 60],
         fields: [
           {
-            name: "field1",
-            info: "first field",
-            color: "#F7B84B",
-            figure: "Ellipse",
-            type: "int",
+            name: 'field1',
+            info: 'first field',
+            color: '#F7B84B',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           },
           {
-            name: "yuwenjie",
-            info: "the second one",
-            color: "#F25022",
-            figure: "Ellipse",
-            type: "int",
+            name: 'yuwenjie',
+            info: 'the second one',
+            color: '#F25022',
+            figure: 'Ellipse',
+            type: 'int',
             isPrimarykey: false
           },
-          { name: "fieldThree", info: "3rd", color: "#00BCF2" }
+          { name: 'fieldThree', info: '3rd', color: '#00BCF2' }
         ],
-        loc: "300 300"
+        loc: '300 300'
       }
     ],
     linkDataArray: [
       {
-        from: "Record1",
-        fromPort: "field1",
-        to: "Record2",
-        toPort: "fieldA"
+        from: 'Record1',
+        fromPort: 'field1',
+        to: 'Record2',
+        toPort: 'fieldA'
       },
       {
-        from: "Record3",
-        fromPort: "yuwenjie",
-        to: "Record2",
-        toPort: "yuwenjie"
+        from: 'Record3',
+        fromPort: 'yuwenjie',
+        to: 'Record2',
+        toPort: 'yuwenjie'
       }
     ]
   });
 
-  var myPalette = $(go.Palette, "myPaletteDiv" + timestamp);
+  var myPalette = $(go.Palette, 'myPaletteDiv' + timestamp);
   myPalette.nodeTemplate = $(
     go.Node,
-    "Horizontal",
+    'Horizontal',
     $(
       go.Shape,
-      { width: 14, height: 14, fill: "white" },
-      new go.Binding("fill", "color")
+      { width: 14, height: 14, fill: 'white' },
+      new go.Binding('fill', 'color')
     ),
-    $(go.TextBlock, new go.Binding("text", "color"))
+    $(go.TextBlock, new go.Binding('text', 'color'))
   );
 
   // the list of data to show in the Palette
   myPalette.model.nodeDataArray = [
     {
-      key: "id",
-      tableName: "tablename",
-      tableNameCN: "",
-      color: "table",
+      key: 'id',
+      tableName: 'tablename',
+      tableNameCN: '',
+      color: 'table',
       widths: [NaN, NaN, 60],
       fields: []
     }
   ];
 
-  //编辑字段
+  // 编辑字段
   function editFields(e, obj) {
     myDiagram.commit(function(d) {
       // get the context menu that holds the button that was clicked
@@ -399,29 +399,29 @@ function init(_this, timestamp) {
       _this.dialogTableVisible = true;
 
       // d.model.updateTargetBindings(nodeData);
-      var newcolor = "lightblue";
+      var newcolor = 'lightblue';
       switch (nodedata.color) {
-        case "lightblue":
-          newcolor = "lightgreen";
+        case 'lightblue':
+          newcolor = 'lightgreen';
           break;
-        case "lightgreen":
-          newcolor = "lightyellow";
+        case 'lightgreen':
+          newcolor = 'lightyellow';
           break;
-        case "lightyellow":
-          newcolor = "orange";
+        case 'lightyellow':
+          newcolor = 'orange';
           break;
-        case "orange":
-          newcolor = "lightblue";
+        case 'orange':
+          newcolor = 'lightblue';
           break;
       }
       // modify the node data
       // this evaluates data Bindings and records changes in the UndoManager
-      d.model.set(nodedata, "color", newcolor);
-    }, "changed color");
+      d.model.set(nodedata, 'color', newcolor);
+    }, 'changed color');
   }
 
-  //双击事件
-  myDiagram.addDiagramListener("ObjectDoubleClicked", function(e) {
+  // 双击事件
+  myDiagram.addDiagramListener('ObjectDoubleClicked', function(e) {
     // console.log(e.subject.part.data);
     _this.dialogTableVisible = true;
     _this.fieldsData = e.subject.part.data.fields;
@@ -430,10 +430,10 @@ function init(_this, timestamp) {
     console.log(res);
     let dataSourceList = [];
     if (res.count > 0) {
-      if(res.count === 1){
+      if (res.count === 1) {
         dataSourceList = [res.value.data];
       } else if (res.count > 1) {
-        for (let key in res.og.Fb) {
+        for (const key in res.og.Fb) {
           dataSourceList.push(res.og.Fb[key].value.data)
         }
       }
