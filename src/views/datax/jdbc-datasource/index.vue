@@ -1616,15 +1616,13 @@ export default {
     }
   },
   created() {
+    // this.jobName = sessionStorage.getItem('JobName')
+    // this.fetchData();
+  },
+  activated() { // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
     console.log('123')
     console.log(this.$route)
     this.jobRow = this.$route.params
-    // if (sessionStorage.getItem('projectId')) {
-    //   console.log(sessionStorage.getItem('projectId'))
-    // } else {
-    //   sessionStorage.setItem('projectId', this.$route.params.id)
-    //   sessionStorage.setItem('JobName', this.$route.params.name)
-    // }
     this.jobName = sessionStorage.getItem('JobName')
     this.fetchData();
   },
@@ -2393,7 +2391,6 @@ export default {
     fetchData() {
       this.listLoading = true;
       this.listQuery.projectId = sessionStorage.getItem('projectId')
-      console.log(this.listQuery, '1222222222222222222222222')
       datasourceApi.getJobList(this.listQuery).then((response) => {
         this.total = response.total;
         this.list = response.records;
