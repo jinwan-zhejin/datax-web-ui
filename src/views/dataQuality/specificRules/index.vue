@@ -553,8 +553,9 @@ export default {
       }
       .el-dialog__body {
         padding: 20px;
+        padding-bottom: 5px;
         .el-form {
-          padding-right: 20px;
+          padding-right: 30px;
         }
         #h_200 {
           .el-textarea__inner{

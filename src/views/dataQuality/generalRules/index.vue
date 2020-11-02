@@ -96,8 +96,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add">确 定</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" type="goon" @click="add">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 编辑对话框 -->
@@ -128,8 +128,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="edit">确 定</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" type="goon" @click="edit">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 关联个性化规则对话框 -->
@@ -171,8 +171,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="relate">确 定</el-button>
+        <el-button size="small" @click="cancel">取 消</el-button>
+        <el-button size="small" type="goon" @click="relate">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 分页 -->
@@ -587,8 +587,9 @@ export default {
       }
       .el-dialog__body {
         padding: 20px;
+        padding-bottom: 5px;
         .el-form {
-          padding-right: 20px;
+          padding-right: 30px;
         }
       }
       .el-dialog__footer{
