@@ -27,8 +27,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="SQL语句：">
-        <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 102px)" />
-        <el-button style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
+        <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 85px)" />
+        <el-button size='small' style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
       </el-form-item>
       <el-form-item label="切分字段：">
         <el-input v-model="readerForm.splitPk" placeholder="切分主键"  />

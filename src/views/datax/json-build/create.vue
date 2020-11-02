@@ -55,8 +55,8 @@
         </el-select>
       </el-form-item>
 
-      <!-- <el-form-item label="任务类型：" prop="glueType">
-        <el-select v-model="temp.glueType" placeholder="任务脚本类型">
+      <!-- <el-form-item label="运行模式：" prop="glueType">
+        <el-select v-model="temp.glueType" placeholder="运行模式">
           <el-option
             v-for="item in glueTypes"
             :key="item.value"
@@ -182,7 +182,7 @@ export default {
         userId: 0,
         jobConfigId: '',
         executorHandler: '',
-        glueType: '',
+        glueType: 'BEAN',
         glueSource: '',
         jobJson: '',
         executorParam: '',
@@ -292,7 +292,7 @@ export default {
     },
 
     createTask() {
-      this.temp.jobJson = JSON.stringify(this.Fjson, null, 2);
+      this.temp.jobJson = JSON.stringify(this.fjson, null, 2);
       this.temp.projectId = this.$store.state.taskAdmin.projectId;
       console.log('this.Fjson', this.Fjson);
       let str = '';
