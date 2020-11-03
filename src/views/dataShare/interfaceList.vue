@@ -1,24 +1,15 @@
 <template>
   <div class="myRegister">
-    <!-- 接口列表选择 -->
-    <!--    <div class="choose">
-      <div class="btn">
-        <el-button @click="gotoUse">接口使用列表</el-button>
-        <el-button @click="gotoRegister"  type="primary">接口注册列表</el-button>
-      </div>
-    </div> -->
     <!-- 接口注册 -->
     <div class="interRegister">
-      <!-- <p><i style="margin-right:10px;" class="el-icon-search"></i><span>查询条件</span></p> -->
       <div style="margin-top: 20px;">
-        <el-button type="primary" @click="gotoInterface">接口注册</el-button>
+        <span class="titSpan">接口列表</span>
         <el-input v-model="interName" placeholder="请输入接口名称" class="input-with-select sort">
           <el-button slot="append" class="search" style="padding: 0px 10px;" icon="el-icon-search" @click="getAllData" />
         </el-input>
+        <el-button type="goon" size="small" @click="gotoInterface">接口注册</el-button>
       </div>
     </div>
-    <!-- 表格 -->
-    <!-- <p style="margin-bottom:10px;"><i style="margin-right:10px;" class="el-icon-document"></i><span>查询结果</span></p> -->
     <!-- 表格 -->
     <el-table
       :data="tableData"
@@ -29,22 +20,24 @@
         type="index"
         label="序号"
         align="center"
+        width="80"
       />
       <el-table-column
         prop="interName"
-        border
-        align="center"
+        align="left"
         label="接口名称"
+        width="280"
       />
       <el-table-column
         prop="interRemark"
         label="接口描述"
-        align="center"
+        align="left"
+        width="400"
       />
       <el-table-column
         prop="interState"
         label="状态"
-        width="230"
+        width="250"
       >
         <template v-slot:default="{ row }">
           <el-tag>{{ row.interState }}</el-tag>
@@ -62,7 +55,7 @@
       </el-table-column> -->
       <el-table-column
         label="操作"
-        align="center"
+        align="left"
       >
         <template v-slot:default="{ row }">
           <a style="color: skyblue;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>
@@ -75,7 +68,7 @@
       :current-page="pageNum"
       :page-size="pageSize"
       :page-sizes="[30, 60, 90]"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="total, prev, pager, next, sizes"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -175,73 +168,43 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .myRegister {
-  margin-left: 20px;
-  margin-right: 20px;
-  .choose {
-    .btn {
-      text-align: center;
-      .el-button {
-        margin: 0;
-        width: 200px;
-        margin: 0px 10px;
-      }
-      .defaultColor {
-        background-color: rgb(90, 195, 236);
-        color: #fff;
-      }
-      .el-button:hover {
-        background-color: rgb(90, 195, 236);
-        color: #fff;
-      }
-    }
-  }
-  .filter {
-    margin-bottom: 10px;
-    .el-form {
-      overflow: hidden;
-      margin-top: 10px;
-      .el-form-item {
-        width: 280px;
-        float: left;
-        .el-form-item__label {
-          float: left;
-        }
-        .el-form-item__content {
-          float: left;
-        }
-        .el-input {
-          width: 200px;
-        }
-        .el-select {
-          width: 200px;
-        }
-      }
-      .sreach {
-        float: left;
-      }
-      .el-input-group__append {
-        padding: 0;
-      }
-    }
-  }
+  padding: 20px;
+  border-radius: 8px;
   .interRegister {
     overflow: hidden;
-    margin-bottom: 29px;
-    margin-left: 10px;
+    height: 84px;
+    line-height: 84px;
+    text-align:right;
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px 8px 0px 0px;
+    .titSpan {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      font-size: 24px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      font-weight: 500;
+      color: #333333;
+      transform: translateY(-50%);
+    }
     .sort {
       width: 300px;
     }
     .el-input {
       float: right;
+      margin-right: 24px;
     }
     .el-button {
       float: right;
-      margin-left: 10px;
+      margin: 0px 24px;
     }
     .el-input-group__append {
       padding: 0;
+      background-color: #3D5FFF;
+      color: #FFF;
       .el-button {
         float: right;
         margin: 0 auto;
@@ -256,7 +219,8 @@ export default {
     }
   }
   .el-pagination {
-    margin-top: 10px;
+    background-color: #fff;
+    padding: 20px;
   }
   .el-table {
     border-left: 1px solid #f1f1f1;
