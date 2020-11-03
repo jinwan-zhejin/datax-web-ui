@@ -204,7 +204,7 @@
             <MetaCompare />
           </div>
           <div v-if="jobType === 'VJOB'" class="rg">
-            <el-tabs
+            <!-- <el-tabs
               v-model="editableTabsValue"
               type="card"
               addable
@@ -219,9 +219,9 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
               </el-tab-pane>
-            </el-tabs>
+            </el-tabs> -->
+            <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
           </div>
         </el-tab-pane>
 
