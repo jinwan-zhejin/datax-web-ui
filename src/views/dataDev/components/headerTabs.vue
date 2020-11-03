@@ -135,9 +135,9 @@ export default {
     // 选中树
     handleNodeClick(data) {
       console.log(data, 'data')
-      this.firstId = data.id
       for (let i = 0; i < this.dataTree.length; i++) {
         if (this.dataTree[i].id === data.id) {
+          this.firstId = data.id
           getTableSchema({ datasourceId: data.id }).then((res) => {
             const arr = []
             for (let j = 0; j < res.length; j++) {
@@ -208,6 +208,17 @@ export default {
       }).then(res => {
         console.log('res', res);
         // this.tableList = res;
+        if (res) {
+          for (let i = 0; i < this.dataTree.length; i++) {
+            if (this.dataTree[i].id === id) {
+              for (let j = 0; j < this.dataTree[i].children.length; j++) {
+                if (this.dataTree[i].children[j] === data) {
+                  this.$set(this.dataTree[i].children[j], 'children', res)
+                }
+              }
+            }
+          }
+        }
       })
     },
     removeTab(targetName) {
