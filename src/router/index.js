@@ -366,13 +366,13 @@ export const asyncRoutes = [
         path: 'general',
         name: 'general',
         component: () => import('@/views/dataQuality/generalRules/index'),
-        meta: { title: ' 通用规则', icon: 'guize' }
+        meta: { title: '通用规则', icon: 'guize' }
       },
       {
         path: 'individuation',
         name: 'individuation',
         component: () => import('@/views/dataQuality/specificRules/index'),
-        meta: { title: ' 个性化规则', icon: 'guize_1' }
+        meta: { title: '个性化规则', icon: 'guize_1' }
       },
       {
         path: 'standardCheck',
