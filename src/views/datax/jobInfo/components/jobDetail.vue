@@ -129,9 +129,9 @@
         </div>
 
         <div class="json_detail">
-            <p class="json_title">查看json：</p>
+            <p class="json_title" @click='(jsonshow = !jsonshow)'>查看json：</p>
         </div>
-        <div class="json_content">
+        <div class="json_content" v-if="jsonshow">
             <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
         </div>
     </div>
@@ -417,6 +417,7 @@ export default {
             callback();
         };
         return {
+            
             jsonshow: false,
             newstlogContent: '',
             jobId: '',
@@ -1036,9 +1037,10 @@ export default {
     font-size: 14px;
     font-family: PingFangHK-Regular, PingFangHK;
     font-weight: 400;
-    color: #999999;
+    color: #3D5FFF;
     line-height: 20px;
     padding: 8px;
+    cursor: pointer;
 }
 
 .json_content>>>.CodeMirror {
