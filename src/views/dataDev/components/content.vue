@@ -1,4 +1,67 @@
 <template>
+<<<<<<< HEAD
+  <el-container>
+    <!-- <el-aside width="25%" class="contentLeft">
+      <div class="dataBase">
+        <p class="P-tit">数据连接</p>
+        <el-select v-model="dataBaseid" style="width:100%" clearable placeholder="请选择数据库">
+          <el-option
+            v-for="item in dataBaseList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          />
+        </el-select>
+        <p class="P-tit">模式</p>
+        <el-select
+          v-model="schemaId"
+          style="width:100%;"
+          clearable
+          placeholder="请选择Schema"
+          @change="getTableList"
+        >
+          <el-option v-for="item in SchemaList" :key="item" :label="item" :value="item" />
+        </el-select>
+      </div>
+      <div class="table">
+        <span>
+          查看表结构
+          <em>({{ tableList.length }} in {{ dataBaseid }})</em>
+        </span>
+        <el-select
+          v-model="tableId"
+          style="margin-top:10px;width:100%"
+          clearable
+          placeholder="请选择表"
+          @change="selectTable"
+        >
+          <el-option v-for="item in tableList" :key="item" :label="item" :value="item" />
+        </el-select>
+      </div>
+      <div>
+        <el-collapse v-model="activeNames">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <p class="tableName">{{ tableName }}</p>
+            </template>
+            <div class="disnone" style="max-height:360px;overflow:scroll;">
+              <div v-for="(item) in columnList" :key="item">{{ item }}</div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+    </el-aside> -->
+    <el-main style="padding:0px;height:100%;">
+      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+      <div class="dragBar">
+        <span
+          @mousedown="dragging = true"
+          @mouseup="dragging = false"
+          @mousemove="setTableHeight"
+        >==</span>
+      </div>
+      <TableDetail ref="table" :table-height="tableHeight" />
+=======
 <el-container>
     <el-aside width="25%" class="contentLeft">
         <div class="dataBase">
@@ -39,6 +102,7 @@
             <span @mousedown="dragging = true" @mouseup="dragging = false" @mousemove="setTableHeight">==</span>
         </div>
         <TableDetail ref="table" :table-height="tableHeight" />
+>>>>>>> a48447426669599aa7d3fc60fa81e2eb4763022e
     </el-main>
 </el-container>
 </template>
