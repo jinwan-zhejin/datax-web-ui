@@ -76,7 +76,7 @@
 import DataDevContent from './content';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import { getTables, getColumns, getTableSchema, getTableList } from '@/api/metadata-query';
+import { getTables, getColumns, getTableListWithComment, getTableSchema, getTableList } from '@/api/metadata-query';
 export default {
   // name: "HeaderTabs",
   components: {
@@ -107,7 +107,8 @@ export default {
         children: 'children',
         label: 'name'
       },
-      dataTree: []
+      dataTree: [],
+      firstId: ''
     };
   },
   watch: {
@@ -134,15 +135,12 @@ export default {
     // 选中树
     handleNodeClick(data) {
       console.log(data, 'data')
+      this.firstId = data.id
       for (let i = 0; i < this.dataTree.length; i++) {
         if (this.dataTree[i].id === data.id) {
           getTableSchema({ datasourceId: data.id }).then((res) => {
             const arr = []
             for (let j = 0; j < res.length; j++) {
-              // const obj = {}
-              // this.$set(obj, 'id', new Date().getTime() + j)
-              // this.$set(obj, 'name', res[j])
-              // this.$set(obj, 'children', [])
               arr.push({
                 id: new Date().getTime() + j,
                 name: res[j],
@@ -151,13 +149,16 @@ export default {
             }
             console.log(arr, 'arr')
             for (let i = 0; i < this.dataTree.length; i++) {
-              if (this.dataTree[i] === data) {
-                // this.dataTree[i].children = arr
-                this.$set(this.dataTree[i], 'children', arr)
+              if (!this.dataTree[i].children) {
+                if (this.dataTree[i] === data) {
+                  this.$set(this.dataTree[i], 'children', arr)
+                }
               }
             }
             console.log(this.dataTree)
           });
+        } else {
+          this.tableList(data, this.firstId)
         }
       }
     },
@@ -198,6 +199,16 @@ export default {
         }
         this.dataTree = response.records;
       });
+    },
+    // 根据数据库获取表
+    tableList(data, id) {
+      getTableListWithComment({
+        id: id,
+        schema: data.name
+      }).then(res => {
+        console.log('res', res);
+        // this.tableList = res;
+      })
     },
     removeTab(targetName) {
       const tabs = this.editableTabs;
