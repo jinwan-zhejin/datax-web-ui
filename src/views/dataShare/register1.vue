@@ -28,7 +28,7 @@
           </el-form-item>
           <el-form-item label="返回数据格式:">
             <el-radio-group v-model="form.responseMode" size="medium" @change="changeMode">
-              <el-radio-button label="JSON" />
+              <el-radio-button size="small" label="JSON" />
             <!-- <el-radio-button label="XML"></el-radio-button> -->
             </el-radio-group>
           </el-form-item>
@@ -153,10 +153,10 @@
       </el-tab-pane>
     </el-tabs>
     <div class="btn">
-      <el-button v-show="active !== 1 && active !== 3" class="next" type="primary" @click="prev">上一步</el-button>
-      <el-button v-show="active < 2" class="next" type="primary" @click="next">下一步</el-button>
-      <el-button v-show="active === 2" class="next" type="primary" @click="sure">确 定</el-button>
-      <el-button v-show="active === 3" class="next" type="primary" @click="back">确 定</el-button>
+      <el-button v-show="active !== 1 && active !== 3" size="small" class="next" type="goon" @click="prev">上一步</el-button>
+      <el-button v-show="active < 2" size="small" class="next" type="goon" @click="next">下一步</el-button>
+      <el-button v-show="active === 2" size="small" class="next" type="goon" @click="sure">确 定</el-button>
+      <el-button v-show="active === 3" size="small" class="next" type="goon" @click="back">确 定</el-button>
     </div>
   </div>
 </template>
@@ -209,7 +209,7 @@ export default {
       tableData1: [],
       tableData2: [],
       fileList: [],
-      type: 'primary',
+      type: 'goon',
       paramForm: {
         serverName: '',
         infoName: ''
@@ -553,9 +553,13 @@ export default {
 
 <style lang="scss">
 .infacereg {
+  margin: 20px;
+  background-color: #fff;
+  border-radius: 8px;
   .el-steps {
+    padding-top: 10px;
     width: 60%;
-    margin: 20px auto;
+    margin: 0 auto;
   }
   .el-tabs {
     .el-tab-pane {

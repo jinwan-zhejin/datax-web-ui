@@ -51,15 +51,15 @@ module.exports = {
         }
       },
       // // 数据共享接口 - share
-      // '/mock': {
-      //   ws: false,
-      //   target: 'http://47.103.79.104:3000',
-      //   changeOrigin: true
-      //   // pathRewrite: {
-      //   //   ['^' + '/share']: '/share'
-      //   // }
-      // },
-      // 元数据接口 - Atlas
+      '/mock': {
+        ws: false,
+        target: 'http://47.103.79.104:3000',
+        changeOrigin: true
+        // pathRewrite: {
+        //   ['^' + '/share']: '/share'
+        // }
+      },
+      // // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
         target: 'http://123.56.96.151:8079',
@@ -104,25 +104,25 @@ module.exports = {
           ['^' + '/test']: '/api'
         }
       },
-      // // Datains接口
-      // // '/welcome': {
-      // //   target: 'http://47.103.79.104:8080',
-      // //   changeOrigin: true,
-      // //   pathRewrite: {
-      // //     ['^' + '/welcome']: '/datains/welcome'
-      // //   }
-      // // },
-      // '/dbeaver/gql': {
-      //   target: 'http://47.103.79.104:8979',
-      //   changeOrigin: true,
-      //   // headers: {
-      //   //   host: "http://192.168.3.74:8978",
-      //   //   origin: "http://192.168.3.74:8978"
-      //   // }
-      //   pathRewrite: {
-      //     ['^' + '/dbeaver/gql']: '/dbeaver/gql'
-      //   }
-      // },
+      // Datains接口
+      '/welcome': {
+        target: 'http://47.103.79.104:8080',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/welcome']: '/datains/welcome'
+        }
+      },
+      '/dbeaver/gql': {
+        target: 'http://47.103.79.104:8979',
+        changeOrigin: true,
+        // headers: {
+        //   host: "http://192.168.3.74:8978",
+        //   origin: "http://192.168.3.74:8978"
+        // }
+        pathRewrite: {
+          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
+        }
+      },
       // /api
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       // 代理 /dev-api/api 到 http://localhost:8066/api

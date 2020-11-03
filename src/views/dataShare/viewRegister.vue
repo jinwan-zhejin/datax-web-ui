@@ -217,8 +217,10 @@ export default {
 
 <style lang="scss" scoped>
 .viewRe {
+  padding: 20px;
   .main {
-    margin-top: 20px;
+    background-color: #fff;
+    border-radius:8px;
     .operation {
       border-bottom: 1px solid skyblue;
       overflow: hidden;

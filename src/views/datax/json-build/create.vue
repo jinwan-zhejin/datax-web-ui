@@ -317,6 +317,7 @@ export default {
 
         this.$store.dispatch('getTaskList', true)
         this.$store.commit('SET_TAB_TYPE', '');
+
       });
     }
 

@@ -586,11 +586,14 @@ export default {
 
 <style lang="scss">
 .infacereg {
+  padding: 20px;
   .el-steps {
     width: 60%;
-    margin: 20px auto;
+    margin: 0 auto;
+    background-color: #fff;
   }
   .el-tabs {
+    background-color: #fff;
     .el-tab-pane {
       .el-tabs__nav-wrap::after {
         background-color: #fff;

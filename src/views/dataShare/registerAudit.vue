@@ -4,160 +4,195 @@
     <!-- <div class="tit">
       <span>批量数据审批</span>
     </div> -->
-    <!-- 菜单栏 -->
-    <div class="Menu">
-      <!-- 切换按钮 -->
-      <div class="btn">
-        <el-radio-group v-model="radio" size="small">
-          <el-radio-button label="待审批" />
-          <el-radio-button label="已同意" />
-          <el-radio-button label="已驳回" />
-        </el-radio-group>
-      </div>
-      <!-- 时间日期 -->
-      <div class="time">
-        <div class="search">
-          <el-input
-            v-model="interName"
-            style="width: 300px;"
-            placeholder="请输入接口名称"
-          >
-            <i slot="suffix" style="margin-right: 5px;cursor: pointer;" class="el-icon-search" @click="search" />
-          </el-input>
+    <div class="main">
+      <!-- 菜单栏 -->
+      <div class="Menu">
+        <!-- 切换按钮 -->
+        <div class="btn">
+          <el-radio-group v-model="radio" size="small">
+            <el-radio-button label="待审批" />
+            <el-radio-button label="已同意" />
+            <el-radio-button label="已驳回" />
+          </el-radio-group>
+        </div>
+        <!-- 时间日期 -->
+        <div class="time">
+          <div class="search">
+            <el-input
+              v-model="interName"
+              style="width: 300px;"
+              placeholder="请输入接口名称"
+            >
+              <i slot="suffix" style="margin-right: 5px;cursor: pointer;" class="el-icon-search" @click="search" />
+            </el-input>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- 表格 -->
-    <div class="tabel">
-      <!-- 待审核 -->
-      <el-table
-        v-show="wait"
-        :data="tabelList"
-        stripe
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-        />
-        <el-table-column
-          prop="interName"
-          label="接口名称"
-        />
-        <el-table-column
-          prop="interRemark"
-          label="接口描述"
-        />
-        <!-- <el-table-column
-          prop="telephone"
-          label="联系方式">
-        </el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="申请部门">
-        </el-table-column> -->
-        <el-table-column
-          prop="createTime"
-          label="注册时间"
-        />
-        <el-table-column
-          prop="updateTime"
-          label="更新时间"
-        />
-        <el-table-column
-          label="操作栏"
+      <!-- 表格 -->
+      <div class="tabel">
+        <!-- 待审核 -->
+        <el-table
+          v-show="wait"
+          :data="tabelList"
+          stripe
+          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         >
-          <template v-slot:default="{ row }">
-            <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 已同意 -->
-      <el-table
-        v-show="agree"
-        :data="tabelList"
-        stripe
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-        />
-        <el-table-column
-          prop="interName"
-          label="接口名称"
-        />
-        <el-table-column
-          prop="interRemark"
-          label="接口描述"
-        />
-        <!-- <el-table-column
-          prop="telephone"
-          label="联系方式">
-        </el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="申请部门">
-        </el-table-column> -->
-        <el-table-column
-          prop="createTime"
-          label="注册时间"
-        />
-        <el-table-column
-          prop="updateTime"
-          label="更新时间"
-        />
-        <el-table-column
-          label="操作栏"
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80"
+            align="center"
+          />
+          <el-table-column
+            prop="interName"
+            label="接口名称"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="interRemark"
+            label="接口描述"
+            width="400"
+            align="left"
+          />
+          <!-- <el-table-column
+            prop="telephone"
+            label="联系方式">
+          </el-table-column>
+          <el-table-column
+            prop="departmentName"
+            label="申请部门">
+          </el-table-column> -->
+          <el-table-column
+            prop="createTime"
+            label="注册时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            label="操作栏"
+            align="left"
+          >
+            <template v-slot:default="{ row }">
+              <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 已同意 -->
+        <el-table
+          v-show="agree"
+          :data="tabelList"
+          stripe
+          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         >
-          <template v-slot:default="{ row }">
-            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 已驳回 -->
-      <el-table
-        v-show="dismiss"
-        :data="tabelList"
-        stripe
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-        />
-        <el-table-column
-          prop="interName"
-          label="接口名称"
-        />
-        <el-table-column
-          prop="interRemark"
-          label="接口描述"
-        />
-        <!-- <el-table-column
-          prop="telephone"
-          label="联系方式">
-        </el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="申请部门">
-        </el-table-column> -->
-        <el-table-column
-          prop="createTime"
-          label="注册时间"
-        />
-        <el-table-column
-          prop="updateTime"
-          label="更新时间"
-        />
-        <el-table-column
-          label="操作栏"
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80"
+            align="center"
+          />
+          <el-table-column
+            prop="interName"
+            label="接口名称"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="interRemark"
+            label="接口描述"
+            width="400"
+            align="left"
+          />
+          <!-- <el-table-column
+            prop="telephone"
+            label="联系方式">
+          </el-table-column>
+          <el-table-column
+            prop="departmentName"
+            label="申请部门">
+          </el-table-column> -->
+          <el-table-column
+            prop="createTime"
+            label="注册时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            label="操作栏"
+            align="left"
+          >
+            <template v-slot:default="{ row }">
+              <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 已驳回 -->
+        <el-table
+          v-show="dismiss"
+          :data="tabelList"
+          stripe
+          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         >
-          <template v-slot:default="{ row }">
-            <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80"
+            align="center"
+          />
+          <el-table-column
+            prop="interName"
+            label="接口名称"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="interRemark"
+            label="接口描述"
+            width="400"
+            align="left"
+          />
+          <!-- <el-table-column
+            prop="telephone"
+            label="联系方式">
+          </el-table-column>
+          <el-table-column
+            prop="departmentName"
+            label="申请部门">
+          </el-table-column> -->
+          <el-table-column
+            prop="createTime"
+            label="注册时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="200"
+            align="left"
+          />
+          <el-table-column
+            label="操作栏"
+            align="left"
+          >
+            <template v-slot:default="{ row }">
+              <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
     <!-- 使用审批对话框 -->
     <el-dialog class="useBatch" title="使用审批" :visible.sync="dialogBatch">
@@ -442,11 +477,10 @@ export default {
 .batch {
   // width: 100%;
   // height: 100%;
-  background-color: rgb(253, 253, 253);
-  margin-left: 20px;
-  margin-right: 20px;
+  padding: 20px;;
   .tit {
     font-size: 16px;
+    background-color: rgb(253, 253, 253);
     height: 35px;
     line-height: 30px;
     border-bottom: 1px solid #cccccc;
@@ -458,60 +492,65 @@ export default {
       border-bottom: 2px solid skyblue;
     }
   }
-  .Menu {
-    width: 100%;
-    margin: 0 auto;
-    margin-top: 20px;
-    height: 40px;
-    line-height: 40px;
-    background-color: #fbf8f8;
-    padding-bottom: 5px;
-    border: 1px solid #f1f1f1;
-    .btn {
-      float: left;
-      margin-left: 20px;
-      margin-top: 0px;
-      .el-button {
-        background: cornflowerblue;
-      }
-      .el-radio-group {
-        height: 30px;
-        .el-radio-button {
-          .el-radio-button__inner {
-            border-radius: 20px;
-            border: none;
-            background-color: initial;
+  .main {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    .Menu {
+      width: 100%;
+      margin: 0 auto;
+      height: 40px;
+      line-height: 40px;
+      background-color: #fbf8f8;
+      padding-bottom: 5px;
+      border: 1px solid #f1f1f1;
+      .btn {
+        float: left;
+        margin-left: 20px;
+        margin-top: 0px;
+        .el-button {
+          background: cornflowerblue;
+        }
+        .el-radio-group {
+          height: 30px;
+          .el-radio-button {
+            .el-radio-button__inner {
+              border-radius: 20px;
+              border: none;
+              background-color: initial;
+            }
+            .el-radio-button__inner:active {
+              background-color: #409EFF;
+              color: #ffffff;
+            }
           }
-          .el-radio-button__inner:active {
+          .is-active {
             background-color: #409EFF;
+            border-radius: 20px;
             color: #ffffff;
           }
         }
-        .is-active {
-          background-color: #409EFF;
-          border-radius: 20px;
-          color: #ffffff;
+      }
+      .block {
+        float: right;
+        .el-date-editor {
+          width: 360px;
+        }
+      }
+      .search {
+        float: right;
+        margin-left: 10px;
+        .el-input {
+          width: 150px;
         }
       }
     }
-    .block {
-      float: right;
-      .el-date-editor {
-        width: 360px;
+    .tabel {
+      width: 100%;
+      margin: 20px auto;
+      background-color: #fff;
+      .el-table {
       }
-    }
-    .search {
-      float: right;
-      margin-left: 10px;
-      .el-input {
-        width: 150px;
-      }
-    }
-  }
-  .tabel {
-    width: 100%;
-    margin: 20px auto;
-    .el-table {
     }
   }
   .el-dialog {
