@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules">
-      <el-form-item label="数据源" prop="datasourceId">
+    <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
+      <el-form-item label="数据源：" prop="datasourceId">
         <el-select v-model="readerForm.datasourceId" filterable @change="rDsChange">
           <el-option
             v-for="item in rDsList"
@@ -11,31 +11,31 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="表" prop="tableName">
+      <el-form-item label="表：" prop="tableName">
         <el-select v-model="readerForm.tableName" filterable @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
-      <el-form-item label="path" prop="path">
-        <el-input v-model="readerForm.path" :autosize="{ minRows: 2, maxRows: 20}" type="textarea" placeholder="要读取的文件路径，如果要读取多个文件，可以使用正则表达式'*'" style="width: 42%" />
+      <el-form-item label="path：" prop="path">
+        <el-input v-model="readerForm.path" :autosize="{ minRows: 2, maxRows: 20}" type="textarea" placeholder="要读取的文件路径，如果要读取多个文件，可以使用正则表达式'*'" />
       </el-form-item>
-      <el-form-item label="defaultFS" prop="defaultFS">
-        <el-input v-model="readerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址" style="width: 42%" />
+      <el-form-item label="defaultFS：" prop="defaultFS">
+        <el-input v-model="readerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址" />
       </el-form-item>
-      <el-form-item label="fileType" prop="fileType">
+      <el-form-item label="fileType：" prop="fileType">
         <el-select v-model="readerForm.fileType" placeholder="文件的类型">
           <el-option v-for="item in fileTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="fieldDelimiter" prop="fieldDelimiter">
-        <el-input v-model="readerForm.fieldDelimiter" placeholder="读取的字段分隔符" style="width: 42%" />
+      <el-form-item label="fieldDelimiter：" prop="fieldDelimiter">
+        <el-input v-model="readerForm.fieldDelimiter" placeholder="读取的字段分隔符" />
       </el-form-item>
-      <el-form-item label="skipHeader">
+      <el-form-item label="skipHeader：">
         <el-select v-model="readerForm.skipHeader" placeholder="是否跳过表头">
           <el-option v-for="item in skipHeaderTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="字段">
+      <el-form-item label="字段：">
         <el-checkbox
           v-model="readerForm.checkAll"
           :indeterminate="readerForm.isIndeterminate"
@@ -73,7 +73,7 @@ export default {
       customValue: '',
       dataSource: '',
       readerForm: {
-        datasourceId: undefined,
+        datasourceId: '',
         tableName: '',
         columns: [],
         checkAll: false,
@@ -116,6 +116,8 @@ export default {
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
+
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         this.rDsList = records
@@ -204,3 +206,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.app-container{
+  padding: 0;
+}
+</style>

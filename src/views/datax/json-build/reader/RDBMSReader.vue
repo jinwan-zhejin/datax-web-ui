@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
       <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select v-model="readerForm.datasourceId" filterable  @change="rDsChange">
+        <el-select :value="datasourceId" filterable  @change="rDsChange">
           <el-option
             v-for="item in rDsList"
             :key="item.id"
@@ -66,6 +66,7 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
+      datasourceId:'',
       rDsList: [],
       rTbList: [],
       schemaList: [],
@@ -156,6 +157,8 @@ export default {
     },
     // reader 数据源切换
     rDsChange(e) {
+      this.datasourceId = e;
+      
       this.$store.commit('SET_READER_DATASOURCE_ID', e)
       // 清空
       this.readerForm.tableName = ''
@@ -224,7 +227,9 @@ export default {
       }
       return this.readerForm
     }
-  }
+  },
+
+
 }
 </script>
 

@@ -86,9 +86,9 @@
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
-                  v-model="readerForm.columnName"
+                  v-model="row.row.columnName"
                   filterable
-                  label="请选择字段"
+                  placeholder="请选择字段"
                 >
                   <el-option
                     v-for="item in rColumnList"
@@ -104,11 +104,11 @@
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
-                  v-model="readerForm.rule"
+                  v-model="row.row.ruleId"
                   clearable
                   filterable
                   multiple
-                  label="请选择规则名称"
+                  placeholder="请选择规则名称"
                 >
                   <el-option
                     v-for="item in nameList"
@@ -143,19 +143,7 @@
         </div>
         <div class="addRow_btn" @click="addRow"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
       </el-form-item>
-      <el-form-item label="SQL语句：">
-        <el-input
-          v-model="readerForm.querySql"
-          :autosize="{ minRows: 3, maxRows: 20 }"
-          type="textarea"
-          placeholder="sql查询，一般用于多表关联查询时才用"
-          style="width: calc(100% - 102px)"
-        />
-        <el-button
-          type="primary"
-          @click.prevent="getColumns('reader')"
-        >解析字段</el-button>
-      </el-form-item>
+     
       <el-form-item label="切分字段：">
         <el-input
           v-model="readerForm.splitPk"
@@ -252,7 +240,25 @@ export default {
     },
     'readerForm.rule': function(oldVal, newVal) {
       console.log(newVal);
+    },
+
+    tableData1:{ //深度监听规则字段表格，表格内容变化时，直接改变readerForm参数
+      handler(newVal) {
+
+        let arr = JSON.parse(JSON.stringify(newVal));
+        arr.forEach(ele => {
+          let codeArr = []
+          ele.ruleId.forEach(code => {
+            codeArr.push({code})
+          })
+          ele.ruleId = codeArr;
+        });
+
+        this.readerForm.rule = arr;
+      },
+      deep: true
     }
+
   },
   created() {
     this.getJdbcDs();
@@ -260,9 +266,11 @@ export default {
   methods: {
     // 添加行
     addRow() {
+      console.log('this.tableData1',this.tableData1)
       this.tableData1.map((item) => {
         if (item.status) {
           console.log('this.readerForm', this.readerForm);
+          console.log('item',item)
           item.columnName = this.readerForm.columnName;
           for (let i = 0; i < this.nameList.length; i++) {
             for (let j = 0; j < this.readerForm.rule.length; j++) {
@@ -288,26 +296,28 @@ export default {
     },
     // 编辑行
     editRow(row) {
+      console.log('row',row);
       this.tableData1.map((item) => {
         if (item.status) {
           item.status = 0;
         }
-        if (item === row.row) {
-          this.readerForm.columnName = item.columnName;
-          this.readerForm.rule = item.ruleId;
-          item.status = 1;
-        }
+        // if (item === row.row) {
+        //   this.readerForm.columnName = item.columnName;
+        //   this.readerForm.rule = item.ruleId;
+        //   item.status = 1;
+        // }
         return item;
       });
-      console.log(row.row);
+      this.readerForm.rule = this.tableData1;
     },
     // 删除行
     delRow(row) {
-      console.log(row.row);
       const index = this.tableData1.indexOf(row.row);
       this.tableData1.splice(index, 1);
       this.readerForm.rule = this.tableData1;
+      console.log('this.readerForm.rule',this.readerForm.rule);
     },
+
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true;
