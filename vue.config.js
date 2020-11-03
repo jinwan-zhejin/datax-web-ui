@@ -50,16 +50,16 @@ module.exports = {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
-      // // 数据共享接口 - share
+      // 数据共享接口 - share
       '/mock': {
         ws: false,
         target: 'http://47.103.79.104:3000',
-        changeOrigin: true
-        // pathRewrite: {
-        //   ['^' + '/share']: '/share'
-        // }
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/share']: '/share'
+        }
       },
-      // // 元数据接口 - Atlas
+      // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
         target: 'http://123.56.96.151:8079',
@@ -106,6 +106,7 @@ module.exports = {
       },
       // Datains接口
       '/welcome': {
+        ws: false,
         target: 'http://47.103.79.104:8080',
         changeOrigin: true,
         pathRewrite: {
