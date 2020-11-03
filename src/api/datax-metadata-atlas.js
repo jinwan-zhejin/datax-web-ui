@@ -1,9 +1,9 @@
 /**
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
- * @LastEditors: Anybody
- * @LastEditTime: 2020-11-02 13:24:31
- * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
+ * @LastEditors: ,: Anybody
+ * @LastEditTime: ,: 2020-11-03 11:25:29
+ * @FilePath: ,: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
