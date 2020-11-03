@@ -26,7 +26,7 @@
               <el-radio label="raw">raw</el-radio>
               <el-radio label="binary">binary</el-radio>
             </el-radio-group> -->
-            <el-button type="primary" @click="addKeyValue">add</el-button>
+            <el-button type="goon" size="small" @click="addKeyValue">add</el-button>
           </p>
           <el-table
             v-show="isSuccess"
@@ -194,17 +194,22 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .call {
+  margin: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
   p {
-    text-align: center;
+    font-size: 24px;
+    font-family: PingFangHK-Medium, PingFangHK;
+    font-weight: 500;
+    color: #333333;
+    text-align:center;
+    height: 36px;
+    line-height: 36px;
   }
   .box {
-    // width: 80%;
-    // height: 100%;
-    padding: 20px;
-    margin: 20px auto;
-    border: 1px dotted #cccccc;
     .el-tabs {
       margin-top: 20px;
       .title {

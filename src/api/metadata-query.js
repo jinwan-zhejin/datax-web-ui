@@ -28,6 +28,15 @@ export function getTableList(params) {
   })
 }
 
+// 获取带有表comment的表信息
+export function getTableListWithComment(params) {
+  return request({
+    url: `/api/jobJdbcDatasource/tableInfos`,
+    method: 'get',
+    params
+  })
+}
+
 // 获取字段
 export function getColumns(params) {
   return request({
