@@ -106,9 +106,11 @@ const translate = {
   'update': '修改',
   'import': '导入',
   'delete': '删除',
+  'deleted': '删除',
   'purge': '清除',
   'propagated': '已传播',
   'attribute': '属性',
+  'attributes': '属性',
   'starttimestamp': '开始时间戳',
   'collectiontime': '数据查询时间戳',
   'activetimestamp': '活跃数据时间戳',
@@ -136,7 +138,10 @@ const translate = {
   'excludesc': '排除子分类',
   'excludest': '排除子类型',
   'locationuri': 'URI地址',
-  'foreign_keys': '外键'
+  'foreign_keys': '外键',
+  'proxy': '代理',
+  'relationshipattributes': '关系属性',
+  'provenancetype': '出处类型'
 }
 // export default translate
 

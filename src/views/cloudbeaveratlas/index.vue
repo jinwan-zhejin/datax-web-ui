@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 18:50:19
+ * @LastEditTime: ,: 2020-11-03 16:55:30
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -34,12 +34,12 @@
               </el-col>
               <el-col class="collapse-tree">
                 <!-- <el-scrollbar> -->
-                  <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.switchStatus?entity.data:entity_Active" node-key="name" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity">
-                    <span slot-scope="{ node, data }" class="custom-tree-node">
-                      <!-- 显示的文字 -->
-                      <span><i class="el-icon-document" /> {{ node.label }} {{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
-                    </span>
-                  </el-tree>
+                <el-tree ref="entity" v-loading="leftLoading.indexOf('entity') > -1" :data="entity.switchStatus?entity.data:entity_Active" node-key="name" default-expand-all :highlight-current="entityHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickEntity">
+                  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <!-- 显示的文字 -->
+                    <span><i class="el-icon-document" /> {{ node.label }} {{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
+                  </span>
+                </el-tree>
                 <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>
@@ -69,35 +69,35 @@
               </el-col>
               <el-col class="collapse-tree">
                 <!-- <el-scrollbar> -->
-                  <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:tag_Active" node-key="name" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
-                    <span slot-scope="{ node, data }" class="custom-tree-node">
-                      <!-- 显示的文字 -->
-                      <span>{{ node.label }}{{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
-                      <span>
-                        <el-button v-show="resultQuery.tag === node.label" type="text">
-                          <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
-                            <span class="el-dropdown-link">
-                              <i class="el-icon-more" />
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="addNewClassification(data)">
-                                <i class="el-icon-plus" style="color:#3D5FFF;" />添加子分类
-                              </el-dropdown-item>
-                              <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="gotoViewEdit(data)">
-                                <i class="el-icon-edit" style="color:#3D5FFF;" />查看/编辑
-                              </el-dropdown-item>
-                              <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="openDeleteClassification(data)">
-                                <i class="el-icon-delete" style="color:#3D5FFF;" />删除
-                              </el-dropdown-item>
-                              <el-dropdown-item @click.stop.native="searchClassifications(data)">
-                                <i class="el-icon-search" style="color:#3D5FFF;" />查找
-                              </el-dropdown-item>
-                            </el-dropdown-menu>
-                          </el-dropdown>
-                        </el-button>
-                      </span>
+                <el-tree ref="classifications" v-loading="leftLoading.indexOf('classifications') > -1" :data="classifications.switchStatus?classifications.data:tag_Active" node-key="name" default-expand-all :highlight-current="classificationsHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickClassifications">
+                  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <!-- 显示的文字 -->
+                    <span>{{ node.label }}{{ data.hasOwnProperty('countActive')?(' ('+data.countActive+')'):'' }}</span>
+                    <span>
+                      <el-button v-show="resultQuery.tag === node.label" type="text">
+                        <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
+                          <span class="el-dropdown-link">
+                            <i class="el-icon-more" />
+                          </span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="addNewClassification(data)">
+                              <i class="el-icon-plus" style="color:#3D5FFF;" />添加子分类
+                            </el-dropdown-item>
+                            <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="gotoViewEdit(data)">
+                              <i class="el-icon-edit" style="color:#3D5FFF;" />查看/编辑
+                            </el-dropdown-item>
+                            <el-dropdown-item v-if="'_ALL_CLASSIFICATION_TYPES _CLASSIFIED _NOT_CLASSIFIED'.indexOf(node.label) <= -1" @click.stop.native="openDeleteClassification(data)">
+                              <i class="el-icon-delete" style="color:#3D5FFF;" />删除
+                            </el-dropdown-item>
+                            <el-dropdown-item @click.stop.native="searchClassifications(data)">
+                              <i class="el-icon-search" style="color:#3D5FFF;" />查找
+                            </el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                      </el-button>
                     </span>
-                  </el-tree>
+                  </span>
+                </el-tree>
                 <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>
@@ -192,33 +192,33 @@
               </el-col>
               <el-col class="collapse-tree">
                 <!-- <el-scrollbar> -->
-                  <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.data" node-key="searchParameters.guid" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
-                    <span slot-scope="{ node, data }" class="custom-tree-node">
-                      <!-- 显示的文字 -->
-                      <span>{{ node.label }}</span>
-                      <span>
-                        <el-button
-                          v-if="node.label !== '高级搜索' && node.label !== '普通搜索'"
-                          v-show="validateTypeNameClassification(data)"
-                          type="text"
-                        >
-                          <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
-                            <span class="el-dropdown-link">
-                              <i class="el-icon-more" />
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item @click.stop.native="filterRename(node.label, data)">
-                                <i class="el-icon-edit" style="color:#3D5FFF;" />重命名
-                              </el-dropdown-item>
-                              <el-dropdown-item @click.stop.native="filterDelete(node.label, data)">
-                                <i class="el-icon-delete" style="color:#3D5FFF;" />删除
-                              </el-dropdown-item>
-                            </el-dropdown-menu>
-                          </el-dropdown>
-                        </el-button>
-                      </span>
+                <el-tree ref="customFilter" v-loading="leftLoading.indexOf('customFilter') > -1" :data="customFilter.data" node-key="searchParameters.guid" default-expand-all :highlight-current="customFilterHighlight" :props="defaultProps" :filter-node-method="filterLeftTreeNode" @node-click="handleNodeClickCustomFilter">
+                  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <!-- 显示的文字 -->
+                    <span>{{ node.label }}</span>
+                    <span>
+                      <el-button
+                        v-if="node.label !== '高级搜索' && node.label !== '普通搜索'"
+                        v-show="validateTypeNameClassification(data)"
+                        type="text"
+                      >
+                        <el-dropdown trigger="click" placement="bottom-start" :hide-on-click="true" @click.stop.native>
+                          <span class="el-dropdown-link">
+                            <i class="el-icon-more" />
+                          </span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item @click.stop.native="filterRename(node.label, data)">
+                              <i class="el-icon-edit" style="color:#3D5FFF;" />重命名
+                            </el-dropdown-item>
+                            <el-dropdown-item @click.stop.native="filterDelete(node.label, data)">
+                              <i class="el-icon-delete" style="color:#3D5FFF;" />删除
+                            </el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                      </el-button>
                     </span>
-                  </el-tree>
+                  </span>
+                </el-tree>
                 <!-- </el-scrollbar> -->
               </el-col>
             </el-collapse-item>

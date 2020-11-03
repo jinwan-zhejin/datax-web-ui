@@ -38,7 +38,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_API]: {
-        // ws: false,
+        ws: false,
         // target: `http://localhost:${apiPort}/api`,
         target: 'http://47.103.79.104:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
@@ -68,7 +68,7 @@ module.exports = {
           ['^' + '/atlasApi']: '/api/atlas'
         }
       },
-      // // Atlas登录
+      // Atlas登录
       '/j_spring_security_check': {
         ws: false,
         target: 'http://123.56.96.151:8079',
@@ -87,6 +87,7 @@ module.exports = {
         }
       },
       '/login': {
+        ws: false,
         target: 'http://47.103.79.104:8080',
         changeOrigin: true,
         pathRewrite: {
@@ -131,6 +132,7 @@ module.exports = {
       // change xxx-api/login => mock/login
 
       [process.env.VUE_APP_BASE_API]: {
+        ws: false,
         // target: `http://localhost:${port}/mock`,
         target: 'http://47.103.79.104:9527',
         changeOrigin: true,
