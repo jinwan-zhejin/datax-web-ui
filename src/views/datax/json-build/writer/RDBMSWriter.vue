@@ -3,7 +3,7 @@
     <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules">
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
-          v-model="writerForm.datasourceId"
+          v-model="datasourceId"
           filterable
           @change="wDsChange"
         >
@@ -76,6 +76,7 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
+      datasourceId:'',
       wDsList: [],
       schemaList: [],
       fromTableName: '',
@@ -159,6 +160,7 @@ export default {
       this.getTables('rdbmsWriter')
     },
     wDsChange(e) {
+      this.datasourceId = e;
       this.$store.commit('SET_WRITER_DATASOURCE_ID', e)
       // 清空
       this.writerForm.tableName = ''
