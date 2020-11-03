@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside width="25%" class="contentLeft">
+    <!-- <el-aside width="25%" class="contentLeft">
       <div class="dataBase">
         <p class="P-tit">数据连接</p>
         <el-select v-model="dataBaseid" style="width:100%" clearable placeholder="请选择数据库">
@@ -49,8 +49,8 @@
           </el-collapse-item>
         </el-collapse>
       </div>
-    </el-aside>
-    <el-main style="padding:0 10px;height:100%;">
+    </el-aside> -->
+    <el-main style="padding:0px;height:100%;">
       <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
       <div class="dragBar">
         <span
