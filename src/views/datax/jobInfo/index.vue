@@ -123,11 +123,24 @@
                     <MetaCompare />
                 </div>
                 <div v-if="jobType === 'VJOB'" class="rg">
-                    <el-tabs v-model="editableTabsValue" type="card" addable :closable="isDel" @tab-remove="handleRemove" @edit="handleTabsEdit" @tab-click="changeTab">
-                        <el-tab-pane v-for="item in editableTabs" :key="item.id" :label="item.title" :name="item.name">
-                            <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
-                        </el-tab-pane>
-                    </el-tabs>
+                    <!-- <el-tabs
+              v-model="editableTabsValue"
+              type="card"
+              addable
+              :closable="isDel"
+              @tab-remove="handleRemove"
+              @edit="handleTabsEdit"
+              @tab-click="changeTab"
+            >
+              <el-tab-pane
+                v-for="item in editableTabs"
+                :key="item.id"
+                :label="item.title"
+                :name="item.name"
+              >
+              </el-tab-pane>
+            </el-tabs> -->
+                    <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
                 </div>
             </el-tab-pane>
 

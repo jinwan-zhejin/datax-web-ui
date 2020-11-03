@@ -1,10 +1,10 @@
 <template>
   <div id="sample">
-    <div style="marginBottom: 20px;" class="tit">
-      <el-button size="mini" @click="DataSave">保存</el-button>
-      <el-button size="mini" @click="DataSave">执行一次</el-button>
-      <el-button size="mini" @click="DataSave">查看日志</el-button>
-      <el-button size="mini" @click="setCron">设置调度时间</el-button>
+    <div style="padding: 10px 0px;backgroundColor: #E2ECFA" class="tit">
+      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">保存</el-button>
+      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="save">执行一次</el-button>
+      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">查看日志</el-button>
+      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button>
     </div>
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
@@ -85,8 +85,8 @@
 {"from":5, "to":4, "fromPort":"B", "toPort":"T"},
 {"from":0, "to":4, "fromPort":"B", "toPort":"T"}
  ]}
-    </textarea>
-    <button @click="printDiagram">Print Diagram Using SVG</button> -->
+    </textarea> -->
+    <!-- <button @click="printDiagram">Print Diagram Using SVG</button> -->
   </div>
 </template>
 <script id="code">
@@ -496,15 +496,17 @@ export default {
       }
     },
     // 无法打开用户可以编辑的JSON格式的图表模型
+    // 可以获取到流程图的数据
     save() {
       // document.getElementById('mySavedModel').value = this.myDiagram.model.toJson() // 流程图中的值
       this.myDiagram.isModified = false
-      console.log(this.myDiagram.model.toJson())
+      console.log(this.myDiagram.model.toJson(), '流程图数据')
       this.SaveData = JSON.stringify(this.myDiagram.model.toJson())
       // console.log(this.myDiagram.isModified)
       // var button = document.getElementById("SaveButton")
       // if (button) button.disabled = true
     },
+    // 可以通过流程图数据刷新页面显示效果
     load() {
       this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
     },
@@ -560,7 +562,10 @@ export default {
     height: 30px;
     line-height: 30px;
     background-color: skyblue;
-    margin-bottom: 20px;
+    margin: 10px;
+    .el-button {
+      margin: 0px 24px;
+    }
   }
 }
 </style>

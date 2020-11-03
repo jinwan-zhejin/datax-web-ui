@@ -178,7 +178,7 @@
       :visible.sync="ViewVisible"
       width="40%"
     >
-      <el-input v-model="viewExpression" :autosize="{ minRows: 4, maxRows: 6}" disabled type="textarea" />
+      <el-input v-model="viewExpression" :autosize="{ minRows: 4, maxRows: 6}" style="paddingBottom: 20px;" disabled type="textarea" />
     </el-dialog>
   </div>
 </template>
