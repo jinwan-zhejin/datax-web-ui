@@ -178,7 +178,6 @@
           <Mapper ref="mapper" />
         </div>
         <div v-show="active === 4" class="step4">
-          <el-button type="primary" @click="buildJson">构建</el-button>
           <div style="margin-bottom: 20px" />
           <json-editor
             v-show="active === 4"
@@ -505,14 +504,17 @@ export default {
               );
             }
           }
+
+          this.buildJson();
         }
         if (this.active === 4) {
+
           this.showNext = true;
           this.showSubmit = false;
           this.temp.jobJson = this.configJson;
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
-          const str = "";
+          let str = "";
           this.temp.childJobIdArr.forEach((child) => {
             str += `${child.id},`;
           });

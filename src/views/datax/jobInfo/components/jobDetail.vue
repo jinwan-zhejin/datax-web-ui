@@ -1098,7 +1098,7 @@ export default {
 
 .log_container {
     padding-left: 24px;
-    height: 400px;
+    height: 260px;
     overflow: scroll;
     background: white;
     font-size: 13px;
