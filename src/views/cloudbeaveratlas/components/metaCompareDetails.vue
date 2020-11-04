@@ -2,7 +2,7 @@
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 18:33:10
+ * @LastEditTime: ,: 2020-11-04 18:39:44
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
@@ -346,7 +346,7 @@ export default {
             color = 'transparent'
           }
           temp += `
-          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 2px solid #f8f8fa; font-size: 14px">
+          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 1px solid #e9e9e9dd; border-left: 1px solid #e9e9e9dd; font-size: 14px">
             <div style="width: 30%; white-space: normal; word-break: break-all; padding-right: 10px; color: #666666; font-weight: 500; text-align: right;">${translaterMaster(i)}</div>
             <div style="width: 70%; white-space: normal; word-break: break-all;">${this.formatValue(key.concat('.').concat(i), value[i])}</div>
           </div>
