@@ -1,5 +1,8 @@
 <template>
   <div class="infacereg">
+    <div class="top">
+      <p>接口注册</p>
+    </div>
     <!-- 步骤条 -->
     <el-steps :active="active" align-center>
       <el-step title="填写信息接口" />
@@ -18,7 +21,8 @@
             <el-input v-model="form.telephone" />
           </el-form-item>
           <el-form-item label="注册人:" placeholder="请输入注册人" prop="registerCompany">
-            <el-input v-model="form.registerCompany" disabled />
+            <!-- <el-input v-model="form.registerCompany" disabled /> -->
+            <span style="color: #666666;">{{ form.registerCompany }}</span>
           </el-form-item>
           <el-form-item label="接口名称:" placeholder="(中文)最多20个字" prop="interName">
             <el-input v-model="form.interName" />
@@ -27,10 +31,11 @@
             <el-input v-model="form.interRemark" />
           </el-form-item>
           <el-form-item label="返回数据格式:">
-            <el-radio-group v-model="form.responseMode" size="medium" @change="changeMode">
+            <!-- <el-radio-group v-model="form.responseMode" size="medium" @change="changeMode">
               <el-radio-button size="small" label="JSON" />
-            <!-- <el-radio-button label="XML"></el-radio-button> -->
-            </el-radio-group>
+            <el-radio-button label="XML"></el-radio-button>
+            </el-radio-group> -->
+            <span style="color: #666666;">{{ form.responseMode }}</span>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -556,6 +561,18 @@ export default {
   margin: 20px;
   background-color: #fff;
   border-radius: 8px;
+  .top {
+    height: 84px;
+    line-height: 84px;
+    p {
+      width: 96px;
+      font-size: 24px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      font-weight: 500;
+      color: #333333;
+      margin-left: 24px;
+    }
+  }
   .el-steps {
     padding-top: 10px;
     width: 60%;
@@ -660,6 +677,8 @@ export default {
     }
   }
   .btn {
+    height: 96px;
+    line-height: 96px;
     text-align: center;
     .el-button {
       margin: 10px 60px;
