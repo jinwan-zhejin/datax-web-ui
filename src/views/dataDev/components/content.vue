@@ -127,6 +127,8 @@ export default {
         datasourceId: this.dataBaseid
       }).then((res) => {
         this.SchemaList = res;
+      }).catch(err => {
+        console.log(err);
       });
     },
 
@@ -206,6 +208,7 @@ export default {
 }
 
 .dragBar {
+    display: none;
     color: #cfd8dc;
     text-align: center;
 }

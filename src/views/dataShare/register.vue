@@ -18,7 +18,8 @@
             <el-input v-model="form.telephone" />
           </el-form-item>
           <el-form-item label="注册人:" placeholder="请输入注册人" prop="registerCompany">
-            <el-input v-model="form.registerCompany" disabled />
+            <!-- <el-input v-model="form.registerCompany" disabled /> -->
+            <span>{{ form.registerCompany }}</span>
           </el-form-item>
           <el-form-item label="接口名称:" placeholder="(中文)最多20个字" prop="interName">
             <el-input v-model="form.interName" />

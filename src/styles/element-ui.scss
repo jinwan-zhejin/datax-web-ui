@@ -83,6 +83,9 @@
     height: 32px;
     line-height: 32px;
   }
+  .el-input__icon {
+    line-height: 32px;
+  }
 }
 
 // 按钮样式
@@ -126,4 +129,13 @@
   color: #FFF;
   background-color: #FE4646;
   border-color: #FE4646;
+}
+
+.el-tree-node>.el-tree-node__children {
+  overflow-x: none !important;
+}
+
+.el-input-group__append {
+  background-color: #3d5fff;
+  color: #FFF;
 }

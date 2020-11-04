@@ -455,13 +455,11 @@
             <el-form-item label="端口:">
               <el-input v-model="OracleForm.serverPort" />
             </el-form-item>
-            <el-form-item label="Database:">
-              <el-select v-model="OracleForm.database" style="width: 100%" placeholder="ORCL">
-                <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
+            <el-form-item label="数据库:">
+              <el-input v-model="OracleForm.database" />
             </el-form-item>
             <el-form-item>
-              <el-select v-model="OracleForm.role" style="width: 100%" placeholder="ORCL">
+              <el-select v-model="OracleForm.role" style="width: 100%" placeholder="请选择">
                 <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
@@ -470,19 +468,14 @@
         <p>认证</p>
         <div class="bgcForm">
           <el-form :model="OracleForm" label-width="100px">
-            <el-form-item label="认证:">
-              <el-select v-model="OracleForm.advanced" style="width: 100%" placeholder="请选择认证">
-                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
             <el-form-item label="用户名:">
               <el-input v-model="OracleForm.username" />
             </el-form-item>
-            <el-form-item label="角色:">
+            <!-- <el-form-item label="角色:">
               <el-select v-model="OracleForm.role" style="width: 100%" placeholder="请选择角色">
                 <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="密码:">
               <el-input v-model="OracleForm.password" type="password" />
             </el-form-item>
@@ -820,12 +813,10 @@
               <el-input v-model="oracleEdit.serverPort" />
             </el-form-item>
             <el-form-item label="Database:">
-              <el-select v-model="oracleEdit.database" style="width: 100%" placeholder="ORCL">
-                <el-option v-for="item in roclData" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
+              <el-input v-model="oracleEdit.database" />
             </el-form-item>
             <el-form-item>
-              <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="ORCL">
+              <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="请选择">
                 <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
@@ -834,19 +825,14 @@
         <p>认证</p>
         <div class="bgcForm">
           <el-form :model="oracleEdit" label-width="100px">
-            <el-form-item label="认证:">
-              <el-select v-model="oracleEdit.advanced" style="width: 100%" placeholder="请选择认证">
-                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
             <el-form-item label="用户名:">
               <el-input v-model="oracleEdit.jdbcUsername" />
             </el-form-item>
-            <el-form-item label="角色:">
+            <!-- <el-form-item label="角色:">
               <el-select v-model="oracleEdit.role" style="width: 100%" placeholder="请选择角色">
                 <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="密码:">
               <el-input v-model="oracleEdit.jdbcPassword" type="password" />
             </el-form-item>
@@ -1148,10 +1134,16 @@ export default {
         value: 'helowin'
       }
       ],
-      roleList: [{
-        value: '123',
-        label: '管理员'
-      }],
+      roleList: [
+        {
+          value: 'SID',
+          label: 'SID'
+        },
+        {
+          value: 'Service Name',
+          label: 'Service Name'
+        }
+      ],
       input3: '',
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
@@ -1271,7 +1263,9 @@ export default {
       MySQLForm: {},
       GPForm: {}, // greenplum, postgresql
       HiveForm: {}, // Apache Hive,Apache Spark,Cloudera Impala
-      OracleForm: {}, // oracle
+      OracleForm: {
+        role: ''
+      }, // oracle
       DB2Form: {}, // OracleForm
       CHForm: {}, // ClickHouse HBase
       MdbForm: {
@@ -1618,6 +1612,7 @@ export default {
   created() {
     this.jobName = sessionStorage.getItem('JobName')
     this.fetchData();
+    this.OracleForm.role = this.roleList[0].label
   },
   activated() { // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
     console.log('123')

@@ -9,14 +9,7 @@
             </el-select>
           </el-col>
           <el-col style="textAlign: right;" :span="8">
-            <el-dropdown>
-              <i class="el-icon-menu" />
-              <el-dropdown-menu>
-                <el-dropdown-item>新建查询</el-dropdown-item>
-                <el-dropdown-item>删除查询</el-dropdown-item>
-                <el-dropdown-item>编辑查询</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <svg-icon style="cursor: pointer;" class="el-icon-plus" icon-class="jiatianjiawenjian-" @click="addTab" />
           </el-col>
         </el-row>
       </div>
@@ -26,12 +19,39 @@
         </div>
         <!-- 数据源tree -->
         <div class="dataTree">
-          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current accordion node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand" />
+          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand">
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span style="fontSize: 14px;">
+                <svg-icon v-if="node.level == 1 && data.datasource === 'mysql'" icon-class="yunshujukuRDSMySQL" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'oracle'" icon-class="ORACLE" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'postgresql'" icon-class="postgresql" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'spark'" icon-class="spark" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'sqlserver'" icon-class="sqlserver1" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'impala'" icon-class="Impala" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'hive'" icon-class="Hive" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'hbase'" icon-class="HBASE" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'greenplum'" icon-class="Greenplum-x" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'db2'" icon-class="db" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'clickhouse'" icon-class="clickhouse" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'mongodb'" icon-class="ziyuan" />
+                <!-- <svg-icon v-if="node.level == 2" icon-class="database" /> -->
+                <i v-if="node.level == 2" class="el-icon-coin" />
+                <svg-icon v-if="node.level == 3" icon-class="table1" />
+                <svg-icon v-if="node.level == 4 && data.type === 'varchar' || data.type === 'text' || data.type === 'mediumtext' || data.type === 'char' || data.type === 'longtext'" icon-class="text" />
+                <svg-icon v-if="node.level == 4 && data.type === 'number' || data.type === 'double' || data.type === 'int' || data.type === 'bigint' || data.type === 'tinyint' || data.type === 'float' || data.type === 'decimal' || data.type === 'smallint'" icon-class="Group" />
+                <i v-if="node.level == 4 && data.type === 'date' || data.type === 'timestamp' || data.type === 'datetime' || data.type === 'time'" class="el-icon-date" />
+                <svg-icon v-if="node.level == 4 && data.type === 'enum'" icon-class="enumeratekeysini" />
+                <svg-icon v-if="node.level == 4 && data.type === 'set'" icon-class="main-set" />
+                <svg-icon v-if="node.level == 4 && data.type === 'blob' || data.type === 'longblob'" icon-class="Blobshangchuanwenjian" />
+                {{ data.name }}
+              </span>
+            </span>
+          </el-tree>
         </div>
         <!-- 数据库tree -->
       </div>
     </div>
-    <el-tabs v-model="editableTabsValue" type="card" closable>
+    <el-tabs v-model="editableTabsValue" class="tabs1" type="card" closable @tab-remove="removeTab">
       <!-- :editable="true" -->
       <!-- @tab-remove="removeTab" -->
       <!-- @edit="handleTabsEdit" -->
@@ -80,7 +100,12 @@ export default {
       },
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        isLeaf: (data, node) => {
+          if (node.level == 4) {
+            return true
+          }
+        }
       },
       dataTree: [],
       firstId: ''
@@ -105,9 +130,20 @@ export default {
         name: newTabName
         // content: "New Tab content",
       });
+      console.log(this.editableTabs);
       this.editableTabsValue = newTabName;
     },
-
+    handleDelete(name) {
+      console.log(name);
+      for (let i = 0; i < this.editableTabs.length; i++) {
+        if (this.editableTabs[i].name === name) {
+          this.editableTabs.splice(i, 1);
+          this.tabIndex = i + ''
+          console.log(this.tabIndex, 'index')
+          this.editableTabsValue = this.tabIndex;
+        }
+      }
+    },
     handleNodeExpand(data, node) {
       console.log(data, 'data')
       console.log(node.level, 'level')
@@ -125,6 +161,8 @@ export default {
             })
           }
           this.$refs.tree.updateKeyChildren(data.id, arr);
+        }).catch(err => {
+          console.log(err);
         })
       } else if (node.level == 2) {
         getTableListWithComment({
@@ -137,7 +175,7 @@ export default {
           for (let j = 0; j < res.length; j++) {
             arr.push({
               id: new Date().getTime() + j,
-              name: res[j].name + '' + res[j].comment,
+              name: res[j].name + ' ' + res[j].comment,
               dsid: data.dsid,
               schema: data.name,
               tableName: res[j].name
@@ -156,11 +194,14 @@ export default {
           for (let j = 0; j < res.datas.length; j++) {
             arr.push({
               id: new Date().getTime() + j,
-              name: res.datas[j].COLUMN_NAME + ' ' + res.datas[j].DATA_TYPE
+              name: res.datas[j].COLUMN_NAME + ' (' + res.datas[j].DATA_TYPE + ')' + ' - ' + res.datas[j].COLUMN_COMMENT,
+              type: res.datas[j].DATA_TYPE
             })
           }
           this.$refs.tree.updateKeyChildren(data.id, arr);
         });
+      } else {
+        console.log('最后一级')
       }
     },
     filterNode(value, data) {
@@ -198,7 +239,7 @@ export default {
       }
       datasourceApi.getJobList(this.arrQuery).then((response) => {
         for (let i = 0; i < response.records.length; i++) {
-          response.records[i].name = response.records[i].datasourceName + '—' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
+          response.records[i].name = response.records[i].datasourceName + ' - ' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
         }
         this.dataTree = response.records;
       });
@@ -261,50 +302,65 @@ export default {
     overflow: hidden;
     // border-radius: 8px;
     background: #f0f0f2;
+    display: flex;
 
     .aside {
-        width: 25%;
-        height: 100%;
-        overflow: auto;
+        width: 340px;
+        min-height: 660px;
+        max-height: 750px;
+        overflow: scroll;
         padding: 10px;
-        float: left;
-
         .top {
             height: 74px;
             line-height: 60px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0, 0, 0, .1);
         }
+        .tree {
+          .search {
+            margin-bottom: 15px;
+          }
+          .dataTree {
+            width: 700px;
+            background-color:#f0f0f2;
+            .el-tree {
+              background: none;
+            }
+          }
+        }
     }
 
-    .el-tabs {
-        width: 75%;
-        float: right;
+    .tabs1 {
+      flex: 1;
+      .el-tabs__header {
+        margin: 0px;
+      }
     }
 }
 
-// .header >>> .el-tabs {
-//   width: 75%;
-//   float: right;
-// }
-.header>>>.el-tabs__new-tab {
+.header >>> .el-tabs__new-tab {
     float: left;
     margin-right: 10px;
 }
 
-.header>>>.el-tabs__header {
+.header >>> .el-tabs__header {
     background-color: #F8F8fA;
 }
 
-.header>>>.el-tabs__new-tab {
+.header >>> .el-tabs__new-tab {
     background-color: #ffffff;
 }
 
-.header>>>.is-active {
+.header >>> .is-active {
     background-color: #ffffff;
 }
 
-.header>>>.el-input__icon {
-    line-height: 32px;
+.header >>> .el-tree-node__expand-icon {
+  display: none;
 }
+
+.header >>> .el-tree-node>.el-tree-node__children {
+  overflow: none;
+}
+
 </style>

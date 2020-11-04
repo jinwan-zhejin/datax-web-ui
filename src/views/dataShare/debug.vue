@@ -1,33 +1,23 @@
 <template>
   <div class="call">
-    <p>调用共享接口</p>
+    <p class="P1">调用共享接口</p>
+    <el-form ref="form" class="formTop" :model="form" label-width="80px">
+      <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select">
+        <el-select slot="prepend" v-model="form.select" style="width: 100px" placeholder="请选择">
+          <el-option label="post" value="post" />
+          <el-option label="get" value="get" />
+        </el-select>
+        <el-button slot="append" icon="el-icon-search" @click="call" />
+      </el-input>
+    </el-form>
     <div class="box">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select">
-          <el-select slot="prepend" v-model="form.select" style="width: 100px" placeholder="请选择">
-            <el-option label="post" value="post" />
-            <el-option label="get" value="get" />
-          </el-select>
-          <el-button slot="append" icon="el-icon-search" @click="call" />
-        </el-input>
-      </el-form>
       <el-radio-group v-show="isBtn" v-model="radio1" style="marginTop: 20px">
         <el-radio-button label="formData" />
         <el-radio-button label="params" />
       </el-radio-group>
       <el-tabs type="border-card">
         <el-tab-pane>
-          <span slot="label">Params</span>
-          <p v-show="isSuccess" class="title">
-            <!-- <el-radio-group v-model="radio">
-              <el-radio label="none">none</el-radio>
-              <el-radio label="form-data">form-data</el-radio>
-              <el-radio label="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
-              <el-radio label="raw">raw</el-radio>
-              <el-radio label="binary">binary</el-radio>
-            </el-radio-group> -->
-            <el-button type="goon" size="small" @click="addKeyValue">add</el-button>
-          </p>
+          <span slot="label">参数</span>
           <el-table
             v-show="isSuccess"
             :data="callValue"
@@ -54,10 +44,21 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="action"
+              label="操作"
+              width="120"
+              align="center"
             >
               <template v-slot:default="{ row }">
-                <el-button @click="deleteKeyValue(row)"><i class="el-icon-delete" /></el-button>
+                <a class="a1" @click="addKeyValue">添加</a>
+                <span
+                  style="
+                    width: 1px;
+                    height: 12px;
+                    background: #e6e6e8;
+                    display: inline-block;
+                  "
+                />
+                <a class="a2" @click="deleteKeyValue(row)">删除</a>
               </template>
             </el-table-column>
           </el-table>
@@ -65,6 +66,53 @@
           <el-input v-show="showSuccess" v-model="dataObj" style="marginTop: 20px;" disabled type="textarea" autosize />
         </el-tab-pane>
       </el-tabs>
+      <el-table
+        v-show="isSuccess"
+        :data="callValue"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          width="50"
+        />
+        <el-table-column
+          prop="date"
+          label="key"
+        >
+          <template scope="scope">
+            <el-input v-model="scope.row.key" size="mini" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="value"
+        >
+          <template scope="scope">
+            <el-input v-model="scope.row.value" size="mini" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="120"
+          align="center"
+        >
+          <template v-slot:default="{ row }">
+            <!-- <el-button @click="deleteKeyValue(row)" /> -->
+            <a class="a1" @click="addKeyValue">添加</a>
+            <span
+              style="
+                width: 1px;
+                height: 12px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <a class="a2" @click="deleteKeyValue(row)">删除</a>
+          </template>
+        </el-table-column>
+      </el-table>
+      <p v-show="showSuccess"><i class="el-icon-check" />调用成功<el-button v-show="showSuccess" type="primary" @click="cancel">关闭</el-button></p>
+      <el-input v-show="showSuccess" v-model="dataObj" style="marginTop: 20px;" disabled type="textarea" autosize />
     </div>
   </div>
 </template>
@@ -118,8 +166,12 @@ export default {
     },
     deleteKeyValue(row) {
       console.log(row)
-      const index = this.callValue.indexOf(row)
-      this.callValue.splice(index, 1)
+      if (this.callValue.length > 1) {
+        const index = this.callValue.indexOf(row)
+        this.callValue.splice(index, 1)
+      } else {
+        this.$message.info('请输入内容')
+      }
     },
     call() {
       for (let i = 0; i < this.callValue.length; i++) {
@@ -200,14 +252,23 @@ export default {
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
-  p {
+  position: relative;
+  .P1 {
+    position: relative;
+    top: 4px;
+    left: 4px;
     font-size: 24px;
     font-family: PingFangHK-Medium, PingFangHK;
     font-weight: 500;
     color: #333333;
-    text-align:center;
     height: 36px;
     line-height: 36px;
+  }
+  .formTop {
+    position: absolute;
+    width: 50%;
+    right: 24px;
+    top: 24px;
   }
   .box {
     .el-tabs {
@@ -230,6 +291,17 @@ export default {
           }
           .el-button {
             float: right;
+          }
+        }
+        .el-table {
+          a {
+            color: cornflowerblue;
+          }
+          .a1:hover {
+            color: rgb(54, 105, 182)
+          }
+          .a2:hover {
+            color: rgb(218, 85, 85);
           }
         }
       }

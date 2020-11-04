@@ -1,7 +1,7 @@
 <template>
   <el-tabs type="border-card">
     <el-tab-pane label="结果">
-      <el-table class="table" :data="tableData" style="width: 100%;min-height:100px;" max-height="350">
+      <el-table class="table" :data="tableData" style="width: 100%;min-height:150px;" max-height="450">
         <el-table-column
           v-for="item in columns"
           :key="item.label"
@@ -11,7 +11,6 @@
         />
       </el-table>
     </el-tab-pane>
-    <el-tab-pane label="历史查询">历史查询</el-tab-pane>
   </el-tabs>
 </template>
 
@@ -111,4 +110,17 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.border-card {
+  .el-tabs {
+    .el-tab-pane {
+      height: 400px;
+    }
+  }
+}
+.el-table::before {
+  height: 0;
+}
+</style>
 

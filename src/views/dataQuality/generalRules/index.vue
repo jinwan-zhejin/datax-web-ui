@@ -30,7 +30,7 @@
         prop="code"
         align="left"
         label="规则编码"
-        width="150"
+        width="120"
       />
       <el-table-column
         prop="description"
@@ -40,18 +40,26 @@
       />
       <el-table-column
         align="left"
-        prop="personaliseType"
-        wdith="100"
-        label="个性化规则"
+        label="是否关联个性化规则"
+        width="180"
       >
         <template v-slot:default="row">
-          <a style="color: #333333;" @click="goIndividuation(row)">{{ showType(row.row) }}</a>
-          <a v-show="!row.row.personaliseType" style="color: #3D5FFF;" @click="showRelate"><i class="el-icon-plus" style="marginRight:8px;" />关联</a>
+          <a style="color: #333333;">{{ (row.row.relation === 0) }}</a>
         </template>a
       </el-table-column>
       <el-table-column
         align="left"
-        wdith="80"
+        prop="personaliseType"
+        wdith="120"
+        label="个性化规则"
+      >
+        <template v-slot:default="row">
+          <a style="color: #333333;" @click="goIndividuation(row)">{{ showType(row.row) }}</a>
+        </template>a
+      </el-table-column>
+      <el-table-column
+        align="left"
+        wdith="120"
         label="操作"
       >
         <template v-slot:default="row">
@@ -74,7 +82,7 @@
       :visible.sync="AddVisible"
       width="40%"
     >
-      <el-form ref="addForm" :model="addForm" label-position="right" label-width="100px" class="demo-ruleForm">
+      <el-form ref="addForm" :model="addForm" label-position="right" label-width="150px" class="demo-ruleForm">
         <el-form-item label="规则名称:" prop="name">
           <el-input v-model="addForm.name" placeholder="请输入入参名称" />
         </el-form-item>
@@ -93,6 +101,15 @@
         </el-form-item>
         <el-form-item label="规则描述:" prop="desc">
           <el-input v-model="addForm.desc" placeholder="请输入规则描述" type="textarea" />
+        </el-form-item>
+        <el-form-item label="是否关联个性化规则:">
+          <el-radio-group v-model="addForm.relation">
+            <el-radio label="0">关联</el-radio>
+            <el-radio label="1">不关联</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-show="isRelate" label="正则表达式:">
+          <el-input v-model="addForm.regular" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -198,6 +215,7 @@ export default {
       AddVisible: false,
       RelateVisible: false,
       EditVisible: false,
+      isRelate: false,
       obj: {},
       options: [
         {
@@ -296,7 +314,7 @@ export default {
         console.log(newName)
         console.log(this.form.subclass)
         const newObj = this.tableData.find((obj) => obj.id === newName)
-        console.log(newObj)
+        console.log(newObj.personaliseType)
         if (newObj.personaliseType) {
           this.form.classify = newObj.personaliseType
         }
@@ -307,6 +325,19 @@ export default {
     'form.classify': {
       handler(newName, oldName) {
         console.log(newName)
+      },
+      deep: true,
+      immediate: true
+    },
+    'addForm.relation': {
+      handler(newName, oldName) {
+        console.log(newName)
+        if (newName === '1') {
+          this.isRelate = true
+        } else {
+          this.isRelate = false
+        }
+        console.log(this.isRelate)
       },
       deep: true,
       immediate: true
@@ -452,7 +483,9 @@ export default {
         name: this.addForm.name,
         code: this.addForm.code,
         description: this.addForm.desc,
-        type: this.addForm.type
+        type: this.addForm.type,
+        relation: this.addForm.relation,
+        regular: this.addForm.regular
       }
       console.log(JSON.stringify(this.obj))
       addList(JSON.stringify(this.obj)).then(res => {

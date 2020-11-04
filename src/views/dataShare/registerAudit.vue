@@ -1,9 +1,12 @@
 <template>
   <div class="batch">
     <!-- 标题 -->
-    <!-- <div class="tit">
-      <span>批量数据审批</span>
-    </div> -->
+    <div class="tit">
+      <span>注册审批</span>
+      <el-input v-model="interName" class="searchInput input-with-select" placeholder="请输入内容">
+        <el-button slot="append" type="goon" icon="el-icon-search" @click="search"><spqn style="color: #fff;fontSize: 16px;">搜索</spqn></el-button>
+      </el-input>
+    </div>
     <div class="main">
       <!-- 菜单栏 -->
       <div class="Menu">
@@ -16,7 +19,7 @@
           </el-radio-group>
         </div>
         <!-- 时间日期 -->
-        <div class="time">
+        <!-- <div class="time">
           <div class="search">
             <el-input
               v-model="interName"
@@ -26,7 +29,7 @@
               <i slot="suffix" style="margin-right: 5px;cursor: pointer;" class="el-icon-search" @click="search" />
             </el-input>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- 表格 -->
       <div class="tabel">
@@ -473,23 +476,49 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .batch {
   // width: 100%;
   // height: 100%;
-  padding: 20px;;
+  margin: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
   .tit {
-    font-size: 16px;
-    background-color: rgb(253, 253, 253);
-    height: 35px;
-    line-height: 30px;
-    border-bottom: 1px solid #cccccc;
+    height: 84px;
+    line-height: 84px;
+    position: relative;
     span {
-      display: block;
-      width: 100px;
-      height: 30px;
-      line-height: 30px;
-      border-bottom: 2px solid skyblue;
+      font-size: 24px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      font-weight: 500;
+      color: #333333;
+      margin-left: 4px;
+    }
+    .searchInput {
+      width: 30%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 24px;
+      .el-input {
+        overflow: hidden;
+        .el-input__inner {
+          float: left;
+          width: 200px;
+          height: 32px;
+          line-height: 32px;
+          padding-right: 15px;
+        }
+        .el-input-group__append {
+          float: left;
+          width: 60px;
+          padding: 0px 15px;
+          text-align: center;
+          color: #fff;
+          background-color: #3d5fff;
+        }
+      }
     }
   }
   .main {
@@ -501,12 +530,10 @@ export default {
       margin: 0 auto;
       height: 40px;
       line-height: 40px;
-      background-color: #fbf8f8;
       padding-bottom: 5px;
-      border: 1px solid #f1f1f1;
+      margin-bottom: 24px;
       .btn {
         float: left;
-        margin-left: 20px;
         margin-top: 0px;
         .el-button {
           background: cornflowerblue;
@@ -547,8 +574,9 @@ export default {
     }
     .tabel {
       width: 100%;
-      margin: 20px auto;
       background-color: #fff;
+      border-left: 1px solid #E0E0E0;
+      border-right: 1px solid #E0E0E0;
       .el-table {
       }
     }
