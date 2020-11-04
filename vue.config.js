@@ -40,8 +40,8 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        // target: 'http://47.103.79.104:9527',
-        target:'http://192.168.3.66:9527',
+        target: 'http://47.103.79.104:9527',
+        // target:'http://192.168.3.66:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:9090', // 刘向前
@@ -115,6 +115,7 @@ module.exports = {
         }
       },
       '/dbeaver/gql': {
+        ws: false,
         target: 'http://47.103.79.104:8979',
         changeOrigin: true,
         // headers: {

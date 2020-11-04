@@ -20,6 +20,7 @@ const translate = {
   'port': '端口',
   'databases': '数据库',
   'database': '数据库',
+  'data': '数据',
   'comment': '批注',
   'rdbms_type': '数据库类型',
   'filesize': '文件大小',
@@ -27,7 +28,7 @@ const translate = {
   'numberofreplicas': '副本数',
   'isfile': '是否为文件',
   'issymlink': '是否符号链接',
-  'guid': '唯一标识',
+  'guid': 'GUID',
   'name': '名称',
   'inputtoprocesses': '输入到流程',
   'outputfromprocesses': '输出自流程',
@@ -141,7 +142,13 @@ const translate = {
   'foreign_keys': '外键',
   'proxy': '代理',
   'relationshipattributes': '关系属性',
-  'provenancetype': '出处类型'
+  'provenancetype': '出处类型',
+  'emailaddress': 'E-mail',
+  'uniqueattributes': '唯一性约束',
+  'default': '默认',
+  'value': '值',
+  'contact': '联系',
+  'info': '信息'
 }
 // export default translate
 
