@@ -300,12 +300,20 @@ export const asyncRoutes = [
   {
     path: '/dataDev',
     component: Layout,
+    name: 'dataDev',
+    meta: { title: '数据开发', icon: 'icon_svg07', keepAlive: true },
     children: [
       {
-        path: '/dataDev',
+        path: 'dataDev',
         component: () => import('@/views/dataDev/dataDev'),
         name: 'dataDev',
         meta: { title: '数据开发', icon: 'icon_svg07', keepAlive: true }
+      },
+      {
+        path: 'ddlTransform',
+        component: () => import('@/views/dataDev/ddlTransform'),
+        name: 'ddlTransform',
+        meta: { title: 'DDL构建', icon: 'icon_svg07', keepAlive: true }
       }
     ]
   },

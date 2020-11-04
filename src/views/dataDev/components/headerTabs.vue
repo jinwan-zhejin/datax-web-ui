@@ -5,12 +5,7 @@
         <el-row>
           <el-col :span="16">
             <el-select v-model="selectValue" placeholder="请选择" @change="selectMethod">
-              <el-option
-                v-for="item in projectArray"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name"
-              />
+              <el-option v-for="item in projectArray" :key="item.id" :label="item.name" :value="item.name" />
             </el-select>
           </el-col>
           <el-col style="textAlign: right;" :span="8">
@@ -27,46 +22,20 @@
       </div>
       <div class="tree">
         <div class="search">
-          <el-input
-            v-model="searchModel"
-            placeholder="请输入关键字"
-            prefix-icon="el-icon-search"
-          />
+          <el-input v-model="searchModel" placeholder="请输入关键字" prefix-icon="el-icon-search" />
         </div>
         <!-- 数据源tree -->
         <div class="dataTree">
-          <el-tree
-            ref="tree"
-            class="filter-tree"
-            :data="dataTree"
-            :props="defaultProps"
-            lazy
-            :default-expand-all="true"
-            highlight-current
-            accordion
-            node-key="id"
-            :filter-node-method="filterNode"
-            @node-expand="handleNodeClick"
-            @node-collapse="handleCollapse"
-          />
+          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current accordion node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand" />
         </div>
         <!-- 数据库tree -->
       </div>
     </div>
-    <el-tabs
-      v-model="editableTabsValue"
-      type="card"
-      closable
-    >
+    <el-tabs v-model="editableTabsValue" type="card" closable>
       <!-- :editable="true" -->
       <!-- @tab-remove="removeTab" -->
       <!-- @edit="handleTabsEdit" -->
-      <el-tab-pane
-        v-for="(item) in editableTabs"
-        :key="item.name"
-        :label="item.title"
-        :name="item.name"
-      >
+      <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
         <DataDevContent />
       </el-tab-pane>
     </el-tabs>
@@ -77,7 +46,14 @@
 import DataDevContent from './content';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import { getTables, getColumns, getTableListWithComment, getTableSchema, getTableList } from '@/api/metadata-query';
+import {
+  getTables,
+  getColumns,
+  getTableListWithComment,
+  getTableSchema,
+  getTableList,
+  getTableColumns
+} from '@/api/metadata-query';
 export default {
   // name: "HeaderTabs",
   components: {
@@ -88,12 +64,10 @@ export default {
       editableTabsValue: '2',
       editableTabs: [],
       tabIndex: 2,
-      projectArray: [
-        {
-          value: '123',
-          label: '123'
-        }
-      ],
+      projectArray: [{
+        value: '123',
+        label: '123'
+      }],
       selectValue: '',
       searchModel: '',
       listQuery: {
@@ -133,35 +107,60 @@ export default {
       });
       this.editableTabsValue = newTabName;
     },
-    handleCollapse(data) {
-      console.log(data, '关闭节点')
-    },
-    // 选中树
-    handleNodeClick(data) {
+
+    handleNodeExpand(data, node) {
       console.log(data, 'data')
-      for (let i = 0; i < this.dataTree.length; i++) {
-        if (this.dataTree[i].id === data.id) {
-          this.firstId = data.id
-          getTableSchema({ datasourceId: data.id }).then((res) => {
-            const arr = []
-            for (let j = 0; j < res.length; j++) {
-              arr.push({
-                id: new Date().getTime() + j,
-                name: res[j],
-                children: []
-              })
-            }
-            console.log(arr, 'arr')
-            for (let i = 0; i < this.dataTree.length; i++) {
-              if (!this.dataTree[i].children) {
-                if (this.dataTree[i] === data) {
-                  this.$set(this.dataTree[i], 'children', arr)
-                }
-              }
-            }
-            console.log(this.dataTree)
-          })
-        }
+      console.log(node.level, 'level')
+      if (node.level == 1) {
+        getTableSchema({
+          datasourceId: data.id
+        }).then((res) => {
+          console.log(res)
+          const arr = []
+          for (let j = 0; j < res.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res[j],
+              dsid: data.id
+            })
+          }
+          this.$refs.tree.updateKeyChildren(data.id, arr);
+        })
+      } else if (node.level == 2) {
+        getTableListWithComment({
+          id: data.dsid,
+          schema: data.name
+        }).then(res => {
+          console.log('res', res);
+          // this.tableList = res;
+          const arr = []
+          for (let j = 0; j < res.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res[j].name + '' + res[j].comment,
+              dsid: data.dsid,
+              schema: data.name,
+              tableName: res[j].name
+            })
+          }
+          this.$refs.tree.updateKeyChildren(data.id, arr);
+        })
+      } else if (node.level == 3) {
+        getTableColumns({
+          datasourceId: data.dsid,
+          tableName: data.tableName,
+          schema: data.schema
+        }).then((res) => {
+          console.log(res.datas)
+          const arr = []
+          for (let j = 0; j < res.datas.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res.datas[j].COLUMN_NAME + ' ' + res.datas[j].DATA_TYPE
+            })
+          }
+          this.$refs.tree.updateKeyChildren(data.id, arr);
+        });
       }
     },
     filterNode(value, data) {
@@ -171,7 +170,9 @@ export default {
     // 获取项目数据
     async getProJectList() {
       try {
-        const { records } = await jobProjectApi.list(this.listQuery);
+        const {
+          records
+        } = await jobProjectApi.list(this.listQuery);
         this.projectArray = records;
         console.log(this.projectArray, 'projectArray');
         console.log(records)
@@ -202,27 +203,7 @@ export default {
         this.dataTree = response.records;
       });
     },
-    // 根据数据库获取表
-    tableList(data, id) {
-      getTableListWithComment({
-        id: id,
-        schema: data.name
-      }).then(res => {
-        console.log('res', res);
-        // this.tableList = res;
-        if (res) {
-          for (let i = 0; i < this.dataTree.length; i++) {
-            if (this.dataTree[i].id === id) {
-              for (let j = 0; j < this.dataTree[i].children.length; j++) {
-                if (this.dataTree[i].children[j] === data) {
-                  this.$set(this.dataTree[i].children[j], 'children', res)
-                }
-              }
-            }
-          }
-        }
-      })
-    },
+
     removeTab(targetName) {
       const tabs = this.editableTabs;
       let activeName = this.editableTabsValue;
@@ -272,50 +253,58 @@ export default {
 };
 </script>
 
-<style lang="scss"scoped>
+<style lang="scss">
 /* .header >>> .el-tabs__nav-scroll{
     border: 1px solid;
 } */
 .header {
-  overflow: hidden;
-  // border-radius: 8px;
-  background: #f0f0f2;
-  .aside {
-    width: 25%;
-    height: 100%;
-    overflow: auto;
-    padding: 10px;
-    float: left;
-    .top {
-      height: 74px;
-      line-height:60px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(0,0,0,.1);
+    overflow: hidden;
+    // border-radius: 8px;
+    background: #f0f0f2;
+
+    .aside {
+        width: 25%;
+        height: 100%;
+        overflow: auto;
+        padding: 10px;
+        float: left;
+
+        .top {
+            height: 74px;
+            line-height: 60px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+        }
     }
-  }
-  .el-tabs {
-    width: 75%;
-    float: right;
-  }
+
+    .el-tabs {
+        width: 75%;
+        float: right;
+    }
 }
+
 // .header >>> .el-tabs {
 //   width: 75%;
 //   float: right;
 // }
-.header >>> .el-tabs__new-tab {
-  float: left;
-  margin-right: 10px;
+.header>>>.el-tabs__new-tab {
+    float: left;
+    margin-right: 10px;
 }
-.header >>> .el-tabs__header {
-  background-color: #F8F8fA;
+
+.header>>>.el-tabs__header {
+    background-color: #F8F8fA;
 }
-.header >>> .el-tabs__new-tab {
-  background-color: #ffffff;
+
+.header>>>.el-tabs__new-tab {
+    background-color: #ffffff;
 }
-.header >>> .is-active {
-  background-color: #ffffff;
+
+.header>>>.is-active {
+    background-color: #ffffff;
 }
-.header >>> .el-input__icon {
-  line-height: 32px;
+
+.header>>>.el-input__icon {
+    line-height: 32px;
 }
 </style>
