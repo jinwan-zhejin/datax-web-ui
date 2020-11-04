@@ -100,8 +100,8 @@
             >
               <cron v-model="temp.jobCron" />
               <span slot="footer" class="dialog-footer">
-                <el-button @click="showCronBox = false">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false"
+                <el-button size="small" @click="showCronBox = false">关闭</el-button>
+                <el-button size="small" type="primary" @click="showCronBox = false"
                   >确 定</el-button
                 >
               </span>
@@ -464,21 +464,49 @@ export default {
       const toColumnsList = this.$refs.writer.getData().columns;
       // const fromTableName = this.$refs.reader.getData().tableName
       // 第一步 reader 判断是否已选字段
-      if (this.active === 1) {
-        this.showNext = true;
-        this.showSubmit = false;
+      if(this.active === 0) {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            this.active++;
+          } else {
+            return false;
+          }
+        });
+      } else if (this.active === 1) {
         // 实现第一步骤读取的表和字段直接带到第二步骤
         // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
         // 取子组件的数据
-        // console.info(this.$refs.reader.getData())
-        this.active++;
+        this.$refs['reader'].$refs['rdbmsreader'].$refs['readerFrom'].validate((valid) => {
+          if (valid) {
+            this.active++;
+          } else {
+            return false;
+          }
+        });
+
+
+        this.showNext = true;
+        this.showSubmit = false;
       } else {
         // 将第一步和第二步得到的字段名字发送到第三步
         if (this.active === 2) {
-          this.showNext = true;
-          this.showSubmit = false;
-          this.$refs.mapper.sendColumns(fromColumnList, toColumnsList);
-          this.$refs.mapper.sendRuleSettings();
+          let datasource = this.$refs.writer.dataSource;
+          let ref = {
+            'db2':'rdbmswriter',
+            'hive':'hivewriter'
+            }
+          
+          this.$refs['writer'].$refs[ref[datasource]].$refs['writerFrom'].validate((valid) => {
+          if (valid) {
+            this.active++;
+            this.showNext = true;
+            this.showSubmit = false;
+            this.$refs.mapper.sendColumns(fromColumnList, toColumnsList);
+            this.$refs.mapper.sendRuleSettings();
+          } else {
+            return false;
+          }
+        }); 
         }
         if (this.active === 3) {
           this.showNext = false;
@@ -504,7 +532,7 @@ export default {
               );
             }
           }
-
+          this.active++;
           this.buildJson();
         }
         if (this.active === 4) {
@@ -534,7 +562,7 @@ export default {
             this.$store.commit("SET_TAB_TYPE", "");
           });
         } else {
-          this.active++;
+          // this.active++;
         }
       }
     },
