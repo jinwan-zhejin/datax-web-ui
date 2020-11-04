@@ -1072,10 +1072,11 @@ export default {
 }
 
 .log_detail {
+    width: 100%;
     background: #F8F8FA;
     border: 2px solid #F8F8FA;
     border-left: none;
-    position: relative;
+    position: absolute;
     bottom: 0
 }
 

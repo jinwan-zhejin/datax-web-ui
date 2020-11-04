@@ -564,6 +564,10 @@ export default {
         .el-tabs {
             .el-tab-pane {
                 // padding: 10px;
+                height: 100%;
+                .job_detail{
+                    height: 100%;
+                }
             }
         }
     }
