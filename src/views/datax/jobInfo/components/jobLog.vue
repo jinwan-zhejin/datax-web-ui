@@ -192,5 +192,6 @@ export default {
     width: 6px;
     height: 6px;
     margin: 2px;
+    border-radius: 50%;
 }
 </style>
