@@ -2,7 +2,7 @@
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 16:34:25
+ * @LastEditTime: ,: 2020-11-04 17:10:14
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
@@ -309,6 +309,11 @@ export default {
      */
     object2Table(key, value) {
       if (typeof value !== 'object') { // 非数组、对象
+        if (typeof value === 'number' && key.toLowerCase().indexOf('time') > -1) {
+          return this.dateFormat('YYYY-mm-dd HH:MM:SS', value)
+        } else if (typeof value === 'string' && value.indexOf('-') <= -1 && value.indexOf('/') <= -1 && value.indexOf(' ') <= -1 && key.toLowerCase().indexOf('time') > -1) {
+          return this.dateFormat('YYYY-mm-dd HH:MM:SS', parseInt(value))
+        }
         return value
       } else {
         if (value.length === 0 || value === '') { // 空数组、空值
@@ -326,7 +331,7 @@ export default {
             color = 'transparent'
           }
           temp += `
-          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 1px solid #f8f8fa;">
+          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 2px solid #f8f8fa;">
             <div style="width: 20%; white-space: normal; word-break: break-all; padding-right: 7px; color: #666666; font-weight: 500; text-align: right;">${translaterMaster(i)}</div>
             <div style="width: 80%; white-space: normal; word-break: break-all;">${this.formatValue(key.concat('.').concat(i), value[i])}</div>
           </div>
@@ -351,7 +356,7 @@ export default {
   .top {
     font-size: 16px;
     color: #333333;
-    margin: 20px 0;
+    margin: 16px 0;
     .title {
       label {
         font-size: 18px;
@@ -360,6 +365,7 @@ export default {
     }
     .item {
       margin-top: 15px;
+      font-size: 24px;
       i {
         color: #3d5eff;
       }

@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 16:04:14
+ * @LastEditTime: ,: 2020-11-04 17:14:24
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据比对 index
 -->
@@ -217,7 +217,7 @@ export default {
           padding-right: 24px;
         }
         .el-scrollbar {
-          height: 62vh;
+          height: calc(100vh - 20rem);
           .list {
             padding-right: 24px;
             ul {
@@ -270,7 +270,7 @@ export default {
           }
         }
         .el-scrollbar {
-          height: calc(75vh);
+          height: calc(100vh - 12rem);
         }
         .el-scrollbar >>> .el-scrollbar__wrap {
           overflow-x: hidden;
