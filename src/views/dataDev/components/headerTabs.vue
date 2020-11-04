@@ -46,7 +46,8 @@
             accordion
             node-key="id"
             :filter-node-method="filterNode"
-            @node-click="handleNodeClick"
+            @node-expand="handleNodeClick"
+            @node-collapse="handleCollapse"
           />
         </div>
         <!-- 数据库tree -->
@@ -132,6 +133,9 @@ export default {
       });
       this.editableTabsValue = newTabName;
     },
+    handleCollapse(data) {
+      console.log(data, '关闭节点')
+    },
     // 选中树
     handleNodeClick(data) {
       console.log(data, 'data')
@@ -156,9 +160,7 @@ export default {
               }
             }
             console.log(this.dataTree)
-          });
-        } else {
-          this.tableList(data, this.firstId)
+          })
         }
       }
     },
