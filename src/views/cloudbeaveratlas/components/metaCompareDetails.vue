@@ -2,7 +2,7 @@
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 17:10:14
+ * @LastEditTime: ,: 2020-11-04 18:33:10
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
@@ -64,34 +64,49 @@
     【2】 {{ compare.params2 }} -->
     <!-- <el-button @click="test">test</el-button> -->
     <el-row class="compare">
-      <el-col class="compare-title">基于时间比对详情： {{ compare.difference === '' ? '版本一致' : (compare.difference.indexOf('.') > -1 ? '参数不一致' : compare.difference) }}</el-col>
-      <el-col v-if="compare.difference.indexOf('.') > -1" class="compare-title">具体参数： {{ translaterArray(compare.difference) }}</el-col>
+      <el-col class="compare-title">
+        <el-col><label>基于时间比对详情</label></el-col>
+        <el-col class="compare-infos">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <span class="infos-key">状态：</span>
+            <span class="infos-value">{{ compare.difference === '' ? '版本一致' : (compare.difference.indexOf('.') > -1 ? '参数不一致' : compare.difference) }}</span>
+          </el-col>
+          <el-col v-if="compare.difference.indexOf('.') > -1" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <span class="infos-key">具体参数：</span>
+            <span class="infos-value">{{ translaterArray(compare.difference) }}</span>
+          </el-col>
+        </el-col>
+      </el-col>
       <el-col v-if="objectHasVal !== 0" class="details-table">
-        <el-col class="table-column" :span="12">基线时间版本详情</el-col>
-        <el-col class="table-column" :span="12">待比较时间版本详情</el-col>
+        <el-col :span="12" style="border-right: 1px solid #e9e9e9dd;">
+          <el-col class="table-column">基线时间版本详情</el-col>
+        </el-col>
+        <el-col :span="12" style="border-left: 1px solid #e9e9e9dd;">
+          <el-col class="table-column">待比较时间版本详情</el-col>
+        </el-col>
         <!-- 对象一致\对象修改 -->
         <el-col v-if="compare.difference === '' || compare.difference.indexOf('.') > -1">
           <el-col v-for="(item, index) in mergeObjects(compare.params1, compare.params2)" :key="index" class="table-items">
-            <el-col :span="12" style="border: 1px solid #f8f8fa; padding: 7px;" :style="{background: differenceArray.indexOf(item)>-1?'rgb(255, 244, 182)':'transparent'}">
-              <el-col class="table-items-key" :span="6">{{ compare.params1.hasOwnProperty(item) ? translaterMaster(item) : '' }}</el-col>
-              <el-col class="table-items-value" :span="18" v-html="compare.params1.hasOwnProperty(item) ? object2Table(item, compare.params1[item]) :''" />
+            <el-col :span="12" style="border-right: 1px solid #e9e9e9dd; padding: 7px;" :style="{background: differenceArray.indexOf(item)>-1?'rgb(255, 244, 182)':'transparent'}">
+              <el-col class="table-items-key" :span="5">{{ compare.params1.hasOwnProperty(item) ? translaterMaster(item) : '' }}</el-col>
+              <el-col class="table-items-value" :span="19" v-html="compare.params1.hasOwnProperty(item) ? object2Table(item, compare.params1[item]) :''" />
             </el-col>
-            <el-col :span="12" style="border: 1px solid #f8f8fa; padding: 7px;" :style="{background: differenceArray.indexOf(item)>-1?'rgb(255, 244, 182)':'transparent'}">
-              <el-col class="table-items-key" :span="6">{{ compare.params2.hasOwnProperty(item) ? translaterMaster(item) : '' }}</el-col>
-              <el-col class="table-items-value" :span="18" v-html="compare.params2.hasOwnProperty(item) ? object2Table(item, compare.params2[item]) : ''" />
+            <el-col :span="12" style="border-right: 1px solid #e9e9e9dd; padding: 7px;" :style="{background: differenceArray.indexOf(item)>-1?'rgb(255, 244, 182)':'transparent'}">
+              <el-col class="table-items-key" :span="5">{{ compare.params2.hasOwnProperty(item) ? translaterMaster(item) : '' }}</el-col>
+              <el-col class="table-items-value" :span="19" v-html="compare.params2.hasOwnProperty(item) ? object2Table(item, compare.params2[item]) : ''" />
             </el-col>
           </el-col>
         </el-col>
         <!-- 对象添加/删除 -->
         <el-col v-else-if="objectHasVal === 1 || objectHasVal === 2">
           <el-col v-for="(value, key, index) in compare['params' + objectHasVal]" :key="index" class="table-items">
-            <el-col :span="12" style="border: 1px solid #f8f8fa; padding: 7px">
-              <el-col class="table-items-key" :span="6">{{ objectHasVal===1 ? translaterMaster(key) : '' }}</el-col>
-              <el-col class="table-items-value" :span="18" v-html="objectHasVal===1 ? object2Table(key, value) : ''" />
+            <el-col :span="12" style="border-right: 1px solid #e9e9e9dd; padding: 7px">
+              <el-col class="table-items-key" :span="5">{{ objectHasVal===1 ? translaterMaster(key) : '' }}</el-col>
+              <el-col class="table-items-value" :span="19" v-html="objectHasVal===1 ? object2Table(key, value) : ''" />
             </el-col>
-            <el-col :span="12" style="border: 1px solid #f8f8fa; padding: 7px">
-              <el-col class="table-items-key" :span="6">{{ objectHasVal===2 ? translaterMaster(key) : '' }}</el-col>
-              <el-col class="table-items-value" :span="18" v-html="objectHasVal===2 ? object2Table(key, value) : ''" />
+            <el-col :span="12" style="border-right: 1px solid #e9e9e9dd; padding: 7px">
+              <el-col class="table-items-key" :span="5">{{ objectHasVal===2 ? translaterMaster(key) : '' }}</el-col>
+              <el-col class="table-items-value" :span="19" v-html="objectHasVal===2 ? object2Table(key, value) : ''" />
             </el-col>
           </el-col>
         </el-col>
@@ -241,9 +256,9 @@ export default {
       const array = str.split(', ')
       let temp = ''
       for (var i = 0; i < array.length; i++) {
-        temp += translaterMaster(array[i].split('.')[0]).concat('：').concat(translaterMaster(array[i].split('.')[1]))
+        temp += translaterMaster(array[i].split('.')[0]).concat('-').concat(translaterMaster(array[i].split('.')[1]))
         if (i < array.length - 1) {
-          temp += '、 '
+          temp += ',  '
         }
       }
       return temp
@@ -331,9 +346,9 @@ export default {
             color = 'transparent'
           }
           temp += `
-          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 2px solid #f8f8fa;">
-            <div style="width: 20%; white-space: normal; word-break: break-all; padding-right: 7px; color: #666666; font-weight: 500; text-align: right;">${translaterMaster(i)}</div>
-            <div style="width: 80%; white-space: normal; word-break: break-all;">${this.formatValue(key.concat('.').concat(i), value[i])}</div>
+          <div style="width: 100%; -webkit-line-clamp: 1;overflow: hidden;display: -webkit-box;white-space: normal; padding: 5px 0; background: ${color}; border-bottom: 2px solid #f8f8fa; font-size: 14px">
+            <div style="width: 30%; white-space: normal; word-break: break-all; padding-right: 10px; color: #666666; font-weight: 500; text-align: right;">${translaterMaster(i)}</div>
+            <div style="width: 70%; white-space: normal; word-break: break-all;">${this.formatValue(key.concat('.').concat(i), value[i])}</div>
           </div>
           `
         }
@@ -372,27 +387,33 @@ export default {
     }
   }
   .infos {
-    padding: 10px;
+    padding: 10px 0;
     font-size: 15px;
     line-height: 20px;
     .el-col {
-      padding: 5px;
+      padding: 5px 0;
     }
-    .infos-key {
-      color: #999999;
-    }
-    .infos-value {
-      color: #333333;
-    }
+  }
+  .infos-key {
+    color: #999999;
+  }
+  .infos-value {
+    color: #333333;
   }
   .compare {
     .compare-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 10px 5px;
+      label {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .compare-infos {
+        font-size: 15px;
+        margin: 16px 0;
+      }
+      margin: 10px 0;
     }
     .details-table {
-      border: 1px solid #efeff7;
+      border: 1px solid #e9e9e9dd;
       background: #f8f8fa;
       color: #333333;
       .table-column {
@@ -403,15 +424,15 @@ export default {
       }
       .table-items {
         background: white;
-        border-bottom: 1px solid #efeff7;
+        border-bottom: 1px solid #e9e9e9dd;
         text-align: left;
         // padding: 7px;
-        font-size: 15px;
+        font-size: 14px;
         .table-items-key {
           color: #666666;
           font-weight: 550;
           text-align: right;
-          padding-right: 30px;
+          padding-right: 15px;
         }
         .table-items-value {
           color: #333333;
