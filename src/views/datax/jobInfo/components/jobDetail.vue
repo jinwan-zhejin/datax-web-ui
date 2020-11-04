@@ -129,10 +129,10 @@
         </div>
 
         <div class="json_detail">
-            <p class="json_title" @click='(jsonshow = !jsonshow)'>查看json：</p>
+            <p class="json_title" @click='viewJson'>查看json：</p>
         </div>
         <div class="json_content" v-if="jsonshow">
-            <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
+            <json-editor ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
         </div>
     </div>
 
@@ -417,7 +417,6 @@ export default {
             callback();
         };
         return {
-            
             jsonshow: false,
             newstlogContent: '',
             jobId: '',
@@ -940,7 +939,12 @@ export default {
                     });
                 }
             });
-        }
+        },
+
+        viewJson(){
+            this.jsonshow = !this.jsonshow
+        },
+
     }
 };
 </script>

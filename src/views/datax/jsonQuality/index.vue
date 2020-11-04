@@ -128,7 +128,7 @@
                 />
               </el-form-item>
             
-              <el-form-item label="质量任务" prop="glueType">
+              <!-- <el-form-item label="质量任务" prop="glueType">
                 <el-select v-model="temp.glueType" placeholder="任务脚本类型">
                   <el-option
                     v-for="item in glueTypes"
@@ -137,7 +137,7 @@
                     :value="item.value"
                   />
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
            
               
               <el-form-item label="子任务">
@@ -155,8 +155,7 @@
                   />
                 </el-select>
               </el-form-item>
-            
-          
+
               <el-form-item label="JVM启动参数">
                 <el-input
                   v-model="temp.jvmParam"
@@ -195,15 +194,8 @@
         <Mapper ref="mapper" />
       </div>
       <div v-show="active === 4" class="step4">
-        <el-button type="primary" @click="buildJson">1.构建</el-button>
-        <!-- <el-button type="primary" @click="handleJobTemplateSelectDrawer">{{ jobTemplate ? jobTemplate : "2.选择模板" }}</el-button> -->
-        <!-- <el-button
-          v-show="isUse"
-          type="info"
-          @click="handleCopy(inputData, $event)"
-        >复制json</el-button> -->
-        <span v-show="isUse">(步骤：构建->选择模板->提交)</span>
-        <div style="margin-bottom: 20px" />
+        <el-button type="primary" @click="buildJson">构建</el-button>
+      <div style="margin-bottom: 20px" />
         <json-editor
           v-show="active === 4"
           ref="jsonEditor"
@@ -416,8 +408,8 @@ export default {
         executorTimeout: '',
         userId: 0,
         jobConfigId: '',
-        executorHandler: '',
-        glueType: '',
+        executorHandler: 'executorJobHandler',
+        glueType: 'BEAN',
         glueSource: '',
         jobJson: '',
         executorParam: '',
