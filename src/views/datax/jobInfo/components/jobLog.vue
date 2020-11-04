@@ -62,7 +62,7 @@
         </el-table-column>
     </el-table>
 
-    <el-dialog append-to-body title="日志查看" :visible.sync="dialogVisible" width="95%">
+    <el-dialog class="log_content" append-to-body title="日志查看" :visible.sync="dialogVisible" width="80%">
         <div class="log-container">
             <pre :loading="logLoading" v-text="logContent" />
         </div>
@@ -192,5 +192,16 @@ export default {
     width: 6px;
     height: 6px;
     margin: 2px;
+    border-radius: 50%;
 }
+
+.log-container {
+    overflow: scroll;
+    max-height: 450px;
+}
+
+.log_content >>> .el-dialog {
+    border-radius: 8px;
+}
+
 </style>

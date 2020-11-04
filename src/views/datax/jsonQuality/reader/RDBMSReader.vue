@@ -9,7 +9,7 @@
     >
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
-          v-model="readerForm.datasourceId"
+          v-model="datasourceId"
           filterable
           
           @change="rDsChange"
@@ -117,8 +117,9 @@
                     :value="item.code"
                   />
                 </el-select>
+                
                 <p v-for="(my, index) in row.row.ruleId" v-else :key="index">
-                  {{ my.name }}
+                  {{ my }}
                 </p>
               </template>
             </el-table-column>
@@ -127,11 +128,11 @@
                 <span>操作</span>
               </template>
               <template v-slot:default="row">
-                <i
+                <!-- <i
                   style="cursor: pointer; margin-right: 10px;color:rgba(61, 95, 255, 1);"
                   class="el-icon-edit"
                   @click="editRow(row)"
-                />
+                /> -->
                 <i
                   style="cursor: pointer;color:red;"
                   class="el-icon-delete"
@@ -188,6 +189,7 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
+      datasourceId:'',
       arr: [],
       tableData1: [],
       rDsList: [],
@@ -266,27 +268,26 @@ export default {
   methods: {
     // 添加行
     addRow() {
-      console.log('this.tableData1',this.tableData1)
-      this.tableData1.map((item) => {
-        if (item.status) {
-          console.log('this.readerForm', this.readerForm);
-          console.log('item',item)
-          item.columnName = this.readerForm.columnName;
-          for (let i = 0; i < this.nameList.length; i++) {
-            for (let j = 0; j < this.readerForm.rule.length; j++) {
-              if (this.nameList[i].code === this.readerForm.rule[j]) {
-                const obj = {};
-                obj.name = this.nameList[i].name;
-                obj.code = this.nameList[i].code;
-                item.ruleId.push(obj);
-              }
-            }
-          }
-          this.readerForm.columnName = '';
-          item.status = 0;
-        }
-        return item;
-      });
+      // this.tableData1.map((item) => {
+      //   if (item.status) {
+          // console.log('this.readerForm', this.readerForm);
+          // console.log('item',item)
+          // item.columnName = this.readerForm.columnName;
+          // for (let i = 0; i < this.nameList.length; i++) {
+          //   for (let j = 0; j < this.readerForm.rule.length; j++) {
+          //     if (this.nameList[i].code === this.readerForm.rule[j]) {
+          //       const obj = {};
+          //       obj.name = this.nameList[i].name;
+          //       obj.code = this.nameList[i].code;
+          //       item.ruleId.push(obj);
+          //     }
+          //   }
+          // }
+          // this.readerForm.columnName = '';
+        //   item.status = 0;
+        // }
+      //   return item;
+      // });
 
       this.tableData1.push({
         columnName: '',
@@ -370,6 +371,7 @@ export default {
     },
     // reader 数据源切换
     rDsChange(e) {
+      this.datasourceId = e;
       // 清空
       this.readerForm.tableName = '';
       this.readerForm.datasourceId = e;

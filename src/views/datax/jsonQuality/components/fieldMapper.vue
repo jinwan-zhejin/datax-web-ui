@@ -9,7 +9,6 @@
       >
         <el-table-column
           label="源字段"
-          
         >
           <template slot-scope="scope">
             <el-select

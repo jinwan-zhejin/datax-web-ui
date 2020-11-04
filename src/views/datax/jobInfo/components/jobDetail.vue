@@ -2,7 +2,7 @@
 <div class="job_detail">
 
     <div class="header">
-        <div class="header_action" style="margin-left:10px;" @click="handlerExecute(temp)">
+        <div class="header_action" style="margin-left:17px;" @click="handlerExecute(temp)">
             <i class="el-icon-video-play" />
             <span>执行一次</span>
         </div>
@@ -129,10 +129,10 @@
         </div>
 
         <div class="json_detail">
-            <p class="json_title" @click='(jsonshow = !jsonshow)'>查看json：</p>
+            <p class="json_title" @click='viewJson'>查看json：</p>
         </div>
         <div class="json_content" v-if="jsonshow">
-            <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
+            <json-editor ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
         </div>
     </div>
 
@@ -340,7 +340,7 @@
         </div>
     </el-dialog>
 
-    <el-dialog title="日志信息" :visible.sync="logview">
+    <el-dialog width='75%' class="log_detail_window" title="日志信息" :visible.sync="logview">
         <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
 </div>
@@ -417,7 +417,6 @@ export default {
             callback();
         };
         return {
-            
             jsonshow: false,
             newstlogContent: '',
             jobId: '',
@@ -940,7 +939,12 @@ export default {
                     });
                 }
             });
-        }
+        },
+
+        viewJson(){
+            this.jsonshow = !this.jsonshow
+        },
+
     }
 };
 </script>
@@ -1068,11 +1072,11 @@ export default {
 }
 
 .log_detail {
+    width: 100%;
     background: #F8F8FA;
     border: 2px solid #F8F8FA;
     border-left: none;
-    position: relative;
-    ;
+    position: absolute;
     bottom: 0
 }
 
@@ -1094,7 +1098,7 @@ export default {
 
 .log_container {
     padding-left: 24px;
-    height: 400px;
+    height: 260px;
     overflow: scroll;
     background: white;
     font-size: 13px;
@@ -1120,7 +1124,13 @@ export default {
     height: 0;
 }
 
-.el-dialog {
+
+
+.log_detail_window >>> .el-dialog {
     border-radius: 8px;
+}
+
+.log_detail_window >>> .el-dialog__body {
+    padding: 20px 40px;
 }
 </style>

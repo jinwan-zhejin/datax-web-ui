@@ -23,15 +23,16 @@ export default {
   
   methods: {
     getData() {
-      if (this.dataSource === 'hive') {
-        return this.$refs.hivereader.getData()
-      } else if (this.dataSource === 'hbase') {
-        return this.$refs.hbasereader.getData()
-      } else if (this.dataSource === 'mongodb') {
-        return this.$refs.mongodbreader.getData()
-      } else {
-        return this.$refs.rdbmsreader.getData()
-      }
+      // if (this.dataSource === 'hive') {
+      //   return this.$refs.hivereader.getData()
+      // } else if (this.dataSource === 'hbase') {
+      //   return this.$refs.hbasereader.getData()
+      // } else if (this.dataSource === 'mongodb') {
+      //   return this.$refs.mongodbreader.getData()
+      // } else {
+      //   return this.$refs.rdbmsreader.getData()
+      // }
+      return this.$refs.rdbmsreader.getData()
     },
     showDataSource(data) {
       this.dataSource = data
