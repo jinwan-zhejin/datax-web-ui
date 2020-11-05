@@ -12,11 +12,10 @@
         <el-select
           v-model="datasourceId"
           filterable
-          
           @change="rDsChange"
         >
           <el-option
-            v-for="item in rDsList"
+            v-for="item in $store.state.taskAdmin.dataSourceList"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -191,6 +190,7 @@ export default {
         ascs: 'datasource_name'
       },
       datasourceId:'',
+      datasourceName:'',
       arr: [],
       tableData1: [],
       rDsList: [],
@@ -323,6 +323,7 @@ export default {
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true;
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId;
       jdbcDsList(this.jdbcDsQuery).then((response) => {
         const { records } = response;
         this.rDsList = records;
@@ -373,12 +374,14 @@ export default {
     // reader 数据源切换
     rDsChange(e) {
       this.datasourceId = e;
+      this.rDsList = this.$store.state.taskAdmin.dataSourceList;
       // 清空
       this.readerForm.tableName = '';
       this.readerForm.datasourceId = e;
       this.rDsList.find((item) => {
         if (item.id === e) {
           this.dataSource = item.datasource;
+          this.datasourceName = item.datasourceName;
         }
       });
       Bus.dataSourceId = e;

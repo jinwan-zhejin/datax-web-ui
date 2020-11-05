@@ -4,7 +4,7 @@
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select :value="datasourceId" filterable  @change="rDsChange">
           <el-option
-            v-for="item in rDsList"
+            v-for="item in $store.state.taskAdmin.dataSourceList"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -103,22 +103,9 @@ export default {
       this.getTables('rdbmsReader')
     }
   },
-  created() {
-    this.getJdbcDs()
-  },
+ 
   methods: {
-    // 获取可用数据源
-    getJdbcDs(type) {
-      this.loading = true
-      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
-
-      jdbcDsList(this.jdbcDsQuery).then(response => {
-        const { records } = response
-        this.rDsList = records
-        this.loading = false
-        this.$store.commit('SET_DATASOURCE', this.rDsList)
-      })
-    },
+   
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsReader') {
@@ -158,11 +145,11 @@ export default {
     // reader 数据源切换
     rDsChange(e) {
       this.datasourceId = e;
-      
       this.$store.commit('SET_READER_DATASOURCE_ID', e)
       // 清空
       this.readerForm.tableName = ''
       this.readerForm.datasourceId = e
+      this.rDsList = this.$store.state.taskAdmin.dataSourceList
       this.rDsList.find((item) => {
         if (item.id === e) {
           this.dataSource = item.datasource

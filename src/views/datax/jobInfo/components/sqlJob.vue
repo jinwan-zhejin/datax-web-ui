@@ -31,6 +31,7 @@
         :visible.sync="showCronBox"
         width="60%"
         append-to-body
+        class='cron_window'
       >
         <cron v-model="temp.jobCron" />
         <span slot="footer" class="dialog-footer">

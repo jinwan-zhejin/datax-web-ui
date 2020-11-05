@@ -11,7 +11,7 @@
       <el-form-item label="数据库源:" prop="datasourceId">
         <el-select v-model="datasourceId" filterable @change="wDsChange">
           <el-option
-            v-for="item in wDsList"
+            v-for="item in $store.state.taskAdmin.dataSourceList"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -118,6 +118,7 @@ export default {
         ascs: "datasource_name",
       },
       datasourceId: "",
+      datasourceName: "",
       wDsList: [],
       schemaList: [],
       fromTableName: "",
@@ -163,19 +164,8 @@ export default {
       this.getTables("rdbmsWriter");
     },
   },
-  created() {
-    this.getJdbcDs();
-  },
   methods: {
-    // 获取可用数据源
-    getJdbcDs() {
-      this.loading = true;
-      jdbcDsList(this.jdbcDsQuery).then((response) => {
-        const { records } = response;
-        this.wDsList = records;
-        this.loading = false;
-      });
-    },
+    
     // 获取表名
     getTables(type) {
       if (type === "rdbmsWriter") {
@@ -220,9 +210,11 @@ export default {
       // 清空
       this.writerForm.tableName = "";
       this.writerForm.datasourceId = e;
+      this.wDsList = this.$store.state.taskAdmin.dataSourceList
       this.wDsList.find((item) => {
         if (item.id === e) {
           this.dataSource = item.datasource;
+          this.datasourceName = item.datasourceName;
         }
       });
       Bus.dataSourceId = e;

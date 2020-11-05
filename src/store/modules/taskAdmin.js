@@ -6,6 +6,7 @@ const state = {
     'NORMAL': '普通任务',
     'IMPORT': '引入任务',
     'EXPORT': '导出任务',
+    'COMPUTE': '计算任务',
     'SQLJOB': 'SQL任务',
     'SPARK': 'SPARK任务',
     'DQCJOB': '质量任务',
@@ -24,7 +25,7 @@ const state = {
 
   },
 
-  tabTypeArr: ['NORMAL', 'IMPORT', 'EXPORT', 'SQLJOB', 'SPARK', 'DQCJOB', 'METACOLLECT', 'METACOMPARE', 'SHELL', 'POWERSHELL', 'PYTHON', 'VJOB', 'JAVA', 'SCALA', 'PYSPARK', 'R', 'BATCH', 'TEMPLATE'],
+  tabTypeArr: ['NORMAL', 'IMPORT', 'EXPORT', 'COMPUTE', 'SQLJOB', 'SPARK', 'DQCJOB', 'METACOLLECT', 'METACOMPARE', 'SHELL', 'POWERSHELL', 'PYTHON', 'VJOB', 'JAVA', 'SCALA', 'PYSPARK', 'R', 'BATCH', 'TEMPLATE'],
 
   tabType: '',
 

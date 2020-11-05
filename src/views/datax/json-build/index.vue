@@ -3,7 +3,7 @@
     <div class="build-container">
       <div style="width:100%;border-bottom:1px solid rgba(240, 240, 242, 1);margin-bottom:20px;padding:20px 0;">
         <div style="width:80%;margin:0 auto;">
-          <el-steps :active="active">
+          <el-steps :active="active" align-center>
             <el-step title="新建任务" description="">1</el-step>
             <el-step title="构建reader" description="">2</el-step>
             <el-step title="构建writer" description="">3</el-step>

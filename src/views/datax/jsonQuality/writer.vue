@@ -18,7 +18,7 @@ export default {
   components: { RDBMSWriter, HiveWriter, HBaseWriter, MongoDBWriter },
   data() {
     return {
-      dataSource: 'db2'
+      dataSource: ''
     }
   },
   methods: {

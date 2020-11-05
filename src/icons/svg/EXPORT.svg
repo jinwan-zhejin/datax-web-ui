@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>新增任务弹窗</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 0.371094 0 0 0 0 0.494920 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="新增任务弹窗" transform="translate(-24.000000, -99.000000)">
+            <g id="定位备份-2" transform="translate(24.000000, 99.000000)" filter="url(#filter-1)">
+                <g>
+                    <path d="M11.5,8 L13,8 L13,8 C13.5522847,8 14,8.44771525 14,9 L14,14 C14,14.5522847 13.5522847,15 13,15 L3,15 C2.44771525,15 2,14.5522847 2,14 L2,9 C2,8.44771525 2.44771525,8 3,8 L4.5,8 C4.77614237,8 5,8.22385763 5,8.5 C5,8.77614237 4.77614237,9 4.5,9 L3,9 L3,9 L3,14 L13,14 L13,9 L11.5,9 C11.2238576,9 11,8.77614237 11,8.5 C11,8.22385763 11.2238576,8 11.5,8 Z" id="路径" fill="#333333"></path>
+                    <rect id="矩形" fill="#333333" transform="translate(8.000000, 7.500000) rotate(-270.000000) translate(-8.000000, -7.500000) " x="3" y="7" width="10" height="1" rx="0.5"></rect>
+                    <path d="M4,6 L7.42857143,2.2583098 C7.74416271,1.91389673 8.25583729,1.91389673 8.57142857,2.2583098 L12,6" id="路径" stroke="#333333" stroke-linecap="round"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
