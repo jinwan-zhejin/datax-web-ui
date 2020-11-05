@@ -82,7 +82,7 @@
             :header-row-style="{'height':'40px','padding':0}"
             style="width: 100%"
           >
-            <el-table-column prop="columnName" align="center" label="字段名称">
+            <el-table-column prop="columnName" align="center" width="150"  label="字段名称">
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
@@ -107,8 +107,10 @@
                   v-model="row.row.ruleId"
                   clearable
                   filterable
+                  
                   multiple
                   placeholder="请选择规则名称"
+                  class='ruleName'
                 >
                   <el-option
                     v-for="item in nameList"
@@ -123,7 +125,7 @@
                 </p>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" width="120">
+            <el-table-column label="操作" align="center" width="100">
               <template slot="header">
                 <span>操作</span>
               </template>
@@ -481,5 +483,13 @@ export default {
   /* background: red; */
   border: 1px solid #F3F3F3;;
   border-top: 0;
+}
+
+.ruleName >>> .el-tag {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 </style>
