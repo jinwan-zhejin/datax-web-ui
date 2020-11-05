@@ -7,9 +7,11 @@
     <el-steps :active="active" align-center>
       <el-step title="填写信息接口" />
       <el-step title="填写出入参数" />
+      <el-step title="注册信息确认" />
       <el-step title="注册结果" />
     </el-steps>
     <!-- tab标签页 -->
+    <el-divider />
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane name="0">
         <!-- 填写接口信息 -->
@@ -40,11 +42,11 @@
         </el-form>
       </el-tab-pane>
       <el-tab-pane name="1">
-        <el-form class="paramForm" :model="paramForm" label-width="120">
+        <el-form class="paramForm" :model="paramForm" label-width="120px" label-position="right">
           <el-row>
-            <el-col :span="9">
+            <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
               <el-form-item label="数据源:">
-                <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 200px" @change="fetchTables">
+                <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 234px" @change="fetchTables">
                   <el-option
                     v-for="item in dsList"
                     :key="item.id"
@@ -54,18 +56,19 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
               <el-form-item label="数据表:">
-                <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 200px" @change="fetchColumns">
+                <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 234px" @change="fetchColumns">
                   <el-option
-                    v-for="item in tableList"
+                    v-for="(item, index) in tableList"
+                    :key="index"
                     :label="item"
                     :value="item"
                   />
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="7" />
+            <!-- <el-col :span="7" /> -->
           </el-row>
         </el-form>
         <p>接口输入参数 (*<span>字段名称和字段编码不能重复</span>*)<i id="i1" class="el-icon-plus" @click="addData1" /></p>
@@ -150,6 +153,145 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane name="2">
+        <div class="interConfirm">
+          <el-row>
+            <el-col class="title">
+              <label>接口注册表单</label>
+            </el-col>
+            <el-col class="tableForm">
+              <el-col class="subtitle">
+                <label>信息接口</label>
+              </el-col>
+              <el-col class="table-infos">
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">联系人:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.contacts }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">联系电话:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.telephone }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">注册人:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.registerCompany }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">接口名称:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.interName }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">接口描述:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.interRemark }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">返回数据格式:</el-col>
+                  <el-col class="form-value" :span="15">{{ form.responseMode }}</el-col>
+                </el-col>
+              </el-col>
+              <el-col class="subtitle">
+                <label>出入参数</label>
+              </el-col>
+              <el-col class="table-infos">
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">数据源:</el-col>
+                  <el-col class="form-value" :span="15">{{ paramForm.serverName === '' ? '-' : paramForm.serverName }}</el-col>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                  <el-col class="form-key" :span="9">数据表:</el-col>
+                  <el-col class="form-value" :span="15">{{ paramForm.infoName === '' ? '-' : paramForm.infoName }}</el-col>
+                </el-col>
+                <el-col class="sub-subtitle">
+                  <label>接口输入参数</label>
+                </el-col>
+                <el-col>
+                  <el-table
+                    :data="tableData1"
+                    border
+                  >
+                    <el-table-column
+                      prop="fieldName"
+                      label="字段名称"
+                    >
+                      <template slot-scope="scope">
+                        <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName(scope.row.fieldName)">
+                          <el-option
+                            v-for="item in options3"
+                            :key="item.COLUMN_NAME"
+                            :label="item.COLUMN_NAME"
+                            :value="item.COLUMN_NAME"
+                          />
+                        </el-select>
+                        <span v-else>{{ scope.row.fieldName }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="fieldCode"
+                      label="字段编码"
+                    />
+                    <el-table-column
+                      prop="fieldRemark"
+                      label="字段描述"
+                    />
+                    <el-table-column
+                      prop="tag"
+                      label="操作"
+                      width="120"
+                    >
+                      <template slot-scope="scope">
+                        <el-tag style="cursor: pointer;" @click="deleteData1(scope.row)"><i class="el-icon-delete" /></el-tag>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+                <el-col class="sub-subtitle">
+                  <label>接口输出参数</label>
+                </el-col>
+                <el-col>
+                  <el-table
+                    :data="tableData2"
+                    border
+                  >
+                    <el-table-column
+                      prop="fieldName"
+                      label="字段名称"
+                    >
+                      <template slot-scope="scope">
+                        <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName1(scope.row.fieldName)">
+                          <el-option
+                            v-for="item in options3"
+                            :key="item.COLUMN_NAME"
+                            :label="item.COLUMN_NAME"
+                            :value="item.COLUMN_NAME"
+                          />
+                        </el-select>
+                        <span v-else>{{ scope.row.fieldName }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="fieldCode"
+                      label="字段编码"
+                    />
+                    <el-table-column
+                      prop="fieldRemark"
+                      label="字段描述"
+                    />
+                    <el-table-column
+                      prop="tag"
+                      label="操作"
+                      width="120"
+                    >
+                      <template slot-scope="scope">
+                        <el-tag style="cursor: pointer;" @click="deleteData2(scope.row)"><i class="el-icon-delete" /></el-tag>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+              </el-col>
+            </el-col>
+          </el-row>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane name="3">
         <div class="bor">
           <i v-show="infoMsg === '注册成功'" class="el-icon-check" style="margin-right: 20px;color: skyblue" />
           <i v-show="infoMsg !== '注册成功'" class="el-icon-close" style="margin-right: 20px;color: skyblue" />
@@ -157,11 +299,12 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <el-divider />
     <div class="btn">
-      <el-button v-show="active !== 1 && active !== 3" size="small" class="next" type="goon" @click="prev">上一步</el-button>
-      <el-button v-show="active < 2" size="small" class="next" type="goon" @click="next">下一步</el-button>
-      <el-button v-show="active === 2" size="small" class="next" type="goon" @click="sure">确 定</el-button>
-      <el-button v-show="active === 3" size="small" class="next" type="goon" @click="back">确 定</el-button>
+      <el-button v-show="active !== 1 && active !== 4" size="small" class="next" type="goon" @click="prev">上一步</el-button>
+      <el-button v-show="active < 3" size="small" class="next" type="goon" @click="next">下一步</el-button>
+      <el-button v-show="active === 3" size="small" class="next" type="goon" @click="sure">确 定</el-button>
+      <el-button v-show="active === 4" size="small" class="next" type="goon" @click="back">确 定</el-button>
     </div>
   </div>
 </template>
@@ -558,7 +701,7 @@ export default {
 
 <style lang="scss">
 .infacereg {
-  margin: 20px;
+  margin: 24px;
   background-color: #fff;
   border-radius: 8px;
   .top {
@@ -580,6 +723,8 @@ export default {
   }
   .el-tabs {
     .el-tab-pane {
+      height: calc(100vh - 448px);
+      overflow-y: auto;
       .el-tabs__nav-wrap::after {
         background-color: #fff;
       }
@@ -684,5 +829,48 @@ export default {
       margin: 10px 60px;
     }
   }
+  .interConfirm {
+    width: 80%;
+    margin: 30px auto;
+    position: relative;
+    label {
+      font-weight: normal;
+    }
+    .title {
+      font-size: 20px;
+      font-family: PingFangHK-Medium, PingFangHK;
+      margin: 10px 0;
+    }
+    .tableForm {
+      .table-infos {
+        // background-color: #f8f8fa;
+        border: 1px solid #e9e9e9dd;
+        padding: 15px;
+      }
+      .subtitle {
+        font-size: 16px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        margin: 15px 0;
+      }
+      .sub-subtitle {
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        margin: 10px 0;
+      }
+      .form-key {
+        text-align: right;
+        padding: 5px 10px;
+        color: #999999;
+        font-size: 14px;
+      }
+      .form-value {
+        padding: 5px 10px;
+        border-bottom: 1px solid #e9e9e9dd;
+        text-align: center;
+        color: #666666;
+      }
+    }
+  }
 }
+
 </style>
