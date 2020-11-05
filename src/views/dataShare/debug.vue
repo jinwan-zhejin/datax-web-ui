@@ -7,13 +7,13 @@
           <el-option label="post" value="post" />
           <el-option label="get" value="get" />
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="call" />
+        <el-button slot="append" icon="el-icon-check" @click="call" />
       </el-input>
     </el-form>
     <div class="box">
-      <el-radio-group v-show="isBtn" v-model="radio1" style="marginTop: 20px">
-        <el-radio-button label="formData" />
-        <el-radio-button label="params" />
+      <el-radio-group v-show="isBtn" v-model="radio1" style="marginBottom: 20px;">
+        <el-radio-button size="small" type="goon" label="formData" />
+        <el-radio-button size="small" type="goon" label="params" />
       </el-radio-group>
       <!-- <el-tabs type="border-card">
         <el-tab-pane>

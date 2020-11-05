@@ -49,13 +49,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -69,18 +68,19 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
               <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
@@ -103,13 +103,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -123,18 +122,19 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
               <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
@@ -157,13 +157,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -177,18 +176,19 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
               <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
