@@ -493,10 +493,10 @@ export default {
           let datasource = this.$refs.writer.dataSource;
           let ref = {
             'db2':'rdbmswriter',
-            'hive':'hivewriter'
+            'hive':'hivewriter',
             }
           
-          this.$refs['writer'].$refs[ref[datasource]].$refs['writerFrom'].validate((valid) => {
+          this.$refs['writer'].$refs[(ref[datasource] || 'rdbmswriter')].$refs['writerFrom'].validate((valid) => {
           if (valid) {
             this.active++;
             this.showNext = true;
