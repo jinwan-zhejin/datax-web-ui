@@ -15,28 +15,28 @@
               <i class="el-icon-folder-add" />
               <el-dropdown-menu>
                 <el-dropdown-item command="NORMAL">
-                  <img class="task_icon">普通任务
+                  <svg-icon icon-class="NORMAL" /> 普通任务
                 </el-dropdown-item>
-                <el-dropdown-item command="IMPORT"><img class="task_icon">引入任务</el-dropdown-item>
+                <el-dropdown-item command="IMPORT"><svg-icon icon-class="IMPORT" />引入任务</el-dropdown-item>
                 <el-dropdown-item command="EXPORT">
-                  <img class="task_icon">导出任务
+                  <svg-icon icon-class="EXPORT" />导出任务
                 </el-dropdown-item>
-                <el-dropdown-item command="COMPUTE" disabled><img class="task_icon">计算任务</el-dropdown-item>
-                <el-dropdown-item command="SQLJOB"><img class="task_icon">SQL任务</el-dropdown-item>
-                <el-dropdown-item command="SPARK"><img class="task_icon">SPARK任务</el-dropdown-item>
-                <el-dropdown-item command="DQCJOB"><img class="task_icon">质量任务</el-dropdown-item>
-                <el-dropdown-item command="METACOLLECT" divided><img class="task_icon">元数据采集任务</el-dropdown-item>
-                <el-dropdown-item command="METACOMPARE"><img class="task_icon">元数据比较任务</el-dropdown-item>
-                <el-dropdown-item command="SHELL" divided><img class="task_icon">SHELL任务</el-dropdown-item>
-                <el-dropdown-item command="POWERSHELL"><img class="task_icon">POWERSHELL任务</el-dropdown-item>
-                <el-dropdown-item command="PYTHON"><img class="task_icon">PYTHON任务</el-dropdown-item>
-                <el-dropdown-item command="VJOB" divided><img class="task_icon">虚任务</el-dropdown-item>
-                <el-dropdown-item command="JAVA" divided disabled><img class="task_icon">Java任务</el-dropdown-item>
-                <el-dropdown-item command="SCALA" disabled><img class="task_icon">Scala任务</el-dropdown-item>
-                <el-dropdown-item command="PYSPARK" disabled><img class="task_icon">PySpark任务</el-dropdown-item>
-                <el-dropdown-item command="R" disabled><img class="task_icon">R任务</el-dropdown-item>
-                <el-dropdown-item command="BATCH" divided><img class="task_icon">任务批量构建</el-dropdown-item>
-                <el-dropdown-item command="TEMPLATE"><img class="task_icon">普通任务模板</el-dropdown-item>
+                <el-dropdown-item command="COMPUTE" disabled><svg-icon icon-class="COMPUTE" />计算任务</el-dropdown-item>
+                <el-dropdown-item command="SQLJOB"><svg-icon icon-class="SQLJOB" />SQL任务</el-dropdown-item>
+                <el-dropdown-item command="SPARK"><svg-icon icon-class="SPARK" />SPARK任务</el-dropdown-item>
+                <el-dropdown-item command="DQCJOB"><svg-icon icon-class="DQCJOB" />质量任务</el-dropdown-item>
+                <el-dropdown-item command="METACOLLECT" divided><svg-icon icon-class="METACOLLECT" />元数据采集任务</el-dropdown-item>
+                <el-dropdown-item command="METACOMPARE"><svg-icon icon-class="METACOMPARE" />元数据比较任务</el-dropdown-item>
+                <el-dropdown-item command="SHELL" divided><svg-icon icon-class="SHELL" />SHELL任务</el-dropdown-item>
+                <el-dropdown-item command="POWERSHELL"><svg-icon icon-class="POWERSHELL" />POWERSHELL任务</el-dropdown-item>
+                <el-dropdown-item command="PYTHON"><svg-icon icon-class="PYTHON" />PYTHON任务</el-dropdown-item>
+                <el-dropdown-item command="VJOB" divided><svg-icon icon-class="VJOB" />虚任务</el-dropdown-item>
+                <el-dropdown-item command="JAVA" divided disabled><svg-icon icon-class="JAVA" />Java任务</el-dropdown-item>
+                <el-dropdown-item command="SCALA" disabled><svg-icon icon-class="SCALA" />Scala任务</el-dropdown-item>
+                <el-dropdown-item command="PYSPARK" disabled><svg-icon icon-class="PYSPARK" />PySpark任务</el-dropdown-item>
+                <el-dropdown-item command="R" disabled><svg-icon icon-class="R" />R任务</el-dropdown-item>
+                <el-dropdown-item command="BATCH" divided><svg-icon icon-class="BATCH" />任务批量构建</el-dropdown-item>
+                <el-dropdown-item command="TEMPLATE"><svg-icon icon-class="TEMPLATE" />普通任务模板</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -58,52 +58,53 @@
         </div>
       </div>
     </div>
-    <div class="rg rt">
-      <el-tabs v-model="jobDetailIdx" type="border-card" closable class="el-bar-tab" @tab-remove="removeJobTab" @tab-click="JobTabClick">
-        <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
-          欢迎
-        </el-tab-pane>
+  </div>
+  <div class="rg rt">
+    <el-tabs v-model="jobDetailIdx" type="border-card" closable class="el-bar-tab" @tab-remove="removeJobTab" @tab-click="JobTabClick">
+      <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
+        欢迎
+      </el-tab-pane>
 
-        <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
-          <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
-        </el-tab-pane>
+      <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
+        <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
+      </el-tab-pane>
 
-        <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
-          <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
-            <JsonBuild />
-          </div>
+      <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
+        <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
+          <JsonBuild />
+        </div>
 
-          <div v-if="jobType === 'SQLJOB'" class="rg">
-            <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
-          </div>
+        <div v-if="jobType === 'SQLJOB'" class="rg">
+          <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
+        </div>
 
-          <div v-if="jobType === 'SPARK'" class="rg">
-            <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
-          </div>
+        <div v-if="jobType === 'SPARK'" class="rg">
+          <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
+        </div>
 
-          <div v-if="jobType === 'DQCJOB'" class="rg">
-            <JsonQuality />
-          </div>
-          <div v-if="jobType === 'BATCH'" class="rg">
-            <BatchBuild />
-          </div>
-          <div v-if="jobType === 'TEMPLATE'" class="rg">
-            <JobTemplate />
-          </div>
-          <div v-if="jobType === 'SHELL'" class="rg">
-            <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
-          </div>
-          <div v-if="jobType === 'POWERSHELL'" class="rg">
-            <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
-          </div>
-          <div v-if="jobType === 'PYTHON'" class="rg">
-            <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
-          </div>
-          <div v-if="jobType === 'METACOMPARE'" class="rg">
-            <MetaCompare />
-          </div>
-          <div v-if="jobType === 'VJOB'" class="rg">
-            <!-- <el-tabs
+        <div v-if="jobType === 'DQCJOB'" class="rg">
+          <JsonQuality />
+        </div>
+        <div v-if="jobType === 'BATCH'" class="rg">
+          <BatchBuild />
+        </div>
+        <div v-if="jobType === 'TEMPLATE'" class="rg">
+          <JobTemplate />
+        </div>
+        <div v-if="jobType === 'SHELL'" class="rg">
+          <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+        </div>
+        <div v-if="jobType === 'POWERSHELL'" class="rg">
+          <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
+        </div>
+        <div v-if="jobType === 'PYTHON'" class="rg">
+          <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
+        </div>
+        <div v-if="jobType === 'METACOMPARE'" class="rg">
+          <MetaCompare />
+        </div>
+        <div v-if="jobType === 'VJOB'" class="rg">
+          <!-- <el-tabs
               v-model="editableTabsValue"
               type="card"
               addable
@@ -120,12 +121,12 @@
               >
               </el-tab-pane>
             </el-tabs> -->
-            <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
-          </div>
-        </el-tab-pane>
+          <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
+        </div>
+      </el-tab-pane>
 
-      </el-tabs>
-    </div>
+    </el-tabs>
+  </div>
 
   </div>
 </template>

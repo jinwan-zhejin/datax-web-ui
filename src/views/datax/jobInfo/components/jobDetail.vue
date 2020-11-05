@@ -45,25 +45,7 @@
 
     <div class="content">
       <div class="title">
-        <!-- <img v-if="temp.jobType === 'NORMAL'" class="task_img" src="../taskAdmin_png/normal.png">
-            <img v-if="temp.jobType === 'IMPORT'" class="task_img" src="../taskAdmin_png/import.png">
-            <img v-if="temp.jobType === 'EXPORT'" class="task_img" src="../taskAdmin_png/export.png">
-            <img v-if="temp.jobType === 'COMPUTE'" class="task_img" src="../taskAdmin_png/computed.png">
-            <img v-if="temp.jobType === 'SQLJOB'" class="task_img" src="../taskAdmin_png/sql.png">
-            <img v-if="temp.jobType === 'SPARK'" class="task_img" src="../taskAdmin_png/spark.png">
-            <img v-if="temp.jobType === 'DQCJOB'" class="task_img" src="../taskAdmin_png/质量.png">
-            <img v-if="temp.jobType === 'METACOLLECT'" class="task_img" src="../taskAdmin_png/元数据采集.png">
-            <img v-if="temp.jobType === 'METACOMPARE'" class="task_img" src="../taskAdmin_png/元数据比较.png">
-            <img v-if="temp.jobType === 'SHELL'" class="task_img" src="../taskAdmin_png/shell.png">
-            <img v-if="temp.jobType === 'POWERSHELL'" class="task_img" src="../taskAdmin_png/powershell.png">
-            <img v-if="temp.jobType === 'PYTHON'" class="task_img" src="../taskAdmin_png/python.png">
-            <img v-if="temp.jobType === 'VJOB'" class="task_img" src="../taskAdmin_png/虚.png">
-            <img v-if="temp.jobType === 'JAVA'" class="task_img" src="../taskAdmin_png/java.png">
-            <img v-if="temp.jobType === 'SCALA'" class="task_img" src="../taskAdmin_png/scala.png">
-            <img v-if="temp.jobType === 'PYSPARK'" class="task_img" src="../taskAdmin_png/pyspark.png">
-            <img v-if="temp.jobType === 'R'" class="task_img" src="../taskAdmin_png/R.png">
-            <img v-if="temp.jobType === 'BATCH'" class="task_img" src="../taskAdmin_png/任务批量构建.png">
-            <img v-if="temp.jobType === 'TEMPLATE'" class="task_img" src="../taskAdmin_png/普通任务模板.png"> -->
+        <svg-icon :icon-class="temp.jobType" />
 
         <span class="jobDesc">{{ temp.jobDesc }}</span>
 
