@@ -16,7 +16,7 @@
           </p>
         </div>
         <div class="right">
-          <el-button v-show="obj.interState !== '待审批'" size="mini" type="primary" plain @click="isShowApproval">审批详情</el-button>
+          <el-button v-show="obj.interState !== '待审批'" size="small" type="primary" plain @click="isShowApproval">审批详情</el-button>
         </div>
       </div>
       <!-- 注册信息详情 -->
@@ -71,7 +71,7 @@
         <div class="stateCode">
           <el-table
             :data="tableStateCode"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -89,7 +89,7 @@
         <div class="inParameter">
           <el-table
             :data="tableIn"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -115,7 +115,7 @@
         <div class="toParameter">
           <el-table
             :data="tableTo"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -159,8 +159,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogApproval = false">取 消</el-button>
-          <el-button type="primary" @click="dialogApproval = false">确 定</el-button>
+          <el-button size="small" @click="dialogApproval = false">取 消</el-button>
+          <el-button size="small" type="primary" @click="dialogApproval = false">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -450,8 +450,10 @@ export default {
 }
 .table-key {
   color: #999999;
+  font-size: 14px;
 }
 .table-value {
   color: #333333;
+  font-size: 14px;
 }
 </style>
