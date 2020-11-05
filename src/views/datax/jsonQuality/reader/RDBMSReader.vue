@@ -6,6 +6,7 @@
       label-width="120px"
       :model="readerForm"
       :rules="rules"
+      ref="readerFrom"
     >
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
@@ -222,9 +223,9 @@ export default {
         tableName: [
           { required: true, message: 'this is required', trigger: 'change' }
         ],
-        tableSchema: [
-          { required: true, message: 'this is required', trigger: 'change' }
-        ]
+        // tableSchema: [
+        //   { required: true, message: 'this is required', trigger: 'change' }
+        // ]
       }
     };
   },

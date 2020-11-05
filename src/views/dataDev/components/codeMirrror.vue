@@ -1,29 +1,25 @@
 <template>
-  <div>
+<div>
     <div :style="{height:`400px !important`}" class="sqlArea">
-      <textarea ref="mycode" v-model="code" class="codesql" @click.native="chooseSql" />
+        <textarea ref="mycode" v-model="code" class="codesql" @click.native="chooseSql" />
     </div>
     <div class="btnContent">
-      <el-button
-        size="mini"
-        type="goon"
-        :loading="$store.state.graphQL.sqlBtnLoading"
-        @click="$emit('querysql')"
-      >
-        <i class="el-icon-refresh" /> 运行查询
-      </el-button>
-      <el-button size="mini">
-        <i class="el-icon-document-copy" />保存查询
-      </el-button>
-      <el-button size="mini">
-        <i class="el-icon-copy-document" /> 分享查询
-      </el-button>
-      <el-button size="mini" @click="sqlJobBuild">
-        <i class="el-icon-copy-document" /> 构建sql任务
-      </el-button>
+        <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="$emit('querysql')">
+            <i class="el-icon-refresh" /> 运行查询
+        </el-button>
+        <el-button size="mini">
+            <i class="el-icon-document-copy" />保存查询
+        </el-button>
+        <el-button size="mini">
+            <i class="el-icon-copy-document" /> 分享查询
+        </el-button>
+        <el-button size="mini" @click="sqlJobBuild">
+            <i class="el-icon-copy-document" /> 构建sql任务
+        </el-button>
     </div>
-  </div>
+</div>
 </template>
+
 <script>
 import 'codemirror/theme/ambiance.css';
 import 'codemirror/lib/codemirror.css';
@@ -36,116 +32,134 @@ require('codemirror/mode/sql/sql');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/sql-hint');
 export default {
-  name: 'CodeMirror',
-  props: ['sqlHeight', 'columnList', 'tableList'],
-  data() {
-    return {
-      code: '',
-      sqlLoading: false,
-      tips: {}
-    };
-  },
-  watch: {
-    code(val) {
-      console.log(this.code);
+    name: 'CodeMirror',
+    props: ['sqlHeight', 'columnList', 'tableList'],
+    data() {
+        return {
+            code: '',
+            sqlLoading: false,
+            tips: {}
+        };
     },
-    columnList(val) {
-      const columeObj = {};
-      val.forEach((ele) => {
-        columeObj[ele] = [];
-      });
-      this.tips = Object.assign(this.tips, columeObj);
-      // this.mountCodeMirror();
-    },
-    tableList(val) {
-      const tableObj = {};
-      val.forEach((ele) => {
-        tableObj[ele] = [];
-      });
-      this.tips = Object.assign(this.tips, tableObj);
-      // this.mountCodeMirror();
-    }
-  },
-  beforeMount() {
-    const columeObj = {};
-    this.columnList.forEach((ele) => {
-      columeObj[ele] = [];
-    });
-    const tableObj = {};
-    this.tableList.forEach((ele) => {
-      tableObj[ele] = [];
-    });
-    this.tips = Object.assign(this.tips, columeObj, tableObj);
-  },
-  mounted() {
-    this.mountCodeMirror();
-  },
-  methods: {
-    chooseSql() {
-      console.log(window.getSelection());
-    },
-    sqlJobBuild() {
-      // this.$route.push('/datax/job/JobInfo')
-      this.$router.push({ path: '/datax/job/JobInfo' });
-      console.log('=================')
-      // window.location.href = '/datax/job/JobInfo'
-    },
-    mountCodeMirror() {
-      const mime = 'text/x-sql';
-      const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
-      const _this = this;
-      const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
-        mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
-        indentWithTabs: true,
-        smartIndent: true,
-        lineNumbers: true,
-        matchBrackets: true,
-        // theme: theme,
-        // autofocus: true,
-        // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
-        hintOptions: {
-          // 自定义提示选项,
-          completeSingle: false,
-          tables: _this.tips
+    watch: {
+        code(val) {
+            console.log(this.code);
         },
-        configureMouse() {
-          console.log(window.getSelection());
-          return {
-            unit: 'word'
-          };
+        columnList(val) {
+            const columeObj = {};
+            val.forEach((ele) => {
+                columeObj[ele] = [];
+            });
+            this.tips = Object.assign(this.tips, columeObj);
+            // this.mountCodeMirror();
+        },
+        tableList(val) {
+            const tableObj = {};
+            val.forEach((ele) => {
+                tableObj[ele] = [];
+            });
+            this.tips = Object.assign(this.tips, tableObj);
+            // this.mountCodeMirror();
         }
-      });
+    },
+    beforeMount() {
+        const columeObj = {};
+        this.columnList.forEach((ele) => {
+            columeObj[ele] = [];
+        });
+        const tableObj = {};
+        this.tableList.forEach((ele) => {
+            tableObj[ele] = [];
+        });
+        this.tips = Object.assign(this.tips, columeObj, tableObj);
+    },
+    mounted() {
+        this.mountCodeMirror();
+    },
+    methods: {
+        chooseSql() {
+            console.log(window.getSelection());
+        },
+        sqlJobBuild() {
+            // this.$route.push('/datax/job/JobInfo')
+            this.$router.push({
+                path: '/datax/job/JobInfo'
+            });
+            console.log('=================')
+            // window.location.href = '/datax/job/JobInfo'
+        },
+        mountCodeMirror() {
+            const mime = 'text/x-sql';
+            const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
+            const _this = this;
+            const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
+                mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
+                indentWithTabs: true,
+                smartIndent: true,
+                lineNumbers: true,
+                matchBrackets: true,
+                // theme: theme,
+                // autofocus: true,
+                // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
+                hintOptions: {
+                    // 自定义提示选项,
+                    completeSingle: false,
+                    tables: _this.tips
+                },
+                configureMouse() {
+                    console.log(window.getSelection());
+                    return {
+                        unit: 'word'
+                    };
+                }
+            });
 
-      editor.setSize('auto', '400px');
+            editor.setSize('auto', '400px');
 
-      // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
-      editor.on('cursorActivity', function(ins) {
-        editor.showHint();
-        _this.code = editor.getValue();
-        _this.$store.dispatch('graphQL/changeMirror', _this.code);
-      });
+            // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
+            // editor.on('cursorActivity', function(ins) {
+            //   editor.showHint();
+            //   _this.code = editor.getValue();
+            //   _this.$store.dispatch('graphQL/changeMirror', _this.code);
+            // });
+
+            editor.on("change", function (editor, change) { //任意键触发autocomplete
+                console.log(change)
+                if (change.origin == "+input") {
+                    var text = change.text;
+                    if ((text != " ") && (text != ";") && (text.length != 2)) { //不提示
+                        setTimeout(function () {
+                            editor.execCommand("autocomplete");
+                        }, 20);
+                    }
+                }
+            });
+        }
     }
-  }
 };
 </script>
+
 <style scoped>
 .codesql {
-  font-size: 11pt;
-  /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
+    font-size: 11pt;
+    /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
     DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
+
 .btnContent {
-  padding: 10px 10px 5px;
-  background-color: #f5f5f5;
-  border: 1px solid #cfd8dc;
+    padding: 10px 10px 5px;
+    background-color: #f5f5f5;
+    border: 1px solid #cfd8dc;
 }
+
 .sqlArea {
-  overflow: scroll;
-  border-radius: 2px 2px 0px 0px;
-  border: 1px solid #D9D9D9;
-  border-bottom: none;
+    overflow: scroll;
+    border-radius: 2px 2px 0px 0px;
+    border: 1px solid #D9D9D9;
+    border-bottom: none;
 }
-.sqlArea::-webkit-scrollbar{
-    display:none;
+
+.sqlArea::-webkit-scrollbar {
+    display: none;
 }
 </style>
