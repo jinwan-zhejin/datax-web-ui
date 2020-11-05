@@ -4,46 +4,52 @@
     <div class="interRegister">
       <div style="margin-top: 20px;">
         <span class="titSpan">接口列表</span>
-        <el-input v-model="interName" placeholder="请输入接口名称" class="input-with-select sort">
-          <el-button slot="append" class="search" style="padding: 0px 10px;" icon="el-icon-search" @click="getAllData" />
+        <el-button type="goon" size="medium" @click="gotoInterface">接口注册</el-button>
+        <el-input v-model="interName" size="medium" placeholder="请输入接口名称" class="input-with-select sort" style="width: 208px;">
+          <el-button slot="append" class="search" style="padding: 0px 10px;" @click="getAllData">搜索</el-button>
         </el-input>
-        <el-button type="goon" size="small" @click="gotoInterface">接口注册</el-button>
       </div>
     </div>
     <!-- 表格 -->
-    <el-table
-      :data="tableData"
-      style="width: 100%"
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-    >
-      <el-table-column
-        type="index"
-        label="序号"
-        align="center"
-        width="80"
-      />
-      <el-table-column
-        prop="interName"
-        align="left"
-        label="接口名称"
-        width="280"
-      />
-      <el-table-column
-        prop="interRemark"
-        label="接口描述"
-        align="left"
-        width="400"
-      />
-      <el-table-column
-        prop="interState"
-        label="状态"
-        width="250"
+    <div class="table">
+      <el-table
+        :data="tableData"
+        height="calc(100vh - 254px)"
+        :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
       >
-        <template v-slot:default="{ row }">
-          <el-tag>{{ row.interState }}</el-tag>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column
+        <el-table-column
+          type="index"
+          label="序号"
+          align="center"
+          width="80"
+        />
+        <el-table-column
+          prop="interName"
+          align="left"
+          label="接口名称"
+          width="280"
+        />
+        <el-table-column
+          prop="interRemark"
+          label="接口描述"
+          align="left"
+          width="400"
+        />
+        <el-table-column
+          prop="interState"
+          label="状态"
+          width="250"
+        >
+          <template v-slot:default="{ row }">
+            <!-- <el-tag>{{ row.interState }}</el-tag> -->
+            <i
+              :class="row.interState === '审核通过' ? 'el-icon-success' : 'el-icon-warning'"
+              :style="{fontSize: '14px', color: row.interState === '审核通过' ? '#00B600' : '#FE4646'}"
+            />
+            {{ row.interState }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
         prop="implMethod"
         label="实现方式"
         width="100">
@@ -53,15 +59,16 @@
         label="业务类型"
         width="100">
       </el-table-column> -->
-      <el-table-column
-        label="操作"
-        align="left"
-      >
-        <template v-slot:default="{ row }">
-          <a style="color: skyblue;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          label="操作"
+          align="left"
+        >
+          <template v-slot:default="{ row }">
+            <a style="color: #3d5eff;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <!-- 分页 -->
     <el-pagination
       background
@@ -170,7 +177,7 @@ export default {
 
 <style lang="scss">
 .myRegister {
-  padding: 20px;
+  padding: 24px;
   border-radius: 8px;
   .interRegister {
     overflow: hidden;
@@ -180,6 +187,13 @@ export default {
     position: relative;
     background-color: #fff;
     border-radius: 8px 8px 0px 0px;
+    .el-button {
+      border-radius: 4px;
+    }
+    .el-input .el-input__inner {
+      height: 36px;
+      line-height: 36px;
+    }
     .titSpan {
       position: absolute;
       left: 24px;
@@ -221,10 +235,28 @@ export default {
   .el-pagination {
     background-color: #fff;
     padding: 20px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    .el-input__inner {
+      height: 28px;
+    }
   }
-  .el-table {
-    border-left: 1px solid #f1f1f1;
-    border-right: 1px solid #f1f1f1;
+  .table {
+    background: white;
+    padding: 0 20px;
+    .el-table {
+      color: #333333;
+      margin: 0 0px;
+      border-radius: 4px;
+      border-left: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-top: 1px solid #e0e0e0;
+      th {
+        background: #fafafc;
+        border-bottom: 1px solid #e0e0e0;
+      }
+    }
   }
 }
+
 </style>

@@ -2,7 +2,7 @@
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 18:39:44
+ * @LastEditTime: ,: 2020-11-05 11:16:50
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
@@ -341,7 +341,6 @@ export default {
         for (var i in value) {
           if (this.differenceArray.indexOf(key.concat('.').concat(i)) > -1) {
             color = 'rgb(255, 244, 182)'
-            // console.log(key.concat('.').concat(i));
           } else {
             color = 'transparent'
           }
@@ -374,7 +373,7 @@ export default {
     margin: 16px 0;
     .title {
       label {
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
       }
     }

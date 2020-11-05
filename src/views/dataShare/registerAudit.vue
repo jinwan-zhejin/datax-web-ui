@@ -4,7 +4,7 @@
     <div class="tit">
       <span>注册审批</span>
       <el-input v-model="interName" class="searchInput input-with-select" placeholder="请输入内容">
-        <el-button slot="append" type="goon" icon="el-icon-search" @click="search"><spqn style="color: #fff;fontSize: 16px;">搜索</spqn></el-button>
+        <el-button slot="append" type="goon" @click="search"><spqn style="color: #fff;fontSize: 16px;">搜索</spqn></el-button>
       </el-input>
     </div>
     <div class="main">
@@ -36,9 +36,9 @@
         <!-- 待审核 -->
         <el-table
           v-show="wait"
+          height="calc(100vh - 290px)"
           :data="tabelList"
-          stripe
-          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
         >
           <el-table-column
             type="index"
@@ -49,13 +49,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -69,30 +68,31 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
-              <a style="color:skyblue;" href="#" @click="isShowBatch(row)">审核</a>
+              <a style="color:#3d5eff;" href="#" @click="isShowBatch(row)">审核</a>
             </template>
           </el-table-column>
         </el-table>
         <!-- 已同意 -->
         <el-table
           v-show="agree"
+          height="calc(100vh - 290px)"
           :data="tabelList"
-          stripe
-          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
         >
           <el-table-column
             type="index"
@@ -103,13 +103,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -123,30 +122,31 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
-              <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
+              <a style="color:#3d5eff;" href="#" @click="isShowViewBatch(row)">已审核(通过)</a>
             </template>
           </el-table-column>
         </el-table>
         <!-- 已驳回 -->
         <el-table
           v-show="dismiss"
+          height="calc(100vh - 290px)"
           :data="tabelList"
-          stripe
-          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
         >
           <el-table-column
             type="index"
@@ -157,13 +157,12 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            width="200"
             align="left"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
-            width="400"
+            width="350"
             align="left"
           />
           <!-- <el-table-column
@@ -177,21 +176,22 @@
           <el-table-column
             prop="createTime"
             label="注册时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
-            width="200"
+            width="170"
             align="left"
           />
           <el-table-column
             label="操作栏"
             align="left"
+            width="120"
           >
             <template v-slot:default="{ row }">
-              <a style="color:skyblue;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
+              <a style="color:#3d5eff;" href="#" @click="isShowViewBatch(row)">已审核(驳回)</a>
             </template>
           </el-table-column>
         </el-table>
@@ -480,10 +480,10 @@ export default {
 .batch {
   // width: 100%;
   // height: 100%;
-  margin: 20px;
+  margin: 24px;
   background-color: #fff;
   border-radius: 8px;
-  padding: 20px;
+  padding: 0 20px 20px 20px;
   .tit {
     height: 84px;
     line-height: 84px;
@@ -575,9 +575,13 @@ export default {
     .tabel {
       width: 100%;
       background-color: #fff;
+      border-radius: 4px;
       border-left: 1px solid #E0E0E0;
       border-right: 1px solid #E0E0E0;
+      border-top: 1px solid #E0E0E0;
       .el-table {
+        color: #333333;
+        // background: #f8f8fa;
       }
     }
   }
@@ -586,6 +590,9 @@ export default {
       border: 1px solid rgb(238, 232, 232);
       text-align: center;
     }
+  }
+  ::v-deep .el-dialog {
+    border-radius: 8px;
   }
 }
 </style>

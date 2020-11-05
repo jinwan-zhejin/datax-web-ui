@@ -19,7 +19,7 @@
         </div>
         <!-- 数据源tree -->
         <div class="dataTree">
-          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand">
+          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-click="dblhandleClick" @node-expand="handleNodeExpand">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span style="fontSize: 14px;">
                 <svg-icon v-if="node.level == 1 && data.datasource === 'mysql'" icon-class="yunshujukuRDSMySQL" />
@@ -56,7 +56,7 @@
       <!-- @tab-remove="removeTab" -->
       <!-- @edit="handleTabsEdit" -->
       <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-        <DataDevContent />
+        <DataDevContent :dblparams="ByVal" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -108,7 +108,9 @@ export default {
         }
       },
       dataTree: [],
-      firstId: ''
+      firstId: '',
+      treeClickCount: '',
+      ByVal: {}
     };
   },
   watch: {
@@ -133,17 +135,39 @@ export default {
       console.log(this.editableTabs);
       this.editableTabsValue = newTabName;
     },
-    handleDelete(name) {
-      console.log(name);
-      for (let i = 0; i < this.editableTabs.length; i++) {
-        if (this.editableTabs[i].name === name) {
-          this.editableTabs.splice(i, 1);
-          this.tabIndex = i + ''
-          console.log(this.tabIndex, 'index')
-          this.editableTabsValue = this.tabIndex;
-        }
+    // 触发双击事件
+    dblhandleClick(data, node) {
+      this.treeClickCount++;
+      // 单次点击次数超过2次不作处理,直接返回,也可以拓展成多击事件
+      if (this.treeClickCount >= 2) {
+        return;
       }
+      this.timer = window.setTimeout(() => {
+        if (this.treeClickCount === 1) {
+          //  把次数归零
+          this.treeClickCount = 0;
+          //  单击事件处理
+          console.log('单击事件,可在此处理对应逻辑')
+        } else if (this.treeClickCount > 1) {
+          //  把次数归零
+          this.treeClickCount = 0;
+          //  双击事件
+          console.log('双击事件,可在此处理对应逻辑')
+          this.ByVal = node
+        }
+      }, 300);
     },
+    // handleDelete(name) {
+    //   console.log(name);
+    //   for (let i = 0; i < this.editableTabs.length; i++) {
+    //     if (this.editableTabs[i].name === name) {
+    //       this.editableTabs.splice(i, 1);
+    //       this.tabIndex = i + ''
+    //       console.log(this.tabIndex, 'index')
+    //       this.editableTabsValue = this.tabIndex;
+    //     }
+    //   }
+    // },
     handleNodeExpand(data, node) {
       console.log(data, 'data')
       console.log(node.level, 'level')
@@ -310,7 +334,7 @@ export default {
     .aside {
         width: 340px;
         min-height: 660px;
-        max-height: 750px;
+        max-height: 907px;
         overflow: scroll;
         padding: 10px;
         .top {
@@ -335,6 +359,7 @@ export default {
 
     .tabs1 {
       flex: 1;
+      overflow: auto;
       .el-tabs__header {
         margin: 0px;
       }

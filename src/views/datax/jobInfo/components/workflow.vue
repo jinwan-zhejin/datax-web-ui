@@ -98,7 +98,10 @@ export default {
   components: {
     cron
   },
-  props: ['isSave', 'taskList'],
+  props: {
+    isSave: { type: Object, default: () => ({}) },
+    taskList: { type: Array, default: () => ([]) }
+  },
   data() {
     return {
       myDiagram: '',
