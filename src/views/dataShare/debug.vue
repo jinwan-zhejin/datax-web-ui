@@ -15,7 +15,7 @@
         <el-radio-button label="formData" />
         <el-radio-button label="params" />
       </el-radio-group>
-      <el-tabs type="border-card">
+      <!-- <el-tabs type="border-card">
         <el-tab-pane>
           <span slot="label">参数</span>
           <el-table
@@ -65,19 +65,17 @@
           <p v-show="showSuccess"><i class="el-icon-check" />调用成功<el-button v-show="showSuccess" type="primary" @click="cancel">关闭</el-button></p>
           <el-input v-show="showSuccess" v-model="dataObj" style="marginTop: 20px;" disabled type="textarea" autosize />
         </el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
       <el-table
         v-show="isSuccess"
         :data="callValue"
         border
+        :header-cell-style="{ background: '#FAFAFC' }"
         style="width: 100%"
       >
         <el-table-column
-          width="50"
-        />
-        <el-table-column
           prop="date"
-          label="key"
+          label="key(参数名)"
         >
           <template scope="scope">
             <el-input v-model="scope.row.key" size="mini" />
@@ -85,7 +83,7 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="value"
+          label="value(参数值)"
         >
           <template scope="scope">
             <el-input v-model="scope.row.value" size="mini" />
@@ -271,39 +269,16 @@ export default {
     top: 24px;
   }
   .box {
-    .el-tabs {
-      margin-top: 20px;
-      .title {
-        margin-bottom: 10px;
-        text-align: right;
-        .el-button {
-          margin-left: 10px;
-        }
+    margin-top: 24px;
+    .el-table {
+      a {
+        color: cornflowerblue;
       }
-      .el-tab-pane {
-        p {
-          font-size: 24px;
-          text-align: center;
-          overflow: hidden;
-          i {
-            color: greenyellow;
-            font-size: 24px;
-          }
-          .el-button {
-            float: right;
-          }
-        }
-        .el-table {
-          a {
-            color: cornflowerblue;
-          }
-          .a1:hover {
-            color: rgb(54, 105, 182)
-          }
-          .a2:hover {
-            color: rgb(218, 85, 85);
-          }
-        }
+      .a1:hover {
+        color: rgb(54, 105, 182)
+      }
+      .a2:hover {
+        color: rgb(218, 85, 85);
       }
     }
   }
