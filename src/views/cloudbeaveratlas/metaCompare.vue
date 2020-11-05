@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-04 17:14:24
+ * @LastEditTime: ,: 2020-11-05 10:43:12
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据比对 index
 -->
@@ -56,8 +56,8 @@
             起始页
           </el-tab-pane>
           <el-tab-pane
-            v-for="(item, index) in tabsArray"
-            :key="index"
+            v-for="item in tabsArray"
+            :key="item.id"
             :label="number2String(item.id)"
             :name="number2String(item.id)"
           >
@@ -112,7 +112,7 @@ export default {
   computed: {
     filterTableData() {
       return this.tableData.filter(item => {
-        return item.id.toString().indexOf(this.filterText) > -1
+        return item.id.toString().concat(item.name).concat('(').concat(item.typeName).concat(')').indexOf(this.filterText) > -1
       })
     },
     number2String() {
@@ -149,12 +149,36 @@ export default {
     /**
      * @description: 关闭当前这个tab
      */
-    handleRemoveTab(tabId) {
-      this.tabsArray = this.tabsArray.filter(item => this.number2String(item.id) !== tabId)
-      if (this.tabsArray.length <= 0) {
+    handleRemoveTab(delId) {
+      let delIndex = 0 // 当前删除的tab在array中的位置
+      for (var i = 0; i < this.tabsArray.length; i++) {
+        if (this.tabsArray[i].hasOwnProperty('id')) {
+          if (this.number2String(this.tabsArray[i].id) === delId) {
+            delIndex = i
+            break
+          }
+        }
+      }
+      this.tabsArray = this.tabsArray.filter(item => this.number2String(item.id) !== delId)
+      if (this.tabsArray.length <= 0) { // tabs数组长度为0
         this.tabsVal = '0'
+      } else {
+        // 删除的是当前激活项
+        if (delId === this.tabsVal) {
+          // if (delIndex <= 0) {
+          //   this.tabsVal = this.tabsArray[delIndex + 1].id.toString()
+          // } else {
+          //   this.tabsVal = this.tabsArray[delIndex - 1].id.toString()
+          // }
+          if (this.tabsArray[delIndex].hasOwnProperty('id')) {
+            this.tabsVal = this.tabsArray[delIndex].id.toString()
+          }
+        }
       }
     },
+    /**
+     * @description: 关闭所有tabs
+     */
     handleRemoveAllTab() {
       this.tabsArray = []
       this.tabsVal = '0'
