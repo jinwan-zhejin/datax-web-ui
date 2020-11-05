@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-05 10:43:12
+ * @LastEditTime: ,: 2020-11-05 11:11:47
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据比对 index
 -->
@@ -151,6 +151,7 @@ export default {
      */
     handleRemoveTab(delId) {
       let delIndex = 0 // 当前删除的tab在array中的位置
+      let delArrayLength = this.tabsArray.length
       for (var i = 0; i < this.tabsArray.length; i++) {
         if (this.tabsArray[i].hasOwnProperty('id')) {
           if (this.number2String(this.tabsArray[i].id) === delId) {
@@ -163,16 +164,11 @@ export default {
       if (this.tabsArray.length <= 0) { // tabs数组长度为0
         this.tabsVal = '0'
       } else {
-        // 删除的是当前激活项
+        // 删除当前激活项
         if (delId === this.tabsVal) {
-          // if (delIndex <= 0) {
-          //   this.tabsVal = this.tabsArray[delIndex + 1].id.toString()
-          // } else {
-          //   this.tabsVal = this.tabsArray[delIndex - 1].id.toString()
-          // }
-          if (this.tabsArray[delIndex].hasOwnProperty('id')) {
-            this.tabsVal = this.tabsArray[delIndex].id.toString()
-          }
+          // 删除末尾项
+          this.tabsVal = (delIndex === delArrayLength - 1)
+            ? this.tabsArray[delIndex - 1].id.toString() : this.tabsArray[delIndex].id.toString()
         }
       }
     },
