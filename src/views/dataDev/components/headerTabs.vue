@@ -13,7 +13,7 @@
                 </el-col>
             </el-row>
         </div>
-        <<<<<<< HEAD <div class="tree">
+        <div class="tree">
             <div class="search">
                 <el-input v-model="searchModel" placeholder="请输入关键字" prefix-icon="el-icon-search" />
             </div>
@@ -49,55 +49,15 @@
                 </el-tree>
             </div>
             <!-- 数据库tree -->
-            =======
-            <!-- 数据源tree -->
-            <div class="dataTree">
-                <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-click="dblhandleClick" @node-expand="handleNodeExpand">
-                    <span slot-scope="{ node, data }" class="custom-tree-node">
-                        <span style="fontSize: 14px;">
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'mysql'" icon-class="yunshujukuRDSMySQL" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'oracle'" icon-class="ORACLE" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'postgresql'" icon-class="postgresql" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'spark'" icon-class="spark" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'sqlserver'" icon-class="sqlserver1" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'impala'" icon-class="Impala" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'hive'" icon-class="Hive" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'hbase'" icon-class="HBASE" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'greenplum'" icon-class="Greenplum-x" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'db2'" icon-class="db" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'clickhouse'" icon-class="clickhouse" />
-                            <svg-icon v-if="node.level == 1 && data.datasource === 'mongodb'" icon-class="ziyuan" />
-                            <!-- <svg-icon v-if="node.level == 2" icon-class="database" /> -->
-                            <i v-if="node.level == 2" class="el-icon-coin" />
-                            <svg-icon v-if="node.level == 3" icon-class="table1" />
-                            <svg-icon v-if="node.level == 4 && data.type === 'varchar' || data.type === 'text' || data.type === 'mediumtext' || data.type === 'char' || data.type === 'longtext'" icon-class="text" />
-                            <svg-icon v-if="node.level == 4 && data.type === 'number' || data.type === 'double' || data.type === 'int' || data.type === 'bigint' || data.type === 'tinyint' || data.type === 'float' || data.type === 'decimal' || data.type === 'smallint'" icon-class="Group" />
-                            <i v-if="node.level == 4 && data.type === 'date' || data.type === 'timestamp' || data.type === 'datetime' || data.type === 'time'" class="el-icon-date" />
-                            <svg-icon v-if="node.level == 4 && data.type === 'enum'" icon-class="enumeratekeysini" />
-                            <svg-icon v-if="node.level == 4 && data.type === 'set'" icon-class="main-set" />
-                            <svg-icon v-if="node.level == 4 && data.type === 'blob' || data.type === 'longblob'" icon-class="Blobshangchuanwenjian" />
-                            {{ data.name }}
-                        </span>
-                    </span>
-                </el-tree>
-                >>>>>>> 4abd8af15161038d37d8f93faf9001fc31f78f1e
-            </div>
+        </div>
     </div>
     <el-tabs v-model="editableTabsValue" class="tabs1" type="card" closable @tab-remove="removeTab">
-        <<<<<<< HEAD <!-- :editable="true" -->
-            <!-- @tab-remove="removeTab" -->
-            <!-- @edit="handleTabsEdit" -->
-            <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-                <DataDevContent ref="content" />
-            </el-tab-pane>
-            =======
-            <!-- :editable="true" -->
-            <!-- @tab-remove="removeTab" -->
-            <!-- @edit="handleTabsEdit" -->
-            <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-                <DataDevContent :dblparams="ByVal" />
-            </el-tab-pane>
-            >>>>>>> 4abd8af15161038d37d8f93faf9001fc31f78f1e
+        <!-- @tab-remove="removeTab" -->
+        <!-- @edit="handleTabsEdit" -->
+        <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+            <DataDevContent ref="content" />
+        </el-tab-pane>
+
     </el-tabs>
 </div>
 </template>
@@ -456,13 +416,11 @@ export default {
                 }
             }
         }
-    };
+    }
+}
 </script>
 
 <style lang="scss">
-/* .header >>> .el-tabs__nav-scroll{
-    border: 1px solid;
-} */
 .header {
     overflow: hidden;
     // border-radius: 8px;
@@ -500,20 +458,12 @@ export default {
     }
 
     .tabs1 {
-        <<<<<<< HEAD flex: 1;
-
-        .el-tabs__header {
-            margin: 0px;
-        }
-
-        =======flex: 1;
+        flex: 1;
         overflow: auto;
 
         .el-tabs__header {
             margin: 0px;
         }
-
-        >>>>>>>4abd8af15161038d37d8f93faf9001fc31f78f1e
     }
 }
 

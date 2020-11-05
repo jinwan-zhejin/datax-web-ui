@@ -51,18 +51,12 @@
       </div>
     </el-aside> -->
     <el-main style="padding:0px;height:100%;">
-        <<<<<<< HEAD <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+        <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
         <div class="dragBar">
             <span @mousedown="dragging = true" @mouseup="dragging = false" @mousemove="setTableHeight">==</span>
         </div>
         <TableDetail ref="table" :table-height="tableHeight" />
-        =======
-        <CodeMirror :sqlparams="dblparams" :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
-        <div class="dragBar">
-            <span @mousedown="dragging = true" @mouseup="dragging = false" @mousemove="setTableHeight">==</span>
-        </div>
-        <TableDetail ref="table" :table-height="tableHeight" :tableparams="dblparams" />
-        >>>>>>> 4abd8af15161038d37d8f93faf9001fc31f78f1e
+
     </el-main>
 </el-container>
 </template>
@@ -81,13 +75,10 @@ import {
 import CodeMirror from './codeMirrror';
 import TableDetail from './tableDetail';
 export default {
-    <<
-    << << < HEAD
     name: 'DataDevContent',
     components: {
         CodeMirror,
-        TableDetail ===
-        === =
+        TableDetail,
         name: 'DataDevContent',
         components: {
             CodeMirror,
@@ -146,8 +137,7 @@ export default {
                     this.SchemaList = res;
                 }).catch(err => {
                     console.log(err);
-                }); >>>
-                >>> > 4 abd8af15161038d37d8f93faf9001fc31f78f1e
+                });
             },
             data() {
                 return {
@@ -254,7 +244,9 @@ export default {
                     this.$refs.table.initData(params)
                 }
             }
-        };
+        }
+    }
+};
 </script>
 
 <style scoped>
