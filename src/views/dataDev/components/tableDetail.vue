@@ -1,7 +1,7 @@
 <template>
   <el-tabs type="border-card">
     <el-tab-pane label="结果">
-      <el-table class="table" :data="tableData" style="width: 100%;min-height:150px;" max-height="450">
+      <el-table class="table" :data="tableData" style="width: 100%;min-height:350px;" max-height="350">
         <el-table-column
           v-for="item in columns"
           :key="item.label"
@@ -25,11 +25,18 @@ import {
 } from '@/graphQL/graphQL';
 export default {
   name: 'TableDetail',
+  props: {
+    tableparams: {
+      type: Object,
+      default: {}
+    }
+  },
   data() {
     return {
       columns: [],
       tableData: [],
-      connectionId: ''
+      connectionId: '',
+      objParams: {}
     };
   },
   methods: {
@@ -37,18 +44,36 @@ export default {
       rows.splice(index, 1);
     },
     async initData() {
+      console.log(this.tableparams, '子传父tableparams');
+      if (this.tableparams.parent) {
+        console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+        this.objParams = this.tableparams.parent.parent.data
+      }
+      console.log(this.objParams, '子传父objParams');
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
       const params1 = {
+        // config: {
+        //   name: 'demo01@47.103.79.104',
+        //   driverId: 'mysql:mysql8',
+        //   host: '47.103.79.104',
+        //   port: '3307',
+        //   databaseName: 'demo01',
+        //   authModelId: 'native',
+        //   credentials: {
+        //     userName: 'root',
+        //     userPassword: '1QAZ@wsx'
+        //   }
+        // }
         config: {
           name: 'demo01@47.103.79.104',
           driverId: 'mysql:mysql8',
-          host: '47.103.79.104',
-          port: '3307',
-          databaseName: 'demo01',
+          host: this.objParams.jdbcUrl ? this.objParams.jdbcUrl.split('://')[1].split('/')[0].split(':')[0] : '',
+          port: this.objParams.jdbcUrl ? this.objParams.jdbcUrl.split('://')[1].split('/')[0].split(':')[1] : '',
+          databaseName: this.tableparams.data ? this.tableparams.data.schema : '',
           authModelId: 'native',
           credentials: {
             userName: 'root',
-            userPassword: '1QAZ@wsx'
+            userPassword: 'Q2P88YjE4b23'
           }
         }
       };
@@ -59,7 +84,7 @@ export default {
         id: this.connectionId,
         credentials: {
           userName: 'root',
-          userPassword: '1QAZ@wsx'
+          userPassword: 'Q2P88YjE4b23'
         }
       };
       const resInitConnection = await initConnection(params2);
@@ -70,7 +95,8 @@ export default {
       const params4 = {
         connectionId: this.connectionId,
         contextId: resSqlContextCreate.data.context.id,
-        query: this.$store.state.graphQL.codeMirrorVal, // sql语句
+        // query: this.$store.state.graphQL.codeMirrorVal, // sql语句
+        query: (this.tableparams.data) ? ('SELECT * FROM ' + this.tableparams.data.schema + '.' + this.tableparams.data.tableName + ' LIMIT' + ' 10') : this.$store.state.graphQL.codeMirrorVal,
         filter: { offset: 0, limit: 200, constraints: [] }
       };
       const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4);

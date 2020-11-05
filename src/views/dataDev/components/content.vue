@@ -51,7 +51,7 @@
       </div>
     </el-aside> -->
     <el-main style="padding:0px;height:100%;">
-      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+      <CodeMirror :sqlparams="dblparams" :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
       <div class="dragBar">
         <span
           @mousedown="dragging = true"
@@ -59,7 +59,7 @@
           @mousemove="setTableHeight"
         >==</span>
       </div>
-      <TableDetail ref="table" :table-height="tableHeight" />
+      <TableDetail ref="table" :table-height="tableHeight" :tableparams="dblparams" />
     </el-main>
   </el-container>
 </template>
@@ -83,6 +83,7 @@ export default {
     CodeMirror,
     TableDetail
   },
+  props: ['dblparams'],
   data() {
     return {
       activeNames: [],
@@ -103,6 +104,12 @@ export default {
   watch: {
     dataBaseid() {
       this.getSchema();
+    },
+    dblparams(val) {
+      console.log(val, '等级')
+      if (val.level === 3) {
+        this.runQuery()
+      }
     }
   },
   created() {
@@ -183,6 +190,7 @@ export default {
     // 执行sql
     runQuery() {
       this.$refs.table.initData()
+      // console.log(this.dblparams, '传递过来的值')
     }
   }
 };

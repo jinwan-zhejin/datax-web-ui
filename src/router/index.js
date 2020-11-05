@@ -488,7 +488,7 @@ export const asyncRoutes = [
         path: 'list',
         name: 'list',
         component: () => import('@/views/dataShare/interfaceList.vue'),
-        meta: { title: '接口列表', icon: 'business' }
+        meta: { title: '接口列表', icon: 'list' }
       },
       {
         path: 'viewRegister',
