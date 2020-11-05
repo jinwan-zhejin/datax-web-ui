@@ -5,12 +5,18 @@
         <div class="left">
           <p>
             <strong>{{ obj.interName }}</strong>
-            <span>{{ obj.interState }}</span>
+            <!-- <span>{{ obj.interState }}</span> -->
+            <span>
+              <i
+                :class="obj.interState === '审核通过' ? 'el-icon-success' : 'el-icon-warning'"
+                :style="{color: obj.interState === '审核通过' ? '#00B600' : '#FE4646'}"
+              />{{ obj.interState }}
+            </span>
             <span>{{ obj.isLimit }}</span>
           </p>
         </div>
         <div class="right">
-          <el-button v-show="obj.interState !== '待审批'" type="primary" plain @click="isShowApproval">审批详情</el-button>
+          <el-button v-show="obj.interState !== '待审批'" size="small" type="primary" plain @click="isShowApproval">审批详情</el-button>
         </div>
       </div>
       <!-- 注册信息详情 -->
@@ -18,8 +24,14 @@
         <div class="tit">
           <strong>注册信息详情</strong>
         </div>
-        <p>部门联系人&nbsp;:&nbsp;{{ obj.contacts }}</p>
-        <p>联系方式&nbsp;:&nbsp;{{ obj.telephone }}</p>
+        <el-row>
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <span class="table-key">部门联系人</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.contacts }}</span>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <span class="table-key">联系方式</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.telephone }}</span>
+          </el-col>
+        </el-row>
       </div>
       <div v-show="isShow" class="show">
         <!-- 接口详情 -->
@@ -27,21 +39,39 @@
           <div class="tit">
             <strong>接口详情</strong>
           </div>
-          <p>接口编码&nbsp;:&nbsp;{{ obj.interCode }}</p>
-          <p>实现方式&nbsp;:&nbsp;{{ obj.implMethod }}</p>
-          <p>接口地址&nbsp;:&nbsp;{{ obj.interUrl }}</p>
-          <p>注册单位&nbsp;:&nbsp;{{ obj.registerCompany }}</p>
-          <p>版本号&nbsp;:&nbsp;{{ obj.interVersion }}</p>
-          <p>归集范围&nbsp;:&nbsp;{{ obj.dataRange }}</p>
-          <p>请求方式&nbsp;:&nbsp;{{ obj.requestMethod }}</p>
-          <p>请求示例&nbsp;:&nbsp;{{ obj.example }}</p>
+          <el-row>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">接口编码</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.interCode }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">实现方式</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.implMethod }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">接口地址</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.interUrl }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">注册单位</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.registerCompany }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">版本号</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.interVersion }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">归集范围</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.dataRange }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">请求方式</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.requestMethod }}</span>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="table-key">请求示例</span>&nbsp;:&nbsp;<span class="table-value">{{ obj.example }}</span>
+            </el-col>
+          </el-row>
         </div>
         <!-- 状态码 -->
         <p class="ptit"><span>状态码</span></p>
         <div class="stateCode">
           <el-table
             :data="tableStateCode"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -59,7 +89,7 @@
         <div class="inParameter">
           <el-table
             :data="tableIn"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -85,7 +115,7 @@
         <div class="toParameter">
           <el-table
             :data="tableTo"
-            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
             style="width: 100%"
           >
             <el-table-column
@@ -129,8 +159,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogApproval = false">取 消</el-button>
-          <el-button type="primary" @click="dialogApproval = false">确 定</el-button>
+          <el-button size="small" @click="dialogApproval = false">取 消</el-button>
+          <el-button size="small" type="primary" @click="dialogApproval = false">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -219,8 +249,11 @@ export default {
 .viewRe {
   padding: 20px;
   .main {
+    padding: 20px 0;
     background-color: #fff;
     border-radius:8px;
+    height: calc(100vh - 98px);
+    overflow-y: auto;
     .operation {
       border-bottom: 1px solid skyblue;
       overflow: hidden;
@@ -237,13 +270,17 @@ export default {
           margin: 10px 0;
           width: 600px;
           span {
-            background-color: rgb(72, 179, 221);
+            // background-color: rgb(72, 179, 221);
             margin: 0 10px;
             display: inline-block;
             padding: 2px 3px;
-            color: #ffffff;
-            border-radius: 5px;
+            // color: #ffffff;
+            // border-radius: 5px;
             font-size: 14px;
+            color: #333333;
+          }
+          strong {
+            font-size: 24px;
           }
         }
         .text {
@@ -267,7 +304,9 @@ export default {
         border-left: 3px solid skyblue;
         strong {
           margin: 0px 20px;
-          font-style: 20px;
+          font-size: 16px;
+          font-weight: 500;
+          color: #333333;
         }
         span {
           font-style: 14px;
@@ -315,6 +354,11 @@ export default {
             width: 5px;
             height: 25px;
             background-color: skyblue;
+          }
+        }
+        .el-row {
+          .el-col {
+            margin: 10px 0;
           }
         }
       }
@@ -399,6 +443,17 @@ export default {
         text-align: center;
       }
     }
+    ::v-deep .el-dialog {
+      border-radius: 8px;
+    }
   }
+}
+.table-key {
+  color: #999999;
+  font-size: 14px;
+}
+.table-value {
+  color: #333333;
+  font-size: 14px;
 }
 </style>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>新增任务弹窗</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.000000 0 0 0 0 0.717647 0 0 0 0 0.717647 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="新增任务弹窗" transform="translate(-24.000000, -459.000000)">
+            <g id="定位备份-12" transform="translate(24.000000, 459.000000)" filter="url(#filter-1)">
+                <g>
+                    <path d="M14,3 C14.5522847,3 15,3.44771525 15,4 L15,12 C15,12.5522847 14.5522847,13 14,13 L2,13 C1.44771525,13 1,12.5522847 1,12 L1,4 C1,3.44771525 1.44771525,3 2,3 L14,3 Z M14,4 L2,4 L2,12 L14,12 L14,4 Z" id="形状结合" fill="#66BDBF"></path>
+                    <path d="M4.156,10.712 L4.156,8.376 L5.828,8.376 C7.14,8.376 7.804,7.808 7.804,6.68 C7.804,5.56 7.148,5 5.836,5 L3.5,5 L3.5,10.712 L4.156,10.712 Z M5.796,7.808 L4.156,7.808 L4.156,5.568 L5.796,5.568 C6.252,5.568 6.588,5.656 6.812,5.848 C7.036,6.016 7.148,6.296 7.148,6.68 C7.148,7.064 7.036,7.344 6.82,7.528 C6.596,7.712 6.26,7.808 5.796,7.808 Z M11.036,10.712 L11.036,8.392 L13.316,5 L12.524,5 L10.708,7.784 L8.892,5 L8.1,5 L10.38,8.392 L10.38,10.712 L11.036,10.712 Z" id="PY" fill="#66BDBF" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

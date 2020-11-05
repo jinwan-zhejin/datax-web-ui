@@ -2,12 +2,12 @@
   <div class="call">
     <p class="P1">调用共享接口</p>
     <el-form ref="form" class="formTop" :model="form" label-width="80px">
-      <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select">
+      <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select" style="width: 355px;">
         <el-select slot="prepend" v-model="form.select" style="width: 100px" placeholder="请选择">
           <el-option label="post" value="post" />
           <el-option label="get" value="get" />
         </el-select>
-        <el-button slot="append" icon="el-icon-check" @click="call" />
+        <el-button slot="append" @click="call">搜索</el-button>
       </el-input>
     </el-form>
     <div class="box">
@@ -68,10 +68,10 @@
       </el-tabs> -->
       <el-table
         v-show="isSuccess"
+        height="calc(100vh - 198px)"
         :data="callValue"
-        border
-        :header-cell-style="{ background: '#FAFAFC' }"
-        style="width: 100%"
+        :header-cell-style="{ background: '#FAFAFC',color: '#333333', fontSize: '14px', fontWeight: '500' }"
+        style="width: 100%; border-radius: 4px;"
       >
         <el-table-column
           prop="date"
@@ -246,7 +246,7 @@ export default {
 
 <style lang="scss">
 .call {
-  margin: 20px;
+  margin: 24px;
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
@@ -264,18 +264,27 @@ export default {
   }
   .formTop {
     position: absolute;
-    width: 50%;
+    float: right;
     right: 24px;
     top: 24px;
   }
   .box {
     margin-top: 24px;
     .el-table {
+      border-top: 1px solid #e0e0e0;
+      border-left: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      th {
+        background: #FAFAFC;
+      }
       a {
         color: cornflowerblue;
       }
       .a1:hover {
         color: rgb(54, 105, 182)
+      }
+      .a2 {
+        color: #fe4646;
       }
       .a2:hover {
         color: rgb(218, 85, 85);

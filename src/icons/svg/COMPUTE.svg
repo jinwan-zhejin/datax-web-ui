@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>新增任务弹窗</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 0.301961 0 0 0 0 0.301961 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="设计图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="新增任务弹窗" transform="translate(-24.000000, -139.000000)">
+            <g id="定位备份-3" transform="translate(24.000000, 139.000000)" filter="url(#filter-1)">
+                <g>
+                    <path d="M12,1 C12.5522847,1 13,1.44771525 13,2 L13,14 C13,14.5522847 12.5522847,15 12,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,2 C3,1.44771525 3.44771525,1 4,1 L12,1 Z M12,2 L4,2 L4,14 L12,14 L12,2 Z" id="形状结合" fill="#ED5D58"></path>
+                    <rect id="矩形" fill="#ED5D58" x="3" y="4" width="10" height="1" rx="0.5"></rect>
+                    <rect id="矩形" fill="#ED5D58" x="5" y="7" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-3" fill="#ED5D58" x="7.5" y="7" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-4" fill="#ED5D58" x="10" y="7" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-7" fill="#ED5D58" x="5" y="9" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-6" fill="#ED5D58" x="7.5" y="9" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-5" fill="#ED5D58" x="10" y="9" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-10" fill="#ED5D58" x="5" y="11" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-9" fill="#ED5D58" x="7.5" y="11" width="1" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-8" fill="#ED5D58" x="10" y="11" width="1" height="1" rx="0.5"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,7 +1,7 @@
 <template>
 <el-tabs type="border-card">
     <el-tab-pane label="结果">
-        <el-table class="table" :data="tableData" style="width: 100%;min-height:150px;" max-height="450">
+        <el-table class="table" :data="tableData" style="width: 100%;min-height:350px;" max-height="350">
             <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :label="item.label" width="130" />
         </el-table>
     </el-tab-pane>

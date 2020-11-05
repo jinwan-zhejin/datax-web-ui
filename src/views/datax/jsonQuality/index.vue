@@ -10,7 +10,7 @@
         "
       >
         <div style="width: 80%; margin: 0 auto">
-          <el-steps :active="active">
+          <el-steps :active="active" align-center>
             <el-step title="新建任务" description="">1</el-step>
             <el-step title="添加质量规则" description="">2</el-step>
             <el-step title="选择结果数据存放位置" description="">3</el-step>
@@ -97,11 +97,17 @@
               :visible.sync="showCronBox"
               width="60%"
               append-to-body
+              class="cron"
             >
               <cron v-model="temp.jobCron" />
               <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="showCronBox = false">关闭</el-button>
-                <el-button size="small" type="primary" @click="showCronBox = false"
+                <el-button size="small" @click="showCronBox = false"
+                  >关闭</el-button
+                >
+                <el-button
+                  size="small"
+                  type="primary"
+                  @click="showCronBox = false"
                   >确 定</el-button
                 >
               </span>
@@ -129,16 +135,12 @@
               </el-input>
             </el-form-item>
 
-            
-
             <el-form-item label="报警邮件：">
               <el-input
                 v-model="temp.alarmEmail"
                 placeholder="请输入报警邮件，多个用逗号分隔"
               />
             </el-form-item>
-
-            
 
             <el-form-item label="JVM启动参数：">
               <el-input
@@ -164,7 +166,6 @@
                 size="small"
               />
             </el-form-item>
-
           </el-form>
         </div>
 
@@ -179,11 +180,136 @@
         </div>
         <div v-show="active === 4" class="step4">
           <div style="margin-bottom: 20px" />
-          <json-editor
+          <!-- <json-editor
             v-show="active === 4"
             ref="jsonEditor"
             v-model="configJson"
-          />
+          /> -->
+          <div style="margin-top: 20px">
+            <p>1.新建任务</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">执行器：</span>
+                <span class="step5content_value">{{ temp.jobGroup || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">所属项目：</span>
+                <span class="step5content_value">{{ temp.projectId || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">路由策略：</span>
+                <span class="step5content_value">{{ temp.executorRouteStrategy || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">子项目：</span>
+                <span class="step5content_value">{{ temp.childJobId || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">阻塞处理：</span>
+                <span class="step5content_value">{{ temp.executorBlockStrategy || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">任务名称：</span>
+                <span class="step5content_value">{{ temp.jobDesc || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">任务类型：</span>
+                <span class="step5content_value">{{ $store.state.taskAdmin.tabType }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">Cron：</span>
+                <span class="step5content_value">{{ temp.jobCron }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">报警邮件：</span>
+                <span class="step5content_value">{{ temp.alarmEmail || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">失败重试次数：</span>
+                <span class="step5content_value">{{ temp.executorFailRetryCount || "0" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">超时时间：</span>
+                <span class="step5content_value">{{ temp.executorTimeout || "0" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p>2.构建reader</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">数据库源：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.datasourceName || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">切分字段：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">数据库表名：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">表所有字段：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns || "-" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p>3.构建writer</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">数据库源：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.datasourceName || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">数据库表名：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.tableName || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">字段：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">postSql：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql || "-" }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">前置Sql语句：</span>
+                <span class="step5content_value">{{  $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || "-" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px">
+            <p style="margin: 20px 0">4.字段映射</p>
+            <div style="border: 1px solid #f3f3f3">
+              <el-table
+                :data="$store.state.taskAdmin.tableData"
+                stripe
+                :header-cell-style="{
+                  background: '#FAFAFC',
+                  color: 'rgba(51, 51, 51, 1)',
+                  'font-family': 'PingFangHK-Medium, PingFangHK',
+                }"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="sourceField"
+                  label="数据源库"
+                  width="180"
+                />
+                <!-- <el-table-column
+                  prop="clearRule"
+                  label="清洗规则"
+                  width="180"
+                /> -->
+                <el-table-column prop="targetField" label="目标字段" />
+              </el-table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -210,7 +336,7 @@
           style="margin-top: 12px; margin-bottom: 12px"
           @click="next"
           size="small"
-          >提 交</el-button
+          >提交任务</el-button
         >
       </div>
     </div>
@@ -464,8 +590,8 @@ export default {
       const toColumnsList = this.$refs.writer.getData().columns;
       // const fromTableName = this.$refs.reader.getData().tableName
       // 第一步 reader 判断是否已选字段
-      if(this.active === 0) {
-        this.$refs['dataForm'].validate((valid) => {
+      if (this.active === 0) {
+        this.$refs["dataForm"].validate((valid) => {
           if (valid) {
             this.active++;
           } else {
@@ -476,14 +602,15 @@ export default {
         // 实现第一步骤读取的表和字段直接带到第二步骤
         // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
         // 取子组件的数据
-        this.$refs['reader'].$refs['rdbmsreader'].$refs['readerFrom'].validate((valid) => {
-          if (valid) {
-            this.active++;
-          } else {
-            return false;
+        this.$refs["reader"].$refs["rdbmsreader"].$refs["readerFrom"].validate(
+          (valid) => {
+            if (valid) {
+              this.active++;
+            } else {
+              return false;
+            }
           }
-        });
-
+        );
 
         this.showNext = true;
         this.showSubmit = false;
@@ -492,25 +619,30 @@ export default {
         if (this.active === 2) {
           let datasource = this.$refs.writer.dataSource;
           let ref = {
-            'db2':'rdbmswriter',
-            'hive':'hivewriter',
+            db2: "rdbmswriter",
+            hive: "hivewriter",
+          };
+
+          this.$refs["writer"].$refs[ref[datasource] || "rdbmswriter"].$refs[
+            "writerFrom"
+          ].validate((valid) => {
+            if (valid) {
+              this.active++;
+              this.showNext = true;
+              this.showSubmit = false;
+              this.$refs.mapper.sendColumns(fromColumnList, toColumnsList);
+              this.$refs.mapper.sendRuleSettings();
+            } else {
+              return false;
             }
-          
-          this.$refs['writer'].$refs[(ref[datasource] || 'rdbmswriter')].$refs['writerFrom'].validate((valid) => {
-          if (valid) {
-            this.active++;
-            this.showNext = true;
-            this.showSubmit = false;
-            this.$refs.mapper.sendColumns(fromColumnList, toColumnsList);
-            this.$refs.mapper.sendRuleSettings();
-          } else {
-            return false;
-          }
-        }); 
-        }
+          });
+        } else if(this.active === 3 || this.active === 4) {
+          this.active++
+        };
+
         if (this.active === 3) {
-          this.showNext = false;
-          this.showSubmit = true;
+          this.showNext = true;
+          this.showSubmit = false;
           this.jobTemplateSelectDrawer = true;
           const readerColumns = this.$refs.mapper.getLColumns();
           const writerColumns = this.$refs.mapper.getRColumns();
@@ -532,13 +664,11 @@ export default {
               );
             }
           }
-          this.active++;
           this.buildJson();
-        }
-        if (this.active === 4) {
-
-          this.showNext = true;
-          this.showSubmit = false;
+        } else if (this.active === 4) {
+          this.showNext = false;
+          this.showSubmit = true;
+        } else if (this.active === 5) {
           this.temp.jobJson = this.configJson;
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
@@ -548,6 +678,7 @@ export default {
           });
 
           this.temp.childJobId = str;
+          console.log("this.temp", this.temp);
           job.createJob(this.temp).then(() => {
             this.$notify({
               title: "Success",
@@ -555,16 +686,14 @@ export default {
               type: "success",
               duration: 2000,
             });
-            // 切回第一步
-            this.active = 1;
 
             this.$store.dispatch("getTaskList", true);
             this.$store.commit("SET_TAB_TYPE", "");
           });
-        } else {
-          // this.active++;
         }
       }
+
+      console.log(this.active);
     },
     last() {
       if (this.active >= 1) {
@@ -578,6 +707,8 @@ export default {
         this.showNext = true;
         this.showSubmit = false;
       }
+
+      console.log(this.active);
     },
     // 构建json
     buildJson() {
@@ -645,8 +776,7 @@ export default {
       };
       // 调api
       dataxJsonApi.buildJson(obj).then((response) => {
-        this.configJson = JSON.parse(response);
-        console.log(123);
+        this.configJson = response;
       });
     },
     handleCopy(text, event) {
@@ -661,7 +791,6 @@ export default {
       if (this.jobTemplateSelectDrawer) {
         this.fetchData();
       }
-      console.log(123);
     },
     getReaderData() {
       return this.$refs.reader.getData();
@@ -701,5 +830,31 @@ export default {
 
 .main_content >>> .el-select {
   width: 100%;
+}
+
+.cron >>> .el-dialog {
+  border-radius: 8px;
+}
+
+.step5content {
+  background: #f8f8fa;
+  overflow: hidden;
+  margin: 22px 0;
+  padding: 16px;
+}
+.step5content_key {
+  color: rgba(153, 153, 153, 1);
+}
+.step5content > div {
+  width: 50%;
+  float: left;
+  padding: 8px;
+}
+.step5content_value {
+  line-height: 20px;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  color: #333333;
 }
 </style>

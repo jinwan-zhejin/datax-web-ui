@@ -45,30 +45,11 @@
         <div class="bottom">
             <div class="body">
                 <el-input v-model="search" class="input_serach" prefix-icon="el-icon-search" placeholder="任务名称/ID/代码">
-                    <!-- <template slot="append">我的</template> -->
                 </el-input>
                 <div class="list">
                     <ul>
                         <li v-for="item in List" :key="item.id" @click="getJobDetail(item)">
-                            <img v-if="item.jobType === 'NORMAL'" class="task_img" src="./taskAdmin_png/normal.png">
-                            <img v-if="item.jobType === 'IMPORT'" class="task_img" src="./taskAdmin_png/import.png">
-                            <img v-if="item.jobType === 'EXPORT'" class="task_img" src="./taskAdmin_png/export.png">
-                            <img v-if="item.jobType === 'COMPUTE'" class="task_img" src="./taskAdmin_png/computed.png">
-                            <img v-if="item.jobType === 'SQLJOB'" class="task_img" src="./taskAdmin_png/sql.png">
-                            <img v-if="item.jobType === 'SPARK'" class="task_img" src="./taskAdmin_png/spark.png">
-                            <img v-if="item.jobType === 'DQCJOB'" class="task_img" src="./taskAdmin_png/质量.png">
-                            <img v-if="item.jobType === 'METACOLLECT'" class="task_img" src="./taskAdmin_png/元数据采集.png">
-                            <img v-if="item.jobType === 'METACOMPARE'" class="task_img" src="./taskAdmin_png/元数据比较.png">
-                            <img v-if="item.jobType === 'SHELL'" class="task_img" src="./taskAdmin_png/shell.png">
-                            <img v-if="item.jobType === 'POWERSHELL'" class="task_img" src="./taskAdmin_png/powershell.png">
-                            <img v-if="item.jobType === 'PYTHON'" class="task_img" src="./taskAdmin_png/python.png">
-                            <img v-if="item.jobType === 'VJOB'" class="task_img" src="./taskAdmin_png/虚.png">
-                            <img v-if="item.jobType === 'JAVA'" class="task_img" src="./taskAdmin_png/java.png">
-                            <img v-if="item.jobType === 'SCALA'" class="task_img" src="./taskAdmin_png/scala.png">
-                            <img v-if="item.jobType === 'PYSPARK'" class="task_img" src="./taskAdmin_png/pyspark.png">
-                            <img v-if="item.jobType === 'R'" class="task_img" src="./taskAdmin_png/R.png">
-                            <img v-if="item.jobType === 'BATCH'" class="task_img" src="./taskAdmin_png/任务批量构建.png">
-                            <img v-if="item.jobType === 'TEMPLATE'" class="task_img" src="./taskAdmin_png/普通任务模板.png">
+                            <svg-icon  :icon-class="item.jobType" />
                             <a style="color: rgba(102, 102, 102, 1)">
                                 {{ item.jobDesc }}
                             </a>
@@ -165,6 +146,8 @@ import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
 import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
 import _ from 'lodash';
 
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+
 export default {
     name: '',
     components: {
@@ -222,10 +205,8 @@ export default {
             } else {
                 this.isDel = true;
             }
-        }
-    },
+        },
 
-    watch: {
         taskList(val) {
             this.List = val
         },
@@ -233,13 +214,12 @@ export default {
         taskDetailID(val) {
             this.jobDetailIdx = val
         }
-
     },
+
     created() {
         this.getItem();
         console.log(this.$store.state);
     },
-    mounted() {},
     methods: {
         removeJobTab(name) {
             const removeIndex = _.findIndex(
@@ -422,8 +402,9 @@ export default {
                 } = response;
                 this.total = total;
                 this.options = records;
-                this.selectValue = this.options[0].name;
-                this.$store.commit('SET_PROJECT_ID', this.options[0].id)
+                this.selectValue = this.options[0].id;
+                this.fetchJobs(this.selectValue)
+
                 const listQuery = {
                     current: 1,
                     size: 10000,
@@ -461,23 +442,39 @@ export default {
 
         fetchJobs(event) {
             this.$store.commit('SET_PROJECT_ID', event)
+
+            //获取任务列表
             const listQuery = {
                 current: 1,
                 size: 10,
                 jobGroup: 0,
-                // projectIds: '',
+                projectIds: event,
                 triggerStatus: -1,
                 jobDesc: '',
                 glueType: ''
             };
             this.projectIds = event;
-            listQuery.projectIds = event;
+            
             job.getList(listQuery).then((response) => {
                 const {
                     content
                 } = response;
                 this.List = content.data;
             });
+
+            //根据项目id获取数据源
+
+            let p =  {
+                current: 1,
+                size: 200,
+                ascs: 'datasource_name',
+                projectId: event
+            }
+            jdbcDsList(p).then(response => {
+                const { records } = response
+                this.$store.commit('SET_DATASOURCE', records)
+            })
+
         },
 
         createNewJob(command) {

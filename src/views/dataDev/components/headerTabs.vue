@@ -13,7 +13,7 @@
                 </el-col>
             </el-row>
         </div>
-        <div class="tree">
+        <<<<<<< HEAD <div class="tree">
             <div class="search">
                 <el-input v-model="searchModel" placeholder="请输入关键字" prefix-icon="el-icon-search" />
             </div>
@@ -49,15 +49,55 @@
                 </el-tree>
             </div>
             <!-- 数据库tree -->
-        </div>
+            =======
+            <!-- 数据源tree -->
+            <div class="dataTree">
+                <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-click="dblhandleClick" @node-expand="handleNodeExpand">
+                    <span slot-scope="{ node, data }" class="custom-tree-node">
+                        <span style="fontSize: 14px;">
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'mysql'" icon-class="yunshujukuRDSMySQL" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'oracle'" icon-class="ORACLE" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'postgresql'" icon-class="postgresql" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'spark'" icon-class="spark" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'sqlserver'" icon-class="sqlserver1" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'impala'" icon-class="Impala" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'hive'" icon-class="Hive" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'hbase'" icon-class="HBASE" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'greenplum'" icon-class="Greenplum-x" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'db2'" icon-class="db" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'clickhouse'" icon-class="clickhouse" />
+                            <svg-icon v-if="node.level == 1 && data.datasource === 'mongodb'" icon-class="ziyuan" />
+                            <!-- <svg-icon v-if="node.level == 2" icon-class="database" /> -->
+                            <i v-if="node.level == 2" class="el-icon-coin" />
+                            <svg-icon v-if="node.level == 3" icon-class="table1" />
+                            <svg-icon v-if="node.level == 4 && data.type === 'varchar' || data.type === 'text' || data.type === 'mediumtext' || data.type === 'char' || data.type === 'longtext'" icon-class="text" />
+                            <svg-icon v-if="node.level == 4 && data.type === 'number' || data.type === 'double' || data.type === 'int' || data.type === 'bigint' || data.type === 'tinyint' || data.type === 'float' || data.type === 'decimal' || data.type === 'smallint'" icon-class="Group" />
+                            <i v-if="node.level == 4 && data.type === 'date' || data.type === 'timestamp' || data.type === 'datetime' || data.type === 'time'" class="el-icon-date" />
+                            <svg-icon v-if="node.level == 4 && data.type === 'enum'" icon-class="enumeratekeysini" />
+                            <svg-icon v-if="node.level == 4 && data.type === 'set'" icon-class="main-set" />
+                            <svg-icon v-if="node.level == 4 && data.type === 'blob' || data.type === 'longblob'" icon-class="Blobshangchuanwenjian" />
+                            {{ data.name }}
+                        </span>
+                    </span>
+                </el-tree>
+                >>>>>>> 4abd8af15161038d37d8f93faf9001fc31f78f1e
+            </div>
     </div>
     <el-tabs v-model="editableTabsValue" class="tabs1" type="card" closable @tab-remove="removeTab">
-        <!-- :editable="true" -->
-        <!-- @tab-remove="removeTab" -->
-        <!-- @edit="handleTabsEdit" -->
-        <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-            <DataDevContent ref="content" />
-        </el-tab-pane>
+        <<<<<<< HEAD <!-- :editable="true" -->
+            <!-- @tab-remove="removeTab" -->
+            <!-- @edit="handleTabsEdit" -->
+            <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+                <DataDevContent ref="content" />
+            </el-tab-pane>
+            =======
+            <!-- :editable="true" -->
+            <!-- @tab-remove="removeTab" -->
+            <!-- @edit="handleTabsEdit" -->
+            <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+                <DataDevContent :dblparams="ByVal" />
+            </el-tab-pane>
+            >>>>>>> 4abd8af15161038d37d8f93faf9001fc31f78f1e
     </el-tabs>
 </div>
 </template>
@@ -108,7 +148,9 @@ export default {
                 }
             },
             dataTree: [],
-            firstId: ''
+            firstId: '',
+            treeClickCount: '',
+            ByVal: {}
         };
     },
     watch: {
@@ -123,11 +165,6 @@ export default {
         this.handleTabsEdit('', 'add');
     },
     methods: {
-        handleNodeClick(data, node, nodeComp) {
-            if (node.level == 3) {
-                this.$refs.content[0].previewData(node)
-            }
-        },
         addTab(targetName) {
             const newTabName = ++this.tabIndex + '';
             this.editableTabs.push({
@@ -138,17 +175,39 @@ export default {
             console.log(this.editableTabs);
             this.editableTabsValue = newTabName;
         },
-        handleDelete(name) {
-            console.log(name);
-            for (let i = 0; i < this.editableTabs.length; i++) {
-                if (this.editableTabs[i].name === name) {
-                    this.editableTabs.splice(i, 1);
-                    this.tabIndex = i + ''
-                    console.log(this.tabIndex, 'index')
-                    this.editableTabsValue = this.tabIndex;
-                }
+        // 触发双击事件
+        dblhandleClick(data, node) {
+            this.treeClickCount++;
+            // 单次点击次数超过2次不作处理,直接返回,也可以拓展成多击事件
+            if (this.treeClickCount >= 2) {
+                return;
             }
+            this.timer = window.setTimeout(() => {
+                if (this.treeClickCount === 1) {
+                    //  把次数归零
+                    this.treeClickCount = 0;
+                    //  单击事件处理
+                    console.log('单击事件,可在此处理对应逻辑')
+                } else if (this.treeClickCount > 1) {
+                    //  把次数归零
+                    this.treeClickCount = 0;
+                    //  双击事件
+                    console.log('双击事件,可在此处理对应逻辑')
+                    this.ByVal = node
+                }
+            }, 300);
         },
+        // handleDelete(name) {
+        //   console.log(name);
+        //   for (let i = 0; i < this.editableTabs.length; i++) {
+        //     if (this.editableTabs[i].name === name) {
+        //       this.editableTabs.splice(i, 1);
+        //       this.tabIndex = i + ''
+        //       console.log(this.tabIndex, 'index')
+        //       this.editableTabsValue = this.tabIndex;
+        //     }
+        //   }
+        // },
         handleNodeExpand(data, node) {
             console.log(data, 'data')
             console.log(node.level, 'level')
@@ -209,97 +268,195 @@ export default {
                 console.log('最后一级')
             }
         },
-        filterNode(value, data) {
-            if (!value) return true;
-            return data.name.indexOf(value) !== -1;
-        },
-        // 获取项目数据
-        async getProJectList() {
-            try {
-                const {
-                    records
-                } = await jobProjectApi.list(this.listQuery);
-                this.projectArray = records;
-                console.log(this.projectArray, 'projectArray');
-                console.log(records)
-                if (this.selectValue === '') {
-                    console.log(this.projectArray[0].name, 'name')
-                    this.selectValue = this.projectArray[0].name
-                    this.getDataSourceList()
-                }
-            } catch (error) {
-                console.log(error);
+        watch: {
+            'searchModel': function (val) {
+                this.$refs.tree.filter(val);
             }
         },
-        selectMethod() {
-            this.getDataSourceList()
+        created() {
+            this.getProJectList()
         },
-        // 根据项目获取数据源
-        getDataSourceList() {
-            // this.arrQuery.name = this.selectValue
-            for (let i = 0; i < this.projectArray.length; i++) {
-                if (this.projectArray[i].name === this.selectValue) {
-                    this.arrQuery.projectId = this.projectArray[i].id;
-                }
-            }
-            datasourceApi.getJobList(this.arrQuery).then((response) => {
-                for (let i = 0; i < response.records.length; i++) {
-                    response.records[i].name = response.records[i].datasourceName + ' - ' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
-                }
-                this.dataTree = response.records;
-            });
+        mounted() {
+            this.handleTabsEdit('', 'add');
         },
-
-        removeTab(targetName) {
-            if (this.editableTabs.length > 1) {
-                const tabs = this.editableTabs;
-                let activeName = this.editableTabsValue;
-                if (activeName === targetName) {
-                    tabs.forEach((tab, index) => {
-                        if (tab.name === targetName) {
-                            const nextTab = tabs[index + 1] || tabs[index - 1];
-                            if (nextTab) {
-                                activeName = nextTab.name;
-                            }
-                        }
-                    });
+        methods: {
+            handleNodeClick(data, node, nodeComp) {
+                if (node.level == 3) {
+                    this.$refs.content[0].previewData(node)
                 }
-                this.editableTabsValue = activeName;
-                this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
-            } else {
-                this.$message.info('最后一个,请勿删除')
-            }
-        },
-        handleTabsEdit(targetName, action) {
-            if (action === 'add') {
+            },
+            addTab(targetName) {
                 const newTabName = ++this.tabIndex + '';
                 this.editableTabs.push({
                     title: '未命名的查询',
-                    name: newTabName,
-                    content: 'New Tab content'
+                    name: newTabName
+                    // content: "New Tab content",
                 });
+                console.log(this.editableTabs);
                 this.editableTabsValue = newTabName;
-            }
-            if (action === 'remove') {
-                const tabs = this.editableTabs;
-                let activeName = this.editableTabsValue;
-                if (activeName === targetName) {
-                    tabs.forEach((tab, index) => {
-                        if (tab.name === targetName) {
-                            const nextTab = tabs[index + 1] || tabs[index - 1];
-                            if (nextTab) {
-                                activeName = nextTab.name;
-                            }
-                        }
-                    });
+            },
+            handleDelete(name) {
+                console.log(name);
+                for (let i = 0; i < this.editableTabs.length; i++) {
+                    if (this.editableTabs[i].name === name) {
+                        this.editableTabs.splice(i, 1);
+                        this.tabIndex = i + ''
+                        console.log(this.tabIndex, 'index')
+                        this.editableTabsValue = this.tabIndex;
+                    }
                 }
+            },
+            handleNodeExpand(data, node) {
+                console.log(data, 'data')
+                console.log(node.level, 'level')
+                if (node.level == 1) {
+                    getTableSchema({
+                        datasourceId: data.id
+                    }).then((res) => {
+                        console.log(res)
+                        const arr = []
+                        for (let j = 0; j < res.length; j++) {
+                            arr.push({
+                                id: new Date().getTime() + j,
+                                name: res[j],
+                                dsid: data.id
+                            })
+                        }
+                        this.$refs.tree.updateKeyChildren(data.id, arr);
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else if (node.level == 2) {
+                    getTableListWithComment({
+                        id: data.dsid,
+                        schema: data.name
+                    }).then(res => {
+                        console.log('res', res);
+                        // this.tableList = res;
+                        const arr = []
+                        for (let j = 0; j < res.length; j++) {
+                            arr.push({
+                                id: new Date().getTime() + j,
+                                name: res[j].name + ' ' + res[j].comment,
+                                dsid: data.dsid,
+                                schema: data.name,
+                                tableName: res[j].name
+                            })
+                        }
+                        this.$refs.tree.updateKeyChildren(data.id, arr);
+                    })
+                } else if (node.level == 3) {
+                    getTableColumns({
+                        datasourceId: data.dsid,
+                        tableName: data.tableName,
+                        schema: data.schema
+                    }).then((res) => {
+                        console.log(res.datas)
+                        const arr = []
+                        for (let j = 0; j < res.datas.length; j++) {
+                            arr.push({
+                                id: new Date().getTime() + j,
+                                name: res.datas[j].COLUMN_NAME + ' (' + res.datas[j].DATA_TYPE + ')' + ' - ' + res.datas[j].COLUMN_COMMENT,
+                                type: res.datas[j].DATA_TYPE
+                            })
+                        }
+                        this.$refs.tree.updateKeyChildren(data.id, arr);
+                    });
+                } else {
+                    console.log('最后一级')
+                }
+            },
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.name.indexOf(value) !== -1;
+            },
+            // 获取项目数据
+            async getProJectList() {
+                try {
+                    const {
+                        records
+                    } = await jobProjectApi.list(this.listQuery);
+                    this.projectArray = records;
+                    console.log(this.projectArray, 'projectArray');
+                    console.log(records)
+                    if (this.selectValue === '') {
+                        console.log(this.projectArray[0].name, 'name')
+                        this.selectValue = this.projectArray[0].name
+                        this.getDataSourceList()
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            selectMethod() {
+                this.getDataSourceList()
+            },
+            // 根据项目获取数据源
+            getDataSourceList() {
+                // this.arrQuery.name = this.selectValue
+                for (let i = 0; i < this.projectArray.length; i++) {
+                    if (this.projectArray[i].name === this.selectValue) {
+                        this.arrQuery.projectId = this.projectArray[i].id;
+                    }
+                }
+                datasourceApi.getJobList(this.arrQuery).then((response) => {
+                    for (let i = 0; i < response.records.length; i++) {
+                        response.records[i].name = response.records[i].datasourceName + ' - ' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
+                    }
+                    this.dataTree = response.records;
+                });
+            },
 
-                this.editableTabsValue = activeName;
-                this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+            removeTab(targetName) {
+                if (this.editableTabs.length > 1) {
+                    const tabs = this.editableTabs;
+                    let activeName = this.editableTabsValue;
+                    if (activeName === targetName) {
+                        tabs.forEach((tab, index) => {
+                            if (tab.name === targetName) {
+                                const nextTab = tabs[index + 1] || tabs[index - 1];
+                                if (nextTab) {
+                                    activeName = nextTab.name;
+                                }
+                            }
+                        });
+                    }
+                    this.editableTabsValue = activeName;
+                    this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+                } else {
+                    this.$message.info('最后一个,请勿删除')
+                }
+            },
+            handleTabsEdit(targetName, action) {
+                if (action === 'add') {
+                    const newTabName = ++this.tabIndex + '';
+                    this.editableTabs.push({
+                        title: '未命名的查询',
+                        name: newTabName,
+                        content: 'New Tab content'
+                    });
+                    this.editableTabsValue = newTabName;
+                }
+                if (action === 'remove') {
+                    const tabs = this.editableTabs;
+                    let activeName = this.editableTabsValue;
+                    if (activeName === targetName) {
+                        tabs.forEach((tab, index) => {
+                            if (tab.name === targetName) {
+                                const nextTab = tabs[index + 1] || tabs[index - 1];
+                                if (nextTab) {
+                                    activeName = nextTab.name;
+                                }
+                            }
+                        });
+                    }
+
+                    this.editableTabsValue = activeName;
+                    this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+                }
             }
         }
-    }
-};
+    };
 </script>
 
 <style lang="scss">
@@ -315,7 +472,7 @@ export default {
     .aside {
         width: 340px;
         min-height: 660px;
-        max-height: 750px;
+        max-height: 907px;
         overflow: scroll;
         padding: 10px;
 
@@ -343,11 +500,20 @@ export default {
     }
 
     .tabs1 {
-        flex: 1;
+        <<<<<<< HEAD flex: 1;
 
         .el-tabs__header {
             margin: 0px;
         }
+
+        =======flex: 1;
+        overflow: auto;
+
+        .el-tabs__header {
+            margin: 0px;
+        }
+
+        >>>>>>>4abd8af15161038d37d8f93faf9001fc31f78f1e
     }
 }
 

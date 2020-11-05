@@ -29,3 +29,9 @@ export default {
   }
 }
 </style>
+
+<style>
+.el-dialog {
+  border-radius: 8px;
+}
+</style>
