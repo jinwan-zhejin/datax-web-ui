@@ -113,18 +113,23 @@ export default {
             ByVal: {}
         };
     },
+    created() {
+        this.getProJectList()
+    },
     watch: {
         'searchModel': function (val) {
             this.$refs.tree.filter(val);
         }
     },
-    created() {
-        this.getProJectList()
-    },
     mounted() {
         this.handleTabsEdit('', 'add');
     },
     methods: {
+        handleNodeClick(data, node, nodeComp) {
+            if (node.level == 3) {
+                this.$refs.content[0].previewData(node)
+            }
+        },
         addTab(targetName) {
             const newTabName = ++this.tabIndex + '';
             this.editableTabs.push({
@@ -135,39 +140,17 @@ export default {
             console.log(this.editableTabs);
             this.editableTabsValue = newTabName;
         },
-        // 触发双击事件
-        dblhandleClick(data, node) {
-            this.treeClickCount++;
-            // 单次点击次数超过2次不作处理,直接返回,也可以拓展成多击事件
-            if (this.treeClickCount >= 2) {
-                return;
-            }
-            this.timer = window.setTimeout(() => {
-                if (this.treeClickCount === 1) {
-                    //  把次数归零
-                    this.treeClickCount = 0;
-                    //  单击事件处理
-                    console.log('单击事件,可在此处理对应逻辑')
-                } else if (this.treeClickCount > 1) {
-                    //  把次数归零
-                    this.treeClickCount = 0;
-                    //  双击事件
-                    console.log('双击事件,可在此处理对应逻辑')
-                    this.ByVal = node
+        handleDelete(name) {
+            console.log(name);
+            for (let i = 0; i < this.editableTabs.length; i++) {
+                if (this.editableTabs[i].name === name) {
+                    this.editableTabs.splice(i, 1);
+                    this.tabIndex = i + ''
+                    console.log(this.tabIndex, 'index')
+                    this.editableTabsValue = this.tabIndex;
                 }
-            }, 300);
+            }
         },
-        // handleDelete(name) {
-        //   console.log(name);
-        //   for (let i = 0; i < this.editableTabs.length; i++) {
-        //     if (this.editableTabs[i].name === name) {
-        //       this.editableTabs.splice(i, 1);
-        //       this.tabIndex = i + ''
-        //       console.log(this.tabIndex, 'index')
-        //       this.editableTabsValue = this.tabIndex;
-        //     }
-        //   }
-        // },
         handleNodeExpand(data, node) {
             console.log(data, 'data')
             console.log(node.level, 'level')
@@ -228,192 +211,93 @@ export default {
                 console.log('最后一级')
             }
         },
-        watch: {
-            'searchModel': function (val) {
-                this.$refs.tree.filter(val);
+        filterNode(value, data) {
+            if (!value) return true;
+            return data.name.indexOf(value) !== -1;
+        },
+        // 获取项目数据
+        async getProJectList() {
+            try {
+                const {
+                    records
+                } = await jobProjectApi.list(this.listQuery);
+                this.projectArray = records;
+                console.log(this.projectArray, 'projectArray');
+                console.log(records)
+                if (this.selectValue === '') {
+                    console.log(this.projectArray[0].name, 'name')
+                    this.selectValue = this.projectArray[0].name
+                    this.getDataSourceList()
+                }
+            } catch (error) {
+                console.log(error);
             }
         },
-        created() {
-            this.getProJectList()
+        selectMethod() {
+            this.getDataSourceList()
         },
-        mounted() {
-            this.handleTabsEdit('', 'add');
-        },
-        methods: {
-            handleNodeClick(data, node, nodeComp) {
-                if (node.level == 3) {
-                    this.$refs.content[0].previewData(node)
+        // 根据项目获取数据源
+        getDataSourceList() {
+            // this.arrQuery.name = this.selectValue
+            for (let i = 0; i < this.projectArray.length; i++) {
+                if (this.projectArray[i].name === this.selectValue) {
+                    this.arrQuery.projectId = this.projectArray[i].id;
                 }
-            },
-            addTab(targetName) {
+            }
+            datasourceApi.getJobList(this.arrQuery).then((response) => {
+                for (let i = 0; i < response.records.length; i++) {
+                    response.records[i].name = response.records[i].datasourceName + ' - ' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
+                }
+                this.dataTree = response.records;
+            });
+        },
+
+        removeTab(targetName) {
+            if (this.editableTabs.length > 1) {
+                const tabs = this.editableTabs;
+                let activeName = this.editableTabsValue;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            const nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+                this.editableTabsValue = activeName;
+                this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+            } else {
+                this.$message.info('最后一个,请勿删除')
+            }
+        },
+        handleTabsEdit(targetName, action) {
+            if (action === 'add') {
                 const newTabName = ++this.tabIndex + '';
                 this.editableTabs.push({
                     title: '未命名的查询',
-                    name: newTabName
-                    // content: "New Tab content",
+                    name: newTabName,
+                    content: 'New Tab content'
                 });
-                console.log(this.editableTabs);
                 this.editableTabsValue = newTabName;
-            },
-            handleDelete(name) {
-                console.log(name);
-                for (let i = 0; i < this.editableTabs.length; i++) {
-                    if (this.editableTabs[i].name === name) {
-                        this.editableTabs.splice(i, 1);
-                        this.tabIndex = i + ''
-                        console.log(this.tabIndex, 'index')
-                        this.editableTabsValue = this.tabIndex;
-                    }
-                }
-            },
-            handleNodeExpand(data, node) {
-                console.log(data, 'data')
-                console.log(node.level, 'level')
-                if (node.level == 1) {
-                    getTableSchema({
-                        datasourceId: data.id
-                    }).then((res) => {
-                        console.log(res)
-                        const arr = []
-                        for (let j = 0; j < res.length; j++) {
-                            arr.push({
-                                id: new Date().getTime() + j,
-                                name: res[j],
-                                dsid: data.id
-                            })
-                        }
-                        this.$refs.tree.updateKeyChildren(data.id, arr);
-                    }).catch(err => {
-                        console.log(err);
-                    })
-                } else if (node.level == 2) {
-                    getTableListWithComment({
-                        id: data.dsid,
-                        schema: data.name
-                    }).then(res => {
-                        console.log('res', res);
-                        // this.tableList = res;
-                        const arr = []
-                        for (let j = 0; j < res.length; j++) {
-                            arr.push({
-                                id: new Date().getTime() + j,
-                                name: res[j].name + ' ' + res[j].comment,
-                                dsid: data.dsid,
-                                schema: data.name,
-                                tableName: res[j].name
-                            })
-                        }
-                        this.$refs.tree.updateKeyChildren(data.id, arr);
-                    })
-                } else if (node.level == 3) {
-                    getTableColumns({
-                        datasourceId: data.dsid,
-                        tableName: data.tableName,
-                        schema: data.schema
-                    }).then((res) => {
-                        console.log(res.datas)
-                        const arr = []
-                        for (let j = 0; j < res.datas.length; j++) {
-                            arr.push({
-                                id: new Date().getTime() + j,
-                                name: res.datas[j].COLUMN_NAME + ' (' + res.datas[j].DATA_TYPE + ')' + ' - ' + res.datas[j].COLUMN_COMMENT,
-                                type: res.datas[j].DATA_TYPE
-                            })
-                        }
-                        this.$refs.tree.updateKeyChildren(data.id, arr);
-                    });
-                } else {
-                    console.log('最后一级')
-                }
-            },
-            filterNode(value, data) {
-                if (!value) return true;
-                return data.name.indexOf(value) !== -1;
-            },
-            // 获取项目数据
-            async getProJectList() {
-                try {
-                    const {
-                        records
-                    } = await jobProjectApi.list(this.listQuery);
-                    this.projectArray = records;
-                    console.log(this.projectArray, 'projectArray');
-                    console.log(records)
-                    if (this.selectValue === '') {
-                        console.log(this.projectArray[0].name, 'name')
-                        this.selectValue = this.projectArray[0].name
-                        this.getDataSourceList()
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            selectMethod() {
-                this.getDataSourceList()
-            },
-            // 根据项目获取数据源
-            getDataSourceList() {
-                // this.arrQuery.name = this.selectValue
-                for (let i = 0; i < this.projectArray.length; i++) {
-                    if (this.projectArray[i].name === this.selectValue) {
-                        this.arrQuery.projectId = this.projectArray[i].id;
-                    }
-                }
-                datasourceApi.getJobList(this.arrQuery).then((response) => {
-                    for (let i = 0; i < response.records.length; i++) {
-                        response.records[i].name = response.records[i].datasourceName + ' - ' + response.records[i].jdbcUrl.split('//')[1].split('/')[0]
-                    }
-                    this.dataTree = response.records;
-                });
-            },
-
-            removeTab(targetName) {
-                if (this.editableTabs.length > 1) {
-                    const tabs = this.editableTabs;
-                    let activeName = this.editableTabsValue;
-                    if (activeName === targetName) {
-                        tabs.forEach((tab, index) => {
-                            if (tab.name === targetName) {
-                                const nextTab = tabs[index + 1] || tabs[index - 1];
-                                if (nextTab) {
-                                    activeName = nextTab.name;
-                                }
+            }
+            if (action === 'remove') {
+                const tabs = this.editableTabs;
+                let activeName = this.editableTabsValue;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            const nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
                             }
-                        });
-                    }
-                    this.editableTabsValue = activeName;
-                    this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
-                } else {
-                    this.$message.info('最后一个,请勿删除')
-                }
-            },
-            handleTabsEdit(targetName, action) {
-                if (action === 'add') {
-                    const newTabName = ++this.tabIndex + '';
-                    this.editableTabs.push({
-                        title: '未命名的查询',
-                        name: newTabName,
-                        content: 'New Tab content'
+                        }
                     });
-                    this.editableTabsValue = newTabName;
                 }
-                if (action === 'remove') {
-                    const tabs = this.editableTabs;
-                    let activeName = this.editableTabsValue;
-                    if (activeName === targetName) {
-                        tabs.forEach((tab, index) => {
-                            if (tab.name === targetName) {
-                                const nextTab = tabs[index + 1] || tabs[index - 1];
-                                if (nextTab) {
-                                    activeName = nextTab.name;
-                                }
-                            }
-                        });
-                    }
 
-                    this.editableTabsValue = activeName;
-                    this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
-                }
+                this.editableTabsValue = activeName;
+                this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
             }
         }
     }

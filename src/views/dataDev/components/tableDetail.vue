@@ -32,12 +32,17 @@ export default {
         },
 
         async initData(node) {
+            console.log(node)
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
             const host = node.parent.parent.data.jdbcUrl.split('://')[1].split('/')[0].split(':')[0]
             const port = node.parent.parent.data.jdbcUrl.split('://')[1].split('/')[0].split(':')[1]
             const databaseName = node.data.schema
-            const userName = node.parent.parent.data.secretMap.u
-            const password = node.parent.parent.data.secretMap.p
+            // const userName = node.parent.parent.data.secretMap.u
+            // const password = node.parent.parent.data.secretMap.p
+
+            const userName = 'root';
+            const password = 'Q2P88YjE4b23';
+            var driverId;
 
             switch (node.parent.parent.data.datasource.toLowerCase()) {
                 case 'mysql':
@@ -62,6 +67,7 @@ export default {
                     });
                     return
             }
+            console.log(driverId, 'driverid');
             const params1 = {
                 config: {
                     name: databaseName + '@' + host,

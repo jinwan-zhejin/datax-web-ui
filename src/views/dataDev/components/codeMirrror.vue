@@ -1,23 +1,23 @@
 <template>
-  <div>
+<div>
     <div :style="{height:`400px !important`}" class="sqlArea">
-      <textarea ref="mycode" v-model="code" class="codesql" @onChange="SelectSQL" @click.native="chooseSql" />
+        <textarea ref="mycode" v-model="code" class="codesql" @onChange="SelectSQL" @click.native="chooseSql" />
     </div>
     <div class="btnContent">
-      <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="$emit('querysql')">
-        <i class="el-icon-refresh" /> 运行查询
-      </el-button>
-      <el-button size="mini">
-        <i class="el-icon-document-copy" />保存查询
-      </el-button>
-      <el-button size="mini">
-        <i class="el-icon-copy-document" /> 分享查询
-      </el-button>
-      <el-button size="mini" @click="sqlJobBuild">
-        <i class="el-icon-copy-document" /> 构建sql任务
-      </el-button>
+        <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="$emit('querysql')">
+            <i class="el-icon-refresh" /> 运行查询
+        </el-button>
+        <el-button size="mini">
+            <i class="el-icon-document-copy" />保存查询
+        </el-button>
+        <el-button size="mini">
+            <i class="el-icon-copy-document" /> 分享查询
+        </el-button>
+        <el-button size="mini" @click="sqlJobBuild">
+            <i class="el-icon-copy-document" /> 构建sql任务
+        </el-button>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -32,122 +32,122 @@ require('codemirror/mode/sql/sql');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/sql-hint');
 export default {
-  name: 'CodeMirror',
-  props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
-  data() {
-    return {
-      code: '',
-      sqlLoading: false,
-      tips: {},
-      lastVal: ''
-    };
-  },
-  watch: {
-    code(val) {
-      console.log(this.code, 'code1');
+    name: 'CodeMirror',
+    props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
+    data() {
+        return {
+            code: '',
+            sqlLoading: false,
+            tips: {},
+            lastVal: ''
+        };
     },
-    sqlparams(val) {
-      if (val.level === 3) {
-        this.code = 'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
-        console.log(this.code, 'code')
-        console.log(val.data, '双击获取的数据')
-      }
-    },
-    columnList(val) {
-      const columeObj = {};
-      val.forEach((ele) => {
-        columeObj[ele] = [];
-      });
-      this.tips = Object.assign(this.tips, columeObj);
-      // this.mountCodeMirror();
-    },
-    tableList(val) {
-      const tableObj = {};
-      val.forEach((ele) => {
-        tableObj[ele] = [];
-      });
-      this.tips = Object.assign(this.tips, tableObj);
-      // this.mountCodeMirror();
-    }
-  },
-  beforeMount() {
-    const columeObj = {};
-    this.columnList.forEach((ele) => {
-      columeObj[ele] = [];
-    });
-    const tableObj = {};
-    this.tableList.forEach((ele) => {
-      tableObj[ele] = [];
-    });
-    this.tips = Object.assign(this.tips, columeObj, tableObj);
-  },
-  mounted() {
-    this.mountCodeMirror();
-  },
-  methods: {
-    chooseSql() {
-      console.log(window.getSelection());
-    },
-    SelectSQL(instance, changeObj) {
-      console.log(instance, changeObj, '.....................');
-    },
-    sqlJobBuild() {
-      // this.$route.push('/datax/job/JobInfo')
-      this.$router.push({
-        path: '/datax/job/JobInfo'
-      });
-      console.log('=================')
-      // window.location.href = '/datax/job/JobInfo'
-    },
-    mountCodeMirror(code) {
-      const mime = 'text/x-sql';
-      const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
-      const _this = this;
-      const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
-        mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
-        indentWithTabs: true,
-        smartIndent: true,
-        lineNumbers: true,
-        matchBrackets: true,
-        // theme: theme,
-        // autofocus: true,
-        // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
-        hintOptions: {
-          // 自定义提示选项,
-          completeSingle: false,
-          tables: _this.tips
+    watch: {
+        code(val) {
+            console.log(this.code, 'code1');
         },
-        configureMouse() {
-          console.log(window.getSelection());
-          return {
-            unit: 'word'
-          };
+        sqlparams(val) {
+            if (val.level === 3) {
+                this.code = 'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
+                console.log(this.code, 'code')
+                console.log(val.data, '双击获取的数据')
+            }
+        },
+        columnList(val) {
+            const columeObj = {};
+            val.forEach((ele) => {
+                columeObj[ele] = [];
+            });
+            this.tips = Object.assign(this.tips, columeObj);
+            // this.mountCodeMirror();
+        },
+        tableList(val) {
+            const tableObj = {};
+            val.forEach((ele) => {
+                tableObj[ele] = [];
+            });
+            this.tips = Object.assign(this.tips, tableObj);
+            // this.mountCodeMirror();
         }
-      });
+    },
+    beforeMount() {
+        const columeObj = {};
+        this.columnList.forEach((ele) => {
+            columeObj[ele] = [];
+        });
+        const tableObj = {};
+        this.tableList.forEach((ele) => {
+            tableObj[ele] = [];
+        });
+        this.tips = Object.assign(this.tips, columeObj, tableObj);
+    },
+    mounted() {
+        this.mountCodeMirror();
+    },
+    methods: {
+        chooseSql() {
+            console.log(window.getSelection());
+        },
+        SelectSQL(instance, changeObj) {
+            console.log(instance, changeObj, '.....................');
+        },
+        sqlJobBuild() {
+            // this.$route.push('/datax/job/JobInfo')
+            this.$router.push({
+                path: '/datax/job/JobInfo'
+            });
+            console.log('=================')
+            // window.location.href = '/datax/job/JobInfo'
+        },
+        mountCodeMirror(code) {
+            const mime = 'text/x-sql';
+            const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
+            const _this = this;
+            const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
+                mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
+                indentWithTabs: true,
+                smartIndent: true,
+                lineNumbers: true,
+                matchBrackets: true,
+                // theme: theme,
+                // autofocus: true,
+                // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
+                hintOptions: {
+                    // 自定义提示选项,
+                    completeSingle: false,
+                    tables: _this.tips
+                },
+                configureMouse() {
+                    console.log(window.getSelection());
+                    return {
+                        unit: 'word'
+                    };
+                }
+            });
 
-      editor.setSize('auto', '400px');
+            editor.setSize('auto', '400px');
 
-      // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
-      // editor.on('cursorActivity', function(ins) {
-      //   editor.showHint();
-      //   _this.code = editor.getValue();
-      //   _this.$store.dispatch('graphQL/changeMirror', _this.code);
-      // });
+            // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
+            // editor.on('cursorActivity', function(ins) {
+            //   editor.showHint();
+            //   _this.code = editor.getValue();
+            //   _this.$store.dispatch('graphQL/changeMirror', _this.code);
+            // });
 
-      editor.on('change', function(editor, change) { // 任意键触发autocomplete
-        console.log(change)
-        if (change.origin == '+input') {
-          var text = change.text;
-          if ((text != ' ') && (text != ';') && (text.length != 2)) { // 不提示
-            setTimeout(function() {
-              editor.execCommand('autocomplete');
-            }, 20);
-          }
+            editor.on('change', function (editor, change) { // 任意键触发autocomplete
+                console.log(change)
+                if (change.origin == '+input') {
+                    var text = change.text;
+                    if ((text != ' ') && (text != ';') && (text.length != 2)) { // 不提示
+                        setTimeout(function () {
+                            editor.execCommand('autocomplete');
+                        }, 20);
+                    }
+                }
+            });
+            //   editor.setValue(code)
         }
-      });
-    //   editor.setValue(code)
     }
-  }
 };
 </script>
 
