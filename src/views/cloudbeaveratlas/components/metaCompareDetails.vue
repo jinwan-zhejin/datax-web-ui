@@ -2,7 +2,7 @@
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
  * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-05 09:42:55
+ * @LastEditTime: ,: 2020-11-05 11:16:50
  * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
@@ -373,7 +373,7 @@ export default {
     margin: 16px 0;
     .title {
       label {
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
       }
     }
