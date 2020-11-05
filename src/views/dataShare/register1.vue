@@ -76,6 +76,7 @@
           :data="tableData1"
           border
           style="width: 80%;margin: 0px auto;"
+          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
         >
           <el-table-column
             prop="fieldName"
@@ -116,6 +117,7 @@
           :data="tableData2"
           border
           style="width: 80%;margin: 0px auto;"
+          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
         >
           <el-table-column
             prop="fieldName"
@@ -160,53 +162,80 @@
             </el-col>
             <el-col class="tableForm">
               <el-col class="subtitle">
-                <label>信息接口</label>
+                <label>1.信息接口</label>
+                <el-tooltip content="修改" placement="top">
+                  <el-button
+                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    @click="() => { active = 1; activeName = '0'; }"
+                  />
+                </el-tooltip>
               </el-col>
               <el-col class="table-infos">
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">联系人:</el-col>
                   <el-col class="form-value" :span="15">{{ form.contacts }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">联系电话:</el-col>
                   <el-col class="form-value" :span="15">{{ form.telephone }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">注册人:</el-col>
                   <el-col class="form-value" :span="15">{{ form.registerCompany }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">接口名称:</el-col>
                   <el-col class="form-value" :span="15">{{ form.interName }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">接口描述:</el-col>
                   <el-col class="form-value" :span="15">{{ form.interRemark }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">返回数据格式:</el-col>
                   <el-col class="form-value" :span="15">{{ form.responseMode }}</el-col>
                 </el-col>
               </el-col>
               <el-col class="subtitle">
-                <label>出入参数</label>
+                <label>2.出入参数</label>
+                <el-tooltip content="修改" placement="top">
+                  <el-button
+                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    @click="() => { active = 2; activeName = '1'; }"
+                  />
+                </el-tooltip>
               </el-col>
               <el-col class="table-infos">
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">数据源:</el-col>
-                  <el-col class="form-value" :span="15">{{ paramForm.serverName === '' ? '-' : paramForm.serverName }}</el-col>
+                  <el-col class="form-value" :span="15">{{ paramForm.serverName === '' ? '无' : paramForm.serverName }}</el-col>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+                <el-col>
                   <el-col class="form-key" :span="9">数据表:</el-col>
-                  <el-col class="form-value" :span="15">{{ paramForm.infoName === '' ? '-' : paramForm.infoName }}</el-col>
+                  <el-col class="form-value" :span="15">{{ paramForm.infoName === '' ? '无' : paramForm.infoName }}</el-col>
                 </el-col>
-                <el-col class="sub-subtitle">
-                  <label>接口输入参数</label>
-                </el-col>
+              </el-col>
+              <el-col class="subtitle">
+                <label>2.1接口输入参数</label>
+                <el-tooltip content="修改" placement="top">
+                  <el-button
+                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    @click="() => { active = 2; activeName = '1'; }"
+                  />
+                </el-tooltip>
+              </el-col>
+              <el-col class="table-infos">
                 <el-col>
                   <el-table
                     :data="tableData1"
                     border
+                    :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
                   >
                     <el-table-column
                       prop="fieldName"
@@ -232,24 +261,26 @@
                       prop="fieldRemark"
                       label="字段描述"
                     />
-                    <el-table-column
-                      prop="tag"
-                      label="操作"
-                      width="120"
-                    >
-                      <template slot-scope="scope">
-                        <el-tag style="cursor: pointer;" @click="deleteData1(scope.row)"><i class="el-icon-delete" /></el-tag>
-                      </template>
-                    </el-table-column>
                   </el-table>
                 </el-col>
-                <el-col class="sub-subtitle">
-                  <label>接口输出参数</label>
-                </el-col>
+              </el-col>
+              <el-col class="subtitle">
+                <label>2.2接口输出参数</label>
+                <el-tooltip content="修改" placement="top">
+                  <el-button
+                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    @click="() => { active = 2; activeName = '1'; }"
+                  />
+                </el-tooltip>
+              </el-col>
+              <el-col class="table-infos">
                 <el-col>
                   <el-table
                     :data="tableData2"
                     border
+                    :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
                   >
                     <el-table-column
                       prop="fieldName"
@@ -275,15 +306,6 @@
                       prop="fieldRemark"
                       label="字段描述"
                     />
-                    <el-table-column
-                      prop="tag"
-                      label="操作"
-                      width="120"
-                    >
-                      <template slot-scope="scope">
-                        <el-tag style="cursor: pointer;" @click="deleteData2(scope.row)"><i class="el-icon-delete" /></el-tag>
-                      </template>
-                    </el-table-column>
                   </el-table>
                 </el-col>
               </el-col>
@@ -725,15 +747,25 @@ export default {
     .el-tab-pane {
       height: calc(100vh - 448px);
       overflow-y: auto;
+      .el-form .el-form-item__label {
+        color: #666666;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: PingFangHK-Medium, PingFangHK;
+      }
       .el-tabs__nav-wrap::after {
         background-color: #fff;
       }
       p {
         width: 80%;
         margin: 20px auto;
+        color: #666666;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: PingFangHK-Medium, PingFangHK;
         span {
-          color: red;
-          font-size: 16px;
+          color: #fe4646;
+          font-size: 12px;
         }
         #i1 {
           background-color: rgb(93, 93, 250);
@@ -843,8 +875,8 @@ export default {
     }
     .tableForm {
       .table-infos {
-        // background-color: #f8f8fa;
-        border: 1px solid #e9e9e9dd;
+        background-color: #f8f8fa;
+        // border: 1px solid #e9e9e9dd;
         padding: 15px;
       }
       .subtitle {
@@ -862,12 +894,15 @@ export default {
         padding: 5px 10px;
         color: #999999;
         font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
       }
       .form-value {
-        padding: 5px 10px;
-        border-bottom: 1px solid #e9e9e9dd;
-        text-align: center;
+        padding: 5px 20px;
+        // border-bottom: 1px solid #e9e9e9dd;
+        text-align: left;
         color: #666666;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
       }
     }
   }

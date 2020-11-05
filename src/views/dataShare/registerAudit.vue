@@ -198,8 +198,8 @@
       </div>
     </div>
     <!-- 使用审批对话框 -->
-    <el-dialog class="useBatch" title="使用审批" :visible.sync="dialogBatch">
-      <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 200px;overflow: hidden;overflow-y: auto;padding-right:30px">
+    <el-dialog width="30%" class="useBatch" title="使用审批" :visible.sync="dialogBatch">
+      <el-form ref="batchForm" :model="batchForm" label-width="120px" style="height: 240px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="接口名称:">
           <el-input v-model="batchForm.interName" :disabled="isBan" />
         </el-form-item>
@@ -213,13 +213,13 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="isDis" @click="dismissM">驳 回</el-button>
-        <el-button type="primary" :disabled="isPass" @click="pass">通 过</el-button>
+        <el-button size="small" type="primary" :disabled="isDis" @click="dismissM">驳 回</el-button>
+        <el-button size="small" type="primary" :disabled="isPass" @click="pass">通 过</el-button>
       </span>
     </el-dialog>
     <!-- 查看审批对话框 -->
-    <el-dialog class="useBatch" title="查看审批情况" :visible.sync="dialogViewBatch">
-      <el-form ref="batchForm" :model="batchForm" label-width="100px" style="height: 200px;overflow: hidden;overflow-y: auto;padding-right:30px">
+    <el-dialog width="30%" class="useBatch" title="查看审批情况" :visible.sync="dialogViewBatch">
+      <el-form ref="batchForm" :model="batchForm" label-width="120px" style="height: 230px;overflow: hidden;overflow-y: auto;padding-right:30px">
         <el-form-item label="接口名称:">
           <el-input v-model="batchForm.interName" :disabled="isBan" />
         </el-form-item>
@@ -231,7 +231,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogViewBatch = false">关 闭</el-button>
+        <el-button size="small" type="primary" @click="dialogViewBatch = false">关 闭</el-button>
       </span>
     </el-dialog>
   </div>

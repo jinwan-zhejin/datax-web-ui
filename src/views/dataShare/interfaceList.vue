@@ -4,7 +4,7 @@
     <div class="interRegister">
       <div style="margin-top: 20px;">
         <span class="titSpan">接口列表</span>
-        <el-button type="goon" size="medium" @click="gotoInterface">接口注册</el-button>
+        <el-button type="goon" size="small" @click="gotoInterface">接口注册</el-button>
         <el-input v-model="interName" size="medium" placeholder="请输入接口名称" class="input-with-select sort" style="width: 208px;">
           <el-button slot="append" class="search" style="padding: 0px 10px;" @click="getAllData">搜索</el-button>
         </el-input>
@@ -189,10 +189,6 @@ export default {
     border-radius: 8px 8px 0px 0px;
     .el-button {
       border-radius: 4px;
-    }
-    .el-input .el-input__inner {
-      height: 36px;
-      line-height: 36px;
     }
     .titSpan {
       position: absolute;

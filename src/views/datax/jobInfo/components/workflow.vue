@@ -14,7 +14,7 @@
       <el-form :model="form">
         <el-form-item label="任务名称" label-width="120">
           <el-select v-model="form.name" placeholder="请选择任务名称" style="width: 280px;">
-            <el-option v-for="(item, index) in this.taskList" :key="index" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
+            <el-option v-for="(item, index) in taskList" :key="index" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
             <!-- <el-option label="task_02" value="task_02" /> -->
           </el-select>
         </el-form-item>
@@ -411,6 +411,7 @@ export default {
       // 使链接标签在从“条件”节点出来时可见。
       // This listener is called by the "LinkDrawn" and "LinkRelinked" DiagramEvents.
       // 这个侦听器由LinkDrawn和LinkRelinked图表事件调用
+      // eslint-disable-next-line no-unused-vars
       function showLinkLabel(e) {
         var label = e.subject.findObject('LABEL')
         if (label !== null) label.visible = (e.subject.fromNode.data.category === 'Conditional')
