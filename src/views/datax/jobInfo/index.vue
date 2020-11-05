@@ -11,34 +11,34 @@
           <el-col :span="12">
             <i class="el-icon-location-outline" />
             <i class="el-icon-coin" />
-            <!-- <el-dropdown @command="createNewJob">
-                        <i class="el-icon-folder-add" />
-                        <el-dropdown-menu>
-                            <el-dropdown-item command="NORMAL">
-                                <img class="task_icon" src="./taskAdmin_png/normal.png">普通任务
-                            </el-dropdown-item>
-                            <el-dropdown-item command="IMPORT"><img class="task_icon" src="./taskAdmin_png/import.png">引入任务</el-dropdown-item>
-                            <el-dropdown-item command="EXPORT">
-                                <img class="task_icon" src="./taskAdmin_png/export.png">导出任务
-                            </el-dropdown-item>
-                            <el-dropdown-item command="COMPUTE" disabled><img class="task_icon" src="./taskAdmin_png/computed.png">计算任务</el-dropdown-item>
-                            <el-dropdown-item command="SQLJOB"><img class="task_icon" src="./taskAdmin_png/sql.png">SQL任务</el-dropdown-item>
-                            <el-dropdown-item command="SPARK"><img class="task_icon" src="./taskAdmin_png/spark.png">SPARK任务</el-dropdown-item>
-                            <el-dropdown-item command="DQCJOB"><img class="task_icon" src="./taskAdmin_png/质量.png">质量任务</el-dropdown-item>
-                            <el-dropdown-item command="METACOLLECT" divided><img class="task_icon" src="./taskAdmin_png/元数据采集.png">元数据采集任务</el-dropdown-item>
-                            <el-dropdown-item command="METACOMPARE"><img class="task_icon" src="./taskAdmin_png/元数据比较.png">元数据比较任务</el-dropdown-item>
-                            <el-dropdown-item command="SHELL" divided><img class="task_icon" src="./taskAdmin_png/shell.png">SHELL任务</el-dropdown-item>
-                            <el-dropdown-item command="POWERSHELL"><img class="task_icon" src="./taskAdmin_png/powershell.png">POWERSHELL任务</el-dropdown-item>
-                            <el-dropdown-item command="PYTHON"><img class="task_icon" src="./taskAdmin_png/python.png">PYTHON任务</el-dropdown-item>
-                            <el-dropdown-item command="VJOB" divided><img class="task_icon" src="./taskAdmin_png/虚.png">虚任务</el-dropdown-item>
-                            <el-dropdown-item command="JAVA" divided disabled><img class="task_icon" src="./taskAdmin_png/java.png">Java任务</el-dropdown-item>
-                            <el-dropdown-item command="SCALA" disabled><img class="task_icon" src="./taskAdmin_png/scala.png">Scala任务</el-dropdown-item>
-                            <el-dropdown-item command="PYSPARK" disabled><img class="task_icon" src="./taskAdmin_png/pyspark.png">PySpark任务</el-dropdown-item>
-                            <el-dropdown-item command="R" disabled><img class="task_icon" src="./taskAdmin_png/R.png">R任务</el-dropdown-item>
-                            <el-dropdown-item command="BATCH" divided><img class="task_icon" src="./taskAdmin_png/任务批量构建.png">任务批量构建</el-dropdown-item>
-                            <el-dropdown-item command="TEMPLATE"><img class="task_icon" src="./taskAdmin_png/普通任务模板.png">普通任务模板</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown> -->
+            <el-dropdown @command="createNewJob">
+              <i class="el-icon-folder-add" />
+              <el-dropdown-menu>
+                <el-dropdown-item command="NORMAL">
+                  <img class="task_icon">普通任务
+                </el-dropdown-item>
+                <el-dropdown-item command="IMPORT"><img class="task_icon">引入任务</el-dropdown-item>
+                <el-dropdown-item command="EXPORT">
+                  <img class="task_icon">导出任务
+                </el-dropdown-item>
+                <el-dropdown-item command="COMPUTE" disabled><img class="task_icon">计算任务</el-dropdown-item>
+                <el-dropdown-item command="SQLJOB"><img class="task_icon">SQL任务</el-dropdown-item>
+                <el-dropdown-item command="SPARK"><img class="task_icon">SPARK任务</el-dropdown-item>
+                <el-dropdown-item command="DQCJOB"><img class="task_icon">质量任务</el-dropdown-item>
+                <el-dropdown-item command="METACOLLECT" divided><img class="task_icon">元数据采集任务</el-dropdown-item>
+                <el-dropdown-item command="METACOMPARE"><img class="task_icon">元数据比较任务</el-dropdown-item>
+                <el-dropdown-item command="SHELL" divided><img class="task_icon">SHELL任务</el-dropdown-item>
+                <el-dropdown-item command="POWERSHELL"><img class="task_icon">POWERSHELL任务</el-dropdown-item>
+                <el-dropdown-item command="PYTHON"><img class="task_icon">PYTHON任务</el-dropdown-item>
+                <el-dropdown-item command="VJOB" divided><img class="task_icon">虚任务</el-dropdown-item>
+                <el-dropdown-item command="JAVA" divided disabled><img class="task_icon">Java任务</el-dropdown-item>
+                <el-dropdown-item command="SCALA" disabled><img class="task_icon">Scala任务</el-dropdown-item>
+                <el-dropdown-item command="PYSPARK" disabled><img class="task_icon">PySpark任务</el-dropdown-item>
+                <el-dropdown-item command="R" disabled><img class="task_icon">R任务</el-dropdown-item>
+                <el-dropdown-item command="BATCH" divided><img class="task_icon">任务批量构建</el-dropdown-item>
+                <el-dropdown-item command="TEMPLATE"><img class="task_icon">普通任务模板</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-col>
         </el-row>
       </div>
