@@ -37,11 +37,8 @@ export default {
             const host = node.parent.parent.data.jdbcUrl.split('://')[1].split('/')[0].split(':')[0]
             const port = node.parent.parent.data.jdbcUrl.split('://')[1].split('/')[0].split(':')[1]
             const databaseName = node.data.schema
-            // const userName = node.parent.parent.data.secretMap.u
-            // const password = node.parent.parent.data.secretMap.p
-
-            const userName = 'root';
-            const password = 'Q2P88YjE4b23';
+            const userName = node.parent.parent.data.secretMap.u
+            const password = node.parent.parent.data.secretMap.p
             var driverId;
 
             switch (node.parent.parent.data.datasource.toLowerCase()) {
