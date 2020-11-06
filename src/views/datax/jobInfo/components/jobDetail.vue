@@ -927,6 +927,9 @@ export default {
 
         viewJson(){
             this.jsonshow = !this.jsonshow
+            if(this.jsonshow){
+                this.showLog = false;
+            }
         },
 
         showLogDetails(){
