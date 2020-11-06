@@ -1914,7 +1914,7 @@ export default {
       } else if (this.sqlName === 'Sql Server') {
         obj.datasourceName = this.ruleForm.datasourceName;
         obj.datasourceGroup = this.ruleForm.datasourceGroup;
-        obj.datasource = this.sqlName.toLowerCase();
+        obj.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
         obj.jdbcUrl = 'jdbc:' + this.sqlName.replace(/\s*/g, '').toLowerCase() + '://' + this.ruleForm.master + ':' + this.ruleForm.serverPort + ';DatabaseName=' + this.ruleForm.database;
         obj.jdbcUsername = this.ruleForm.username;
         obj.jdbcPassword = this.ruleForm.password;
@@ -2098,8 +2098,9 @@ export default {
         this.temp = {
           ...this.sqlserverEdit
         }
-        this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database;
+        this.temp.jdbcUrl = 'jdbc:' + this.selectType.replace(/\s*/g, '') + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database;
         this.temp.databaseName = this.sqlserverEdit.database;
+        this.temp.datasource = this.selectType.replace(/\s*/g, '')
         this.temp.id = this.rowObj.id
         this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'greenplum' || this.selectType === 'postgresql') {
@@ -2293,11 +2294,11 @@ export default {
           jdbcDriverClass: this.MdbEdit.jdbcDriverClass,
           id: this.rowObj.id
         }
-      } else if (this.selectType === 'sqlserver') {
+      } else if (this.selectType.replace(/\s*/g, '') === 'sqlserver') {
         this.paramsData = {
           datasourceName: this.sqlserverEdit.datasourceName,
           datasource: this.sqlserverEdit.datasource,
-          jdbcUrl: 'jdbc:' + this.selectType + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database,
+          jdbcUrl: 'jdbc:' + this.selectType.replace(/\s*/g, '') + '://' + this.sqlserverEdit.master + ':' + this.sqlserverEdit.serverPort + ';DatabaseName=' + this.sqlserverEdit.database,
           databaseName: this.sqlserverEdit.database,
           datasourceGroup: this.sqlserverEdit.datasourceGroup,
           comments: this.sqlserverEdit.comments,
