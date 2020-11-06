@@ -255,12 +255,12 @@ export default {
 .border-card {
     .el-tabs {
         .el-tab-pane {
-            height: 400px;
+          height: 400px;
         }
     }
 }
 
 .el-table::before {
-    height: 0;
+  height: 0;
 }
 </style>
