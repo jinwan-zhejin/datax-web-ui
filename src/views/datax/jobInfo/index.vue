@@ -58,74 +58,74 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="rg rt">
-    <el-tabs v-model="jobDetailIdx" type="border-card" closable class="el-bar-tab" @tab-remove="removeJobTab" @tab-click="JobTabClick">
-      <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
-        欢迎
-      </el-tab-pane>
+    <div class="rg rt">
+      <el-tabs v-model="jobDetailIdx" type="border-card" closable class="el-bar-tab" @tab-remove="removeJobTab" @tab-click="JobTabClick">
+        <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
+          欢迎
+        </el-tab-pane>
 
-      <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
-        <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
-      </el-tab-pane>
+        <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
+          <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
+        </el-tab-pane>
 
-      <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
-        <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
-          <JsonBuild />
-        </div>
+        <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
+          <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT'" class="rg">
+            <JsonBuild />
+          </div>
 
-        <div v-if="jobType === 'SQLJOB'" class="rg">
-          <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
-        </div>
+          <div v-if="jobType === 'SQLJOB'" class="rg">
+            <SqlJob job-type="GLUE_SQL" job-type-label="SQL任务" />
+          </div>
 
-        <div v-if="jobType === 'SPARK'" class="rg">
-          <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
-        </div>
+          <div v-if="jobType === 'SPARK'" class="rg">
+            <SparkJob job-type="GLUE_SPARK" job-type-label="SPARK任务" />
+          </div>
 
-        <div v-if="jobType === 'DQCJOB'" class="rg">
-          <JsonQuality />
-        </div>
-        <div v-if="jobType === 'BATCH'" class="rg">
-          <BatchBuild />
-        </div>
-        <div v-if="jobType === 'TEMPLATE'" class="rg">
-          <JobTemplate />
-        </div>
-        <div v-if="jobType === 'SHELL'" class="rg">
-          <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
-        </div>
-        <div v-if="jobType === 'POWERSHELL'" class="rg">
-          <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
-        </div>
-        <div v-if="jobType === 'PYTHON'" class="rg">
-          <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
-        </div>
-        <div v-if="jobType === 'METACOMPARE'" class="rg">
-          <MetaCompare />
-        </div>
-        <div v-if="jobType === 'VJOB'" class="rg">
-          <!-- <el-tabs
-              v-model="editableTabsValue"
-              type="card"
-              addable
-              :closable="isDel"
-              @tab-remove="handleRemove"
-              @edit="handleTabsEdit"
-              @tab-click="changeTab"
-            >
-              <el-tab-pane
-                v-for="item in editableTabs"
-                :key="item.id"
-                :label="item.title"
-                :name="item.name"
+          <div v-if="jobType === 'DQCJOB'" class="rg">
+            <JsonQuality />
+          </div>
+          <div v-if="jobType === 'BATCH'" class="rg">
+            <BatchBuild />
+          </div>
+          <div v-if="jobType === 'TEMPLATE'" class="rg">
+            <JobTemplate />
+          </div>
+          <div v-if="jobType === 'SHELL'" class="rg">
+            <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+          </div>
+          <div v-if="jobType === 'POWERSHELL'" class="rg">
+            <SimpleJob job-type="GLUE_POWERSHELL" job-type-label="POWERSHELL任务" />
+          </div>
+          <div v-if="jobType === 'PYTHON'" class="rg">
+            <SimpleJob job-type="GLUE_PYTHON" job-type-label="PYTHON任务" />
+          </div>
+          <div v-if="jobType === 'METACOMPARE'" class="rg">
+            <MetaCompare />
+          </div>
+          <div v-if="jobType === 'VJOB'" class="rg">
+            <!-- <el-tabs
+                v-model="editableTabsValue"
+                type="card"
+                addable
+                :closable="isDel"
+                @tab-remove="handleRemove"
+                @edit="handleTabsEdit"
+                @tab-click="changeTab"
               >
-              </el-tab-pane>
-            </el-tabs> -->
-          <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
-        </div>
-      </el-tab-pane>
+                <el-tab-pane
+                  v-for="item in editableTabs"
+                  :key="item.id"
+                  :label="item.title"
+                  :name="item.name"
+                >
+                </el-tab-pane>
+              </el-tabs> -->
+            <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
+          </div>
+        </el-tab-pane>
 
-    </el-tabs>
+      </el-tabs>
+    </div>
   </div>
 
   </div>
