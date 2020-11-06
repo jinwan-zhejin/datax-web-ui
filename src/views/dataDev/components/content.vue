@@ -1,147 +1,212 @@
 <template>
-<el-container>
+  <el-container>
     <el-main style="padding:0px;height:100%;">
-        <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
-        <div class="dragBar">
-            <span @mousedown="dragging = true" @mouseup="dragging = false" @mousemove="setTableHeight">==</span>
-        </div>
-        <TableDetail ref="table" :table-height="tableHeight" />
+      <div class="selected">
+        <span>数据源:</span>
+        <el-select v-model="sourceName" clearable placeholder="请选择" @change="handleChange">
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          />
+        </el-select>
+        <span>数据库:</span>
+        <el-select v-model="sqlName" clearable placeholder="请选择" @change="handleChangeSQL">
+          <el-option
+            v-for="item in options1"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </div>
+      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+      <div class="dragBar">
+        <span @mousedown="dragging = true" @mouseup="dragging = false" @mousemove="setTableHeight">==</span>
+      </div>
+      <TableDetail ref="table" :table-height="tableHeight" />
 
     </el-main>
-</el-container>
+  </el-container>
 </template>
 
 <script>
 import {
-    list
+  list
 } from '@/api/datax-jdbcDatasource';
 import {
-    getTables,
-    getTableColumns,
-    getTableSchema,
-    getTableList,
-    getTableListWithComment
+  getTables,
+  getTableColumns,
+  getTableSchema,
+  getTableList,
+  getTableListWithComment
 } from '@/api/metadata-query';
 import CodeMirror from './codeMirrror';
 import TableDetail from './tableDetail';
 export default {
-    name: 'DataDevContent',
-    components: {
-        CodeMirror,
-        TableDetail,
-        name: 'DataDevContent',
-    },
-    props: ['dblparams'],
+  name: 'DataDevContent',
+  components: {
+    CodeMirror,
+    TableDetail,
+    name: 'DataDevContent'
+  },
+  props: ['dblparams', 'parentlist'],
 
-    data() {
-        return {
-            activeNames: [],
-            dataBaseList: [],
-            tableList: [],
-            SchemaList: [],
-            columnList: [],
-            dataBaseid: '',
-            schemaId: '',
-            tableName: '',
-            dragging: false, // 是否拖拽,
-            sqlHeight: 200,
-            tableHeight: 300,
-            tableId: '',
-            tableNameWithComment: ''
-        };
+  data() {
+    return {
+      activeNames: [],
+      dataBaseList: [],
+      tableList: [],
+      SchemaList: [],
+      columnList: [],
+      dataBaseid: '',
+      schemaId: '',
+      tableName: '',
+      dragging: false, // 是否拖拽,
+      sqlHeight: 200,
+      tableHeight: 300,
+      tableId: '',
+      tableNameWithComment: '',
+      sourceName: '', // 数据源名
+      sqlName: '', // 数据库名
+      options: [],
+      options1: []
+    };
+  },
+  watch: {
+    dataBaseid() {
+      this.getSchema();
     },
-    watch: {
-        dataBaseid() {
-            this.getSchema();
-        }
-    },
-    created() {
-        this.getDataBaseList();
-    },
-    methods: {
-        // 获取数据库列表
-        getDataBaseList() {
-            list({
-                current: 1,
-                size: 100000
-            }).then((res) => {
-                this.dataBaseList = res.records;
-                this.dataBaseid = res.records[0].id;
-                this.getSchema();
-            });
-        },
-
-        // 获取schema
-        getSchema() {
-            getTableSchema({
-                datasourceId: this.dataBaseid
-            }).then((res) => {
-                this.SchemaList = res;
-            }).catch(err => {
-                console.log(err);
-            });
-        },
-
-        // getTableList
-        getTableList() {
-            // getTableList({ id: this.dataBaseid, schema: this.schemaId })
-            //   .then(res => {
-            //     console.log('res', res);
-            //     this.tableList = res;
-            //   })
-            getTableListWithComment({
-                    id: this.dataBaseid,
-                    schema: this.schemaId
-                })
-                .then(res => {
-                    console.log('res', res);
-                    this.tableList = res;
-                })
-        },
-        // 获取字段
-        getClo() {
-            getTableColumns({
-                // getColumns({
-                datasourceId: this.dataBaseid,
-                tableName: this.tableName,
-                schema: this.schemaId
-            }).then((res) => {
-                console.log(res)
-                this.columnList = res.datas;
-            });
-        },
-        // 选择表
-        selectTable(val) {
-            this.tableNameWithComment = val
-            this.tableName = val.split(' ')[0];
-            this.getClo();
-            this.activeNames = ['1']
-        },
-        // 拖拽设置表格高度
-        setTableHeight(e) {
-            const _this = this;
-            if (this.dragging) {
-                const top = e.target.offsetTop; // 获取鼠标距离父元素顶的高度
-                const height = e.target.parentNode.parentNode.offsetHeight;
-                console.log(top, height);
-                const sqlHeightRate = (top / height).toFixed(2);
-                const tableHeightRate = 1 - sqlHeightRate;
-                // this.sqlHeight = sqlHeightRate * height;
-                // this.tableHeight = tableHeightRate * height;
-            }
-        },
-        // 执行sql
-        runQuery() {
-            this.$refs.table.initData()
-        },
-        previewData(params) {
-            this.$refs.table.initData(params)
-        }
+    parentlist(val) {
+      if (val.length > 0) {
+        this.options = val
+      }
     }
+    // datasourceName(val) {
+    //   this.options1 = []
+    //   console.log(this.options1)
+    // }
+  },
+  created() {
+    this.getDataBaseList();
+    console.log(this.parentlist)
+  },
+  methods: {
+    handleChangeSQL(value) {
+      console.log(value)
+    },
+    handleChange(value) {
+      console.log(value)
+      getTableSchema({
+        datasourceId: value
+      }).then((res) => {
+        console.log(res)
+        this.options1 = res
+      }).catch(err => {
+        console.log(err);
+        this.options1 = []
+        this.sqlName = ''
+      })
+    },
+    // 获取数据库列表
+    getDataBaseList() {
+      list({
+        current: 1,
+        size: 100000
+      }).then((res) => {
+        this.dataBaseList = res.records;
+        this.dataBaseid = res.records[0].id;
+        this.getSchema();
+      });
+    },
+
+    // 获取schema
+    getSchema() {
+      getTableSchema({
+        datasourceId: this.dataBaseid
+      }).then((res) => {
+        this.SchemaList = res;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+
+    // getTableList
+    getTableList() {
+      // getTableList({ id: this.dataBaseid, schema: this.schemaId })
+      //   .then(res => {
+      //     console.log('res', res);
+      //     this.tableList = res;
+      //   })
+      getTableListWithComment({
+        id: this.dataBaseid,
+        schema: this.schemaId
+      })
+        .then(res => {
+          console.log('res', res);
+          this.tableList = res;
+        })
+    },
+    // 获取字段
+    getClo() {
+      getTableColumns({
+        // getColumns({
+        datasourceId: this.dataBaseid,
+        tableName: this.tableName,
+        schema: this.schemaId
+      }).then((res) => {
+        console.log(res)
+        this.columnList = res.datas;
+      });
+    },
+    // 选择表
+    selectTable(val) {
+      this.tableNameWithComment = val
+      this.tableName = val.split(' ')[0];
+      this.getClo();
+      this.activeNames = ['1']
+    },
+    // 拖拽设置表格高度
+    setTableHeight(e) {
+      const _this = this;
+      if (this.dragging) {
+        const top = e.target.offsetTop; // 获取鼠标距离父元素顶的高度
+        const height = e.target.parentNode.parentNode.offsetHeight;
+        console.log(top, height);
+        const sqlHeightRate = (top / height).toFixed(2);
+        const tableHeightRate = 1 - sqlHeightRate;
+        // this.sqlHeight = sqlHeightRate * height;
+        // this.tableHeight = tableHeightRate * height;
+      }
+    },
+    // 执行sql
+    runQuery(val) {
+      console.log(val, '子传父');
+      if (this.sourceName !== '' && this.sqlName !== '') {
+        if (val.msg === 0) {
+          this.$message.info('请输入SQL语句')
+        } else {
+          for (let i = 0; i < this.options.length; i++) {
+            if (this.sourceName === this.options[i].id) {
+              const obj = this.options[i]
+              obj.schemaName = this.sqlName
+              this.$refs.table.initSQL(obj, val.code)
+            }
+          }
+        }
+      } else {
+        this.$message.info('请选择数据源、数据库')
+      }
+    },
+    previewData(params) {
+      this.$refs.table.initData(params)
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .contentLeft {
     background: white;
     padding: 0 15px 0 15px;
@@ -151,6 +216,20 @@ export default {
 
 .dataBase {
     margin-top: 20px;
+}
+
+.selected {
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 30px;
+    background-color: rgb(196, 252, 247);
+    span {
+        margin-right: 8px;
+    }
+    .el-select {
+        margin-right: 8px;
+    }
 }
 
 .dataBase,

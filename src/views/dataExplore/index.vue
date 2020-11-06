@@ -29,7 +29,7 @@
       </div>
       <div class="line" />
       <!-- 列表 -->
-      <ul>
+      <ul :loading="listLoading">
         <li v-for="item in ObjList" :key="item.id">
           <a>
             <!-- <div class="img">
@@ -218,28 +218,7 @@ export default {
       },
       search: '',
       dialogAddVisible: false,
-      ObjList: [
-        {
-          id: 124234,
-          taskName: '60k Stack Overflow Questions with Quality Rating',
-          desc: '清华大学（Tsinghua University）简称“清华”，是中华人民共和国教育部直属、中央直管副部级建制的全国重点大学，位列“211工程”、“985工程”、“世界一流大学和一流学科”A类，入选“2011计划”、“珠峰计划”、“111计划”、“强基计划”，为九校联盟、松联盟、中国大学校长联谊会、亚洲大学联盟、环太平洋大学联盟、清华—剑桥—MIT低碳大学联盟成员。是中国著名高等学府、中国高层次人才培养和科学技术研究的重要基地，被誉为“红色工程师的摇篮”。',
-          sourceName: 'demo_01',
-          tableName: 'QH_1911',
-          content: 'Questions from 2016-2020 classified in three categories based on their quality',
-          number: 2345,
-          name: 'admin'
-        },
-        {
-          id: 235345,
-          taskName: 'LEGO Minifigures Classification',
-          content: '"Do or do not. There is no try" - Yoda',
-          sourceName: 'demo_01',
-          tableName: 'BJ_1898',
-          desc: '北京大学（Peking University），简称“北大”，由中华人民共和国教育部直属，中央直管副部级建制。位列“双一流”、“211工程”、“985工程”，入选“基础学科拔尖学生培养试验计划”、“高等学校创新能力提升计划”、“高等学校学科创新引智计划”，为九校联盟、松联盟、中国大学校长联谊会、京港大学联盟、亚洲大学联盟、东亚研究型大学协会、国际研究型大学联盟、环太平洋大学联盟、21世纪学术联盟、东亚四大学论坛、国际公立大学论坛、中俄综合性大学联盟成员。',
-          number: 2354,
-          name: 'admin'
-        }
-      ],
+      ObjList: [],
       dia_search: '',
       newURL: '',
       listSearch: '',
