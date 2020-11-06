@@ -24,7 +24,7 @@
       </el-tab-pane>
     </el-tabs>
     <!-- table -->
-    <el-table :data="tableData" size="mini" border style="width: 100%;">
+    <el-table :data="tableData" size="mini" border style="width: 100%;" :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}">
       <el-table-column prop="sVal" label="秒" width="70" />
       <el-table-column prop="mVal" label="分" width="70" />
       <el-table-column prop="hVal" label="时" width="70" />
@@ -54,7 +54,8 @@ export default {
   },
   props: {
     value: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   data() {

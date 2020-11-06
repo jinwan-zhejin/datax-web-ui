@@ -121,7 +121,7 @@
               >
               </el-tab-pane>
             </el-tabs> -->
-                    <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
+                    <Workflow :is-save="item" :project-id="selectValue" :task-list="List" @fromChild="getChild" />
                 </div>
             </el-tab-pane>
 
@@ -420,6 +420,7 @@ export default {
                         content
                     } = response;
                     this.List = content.data;
+                    console.log(this.list);
                     const firstElement = content?.data[0] || {};
                     const a = {};
 

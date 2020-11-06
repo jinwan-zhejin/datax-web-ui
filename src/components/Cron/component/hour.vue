@@ -3,7 +3,7 @@
     <div>
       <el-radio v-model="type" label="1" size="mini" border>每时</el-radio>
     </div>
-    <div class='line'>
+    <div class="line">
       <el-radio v-model="type" label="2" size="mini" border>周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px;">从</span>
       <el-input-number v-model="cycle.start" :min="0" :max="23" size="small" style="width: 100px;" @change="type = '2'" />
@@ -11,7 +11,7 @@
       <el-input-number v-model="cycle.end" :min="2" :max="23" size="small" style="width: 100px;" @change="type = '2'" />
       时
     </div>
-    <div class='line'>
+    <div class="line">
       <el-radio v-model="type" label="3" size="mini" border>循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px;">从</span>
       <el-input-number v-model="loop.start" :min="0" :max="23" size="small" style="width: 100px;" @change="type = '3'" />
@@ -19,7 +19,7 @@
       <el-input-number v-model="loop.end" :min="1" :max="23" size="small" style="width: 100px;" @change="type = '3'" />
       时执行一次
     </div>
-    <div class='line'>
+    <div class="line">
       <el-radio v-model="type" label="4" size="mini" border>指定</el-radio>
       <el-checkbox-group v-model="appoint">
         <div v-for="i in 3" :key="i" style="margin-left: 10px;  line-height: 25px;">
@@ -28,6 +28,14 @@
           </span>
         </div>
       </el-checkbox-group>
+      <!-- <el-select v-model="appoint" multiple :placeholder="'选择' + lable" clearable style="margin-bottom: 10px; width: 70%;" @change="type = '4'">
+        <el-option
+          v-for="k in 24"
+          :key="k"
+          :label="(k - 1) <= 9 ? ('0' + (k - 1)) : ('' + (k - 1))"
+          :value="(k - 1) <= 9 ? ('0' + (k - 1)) : ('' + (k - 1))"
+        />
+      </el-select> -->
     </div>
   </div>
 </template>
@@ -38,6 +46,10 @@ export default {
     value: {
       type: String,
       default: '*'
+    },
+    lable: {
+      type: String,
+      default: ''
     }
   },
   data() {

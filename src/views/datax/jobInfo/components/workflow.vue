@@ -2,28 +2,38 @@
   <div id="sample">
     <div style="padding: 10px 0px;backgroundColor: #E2ECFA" class="tit">
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">保存</el-button>
-      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="save">执行一次</el-button>
+      <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="save">执行一次</el-button> -->
+      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="runVirtualOnce">执行一次</el-button>
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">查看日志</el-button>
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button>
+      <el-button @click="getVirtualTaskInfo">test-info</el-button>
+      <el-button @click="getAllVirtualTask">test-all</el-button>
     </div>
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 750px;" />
     </div>
-    <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" style="width: 50%; left: 26%;">
+    <!-- 选择任务面板 -->
+    <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
         <el-form-item label="任务名称" label-width="120">
-          <el-select v-model="form.name" placeholder="请选择任务名称" style="width: 280px;">
-            <el-option v-for="(item, index) in taskList" :key="index" :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()" :value="item.jobDesc" />
+          <el-select v-model="form.objIndex" placeholder="请选择任务名称" style="width: 100%;">
+            <el-option
+              v-for="(item, index) in taskList"
+              :key="index"
+              :label="item.jobDesc + ' @' + item.glueType.replace('GLUE_', '').toLowerCase()"
+              :value="index"
+            />
             <!-- <el-option label="task_02" value="task_02" /> -->
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="sure">确 定</el-button>
+        <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="sure">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 设置调度时间 -->
     <el-dialog
       title="提示"
       :visible.sync="showCronBox"
@@ -32,8 +42,29 @@
     >
       <cron v-model="jobCron" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showCronBox = false;">关闭</el-button>
-        <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+        <el-button size="small" @click="showCronBox = false;">关闭</el-button>
+        <el-button size="small" type="primary" @click="sureCron">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 保存虚任务 -->
+    <el-dialog
+      title="保存虚任务"
+      :visible.sync="showSaveBox"
+    >
+      <el-form ref="virtualProjectInfo" :model="virtualProjectInfo" label-width="100px" label-position="right">
+        <el-form-item label="虚任务Id">
+          <span>{{ myId }}</span>
+        </el-form-item>
+        <el-form-item label="Cron表达式">
+          <span>{{ jobCron }}</span>
+        </el-form-item>
+        <el-form-item label="虚任务名称" prop="virtualProjectName" :rules="[{ required: true, message: '请输入虚任务名称', trigger: 'blur' }]">
+          <el-input v-model="virtualProjectInfo.virtualProjectName" placeholder="虚任务名称" clearable />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="showSaveBox = false;">关闭</el-button>
+        <el-button size="small" type="primary" @click="sureSave('virtualProjectInfo')">确 定</el-button>
       </span>
     </el-dialog>
     <!-- <p>
@@ -92,6 +123,7 @@
 <script id="code">
 import go from 'gojs';
 import cron from '@/components/Cron'
+import * as wfApi from '@/api/datax-job-info-workflow'
 
 export default {
   name: 'Flow',
@@ -100,24 +132,57 @@ export default {
   },
   props: {
     isSave: { type: Object, default: () => ({}) },
-    taskList: { type: Array, default: () => ([]) }
+    /**
+     * @description: 任务列表
+     */
+    taskList: { type: Array, default: () => ([]) },
+    projectId: { type: Number, default: 0 }
   },
   data() {
     return {
       myDiagram: '',
+      /**
+       * @description: 虚任务Id
+       */
       myId: '',
       SaveName: '',
       SaveData: '',
+      /**
+       * @description: 选择任务面板
+       */
       dialogFormVisible: false,
+      /**
+       * @description: form
+       */
       form: {},
       selectedNodeKey: 9999,
+      /**
+       * @description: 设置调度时间
+       */
       showCronBox: false,
-      jobCron: ''
+      /**
+       * @description: 调度时间字符串
+       */
+      jobCron: '* * * ? * * *',
+      /**
+       * @description: 显示保存面板
+       */
+      showSaveBox: false,
+      /**
+       * @description: 虚任务名称
+       */
+      virtualProjectInfo: {
+        virtualProjectName: ''
+      }
     }
   },
   watch: {
     'isSave'(val) {
       console.log(val)
+    },
+    'form.objIndex'(val) {
+      this.form.name = this.taskList[val].jobDesc
+      this.form.id = this.taskList[val].id
     }
   },
   created() {
@@ -433,7 +498,7 @@ export default {
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             { category: 'Start', text: '开始' },
-            { text: '子任务' },
+            { text: '子任务', id: '' },
             { category: 'Conditional', text: '判断' },
             { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }
@@ -463,6 +528,9 @@ export default {
         this.save()
         this.toParent()
       }
+      this.showSaveBox = true
+      console.log(this.form.name, this.jobCron, this.form.id);
+      console.log(this.myDiagram.model.toJson());
     },
     sure() {
       console.log('---------')
@@ -472,6 +540,7 @@ export default {
       })
       console.log(selectNode)
       selectNode.pb.j[0].data.text = this.form.name
+      selectNode.pb.j[0].data.id = this.form.id.toString()
       // console.log(selectNode)
       this.myDiagram.model.updateTargetBindings(selectNode.pb.j[0].data);
       // this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
@@ -555,6 +624,155 @@ export default {
     },
     setCron() {
       this.showCronBox = true
+    },
+    /**
+     * @description: 关闭设置调度时间面板
+     */
+    sureCron() {
+      console.log(this.jobCron);
+      this.showCronBox = false
+    },
+    /**
+     * @description: 关闭保存面板
+     */
+    sureSave(dataForm) {
+      this.$refs.virtualProjectInfo.validate((valid) => {
+        if (valid) {
+          wfApi.addVirtualTask(
+            {
+              jobInfoName: this.virtualProjectInfo.virtualProjectName,
+              jobCron: this.jobCron,
+              flowChatInformation: this.myDiagram.model.toJson(),
+              jobInfoId: '',
+              projectId: this.projectId
+            }
+          ).then(response => {
+            if (response.code === 200) {
+              this.$message({
+                message: response.msg,
+                showClose: true,
+                type: 'success',
+                duration: 4000
+              })
+            } else {
+              this.$message({
+                message: response.msg,
+                showClose: true,
+                type: 'error',
+                duration: 4000
+              })
+            }
+          }).catch(err => {
+            this.$message({
+              message: err.response,
+              showClose: true,
+              type: 'error',
+              duration: 4000
+            })
+          })
+          this.showSaveBox = false
+        } else {
+          return false
+        }
+      })
+    },
+    /**
+     * @description: 执行一次
+     */
+    runVirtualOnce() {
+      wfApi.triggerVirtualTask({
+        jobInfoId: '0f464fae35fb40b6a85d5d1b69e36d07'
+      }).then(response => {
+        console.log(response);
+        if (response.code === 200) {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'success',
+            duration: 4000
+          })
+        } else {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'error',
+            duration: 4000
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.response,
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      })
+    },
+    /**
+     * @description: 获取具体虚任务信息
+     */
+    getVirtualTaskInfo() {
+      wfApi.listVirtualTask({
+        jobInfoId: '0f464fae35fb40b6a85d5d1b69e36d07',
+        projectId: this.projectId
+      }).then(response => {
+        console.log(response);
+        if (response.code === 200) {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'success',
+            duration: 4000
+          })
+        } else {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'error',
+            duration: 4000
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.response,
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      })
+    },
+    /**
+     * @description: 获取虚任务列表
+     */
+    getAllVirtualTask() {
+      wfApi.listVirtualTask({
+        jobInfoId: '',
+        projectId: 0
+      }).then(response => {
+        console.log(response);
+        if (response.code === 200) {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'success',
+            duration: 4000
+          })
+        } else {
+          this.$message({
+            message: response.msg,
+            showClose: true,
+            type: 'error',
+            duration: 4000
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.response,
+          showClose: true,
+          type: 'error',
+          duration: 4000
+        })
+      })
     }
   }
 }
