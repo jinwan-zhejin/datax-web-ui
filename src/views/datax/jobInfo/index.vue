@@ -121,7 +121,7 @@
               >
               </el-tab-pane>
             </el-tabs> -->
-                    <Workflow :is-save="item" :task-list="List" @fromChild="getChild" />
+                    <Workflow :is-save="item" :project-id="selectValue" :task-list="List" @fromChild="getChild" />
                 </div>
             </el-tab-pane>
 
