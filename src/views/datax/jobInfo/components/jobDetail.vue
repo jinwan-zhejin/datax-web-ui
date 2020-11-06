@@ -121,15 +121,11 @@
     <div class="log_detail">
       <div class="log_title">
         <span class="log_log">运行日志</span>
-        <span class="unflod" @click="showLog = !showLog">
+        <span class="unflod" @click="showLogDetails">
           <i v-if="!showLog" class="el-icon-sort-up" />
           <i v-else class="el-icon-sort-down" />
         </span>
       </div>
-      <transition name="fade">
-        <div v-if="showLog" class="log_container">
-          <pre v-text="newstlogContent" />
-        </div>
       </transition>
     </div>
 
@@ -733,16 +729,317 @@ export default {
       this.jobId = temp.id;
             this.$refs.jobLog?.fetchData();
     },
-
-    // 删除
-    handlerDelete(temp) {
-      handlerDelete
-        .call(this, temp)
-        .then(() => {
-          this.$emit('deleteDetailTab', temp.id);
-          this.$emit('deleteJob', true);
-        })
-        .then(() => {});
+    props: ['jobInfo'],
+    data() {
+      const validateIncParam = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('Increment parameters is required'));
+        }
+        callback();
+      };
+      const validatePartitionParam = (rule, value, callback) => {
+        if (!this.partitionField) {
+          callback(new Error('Partition parameters is required'));
+        }
+        callback();
+      };
+      return {
+        jsonshow: true,
+        newstlogContent: '',
+        jobId: '',
+        logview: false,
+        logData: [],
+        editFrom: true,
+        switchVal: 1,
+        showLog: false,
+        projectIds: '',
+        list: null,
+        listLoading: true,
+        total: 0,
+        schemaList: [],
+        // jobTypeLabel: '',
+        listQuery: {
+          current: 1,
+          size: 10000,
+          jobGroup: 0,
+          projectIds: '',
+          triggerStatus: -1,
+          jobDesc: '',
+          glueType: ''
+        },
+        showCronBox: false,
+        dialogPluginVisible: false,
+        pluginData: [],
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: 'Create'
+        },
+        rules: {
+          jobGroup: [{
+            required: true,
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }],
+          executorRouteStrategy: [{
+            required: true,
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }],
+          executorBlockStrategy: [{
+            required: true,
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }],
+          glueType: [{
+            required: true,
+            message: 'jobType is required',
+            trigger: 'change'
+          }],
+          projectId: [{
+            required: true,
+            message: 'projectId is required',
+            trigger: 'change'
+          }],
+          jobDesc: [{
+            required: true,
+            message: 'jobDesc is required',
+            trigger: 'blur'
+          }],
+          jobProject: [{
+            required: true,
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }],
+          jobCron: [{
+            required: true,
+            message: 'jobCron is required',
+            trigger: 'blur'
+          }],
+          incStartId: [{
+            trigger: 'blur',
+            validator: validateIncParam
+          }],
+          replaceParam: [{
+            trigger: 'blur',
+            validator: validateIncParam
+          }],
+          primaryKey: [{
+            trigger: 'blur',
+            validator: validateIncParam
+          }],
+          incStartTime: [{
+            trigger: 'change',
+            validator: validateIncParam
+          }],
+          replaceParamType: [{
+            trigger: 'change',
+            validator: validateIncParam
+          }],
+          partitionField: [{
+            trigger: 'blur',
+            validator: validatePartitionParam
+          }],
+          datasourceId: [{
+            trigger: 'change',
+            validator: validateIncParam
+          }],
+          readerTable: [{
+            trigger: 'blur',
+            validator: validateIncParam
+          }]
+        },
+        temp: {
+          id: undefined,
+          jobGroup: '',
+          jobCron: '',
+          jobDesc: '',
+          executorRouteStrategy: '',
+          executorBlockStrategy: '',
+          childJobId: '',
+          executorFailRetryCount: '',
+          alarmEmail: '',
+          executorTimeout: '',
+          userId: 0,
+          jobConfigId: '',
+          executorHandler: '',
+          glueType: '',
+          glueSource: '',
+          jobJson: '',
+          executorParam: '',
+          replaceParam: '',
+          replaceParamType: 'Timestamp',
+          jvmParam: '',
+          incStartTime: '',
+          partitionInfo: '',
+          incrementType: 0,
+          incStartId: '',
+          primaryKey: '',
+          projectId: '',
+          datasourceId: '',
+          readerTable: ''
+        },
+        resetTemp() {
+          this.temp = this.$options.data().temp;
+          this.jobJson = '';
+          this.glueSource = '';
+          this.timeOffset = 0;
+          this.timeFormatType = 'yyyy-MM-dd';
+          this.partitionField = '';
+        },
+        executorList: [],
+        jobIdList: '',
+        jobProjectList: '',
+        dataSourceList: '',
+        blockStrategies: [{
+          value: 'SERIAL_EXECUTION',
+          label: '单机串行'
+        },
+        {
+          value: 'DISCARD_LATER',
+          label: '丢弃后续调度'
+        },
+        {
+          value: 'COVER_EARLY',
+          label: '覆盖之前调度'
+        }
+        ],
+        routeStrategies: [{
+          value: 'FIRST',
+          label: '第一个'
+        },
+        {
+          value: 'LAST',
+          label: '最后一个'
+        },
+        {
+          value: 'ROUND',
+          label: '轮询'
+        },
+        {
+          value: 'RANDOM',
+          label: '随机'
+        },
+        {
+          value: 'CONSISTENT_HASH',
+          label: '一致性HASH'
+        },
+        {
+          value: 'LEAST_FREQUENTLY_USED',
+          label: '最不经常使用'
+        },
+        {
+          value: 'LEAST_RECENTLY_USED',
+          label: '最近最久未使用'
+        },
+        {
+          value: 'FAILOVER',
+          label: '故障转移'
+        },
+        {
+          value: 'BUSYOVER',
+          label: '忙碌转移'
+        }
+          // { value: 'SHARDING_BROADCAST', label: '分片广播' }
+        ],
+        glueTypes: [{
+          value: 'BEAN',
+          label: 'DataX任务'
+        },
+        {
+          value: 'GLUE_SHELL',
+          label: 'Shell任务'
+        },
+        {
+          value: 'GLUE_PYTHON',
+          label: 'Python任务'
+        },
+        {
+          value: 'GLUE_POWERSHELL',
+          label: 'PowerShell任务'
+        }
+        ],
+        incrementTypes: [{
+          value: 0,
+          label: '无'
+        },
+        {
+          value: 1,
+          label: '主键自增'
+        },
+        {
+          value: 2,
+          label: '时间自增'
+        },
+        {
+          value: 3,
+          label: 'HIVE分区'
+        }
+        ],
+        triggerNextTimes: '',
+        registerNode: [],
+        jobJson: '',
+        glueSource: '',
+        timeOffset: 0,
+        timeFormatType: 'yyyy-MM-dd',
+        partitionField: '',
+        timeFormatTypes: [{
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
+        },
+        {
+          value: 'yyyyMMdd',
+          label: 'yyyyMMdd'
+        },
+        {
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
+        }
+        ],
+        replaceFormatTypes: [{
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
+        },
+        {
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
+        },
+        {
+          value: 'HH:mm:ss',
+          label: 'HH:mm:ss'
+        },
+        {
+          value: 'yyyy/MM/dd HH:mm:ss',
+          label: 'yyyy/MM/dd HH:mm:ss'
+        },
+        {
+          value: 'yyyy-MM-dd HH:mm:ss',
+          label: 'yyyy-MM-dd HH:mm:ss'
+        },
+        {
+          value: 'Timestamp',
+          label: '时间戳'
+        }
+        ],
+        statusList: [{
+          value: 500,
+          label: '失败'
+        },
+        {
+          value: 502,
+          label: '失败(超时)'
+        },
+        {
+          value: 200,
+          label: '成功'
+        },
+        {
+          value: 0,
+          label: '无'
+        }
+        ]
+      };
     },
 
     // 开关
@@ -1031,6 +1328,10 @@ export default {
 .json_content>>>.CodeMirror {
     background: white;
     color: #333333;
+}
+
+.json_content >>>  .CodeMirror-line {
+    z-index: 0;
 }
 
 .json_content>>>.CodeMirror-gutters {

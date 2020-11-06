@@ -13,7 +13,7 @@
           <el-steps :active="active" align-center>
             <el-step title="新建任务" description="">1</el-step>
             <el-step title="添加质量规则" description="">2</el-step>
-            <el-step title="选择结果数据存放位置" description="">3</el-step>
+            <el-step title="结果数据存放位置" description="">3</el-step>
             <el-step title="字段映射" description="">4</el-step>
             <el-step title="构建" description="">5</el-step>
           </el-steps>
