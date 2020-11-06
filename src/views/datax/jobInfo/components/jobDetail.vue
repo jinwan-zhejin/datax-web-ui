@@ -121,7 +121,7 @@
     <div class="log_detail">
         <div class="log_title">
             <span class="log_log">运行日志</span>
-            <span class="unflod" @click="showLog = !showLog">
+            <span class="unflod" @click="showLogDetails">
                 <i v-if="!showLog" class="el-icon-sort-up" />
                 <i v-else class="el-icon-sort-down" />
             </span>
@@ -399,7 +399,7 @@ export default {
             callback();
         };
         return {
-            jsonshow: false,
+            jsonshow: true,
             newstlogContent: '',
             jobId: '',
             logview: false,
@@ -722,7 +722,9 @@ export default {
             handlerExecute.call(this, temp).then(() => {
                 this.newstlogContent = ''
                 this.logList();
-                this.showLog = true;
+                if(!this.showLog){
+                    this.showLogDetails()
+                }
             });
         },
 
@@ -927,6 +929,15 @@ export default {
             this.jsonshow = !this.jsonshow
         },
 
+        showLogDetails(){
+            this.showLog = !this.showLog
+            if (this.showLog) {
+               this.jsonshow = false 
+            } else {
+                this.jsonshow = true
+            }
+        }
+
     }
 };
 </script>
@@ -1032,6 +1043,10 @@ export default {
 .json_content>>>.CodeMirror {
     background: white;
     color: #333333;
+}
+
+.json_content >>>  .CodeMirror-line {
+    z-index: 0;
 }
 
 .json_content>>>.CodeMirror-gutters {
