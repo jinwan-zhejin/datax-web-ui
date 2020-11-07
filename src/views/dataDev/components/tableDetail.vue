@@ -1,11 +1,7 @@
 <template>
-<el-tabs type="border-card">
-    <el-tab-pane label="结果">
-        <el-table class="table" :data="tableData" style="width: 100%;min-height:350px;" max-height="350">
-            <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :label="item.label" width="130" />
-        </el-table>
-    </el-tab-pane>
-</el-tabs>
+<el-table style="padding: 0px; margin-left: 10px" :data="tableData" height=245 :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+    <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip />
+</el-table>
 </template>
 
 <script>
@@ -101,7 +97,7 @@ export default {
                 query: 'Select * from ' + node.data.schema + '.' + node.data.tableName, // sql语句
                 filter: {
                     offset: 0,
-                    limit: 200,
+                    limit: 30,
                     constraints: []
                 }
             };
@@ -130,6 +126,7 @@ export default {
             const columns = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
             const rows = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
             this.columns = columns;
+
             this.tableData = rows.map((ele) => {
                 const obj = {};
                 ele.forEach((fieldVal, index) => {
@@ -263,5 +260,9 @@ export default {
 
 .el-table::before {
     height: 0;
+}
+
+.el-tabs--border-card>.el-tabs__content {
+    padding: 0px;
 }
 </style>
