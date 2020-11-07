@@ -42,12 +42,8 @@ module.exports = {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
         // target: 'http://47.103.79.104:9527',
-<<<<<<< HEAD
-        target: 'http://192.168.3.66:9527',
-=======
         target: 'http://47.103.79.104:9090',
         // target: 'http://192.168.3.66:9527',
->>>>>>> c48874debb9b58997b6042baab8ff8b00dd3b84d
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:8080', // 刘向前
@@ -57,15 +53,15 @@ module.exports = {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
-      // 数据共享接口 - share
-      '/mock': {
-        ws: false,
-        target: 'http://47.103.79.104:3000',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/share']: '/share'
-        }
-      },
+      // // 数据共享接口 - share
+      // '/mock': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:3000',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/share']: '/share'
+      //   }
+      // },
       // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
@@ -93,14 +89,14 @@ module.exports = {
           ['^' + '/session']: '/api/atlas/admin/session'
         }
       },
-      '/login': {
-        ws: false,
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/login']: '/login'
-        }
-      },
+      // '/login': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/login']: '/login'
+      //   }
+      // },
       '/test': {
         ws: false,
         // target: 'http://192.168.3.60:9000', // 韩家敏
@@ -113,18 +109,18 @@ module.exports = {
         }
       },
       // Datains接口
-      '/welcome': {
-        ws: false,
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/welcome']: '/datains/welcome'
-        }
-      },
+      // '/welcome': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/welcome']: '/datains/welcome'
+      //   }
+      // },
       '/dbeaver/gql': {
         ws: false,
-        target: 'http://192.168.3.66:8979',
-        // target: 'http://47.103.79.104:8979',
+        // target: 'http://192.168.3.66:8979',
+        target: 'http://47.103.79.104:8979',
         changeOrigin: true,
         // headers: {
         //   host: "http://192.168.3.74:8978",
