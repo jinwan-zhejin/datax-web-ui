@@ -8,8 +8,21 @@
                         <el-option v-for="item in projectArray" :key="item.id" :label="item.name" :value="item.name" />
                     </el-select>
                 </el-col>
-                <el-col style="textAlign: right;" :span="8">
-                    <svg-icon style="cursor: pointer;" class="el-icon-plus" icon-class="jiatianjiawenjian-" @click="addTab" />
+                <el-col style="textAlign: right;" :span="4">
+                    <el-popover ref="dspopover" placement="right" trigger="click">
+                        <div style="font-weight: bold; font-size: 15px">当前数据源连接</div>
+                        <div>{{selectedDsName}}</div>
+                        <div style="margin-top: 10px; font-weight: bold; font-size: 15px">数据库/Schema</div>
+                        <div>{{selectedDbName}}</div>
+                    </el-popover>
+                    <el-tooltip class="item" effect="dark" content="当前数据源" placement="top-start">
+                        <i class="el-icon-coin" v-popover:dspopover />
+                    </el-tooltip>
+                </el-col>
+                <el-col style="textAlign: center;" :span="4">
+                    <el-tooltip class="item" effect="dark" content="新建查询" placement="top-start">
+                        <i class="el-icon-folder-add" @click="addTab" />
+                    </el-tooltip>
                 </el-col>
             </el-row>
         </div>
@@ -35,7 +48,7 @@
                             <svg-icon v-if="node.level == 1 && data.datasource === 'clickhouse'" icon-class="clickhouse" />
                             <svg-icon v-if="node.level == 1 && data.datasource === 'mongodb'" icon-class="ziyuan" />
                             <!-- <svg-icon v-if="node.level == 2" icon-class="database" /> -->
-                            <i v-if="node.level == 2" class="el-icon-coin" />
+                            <svg-icon v-if="node.level == 2" icon-class="database" />
                             <svg-icon v-if="node.level == 3" icon-class="table1" />
                             <svg-icon v-if="node.level == 4 && data.type === 'varchar' || data.type === 'text' || data.type === 'mediumtext' || data.type === 'char' || data.type === 'longtext'" icon-class="text" />
                             <svg-icon v-if="node.level == 4 && data.type === 'number' || data.type === 'double' || data.type === 'int' || data.type === 'bigint' || data.type === 'tinyint' || data.type === 'float' || data.type === 'decimal' || data.type === 'smallint'" icon-class="Group" />
@@ -112,7 +125,11 @@ export default {
             firstId: '',
             treeClickCount: '',
             ByVal: {},
-            sourceList: []
+            sourceList: [],
+            currentNode: {},
+            selectedDatasource: {},
+            selectedDbName: '',
+            selectedDsName: ''
         };
     },
     watch: {
@@ -128,6 +145,21 @@ export default {
     },
     methods: {
         handleNodeClick(data, node, nodeComp) {
+            console.log(node, 'node')
+            if (node.level == 2) {
+                this.selectedDbName = node.data.name
+                this.selectedDsName = node.parent.data.name
+                this.selectedDatasource.jdbcUrl = node.parent.data.jdbcUrl
+                this.selectedDatasource.db = node.data.name
+                this.selectedDatasource.username = node.parent.data.secretMap.u
+                this.selectedDatasource.password = node.parent.data.secretMap.p
+                this.selectedDatasource.datasource = node.parent.data.datasource.toLowerCase()
+                console.log(this.selectedDatasource)
+                for (let i = 0; i < this.editableTabs.length; i++) {
+                    this.$refs.content[i].setQueryParams(this.selectedDatasource)
+                }
+            }
+
             if (node.level == 3) {
                 for (let i = 0; i < this.editableTabs.length; i++) {
                     if (this.editableTabs[i].name === this.editableTabsValue) {
@@ -387,5 +419,13 @@ export default {
 
 .el-tabs--border-card>.el-tabs__content {
     padding: 0px;
+}
+
+.el-tree-node:focus>.el-tree-node__content {
+    background-color: #bbb !important;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #bbb;
 }
 </style>

@@ -60,10 +60,12 @@ export default {
             sqlName: '', // 数据库名
             options: [],
             options1: [],
-            datasourceWidth: 100
+            datasourceWidth: 100,
+            queryDsInfo: {}
         };
     },
     watch: {
+
         dataBaseid() {
             this.getSchema();
         },
@@ -72,16 +74,16 @@ export default {
                 this.options = val
             }
         }
-        // datasourceName(val) {
-        //   this.options1 = []
-        //   console.log(this.options1)
-        // }
     },
     created() {
         this.getDataBaseList();
         console.log(this.parentlist)
     },
     methods: {
+        setQueryParams(qp) {
+            this.queryDsInfo = qp;
+        },
+
         handleChangeSQL(value) {
             console.log(value)
             this.datasourcewidth = value.length
@@ -173,20 +175,12 @@ export default {
         // 执行sql
         runQuery(val) {
             console.log(val, '子传父');
-            if (this.sourceName !== '' && this.sqlName !== '') {
-                if (val.msg === 0) {
-                    this.$message.info('请输入SQL语句')
-                } else {
-                    for (let i = 0; i < this.options.length; i++) {
-                        if (this.sourceName === this.options[i].id) {
-                            const obj = this.options[i]
-                            obj.schemaName = this.sqlName
-                            this.$refs.table.initSQL(obj, val.code)
-                        }
-                    }
-                }
+            console.log(this.queryDsInfo)
+
+            if (val.msg === 0) {
+                this.$message.info('请输入SQL语句')
             } else {
-                this.$message.info('请选择数据源、数据库')
+                this.$refs.table.queryData(this.queryDsInfo, val.code)
             }
         },
         previewData(params) {

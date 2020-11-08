@@ -7,6 +7,9 @@
         <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
             <i class="el-icon-refresh" /> 运行查询
         </el-button>
+        <el-button size="mini">
+            <i class="el-icon-copy-document" /> 保存查询
+        </el-button>
 
         <el-button size="mini" @click="sqlJobBuild">
             <i class="el-icon-copy-document" /> 构建sql任务

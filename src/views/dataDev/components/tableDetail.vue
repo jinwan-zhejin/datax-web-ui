@@ -137,19 +137,16 @@ export default {
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
         },
 
-        async initSQL(obj, code) {
-            console.log(obj, code, '父传子OBJ\code')
+        async queryData(queryDsInfo, sql) {
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
-            const host = obj ? obj.jdbcUrl.split('://')[1].split('/')[0].split(':')[0] : ''
-            const port = obj ? obj.jdbcUrl.split('://')[1].split('/')[0].split(':')[1] : ''
-            const databaseName = obj ? obj.schemaName : ''
-            // const userName = node.parent.parent.data.secretMap.u
-            // const password = node.parent.parent.data.secretMap.p
+            const host = queryDsInfo.jdbcUrl.split('://')[1].split('/')[0].split(':')[0];
+            const port = queryDsInfo.jdbcUrl.split('://')[1].split('/')[0].split(':')[1];
+            const databaseName = queryDsInfo.db
+            const userName = queryDsInfo.username
+            const password = queryDsInfo.password
 
-            const userName = 'root';
-            const password = 'Q2P88YjE4b23';
             var driverId;
-            switch (obj ? obj.datasource.toLowerCase() : '') {
+            switch (queryDsInfo.datasource) {
                 case 'mysql':
                     driverId = 'mysql:mysql8'
                     break;
@@ -192,8 +189,8 @@ export default {
             const params2 = {
                 id: this.connectionId,
                 credentials: {
-                    userName: 'root',
-                    userPassword: 'Q2P88YjE4b23'
+                    userName: userName,
+                    userPassword: password
                 }
             };
             const resInitConnection = await initConnection(params2);
@@ -204,7 +201,7 @@ export default {
             const params4 = {
                 connectionId: this.connectionId,
                 contextId: resSqlContextCreate.data.context.id,
-                query: code, // sql语句
+                query: sql, // sql语句
                 filter: {
                     offset: 0,
                     limit: 200,
