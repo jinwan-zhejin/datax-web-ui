@@ -580,7 +580,7 @@ export default {
       },
       rColumnList: [],
       rTbList: [],
-      jsonshow: true,
+      jsonshow: false,
       newstlogContent: '',
       jobId: '',
       logview: false,
@@ -1089,7 +1089,30 @@ export default {
     },
 
     updateData() {
-      // this.temp.jobJson = this.$refs.jsonEditor1.jsonEditor.getValue();
+      let jobParam = {
+                  "readerDatasourceId": 9,
+                  "readerTables": [],
+                  "readerColumns": ["1"],
+                  "writerDatasourceId": 9,
+                  "writerTables": [],
+                  "writerColumns": '',
+                  "transformer": [""],
+                  "hiveReader": {},
+                  "hiveWriter": {},
+                  "rdbmsReader": {
+                    "readerSplitPk": "",
+                    "whereParams": "",
+                    "querySql": ""
+                  },
+                  "rdbmsWriter": {
+                    "preSql": "",
+                    "postSql": ""
+                  },
+                  "hbaseReader": {},
+                  "hbaseWriter": {},
+                  "mongoDBReader": {},
+                  "mongoDBWriter": {}
+                }
 
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
@@ -1210,7 +1233,6 @@ export default {
       this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.toColumnsList.length
     },
     bHandleClick(index, v) {
-      console.log(index);
       this.fromColumnsListChecked.splice(index, 1)
       this.toColumnsListChecked.splice(index, 1)
 
@@ -1431,7 +1453,7 @@ export default {
 
 .log_container {
     padding-left: 24px;
-    height: 260px;
+    height: 240px;
     overflow: scroll;
     background: white;
     font-size: 13px;
