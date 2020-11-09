@@ -121,7 +121,7 @@
     <div class="log_detail">
       <div class="log_title">
         <span class="log_log">运行日志</span>
-        <span class="unflod" @click="showLog = !showLog">
+        <span class="unflod" @click="showRunLogDetails">
           <i v-if="!showLog" class="el-icon-sort-up" />
           <i v-else class="el-icon-sort-down" />
         </span>
@@ -308,10 +308,38 @@
           </el-col>
         </el-row>
       </el-form>
-      <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor1" v-model="temp.jobJson" :cani-edit="false" />
-      <!-- <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
-      <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
-      <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" /> -->
+
+      <h3>2.构建reader</h3>
+      <reader ref="reader" ></reader>
+     
+      <h3>3.构建writer</h3>
+      <writer ref="writer"></writer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
@@ -341,6 +369,8 @@ import PythonEditor from '@/components/PythonEditor';
 import PowershellEditor from '@/components/PowershellEditor';
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import * as jobProjectApi from '@/api/datax-job-project';
+import reader from '@/views/datax/json-build/reader';
+import writer from '@/views/datax/json-build/writer';
 import {
   isJSON
 } from '@/utils/validate';
@@ -369,7 +399,9 @@ export default {
     PythonEditor,
     PowershellEditor,
     Cron,
-    jobLog
+    jobLog,
+    reader,
+    writer
   },
   directives: {
     waves
@@ -399,7 +431,20 @@ export default {
       callback();
     };
     return {
-      jsonshow: false,
+      readerForm: {
+        datasourceId: undefined,
+        tableName: '',
+        columns: [],
+        where: '',
+        querySql: '',
+        checkAll: false,
+        isIndeterminate: true,
+        splitPk: '',
+        tableSchema: ''
+      },
+      rColumnList: [],
+      rTbList: [],
+      jsonshow: true,
       newstlogContent: '',
       jobId: '',
       logview: false,
@@ -717,6 +762,11 @@ export default {
   },
 
   methods: {
+
+    getReaderData() {
+      return this.$refs.reader.getData()
+    },
+
     // 执行一次
     handlerExecute(temp) {
       handlerExecute.call(this, temp).then(() => {
@@ -924,7 +974,19 @@ export default {
 
     viewJson() {
       this.jsonshow = !this.jsonshow
+      if(this.showLog){
+        this.showLog = false;
+      }
+    },
+
+    showRunLogDetails(){
+      this.showLog=!this.showLog;
+      if(this.jsonshow){
+        this.jsonshow=false;
+      }
     }
+
+    
 
   }
 };

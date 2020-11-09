@@ -74,7 +74,8 @@ export default {
       jdbcDsQuery: {
         current: 1,
         size: 200,
-        ascs: 'datasource_name'
+        ascs: 'datasource_name',
+        projectId: ''
       },
       datasourceId:'',
       wDsList: [],
@@ -95,7 +96,7 @@ export default {
         ifCreateTable: false,
         tableSchema: ''
       },
-      readerForm: this.getReaderData(),
+      readerForm: {},
       rules: {
         datasourceId: [{ required: true, message: 'this is required', trigger: 'change' }],
         tableName: [{ required: true, message: 'this is required', trigger: 'change' }],
@@ -113,6 +114,7 @@ export default {
   },
   created() {
     this.getJdbcDs()
+    this.readerForm = this.$parent.getReaderData();
   },
   methods: {
     // 获取可用数据源
