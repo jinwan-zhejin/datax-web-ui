@@ -1,31 +1,36 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="用户名" style="width: 200px;" class="filter-item" />
-      <el-button v-waves class="filter-item" type="goon" size="small" icon="el-icon-search" @click="fetchData">
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="goon"
-        size="small"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        添加
-      </el-button>
-      <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+      <div class="top-container">
+        <span>用户管理</span>
+        <span class="search">
+          <el-input v-model="listQuery.username" placeholder="用户名" style="width: 200px;" clearable />
+          <el-button style="margin: 0 0 0 10px;" type="primary" size="small" icon="el-icon-search" @click="fetchData">
+            搜索
+          </el-button>
+          <el-button
+            style="margin: 0 0 0 10px;"
+            type="primary"
+            size="small"
+            icon="el-icon-edit"
+            @click="handleCreate"
+          >
+            添加
+          </el-button>
+          <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox> -->
+        </span>
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
       fit
       highlight-current-row
+      :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+      height="calc(100vh - 310px)"
     >
       <el-table-column align="center" label="序号" width="95">
         <template slot-scope="scope">{{ scope.$index+1 }}</template>
@@ -40,10 +45,11 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="goon" size="mini" @click="handleUpdate(row)">
+          <el-button type="text" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status!=='deleted'" size="mini" type="danger" @click="handleDelete(row)">
+          <span style="font-size: 16px; color: #999999;">|</span>
+          <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
@@ -231,8 +237,30 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
-  .pagination {
-    margin-top: 0px;
+  margin: 24px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  .top-container {
+    height: 64px;
+    span {
+      line-height: 64px;
+      font-size: 24px;
+    }
+    .search {
+      float: right;
+    }
+  }
+  >>>.pagination-container {
+    margin-top: 0;
+  }
+  .el-table {
+    border: 1px solid #e9e9e9dd;
+    color: #333333;
+    border-radius: 2px;
+    >>>th {
+      background: #fafafc;
+    }
   }
 }
 </style>
