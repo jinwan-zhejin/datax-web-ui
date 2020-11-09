@@ -313,8 +313,55 @@
       <reader ref="reader" ></reader>
      
       <h3>3.构建writer</h3>
-      <writer ref="writer"></writer>
+      <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules">
+      <el-form-item label="数据库源：" prop="datasourceId">
+        <el-select
+          filterable
+          :value="writerForm.datasourceId"
+          @change="wDsChange"
+        >
+          <el-option
+            v-for="item in $store.state.taskAdmin.dataSourceList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="数据库表名：" prop="tableName">
+        <el-select
+          allow-create
+          default-first-option
+          filterable
+          :value="writerForm.tableName"
+          @change="wTbChange"
+        >
+          <el-option
+            v-for="item in wTbList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+      <div style="margin: 5px 0;" />
+      <el-form-item label="字段：">
+        <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
+        <div style="margin: 15px 0;" />
+        <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
+          <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="前置sql语句：">
+        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3"  />
+      </el-form-item>
+      <el-form-item label="postSql：">
+        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3"  />
+      </el-form-item>
+    </el-form>
 
+      <h3>4.字段映射</h3>
+      <mapper ref="mapper"></mapper>
 
 
 
@@ -357,6 +404,7 @@
 </template>
 
 <script>
+import * as dsQueryApi from '@/api/metadata-query';
 import * as executor from '@/api/datax-executor';
 import * as job from '@/api/datax-job-info';
 import * as log from '@/api/datax-job-log';
@@ -371,6 +419,7 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import * as jobProjectApi from '@/api/datax-job-project';
 import reader from '@/views/datax/json-build/reader';
 import writer from '@/views/datax/json-build/writer';
+import mapper from '@/views/datax/json-build/mapper';
 import {
   isJSON
 } from '@/utils/validate';
@@ -401,7 +450,8 @@ export default {
     Cron,
     jobLog,
     reader,
-    writer
+    writer,
+    mapper
   },
   directives: {
     waves
@@ -431,6 +481,19 @@ export default {
       callback();
     };
     return {
+      fromColumnList: [],
+      wTbList: [],
+      writerForm: {
+        datasourceId: '',
+        tableName: '',
+        columns: [],
+        checkAll: false,
+        isIndeterminate: true,
+        preSql: '',
+        postSql: '',
+        ifCreateTable: false,
+        tableSchema: ''
+      },
       readerForm: {
         datasourceId: undefined,
         tableName: '',
@@ -749,6 +812,10 @@ export default {
 
     jobGroupName() {
       return this.executorList.find(element => element.id === this.temp.jobGroup)?.title;
+    },
+
+    jobParam() {
+      return JSON.parse(this.jobInfo.jobParam);
     }
   },
   created() {
@@ -762,9 +829,25 @@ export default {
   },
 
   methods: {
+    wDsChange(e) {
+      this.writerForm.datasourceId = e;
+    },
 
     getReaderData() {
       return this.$refs.reader.getData()
+    },
+    wHandleCheckAllChange(val) {
+      this.writerForm.columns = val ? this.fromColumnList : []
+      this.writerForm.isIndeterminate = false
+    },
+    wHandleCheckedChange(value) {
+      const checkedCount = value.length
+      this.writerForm.checkAll = checkedCount === this.fromColumnList.length
+      this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
+    },
+    wTbChange(t) {
+      this.writerForm.tableName = t
+      this.getColumns('writer')
     },
 
     // 执行一次
@@ -984,10 +1067,49 @@ export default {
       if(this.jsonshow){
         this.jsonshow=false;
       }
+    },
+
+     // 获取表名
+    getTables(type) {
+      if (type === 'rdbmsWriter') {
+        let obj = {}
+        if (this.dataSource === 'postgresql' || this.dataSource === 'greenplum' || this.dataSource === 'oracle' || this.dataSource === 'sqlserver') {
+          obj = {
+            datasourceId: this.writerForm.datasourceId,
+            tableSchema: this.writerForm.tableSchema
+          }
+        } else {
+          obj = {
+            datasourceId: this.writerForm.datasourceId
+          }
+        }
+        // 组装
+        dsQueryApi.getTables(obj).then(response => {
+          this.wTbList = response
+        })
+      }
+    },
+    // 获取表字段
+    getColumns() {
+      const obj = {
+        datasourceId: this.writerForm.datasourceId,
+        tableName: this.writerForm.tableName
+      }
+      dsQueryApi.getColumns(obj).then(response => {
+        this.fromColumnList = response
+        this.writerForm.columns = response
+        this.writerForm.checkAll = true
+        this.writerForm.isIndeterminate = false
+      })
     }
 
     
 
+  },
+  watch: {
+    'writerForm.datasourceId': function(oldVal, newVal) {
+      this.getTables('rdbmsWriter')
+    }
   }
 };
 </script>
