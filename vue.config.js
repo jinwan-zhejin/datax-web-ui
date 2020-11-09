@@ -53,15 +53,15 @@ module.exports = {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
         }
       },
-      // 数据共享接口 - share
-      '/mock': {
-        ws: false,
-        target: 'http://47.103.79.104:3000',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/share']: '/share'
-        }
-      },
+      // // 数据共享接口 - share
+      // '/mock': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:3000',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/share']: '/share'
+      //   }
+      // },
       // 元数据接口 - Atlas
       '/atlasApi': {
         ws: false,
@@ -89,14 +89,14 @@ module.exports = {
           ['^' + '/session']: '/api/atlas/admin/session'
         }
       },
-      '/login': {
-        ws: false,
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/login']: '/login'
-        }
-      },
+      // '/login': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/login']: '/login'
+      //   }
+      // },
       '/test': {
         ws: false,
         // target: 'http://192.168.3.60:9000', // 韩家敏
@@ -109,16 +109,17 @@ module.exports = {
         }
       },
       // Datains接口
-      '/welcome': {
-        ws: false,
-        target: 'http://47.103.79.104:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/welcome']: '/datains/welcome'
-        }
-      },
+      // '/welcome': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/welcome']: '/datains/welcome'
+      //   }
+      // },
       '/dbeaver/gql': {
         ws: false,
+        // target: 'http://192.168.3.66:8979',
         target: 'http://47.103.79.104:8979',
         changeOrigin: true,
         // headers: {
@@ -140,7 +141,8 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         ws: false,
         // target: `http://localhost:${port}/mock`,
-        target: 'http://47.103.79.104:9527',
+        // target: 'http://47.103.79.104:9527',
+        target: 'http://47.103.79.104:9090',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

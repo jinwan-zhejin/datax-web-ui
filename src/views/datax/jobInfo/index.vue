@@ -15,28 +15,62 @@
                         <i class="el-icon-folder-add" />
                         <el-dropdown-menu>
                             <el-dropdown-item command="NORMAL">
-                               <svg-icon  icon-class="NORMAL" /> 普通任务
+                                <svg-icon icon-class="NORMAL" /> 普通任务
                             </el-dropdown-item>
-                            <el-dropdown-item command="IMPORT"><svg-icon  icon-class="IMPORT" />引入任务</el-dropdown-item>
+                            <el-dropdown-item command="IMPORT">
+                                <svg-icon icon-class="IMPORT" />引入任务
+                            </el-dropdown-item>
                             <el-dropdown-item command="EXPORT">
-                                <svg-icon  icon-class="EXPORT" />导出任务
+                                <svg-icon icon-class="EXPORT" />导出任务
                             </el-dropdown-item>
-                            <el-dropdown-item command="COMPUTE" disabled><svg-icon  icon-class="COMPUTE" />计算任务</el-dropdown-item>
-                            <el-dropdown-item command="SQLJOB"><svg-icon  icon-class="SQLJOB" />SQL任务</el-dropdown-item>
-                            <el-dropdown-item command="SPARK"><svg-icon  icon-class="SPARK" />SPARK任务</el-dropdown-item>
-                            <el-dropdown-item command="DQCJOB"><svg-icon  icon-class="DQCJOB" />质量任务</el-dropdown-item>
-                            <el-dropdown-item command="METACOLLECT" divided><svg-icon  icon-class="METACOLLECT" />元数据采集任务</el-dropdown-item>
-                            <el-dropdown-item command="METACOMPARE"><svg-icon  icon-class="METACOMPARE" />元数据比较任务</el-dropdown-item>
-                            <el-dropdown-item command="SHELL" divided><svg-icon  icon-class="SHELL" />SHELL任务</el-dropdown-item>
-                            <el-dropdown-item command="POWERSHELL"><svg-icon  icon-class="POWERSHELL" />POWERSHELL任务</el-dropdown-item>
-                            <el-dropdown-item command="PYTHON"><svg-icon  icon-class="PYTHON" />PYTHON任务</el-dropdown-item>
-                            <el-dropdown-item command="VJOB" divided><svg-icon  icon-class="VJOB" />虚任务</el-dropdown-item>
-                            <el-dropdown-item command="JAVA" divided disabled><svg-icon  icon-class="JAVA" />Java任务</el-dropdown-item>
-                            <el-dropdown-item command="SCALA" disabled><svg-icon  icon-class="SCALA" />Scala任务</el-dropdown-item>
-                            <el-dropdown-item command="PYSPARK" disabled><svg-icon  icon-class="PYSPARK" />PySpark任务</el-dropdown-item>
-                            <el-dropdown-item command="R" disabled><svg-icon  icon-class="R" />R任务</el-dropdown-item>
-                            <el-dropdown-item command="BATCH" divided><svg-icon  icon-class="BATCH" />任务批量构建</el-dropdown-item>
-                            <el-dropdown-item command="TEMPLATE"><svg-icon  icon-class="TEMPLATE" />普通任务模板</el-dropdown-item>
+                            <el-dropdown-item command="COMPUTE" disabled>
+                                <svg-icon icon-class="COMPUTE" />计算任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="SQLJOB">
+                                <svg-icon icon-class="SQLJOB" />SQL任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="SPARK">
+                                <svg-icon icon-class="SPARK" />SPARK任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="DQCJOB">
+                                <svg-icon icon-class="DQCJOB" />质量任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="METACOLLECT" divided>
+                                <svg-icon icon-class="METACOLLECT" />元数据采集任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="METACOMPARE">
+                                <svg-icon icon-class="METACOMPARE" />元数据比较任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="SHELL" divided>
+                                <svg-icon icon-class="SHELL" />SHELL任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="POWERSHELL">
+                                <svg-icon icon-class="POWERSHELL" />POWERSHELL任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="PYTHON">
+                                <svg-icon icon-class="PYTHON" />PYTHON任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="VJOB" divided>
+                                <svg-icon icon-class="VJOB" />虚任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="JAVA" divided disabled>
+                                <svg-icon icon-class="JAVA" />Java任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="SCALA" disabled>
+                                <svg-icon icon-class="SCALA" />Scala任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="PYSPARK" disabled>
+                                <svg-icon icon-class="PYSPARK" />PySpark任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="R" disabled>
+                                <svg-icon icon-class="R" />R任务
+                            </el-dropdown-item>
+                            <el-dropdown-item command="BATCH" divided>
+                                <svg-icon icon-class="BATCH" />任务批量构建
+                            </el-dropdown-item>
+                            <el-dropdown-item command="TEMPLATE">
+                                <svg-icon icon-class="TEMPLATE" />普通任务模板
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-col>
@@ -49,7 +83,7 @@
                 <div class="list">
                     <ul>
                         <li v-for="item in List" :key="item.id" @click="getJobDetail(item)">
-                            <svg-icon  :icon-class="item.jobType" />
+                            <svg-icon :icon-class="item.jobType" />
                             <a style="color: rgba(102, 102, 102, 1)">
                                 {{ item.jobDesc }}
                             </a>
@@ -146,7 +180,9 @@ import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
 import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
 import _ from 'lodash';
 
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import {
+    list as jdbcDsList
+} from '@/api/datax-jdbcDatasource'
 
 export default {
     name: '',
@@ -455,7 +491,7 @@ export default {
                 glueType: ''
             };
             this.projectIds = event;
-            
+
             job.getList(listQuery).then((response) => {
                 const {
                     content
@@ -465,14 +501,16 @@ export default {
 
             //根据项目id获取数据源
 
-            let p =  {
+            let p = {
                 current: 1,
                 size: 200,
                 ascs: 'datasource_name',
                 projectId: event
             }
             jdbcDsList(p).then(response => {
-                const { records } = response
+                const {
+                    records
+                } = response
                 this.$store.commit('SET_DATASOURCE', records)
             })
 
@@ -563,7 +601,8 @@ export default {
             .el-tab-pane {
                 // padding: 10px;
                 height: 100%;
-                .job_detail{
+
+                .job_detail {
                     height: 100%;
                 }
             }

@@ -92,9 +92,8 @@
       >
         <cron v-model="temp.jobCron" />
         <span slot="footer" class="dialog-footer">
-          <el-button size='small' @click="showCronBox = false">关闭</el-button>
+          <el-button @click="showCronBox = false">关闭</el-button>
           <el-button
-            size='small'
             type="primary"
             @click="showCronBox = false"
           >确 定</el-button>
