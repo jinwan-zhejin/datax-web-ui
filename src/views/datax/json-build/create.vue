@@ -314,10 +314,6 @@ export default {
 </script>
 
 <style scoped>
-.elFrom >>> .el-form-item {
-  /* margin-bottom: 5px; */
-}
-
 .elFrom >>> .el-input--suffix .el-input__inner {
   padding-right: 100px;
 }

@@ -361,7 +361,76 @@
     </el-form>
 
       <h3>4.字段映射</h3>
-      <mapper ref="mapper"></mapper>
+      <el-table
+        :data="tableData"
+        stripe
+        :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
+        style="width: 100%"
+      >
+        <el-table-column
+          label="数据源库"
+          width="180"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="readerForm.lcolumns[scope.row.index]"
+              placeholder="请选择"
+              filterable
+              value-key="index"
+              @change="lHandleSelect(scope.row.index,$event)"
+            >
+              <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+            </el-select>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
+          label="清洗规则"
+          width="180"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="readerForm.rules[scope.row.index]"
+              placeholder="请选择"
+              filterable
+              clearable
+              value-key="index"
+              @change="cHandleSelect(scope.row.index,$event)"
+            >
+              <el-option v-for="tmp in ruleSettings" :key="tmp" :label="tmp" :value="tmp" />
+            </el-select>
+          </template>
+        </el-table-column> -->
+
+        <el-table-column
+          label="目标字段"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="readerForm.rcolumns[scope.row.index]"
+              placeholder="请选择"
+              filterable
+              value-key="index"
+              @change="rHandleSelect(scope.row.index,$event)"
+            >
+              <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="infor"
+              icon="el-icon-delete"
+              circle
+              size="small"
+              value-key="index"
+              @click="bHandleClick(scope.row.index,$event)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
 
 
 
@@ -481,6 +550,21 @@ export default {
       callback();
     };
     return {
+      tableData:[],
+      mapperJson: {},
+      fromColumnsList: [],
+      fromColumnsListChecked: [],
+      toColumnsList: [],
+      toColumnsListChecked: [],
+      ruleSettings: [],
+      readerForm: {
+        lcolumns: [],
+        rcolumns: [],
+        rules: [],
+        lcheckAll: false,
+        rcheckAll: false,
+        isIndeterminate: true
+      },
       fromColumnList: [],
       wTbList: [],
       writerForm: {
@@ -492,17 +576,6 @@ export default {
         preSql: '',
         postSql: '',
         ifCreateTable: false,
-        tableSchema: ''
-      },
-      readerForm: {
-        datasourceId: undefined,
-        tableName: '',
-        columns: [],
-        where: '',
-        querySql: '',
-        checkAll: false,
-        isIndeterminate: true,
-        splitPk: '',
         tableSchema: ''
       },
       rColumnList: [],
@@ -816,6 +889,14 @@ export default {
 
     jobParam() {
       return JSON.parse(this.jobInfo.jobParam);
+    },
+
+    ruleArr() {
+      return this.readerForm.rules;
+    },
+
+    readerColumns() {
+      return this.$store.state.taskAdmin.readerColumns
     }
   },
   created() {
@@ -856,6 +937,7 @@ export default {
         this.newstlogContent = ''
         this.logList();
         this.showLog = true;
+        this.jsonshow = false;
       });
     },
 
@@ -1007,7 +1089,7 @@ export default {
     },
 
     updateData() {
-      this.temp.jobJson = this.$refs.jsonEditor1.jsonEditor.getValue();
+      // this.temp.jobJson = this.$refs.jsonEditor1.jsonEditor.getValue();
 
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
@@ -1100,7 +1182,49 @@ export default {
         this.writerForm.columns = response
         this.writerForm.checkAll = true
         this.writerForm.isIndeterminate = false
+
+        this.$store.commit('SET_WRITER_COLUMNS', response);
+        this.readerForm.rcolumns = response;
+
+        this.toColumnsList = response;
+
       })
+    },
+
+    lHandleCheckAllChange(val) {
+      this.readerForm.lcolumns = val ? this.fromColumnsList : []
+      this.readerForm.isIndeterminate = false
+    },
+    rHandleCheckAllChange(val) {
+      this.readerForm.rcolumns = val ? this.toColumnsList : []
+      this.readerForm.isIndeterminate = false
+    },
+    lHandleCheckedChange(value) {
+      const checkedCount = value.length
+      this.readerForm.checkAll = checkedCount === this.fromColumnsList.length
+      this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnsList.length
+    },
+    rHandleCheckedChange(value) {
+      const checkedCount = value.length
+      this.readerForm.checkAll = checkedCount === this.toColumnsList.length
+      this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.toColumnsList.length
+    },
+    bHandleClick(index, v) {
+      console.log(index);
+      this.fromColumnsListChecked.splice(index, 1)
+      this.toColumnsListChecked.splice(index, 1)
+
+      this.readerForm.lcolumns.splice(index, 1)
+      this.readerForm.rcolumns.splice(index, 1)
+    },
+    getLColumns() {
+      return this.readerForm.lcolumns
+    },
+    getRColumns() {
+      return this.readerForm.rcolumns
+    },
+    getRules() {
+      return this.readerForm.rules
     }
 
     
@@ -1109,7 +1233,51 @@ export default {
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('rdbmsWriter')
+    },
+
+    fromColumnsListChecked(newval) {
+      const arr = []
+      newval.forEach((element, index) => {
+        const obj = {
+          sourceField: this.readerForm.lcolumns[index],
+          clearRule: this.readerForm.rules[index],
+          targetField: this.readerForm.rcolumns[index],
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
+    },
+
+    ruleArr() {
+      const arr = []
+      this.fromColumnsListChecked.forEach((element, index) => {
+        const obj = {
+          sourceField: this.readerForm.lcolumns[index],
+          clearRule: this.readerForm.rules[index],
+          targetField: this.readerForm.rcolumns[index],
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
+    },
+
+    readerColumns(newval) {
+
+      console.log('newval', newval);
+      this.readerForm.lcolumns = newval;
+      this.fromColumnsList = newval;
+      this.tableData = [];
+      newval.forEach((row, index) =>{
+        let obj = {
+          column: row,
+          index
+        }
+        this.tableData.push(obj);
+      })
     }
+
   }
 };
 </script>
