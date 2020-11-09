@@ -1938,15 +1938,19 @@ export default {
         obj.datasourceGroup = this.DB2Form.datasourceGroup;
         obj.comments = this.DB2Form.comments;
         obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
-      } else if (this.sqlName === 'Hive') {
+      } else if (this.sqlName === 'Hive' || this.sqlName === 'Impala' || this.sqlName === 'Spark') {
         obj.datasourceName = this.HiveForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
-        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj.jdbcUrl = this.sqlName === 'Hive' ? 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database : 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database
         obj.jdbcUsername = this.HiveForm.username;
         obj.jdbcPassword = this.HiveForm.password;
         obj.datasourceGroup = this.HiveForm.datasourceGroup;
         obj.comments = this.HiveForm.comments;
-        obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        if (this.sqlName === 'Hive') {
+          obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        } else if (this.sqlName === 'Impala') {
+          obj.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver';
+        }
       }
       obj.projectId = sessionStorage.getItem('projectId')
       datasourceApi.created(obj).then(() => {
@@ -2035,15 +2039,19 @@ export default {
         obj1.jdbcPassword = this.CHForm.password;
         obj1.comments = this.CHForm.comments;
         this.sqlName === 'ClickHouse' ? obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver' : obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver'
-      } else if (this.sqlName === 'Hive') {
+      } else if (this.sqlName === 'Hive' || this.sqlName === 'Impala' || this.sqlName === 'Spark') {
         obj1.datasourceName = this.HiveForm.datasourceName;
         obj1.datasource = this.sqlName.toLowerCase();
-        obj1.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
+        obj1.jdbcUrl = this.sqlName === 'Hive' ? 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database : 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database
         obj1.jdbcUsername = this.HiveForm.username;
         obj1.jdbcPassword = this.HiveForm.password;
         obj1.datasourceGroup = this.HiveForm.datasourceGroup;
         obj1.comments = this.HiveForm.comments;
-        obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        if (this.sqlName === 'Hive') {
+          obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        } else if (this.sqlName === 'Impala') {
+          obj1.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver';
+        }
       } else if (this.sqlName === 'DB2') {
         obj1.datasourceName = this.DB2Form.datasourceName;
         obj1.datasource = this.sqlName.toLowerCase();
@@ -2120,7 +2128,11 @@ export default {
         this.temp = {
           ...this.hiveEdit
         }
-        this.temp.jdbcUrl = 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database
+        if (this.selectType === 'hive') {
+          this.temp.jdbcUrl = 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database
+        } else {
+          this.temp.jdbcUrl = 'jdbc:' + this.selectType + '://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database
+        }
         this.temp.id = this.rowObj.id
         this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'db2') {
@@ -2337,7 +2349,7 @@ export default {
         this.paramsData = {
           datasourceName: this.hiveEdit.datasourceName,
           datasource: this.hiveEdit.datasource,
-          jdbcUrl: 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database,
+          jdbcUrl: this.selectType === 'hive' ? 'jdbc:' + this.selectType + '2://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database : 'jdbc:' + this.selectType + '://' + this.hiveEdit.master + ':' + this.hiveEdit.serverPort + '/' + this.hiveEdit.database,
           databaseName: this.hiveEdit.database,
           datasourceGroup: this.hiveEdit.datasourceGroup,
           comments: this.hiveEdit.comments,

@@ -1,9 +1,9 @@
 /**
  * @Date: 2020-09-24 15:51:58
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-03 11:25:29
- * @FilePath: ,: \datax-web-ui\src\api\datax-metadata-atlas.js
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-09 10:06:42
+ * @FilePath: \datax-web-ui\src\api\datax-metadata-atlas.js
  * @Description: Atlas接口
  */
 // import request from '@/utils/request'
@@ -12,7 +12,7 @@ import qs from 'qs'
 import request from '@/utils/request'
 
 /**
- * @description: 模拟登陆发送post
+ * @description: Atlas模拟登陆发送post
  * @param {object} account
  * @return {object} axios返回信息
  */
@@ -33,12 +33,12 @@ export async function simulatePostAccount(account) {
 }
 
 /**
- * @description: 模拟登录向session接口get
+ * @description: Atlas模拟登录向session接口get
  * @return {object} axios返回信息
  */
 async function simulateRedirect() {
   const res = await axios({
-    url: '/session',
+    url: '/atlasApi/admin/session',
     method: 'get'
   }).catch(err => console.log(err));
   return res;

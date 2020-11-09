@@ -1,9 +1,9 @@
 <!--
  * @Date: ,: 2020-11-03 14:51:16
  * @Author: ,: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-05 11:16:50
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-09 14:33:53
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\metaCompareDetails.vue
  * @Description: ,: 元数据比对 详情子组件
 -->
 <template>
@@ -117,7 +117,7 @@
 
 <script>
 import * as apiatlas from '@/api/datax-metadata-atlas'
-import { translaterMaster } from '../utils/dictionary'
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'MetaCompareDetails',

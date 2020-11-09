@@ -6,12 +6,12 @@
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="runVirtualOnce">执行一次</el-button>
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">查看日志</el-button>
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button>
-      <el-button @click="getVirtualTaskInfo">test-info</el-button>
-      <el-button @click="getAllVirtualTask">test-all</el-button>
+      <!-- <el-button @click="getVirtualTaskInfo">test-info</el-button>
+      <el-button @click="getAllVirtualTask">test-all</el-button> -->
     </div>
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
-      <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 750px;" />
+      <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
     </div>
     <!-- 选择任务面板 -->
     <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" width="30%">

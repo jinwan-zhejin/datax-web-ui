@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 18:52:47
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-09 14:58:59
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
 
@@ -20,9 +20,9 @@
           </el-tooltip>
         </el-col>
         <el-col :span="20">
-          <el-tooltip :content="properties.entity.attributes.name.concat(' ( ').concat(properties.entity.typeName).concat(' ) ')" placement="top">
+          <el-tooltip :content="detailsTitle" placement="top">
             <span class="top-bar-text">
-              {{ properties.entity.attributes.name }}&nbsp;(&nbsp;{{ properties.entity.typeName }}&nbsp;)&nbsp;
+              {{ detailsTitle }}
             </span>
           </el-tooltip>
         </el-col>
@@ -33,7 +33,7 @@
           <!-- {{ properties.entity.classifications }} -->
           <label style="font-size: 16px;">分类：</label>
           <!-- {{properties.entity}} -->
-          <span v-for="(classifiy,index) in properties.entity.classifications" :key="index">
+          <span v-for="(classifiy,index) in classifies" :key="index">
             <el-button type="primary" plain size="mini">
               {{ classifiy.typeName }}
             </el-button>
@@ -41,7 +41,7 @@
               <el-button type="primary" plain size="mini" icon="el-icon-close" />
             </el-tooltip> -->
           </span>
-          <span v-if="!properties.entity.hasOwnProperty('classifications')" style="font-size: 16px;">无</span>
+          <span v-if="!propertiesEntity.hasOwnProperty('classifications')" style="font-size: 16px;">无</span>
           <!-- <el-tooltip content="添加分类" placement="bottom">
             <el-button type="success" plain size="mini" icon="el-icon-plus" @click="test2" />
           </el-tooltip> -->
@@ -104,7 +104,7 @@
                       </div>
                       <!-- {{ propertyLabels }}
                       {{ properties.entity.labels }} -->
-                      <span v-if="properties.entity.labels.length <= 0">&nbsp;暂无数据</span>
+                      <span v-if="propertiesEntityLabels.length <= 0">&nbsp;暂无数据</span>
                       <el-tag v-for="(item, index) in propertyLabels" :key="index" style="margin: 5px;" size="medium" :closable="labelEditable" @close="handleLabelClose(index)">{{ item }}</el-tag>
                       <!-- <el-input v-if="labelInputVisible" ref="saveTagInput" v-model="labelInputVal" type="text" size="mini" style="width: 85px; height: 28px;" placeholder="输入标签名" @blur="handleInputConfirm" @keyup.enter.native="handleInputConfirm" /> -->
                       <el-autocomplete v-if="labelInputVisible" ref="saveTagInput" v-model="labelInputVal" type="text" size="mini" :fetch-suggestions="handleFilterLabel" placeholder="输入标签名" @focus="handleGetSuggest" @blur="handleInputConfirm" @keyup.enter.native="handleInputConfirm" />
@@ -302,7 +302,7 @@
               /> -->
             </el-tab-pane>
             <!-- v-if="properties.entity.typeName.split('_')[properties.entity.typeName.split('_').length-1] === 'table'" -->
-            <el-tab-pane v-if="properties.entity.typeName === 'rdbms_table'" label="Schema" name="schema">
+            <el-tab-pane v-if="propertiesEntityTypeName === 'rdbms_table'" label="Schema" name="schema">
               <el-table :data="schemaList">
                 <el-table-column label="名称">
                   <template v-slot:default="{ row }">
@@ -356,7 +356,7 @@
 <script>
 import AddClassification from './addClassification'
 import * as apiatlas from '@/api/datax-metadata-atlas'
-import { translater, translaterMaster } from '../utils/dictionary'
+import { translater, translaterMaster } from '@/utils/dictionary'
 export default {
   name: 'SubPageDetails',
   components: {
@@ -592,6 +592,57 @@ export default {
     },
     translaterMaster(str) {
       return str => translaterMaster(str)
+    },
+    // 标题
+    detailsTitle() {
+      var temp = ''
+      if (this.properties.hasOwnProperty('entity')) {
+        if (this.properties.entity.hasOwnProperty('attributes')) {
+          temp = this.properties.entity.attributes.name.concat(' ( ').concat(this.properties.entity.typeName).concat(' ) ')
+        } else {
+          temp = '-'
+        }
+      } else {
+        temp = ''
+      }
+      return temp
+    },
+    // 展示分类
+    classifies() {
+      var temp = []
+      if (this.properties.hasOwnProperty('entity')) {
+        if (this.properties.entity.hasOwnProperty('classifications')) {
+          temp = this.properties.entity.classifications
+        } else {
+          temp = []
+        }
+      } else {
+        temp = []
+      }
+      return temp
+    },
+    // entity
+    propertiesEntity() {
+      if (this.properties.hasOwnProperty('entity')) {
+        return this.properties.entity
+      } else {
+        return {}
+      }
+    },
+    // labels
+    propertiesEntityLabels() {
+      if (this.propertiesEntity.hasOwnProperty('labels')) {
+        return this.properties.entity.labels
+      } else {
+        return []
+      }
+    },
+    propertiesEntityTypeName() {
+      if (this.propertiesEntity.hasOwnProperty('typeName')) {
+        return this.properties.entity.typeName
+      } else {
+        return ''
+      }
     }
   },
   watch: {

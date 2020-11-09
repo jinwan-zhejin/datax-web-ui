@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-05 11:11:47
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-09 15:06:26
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据比对 index
 -->
 
@@ -151,7 +151,7 @@ export default {
      */
     handleRemoveTab(delId) {
       let delIndex = 0 // 当前删除的tab在array中的位置
-      let delArrayLength = this.tabsArray.length
+      const delArrayLength = this.tabsArray.length
       for (var i = 0; i < this.tabsArray.length; i++) {
         if (this.tabsArray[i].hasOwnProperty('id')) {
           if (this.number2String(this.tabsArray[i].id) === delId) {
