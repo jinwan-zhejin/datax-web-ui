@@ -136,7 +136,7 @@
 
 <script>
 import { getItemsNotEmpty } from '@/api/datax-metadata-atlas'
-import { translater, translaterMaster } from '../utils/dictionary'
+import { translater, translaterMaster } from '@/utils/dictionary'
 import Vue from 'vue'
 import JsonViewer from 'vue-json-viewer'
 Vue.use(JsonViewer)
