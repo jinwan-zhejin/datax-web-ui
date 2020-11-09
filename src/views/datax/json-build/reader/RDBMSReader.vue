@@ -11,16 +11,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
-        <el-select v-model="readerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
-          <el-option
-            v-for="item in schemaList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
         <el-select v-model="readerForm.tableName" allow-create default-first-option filterable  @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
@@ -163,11 +153,14 @@ export default {
         datasourceId: this.readerForm.datasourceId,
         tableName: this.readerForm.tableName
       }
+      
       dsQueryApi.getColumns(obj).then(response => {
         this.rColumnList = response
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
+        
+        this.$store.commit('SET_READER_COLUMNS', response);
       })
     },
     getColumnsByQuerySql() {
@@ -180,6 +173,7 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
+       
       })
     },
     // 获取表字段

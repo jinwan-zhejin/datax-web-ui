@@ -41,9 +41,10 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        // target: 'http://47.103.79.104:9090',
+        // target: 'http://47.103.79.104:9527',
+        target: 'http://47.103.79.104:9090',
         // target: 'http://192.168.3.66:9527',
-        target: 'http://192.168.3.83:8080', // 曹海生
+        // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:8080', // 刘向前
         // target: 'http://192.168.3.74:7000', // 侯峰
@@ -79,15 +80,6 @@ module.exports = {
           ['^' + '/j_spring_security_check']: '/j_spring_security_check'
         }
       },
-      // Atlas登录 session
-      '/session': {
-        ws: false,
-        target: 'http://123.56.96.151:8079',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + '/session']: '/api/atlas/admin/session'
-        }
-      },
       // '/login': {
       //   ws: false,
       //   target: 'http://47.103.79.104:8080',
@@ -107,7 +99,7 @@ module.exports = {
           ['^' + '/test']: '/api'
         }
       },
-      // Datains接口
+      // // Datains接口
       // '/welcome': {
       //   ws: false,
       //   target: 'http://47.103.79.104:8080',

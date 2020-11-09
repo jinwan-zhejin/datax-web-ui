@@ -46,6 +46,12 @@ const state = {
   taskDetailID: '',// 当前选中任务详情id
 
   jobParam: '',//创建任务的jobparam
+
+  readerColumns: [], //编辑reader字段
+
+  writerColumns: [], //编辑writer	字段
+
+
 }
 
 const mutations = {
@@ -95,6 +101,14 @@ const mutations = {
 
   SET_JOBPARAM: (state,param) => {
     state.jobParam = param
+  },
+
+  SET_READER_COLUMNS: (state, columns) => {
+    state.readerColumns = columns
+  },
+
+  SET_WRITER_COLUMNS: (state, columns) => {
+    state.writerColumns = columns
   }
 
 }

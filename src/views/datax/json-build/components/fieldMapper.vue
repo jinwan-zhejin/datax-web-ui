@@ -159,10 +159,8 @@ export default {
     cHandleSelect(index, v) {},
     rHandleSelect(index, v) {},
     bHandleClick(index, v) {
-      console.log(index);
       this.fromColumnsListChecked.splice(index, 1)
       this.toColumnsListChecked.splice(index, 1)
-
       this.readerForm.lcolumns.splice(index, 1)
       this.readerForm.rcolumns.splice(index, 1)
     },

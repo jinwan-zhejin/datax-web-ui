@@ -102,10 +102,14 @@ const translate = {
   'db': '数据库',
   'usage': '使用',
   'usages': '使用',
+  'address': '地址',
+  'code': '返回码',
+  'msg': '返回消息',
   'add': '添加',
   'added': '添加',
   'entity': '实体',
   'create': '创建',
+  'edit': '编辑',
   'update': '修改',
   'import': '导入',
   'delete': '删除',
@@ -150,7 +154,23 @@ const translate = {
   'default': '默认',
   'value': '值',
   'contact': '联系',
-  'info': '信息'
+  'info': '信息',
+  'log': '记录',
+  'statistics': '统计',
+  'task': '任务',
+  'average': '平均',
+  'reader': '读取',
+  'writing': '写入',
+  'write': '写入',
+  'speed': '速度',
+  'num': '数',
+  'record': '记录',
+  'fail': '失败',
+  'flow': '流量',
+  'time': '时间',
+  'start': '开始',
+  'end': '结束'
+
 }
 // export default translate
 

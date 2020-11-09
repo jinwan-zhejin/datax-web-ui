@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-03 16:55:30
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-09 15:06:47
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
 
@@ -653,11 +653,6 @@ export default {
       },
       deep: true
     }
-  },
-  mounted() {
-    // this.$nextTick(() => {
-    //
-    // })
   },
   created() {
     // 调用接口必须先登录
