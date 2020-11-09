@@ -42,8 +42,6 @@
           />
         </el-select>
         <el-input v-show="writerForm.ifCreateTable" v-model="writerForm.tableName" style="width: 200px;" :placeholder="readerForm.tableName" />
-        <!--<el-input v-model="createTableName" style="width: 195px" />
-        <el-button type="primary" @click="createTable">新增</el-button>-->
       </el-form-item>
       <div style="margin: 5px 0;" />
       <el-form-item label="字段：">
@@ -74,7 +72,8 @@ export default {
       jdbcDsQuery: {
         current: 1,
         size: 200,
-        ascs: 'datasource_name'
+        ascs: 'datasource_name',
+        projectId: ''
       },
       datasourceId:'',
       wDsList: [],
@@ -95,7 +94,7 @@ export default {
         ifCreateTable: false,
         tableSchema: ''
       },
-      readerForm: this.getReaderData(),
+      readerForm: {},
       rules: {
         datasourceId: [{ required: true, message: 'this is required', trigger: 'change' }],
         tableName: [{ required: true, message: 'this is required', trigger: 'change' }],
@@ -113,6 +112,7 @@ export default {
   },
   created() {
     this.getJdbcDs()
+    this.readerForm = this.$parent.getReaderData();
   },
   methods: {
     // 获取可用数据源
