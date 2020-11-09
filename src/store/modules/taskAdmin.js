@@ -43,8 +43,9 @@ const state = {
 
   taskDetailList: [], // 任务详情列表
 
-  taskDetailID: ''// 当前选中任务详情id
+  taskDetailID: '',// 当前选中任务详情id
 
+  jobParam: '',//创建任务的jobparam
 }
 
 const mutations = {
@@ -90,6 +91,10 @@ const mutations = {
 
   SET_TASKDETAIL_ID: (state, id) => {
     state.taskDetailID = id // 设置当前选中id
+  },
+
+  SET_JOBPARAM: (state,param) => {
+    state.jobParam = param
   }
 
 }

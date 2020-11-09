@@ -242,6 +242,7 @@ export default {
         executorHandler: 'executorJobHandler',
         glueType: 'BEAN',
         jobJson: '',
+        jobParam:'',
         executorParam: '',
         replaceParam: '',
         jvmParam: '',
@@ -398,10 +399,12 @@ export default {
         mongoDBReader: mongoDBReader,
         mongoDBWriter: mongoDBWriter
       }
+
+      this.$store.commit('SET_JOBPARAM', JSON.stringify(obj));
       // 调api
-      dataxJsonApi.buildJobJson(obj).then(response => {
-        this.configJson = JSON.parse(response)
-      })
+      // dataxJsonApi.buildJobJson(obj).then(response => {
+      //   this.configJson = JSON.parse(response)
+      // })
     },
     handleCopy(text, event) {
       clip(this.configJson, event)
