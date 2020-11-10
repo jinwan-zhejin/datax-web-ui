@@ -1,19 +1,25 @@
 <template>
-  <div class="call">
-    <p class="P1">调用共享接口</p>
-    <el-form ref="form" class="formTop" :model="form" label-width="80px">
-      <el-input v-model="form.address" placeholder="请输入接口地址" class="input-with-select" style="width: 355px;">
-        <el-select slot="prepend" v-model="form.select" style="width: 100px" placeholder="请选择">
-          <el-option label="post" value="post" />
-          <el-option label="get" value="get" />
-        </el-select>
-        <el-button slot="append" @click="call">搜索</el-button>
-      </el-input>
-    </el-form>
-    <div class="box">
-      <el-radio-group v-show="isBtn" v-model="radio1" style="marginBottom: 20px;">
-        <el-radio-button size="small" type="goon" label="formData" />
-        <el-radio-button size="small" type="goon" label="params" />
+  <div class="app-container">
+    <div class="filter-container">
+      <el-card class="box-card" style="height: 65px;">
+        <div class="text item">
+          <div class="left">调用共享接口</div>
+          <div class="right">
+            <el-input v-model="form.address" placeholder="请输入接口地址" class="filter-item" style="width: 376px;">
+              <el-select slot="prepend" v-model="form.select" class="filter-item" style="margin: 0px; padding: 0px;" placeholder="请选择">
+                <el-option label="post" value="post" />
+                <el-option label="get" value="get" />
+              </el-select>
+              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px;" @click="call">搜索</el-button>
+            </el-input>
+          </div>
+        </div>
+      </el-card>
+    </div>
+    <div class="main">
+      <el-radio-group v-show="isBtn" v-model="radio1" style="margin: 12px 0;" size="small">
+        <el-radio-button type="goon" label="formData" />
+        <el-radio-button type="goon" label="params" />
       </el-radio-group>
       <!-- <el-tabs type="border-card">
         <el-tab-pane>
@@ -68,11 +74,11 @@
       </el-tabs> -->
       <el-table
         v-show="isSuccess"
-        height="calc(100vh - 198px)"
         :data="callValue"
-        :header-cell-style="{ background: '#FAFAFC',color: '#333333', fontSize: '14px', fontWeight: '500' }"
-        style="width: 100%; border-radius: 4px;"
+        :header-cell-style="{ background: '#FAFAFC' }"
+        style="width: 100%;"
       >
+        <!-- height="calc(100vh - 198px)" -->
         <el-table-column
           prop="date"
           label="key(参数名)"
@@ -245,22 +251,56 @@ export default {
 </script>
 
 <style lang="scss">
-.call {
-  margin: 24px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  position: relative;
-  .P1 {
-    position: relative;
-    top: 4px;
-    left: 4px;
-    font-size: 24px;
-    font-family: PingFangHK-Medium, PingFangHK;
-    font-weight: 500;
-    color: #333333;
-    height: 36px;
-    line-height: 36px;
+.app-container {
+  .filter-container {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__prepend {
+            float: left;
+            width: 100px;
+            height: 32px;
+            .el-select {
+              .el-input {
+                .el-input__inner {
+                  width: 75px;
+                  padding: 0;
+                }
+              }
+            }
+          }
+          .el-input-group__append {
+            float: left;
+            width: 60px;
+            padding: 0px 15px;
+            text-align: center;
+            color: #fff;
+            background-color: #3d5fff;
+          }
+        }
+      }
+    }
   }
   .formTop {
     position: absolute;
@@ -268,12 +308,15 @@ export default {
     right: 24px;
     top: 24px;
   }
-  .box {
-    margin-top: 24px;
+  .main {
+    background-color: transparent;
+    // background-color: #fff;
+    overflow: hidden;
+    margin-top: 10px;
     .el-table {
-      border-top: 1px solid #e0e0e0;
-      border-left: 1px solid #e0e0e0;
-      border-right: 1px solid #e0e0e0;
+      // border-top: 1px solid #e0e0e0;
+      // border-left: 1px solid #e0e0e0;
+      // border-right: 1px solid #e0e0e0;
       th {
         background: #FAFAFC;
       }

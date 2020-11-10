@@ -1,50 +1,67 @@
 <template>
   <div class="app-container">
-    <div class="page-top-container">
-      <span>执行器管理</span>
-      <el-button type="primary" size="small" icon="el-icon-plus" @click="handleCreate">
-        创建执行器
-      </el-button>
+    <div class="filter-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">执行器管理</div>
+          <div class="right">
+            <el-button class="filter-item" type="goon" size="small" icon="el-icon-plus" @click="handleCreate">
+              创建执行器
+            </el-button>
+          </div>
+        </div>
+      </el-card>
     </div>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      fit
-      highlight-current-row
-      :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-      height="calc(100vh - 310px)"
-    >
-      <el-table-column label="排序" width="50" align="center">
-        <template slot-scope="scope">{{ scope.row.order }}</template>
-      </el-table-column>
-      <el-table-column label="名称" width="120" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">{{ scope.row.title }}</template>
-      </el-table-column>
-      <el-table-column label="分组标识" width="200" align="center">
-        <template slot-scope="scope">{{ scope.row.appName }}</template>
-      </el-table-column>
-      <el-table-column label="注册方式" width="110" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope"> {{ addressTypes.find(t => t.value === scope.row.addressType).label }}</template>
-      </el-table-column>
-      <el-table-column label="在线机器" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">{{ scope.row.addressList }}</template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-          <el-button type="text" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <span style="font-size: 16px; font-weight: lighter; color: #999999;">|</span>
-          <el-button v-if="row.status!='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="fetchData" />
+    <div class="main">
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        fit
+        highlight-current-row
+        :header-cell-style="{background:'#fafafc'}"
+      >
+        <!-- height="calc(100vh - 310px)" -->
+        <el-table-column label="排序" width="50" align="center">
+          <template slot-scope="scope">{{ scope.row.order }}</template>
+        </el-table-column>
+        <el-table-column label="名称" width="120" align="center" :show-overflow-tooltip="true">
+          <template slot-scope="scope">{{ scope.row.title }}</template>
+        </el-table-column>
+        <el-table-column label="分组标识" width="200" align="center">
+          <template slot-scope="scope">{{ scope.row.appName }}</template>
+        </el-table-column>
+        <el-table-column label="注册方式" width="110" align="center" :show-overflow-tooltip="true">
+          <template slot-scope="scope"> {{ addressTypes.find(t => t.value === scope.row.addressType).label }}</template>
+        </el-table-column>
+        <el-table-column label="在线机器" align="center" :show-overflow-tooltip="true">
+          <template slot-scope="scope">{{ scope.row.addressList }}</template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+          <template slot-scope="{row}">
+            <el-button type="text" @click="handleUpdate(row)">
+              编辑
+            </el-button>
+            <span
+              v-show="row.status!='deleted'"
+              style="
+                width: 1px;
+                height: 12px;
+                margin: 0 5px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <el-button v-if="row.status!='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="total>0" style="float: right;" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="fetchData" />
+    </div>
 
-    <el-dialog :title="translaterMaster(textMap[dialogStatus])" :visible.sync="dialogFormVisible">
+    <el-dialog :title="translaterMaster(textMap[dialogStatus])" :visible.sync="dialogFormVisible" width="40%">
       <el-row>
         <el-col v-if="dialogStatus !== 'delete'" :span="18" :offset="3">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
@@ -177,6 +194,7 @@ export default {
       executor.getList().then(response => {
         const { content } = response
         this.list = content
+        this.total = content.length
         this.listLoading = false
       })
     },
@@ -296,38 +314,54 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .app-container {
-  margin: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  .page-top-container {
-    height: 64px;
-    width: 100%;
-    margin-bottom: 10px;
-    span {
-      font-size: 24px;
-      line-height: 64px;
+  .filter-container {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+             width: 60px;
+             padding: 0px 15px;
+             text-align: center;
+             color: #fff;
+             background-color: #3d5fff;
+          }
+        }
+      }
     }
-    .el-button {
-      position: relative;
-      float: right;
-      // padding: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
+  }
+  .main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 10px;
   }
 }
 .el-table {
-  border: 1px solid #e9e9e9dd;
-  border-radius: 2px;
-  color: #333333;
   >>>th {
     background: #fafafc;
   }
-}
->>>.pagination-container {
-  margin-top: 0;
 }
 </style>

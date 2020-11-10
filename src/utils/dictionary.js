@@ -169,8 +169,18 @@ const translate = {
   'flow': '流量',
   'time': '时间',
   'start': '开始',
-  'end': '结束'
-
+  'end': '结束',
+  'the': '',
+  'password': '密码',
+  'cannot': '不能',
+  'be': '',
+  'less': '少',
+  'than': '于',
+  'digits': '数字',
+  'username': '用户名',
+  'is': '为',
+  'require': '必须',
+  'role': '角色'
 }
 // export default translate
 
@@ -192,6 +202,7 @@ export function translater(str) {
  * @return {type}
  */
 export function translaterMaster(str) {
+  // var originStr = str.concat()
   if (str.indexOf('_') > -1) {
     str = str.replace(/\_/g, ' ')
   }
