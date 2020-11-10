@@ -31,7 +31,7 @@
         >全选
         </el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="$store.state.taskAdmin.readerColumns" @change="rHandleCheckedChange">
+        <el-checkbox-group v-model="$store.state.taskAdmin.selectReaderColumn" @change="rHandleCheckedChange">
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -202,17 +202,14 @@ export default {
     rHandleCheckAllChange(val) {
       this.readerForm.columns = val ? this.rColumnList : []
       this.readerForm.isIndeterminate = false
-      this.$store.commit('SET_READER_COLUMNS', this.readerForm.columns)
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
     },
     rHandleCheckedChange(value) {
-      console.log(value);
       const checkedCount = value.length
       this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.rColumnList.length
-
-      this.$store.commit('SET_READER_COLUMNS',value)
-
-      this.$store.commit('SET_ALL_READERCOLUMN',value)
+      // this.$store.commit('SET_READER_COLUMNS',value)
+      this.$store.commit('SET_SELECT_READERCOLUMN',value)
     },
     getData() {
       if (Bus.dataSourceId) {

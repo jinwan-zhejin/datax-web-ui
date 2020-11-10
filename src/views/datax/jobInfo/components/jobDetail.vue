@@ -348,7 +348,7 @@
       <el-form-item label="字段：">
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="$store.state.taskAdmin.writerColumns" @change="wHandleCheckedChange">
+        <el-checkbox-group v-model="$store.state.taskAdmin.selectWriterColumn" @change="wHandleCheckedChange">
           <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -879,7 +879,7 @@ export default {
     },
 
     readerColumns() {
-      return this.$store.state.taskAdmin.readerColumns
+      return this.$store.state.taskAdmin.selectReaderColumn
     },
 
     writerColumns() {
@@ -909,14 +909,13 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
-      this.$store.commit('SET_WRITER_COLUMNS',this.writerForm.columns)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.writerForm.columns)
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
-
-      this.$store.commit('SET_WRITER_COLUMNS', value)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     wTbChange(t) {
       this.writerForm.tableName = t
@@ -981,13 +980,13 @@ export default {
 
       this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0])
 
-      this.$store.commit('SET_READER_COLUMNS',jobParam.readerColumns)
+      this.$store.commit('SET_SELECT_READERCOLUMN',jobParam.readerColumns)
 
       this.$store.commit('SET_WRITER_DATASOURCE_ID', jobParam.writerDatasourceId)
 
       this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0])
 
-      this.$store.commit('SET_WRITER_COLUMNS',jobParam.writerColumns)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',jobParam.writerColumns)
 
       this.getColumns()
 
@@ -1099,13 +1098,15 @@ export default {
     },
 
     updateData() {
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.readerForm.rcolumns);
+      this.$store.commit('SET_SELECT_READERCOLUMN',this.readerForm.lcolumns);
       let jobParam = {
                   "readerDatasourceId": this.$store.state.taskAdmin.readerDataSourceID,
                   "readerTables": [this.$store.state.taskAdmin.readerTableName],
-                  "readerColumns": this.$store.state.taskAdmin.readerColumns,
+                  "readerColumns": this.$store.state.taskAdmin.selectReaderColumn,
                   "writerDatasourceId": this.$store.state.taskAdmin.writerDataSourceID,
                   "writerTables": [this.$store.state.taskAdmin.writerTableName],
-                  "writerColumns": this.$store.state.taskAdmin.writerColumns,
+                  "writerColumns": this.$store.state.taskAdmin.selectWriterColumn,
                   "transformer": [""],
                   "hiveReader": {},
                   "hiveWriter": {},
@@ -1245,9 +1246,6 @@ export default {
       this.readerForm.lcolumns.splice(index, 1)
       this.readerForm.rcolumns.splice(index, 1)
       this.tableData.splice(index, 1)
-
-      this.$store.commit('SET_WRITER_COLUMNS',this.readerForm.rcolumns);
-      this.$store.commit('SET_READER_COLUMNS',this.readerForm.lcolumns);
     },
 
 
