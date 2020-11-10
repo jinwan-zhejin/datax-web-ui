@@ -78,29 +78,30 @@
       />
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="100px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item label="用户名" prop="username">
-          <el-col>
-            <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="密  码" prop="password">
-          <el-input v-model="temp.password" placeholder="密码" />
-        </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-select v-model="temp.role" class="filter-item" placeholder="角色类型">
-            <el-option v-for="item in roles" :key="item.key" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-      </el-form>
+    <el-dialog width="40%" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-row>
+        <el-col :span="18" :offset="3">
+          <el-form
+            ref="dataForm"
+            :rules="rules"
+            :model="temp"
+            label-position="right"
+            label-width="100px"
+          >
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
+            </el-form-item>
+            <el-form-item label="密  码" prop="password">
+              <el-input v-model="temp.password" placeholder="密码" />
+            </el-form-item>
+            <el-form-item label="角色" prop="role">
+              <el-select v-model="temp.role" class="filter-item" placeholder="角色类型" style="width: 100%;">
+                <el-option v-for="item in roles" :key="item.key" :label="item" :value="item" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogFormVisible = false">
           取消
@@ -117,6 +118,7 @@
 import * as user from '@/api/datax-user'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'User',
@@ -135,7 +137,7 @@ export default {
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error(translaterMaster('The password cannot be less than 6 digits')))
       } else {
         callback()
       }
@@ -159,8 +161,8 @@ export default {
         create: 'Create'
       },
       rules: {
-        role: [{ required: true, message: 'role is required', trigger: 'change' }],
-        username: [{ required: true, message: 'username is required', trigger: 'blur' }],
+        role: [{ required: true, message: translaterMaster('role is require'), trigger: 'change' }],
+        username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       temp: {
