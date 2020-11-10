@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
       <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select :value="datasourceId" filterable  @change="rDsChange">
+        <el-select :value="$store.state.taskAdmin.readerDataSourceID" filterable  @change="rDsChange">
           <el-option
             v-for="item in $store.state.taskAdmin.dataSourceList"
             :key="item.id"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
-        <el-select v-model="readerForm.tableName" allow-create default-first-option filterable  @change="rTbChange">
+        <el-select v-model="$store.state.taskAdmin.readerTableName" allow-create default-first-option filterable  @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
@@ -31,7 +31,7 @@
         >全选
         </el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="readerForm.columns" @change="rHandleCheckedChange">
+        <el-checkbox-group v-model="$store.state.taskAdmin.selectReaderColumn" @change="rHandleCheckedChange">
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -91,7 +91,11 @@ export default {
         this.getSchema()
       }
       this.getTables('rdbmsReader')
-    }
+    },
+  },
+  mounted(){
+    this.getTableColumns()
+    this.getTables('rdbmsReader')
   },
  
   methods: {
@@ -107,7 +111,7 @@ export default {
           }
         } else {
           obj = {
-            datasourceId: this.readerForm.datasourceId
+            datasourceId: this.$store.state.taskAdmin.readerDataSourceID
           }
         }
         // 组装
@@ -150,8 +154,8 @@ export default {
     },
     getTableColumns() {
       const obj = {
-        datasourceId: this.readerForm.datasourceId,
-        tableName: this.readerForm.tableName
+        datasourceId: this.$store.state.taskAdmin.readerDataSourceID,
+        tableName: this.$store.state.taskAdmin.readerTableName
       }
       
       dsQueryApi.getColumns(obj).then(response => {
@@ -192,15 +196,20 @@ export default {
       this.rColumnList = []
       this.readerForm.columns = []
       this.getColumns('reader')
+      this.$store.commit('SET_READER_TABLENAME',t)
     },
+    
     rHandleCheckAllChange(val) {
       this.readerForm.columns = val ? this.rColumnList : []
       this.readerForm.isIndeterminate = false
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
     },
     rHandleCheckedChange(value) {
       const checkedCount = value.length
       this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.rColumnList.length
+      // this.$store.commit('SET_READER_COLUMNS',value)
+      this.$store.commit('SET_SELECT_READERCOLUMN',value)
     },
     getData() {
       if (Bus.dataSourceId) {

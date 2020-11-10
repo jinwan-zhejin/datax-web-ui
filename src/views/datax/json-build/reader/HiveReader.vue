@@ -161,6 +161,7 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
+        this.$store.commit('SET_READER_COLUMNS', response);
       })
     },
     getColumnsByQuerySql() {

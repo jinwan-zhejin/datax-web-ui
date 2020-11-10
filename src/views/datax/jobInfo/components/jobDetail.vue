@@ -317,7 +317,7 @@
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
           filterable
-          :value="writerForm.datasourceId"
+          :value="$store.state.taskAdmin.writerDataSourceID"
           @change="wDsChange"
         >
           <el-option
@@ -333,7 +333,7 @@
           allow-create
           default-first-option
           filterable
-          :value="writerForm.tableName"
+          :value="$store.state.taskAdmin.writerTableName"
           @change="wTbChange"
         >
           <el-option
@@ -348,7 +348,7 @@
       <el-form-item label="字段：">
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
+        <el-checkbox-group v-model="$store.state.taskAdmin.selectWriterColumn" @change="wHandleCheckedChange">
           <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -383,23 +383,6 @@
             </el-select>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-          label="清洗规则"
-          width="180"
-        >
-          <template slot-scope="scope">
-            <el-select
-              v-model="readerForm.rules[scope.row.index]"
-              placeholder="请选择"
-              filterable
-              clearable
-              value-key="index"
-              @change="cHandleSelect(scope.row.index,$event)"
-            >
-              <el-option v-for="tmp in ruleSettings" :key="tmp" :label="tmp" :value="tmp" />
-            </el-select>
-          </template>
-        </el-table-column> -->
 
         <el-table-column
           label="目标字段"
@@ -896,7 +879,11 @@ export default {
     },
 
     readerColumns() {
-      return this.$store.state.taskAdmin.readerColumns
+      return this.$store.state.taskAdmin.selectReaderColumn
+    },
+
+    writerColumns() {
+      return this.$store.state.taskAdmin.writerColumns
     }
   },
   created() {
@@ -907,11 +894,13 @@ export default {
     this.getDataSourceList();
     this.getSchemaList();
     this.temp = this.jobInfo;
+
   },
 
   methods: {
     wDsChange(e) {
       this.writerForm.datasourceId = e;
+      this.$store.commit('SET_WRITER_DATASOURCE_ID', e);
     },
 
     getReaderData() {
@@ -920,15 +909,18 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.writerForm.columns)
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     wTbChange(t) {
       this.writerForm.tableName = t
       this.getColumns('writer')
+      this.$store.commit('SET_WRITER_TABLENAME', t)
     },
 
     // 执行一次
@@ -979,9 +971,26 @@ export default {
 
     // 编辑
     handlerUpdate(row) {
-      console.log(row);
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
+
+      let jobParam = JSON.parse(row.jobParam);
+      console.log('jobParam', jobParam);
+      this.$store.commit('SET_READER_DATASOURCE_ID', jobParam.readerDatasourceId)
+
+      this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0])
+
+      this.$store.commit('SET_SELECT_READERCOLUMN',jobParam.readerColumns)
+
+      this.$store.commit('SET_WRITER_DATASOURCE_ID', jobParam.writerDatasourceId)
+
+      this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0])
+
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',jobParam.writerColumns)
+
+      this.getColumns()
+
+      this.getTables('rdbmsWriter')
     },
 
     // 实时更新日志
@@ -1089,13 +1098,15 @@ export default {
     },
 
     updateData() {
+      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.readerForm.rcolumns);
+      this.$store.commit('SET_SELECT_READERCOLUMN',this.readerForm.lcolumns);
       let jobParam = {
-                  "readerDatasourceId": 9,
-                  "readerTables": [],
-                  "readerColumns": ["1"],
-                  "writerDatasourceId": 9,
-                  "writerTables": [],
-                  "writerColumns": '',
+                  "readerDatasourceId": this.$store.state.taskAdmin.readerDataSourceID,
+                  "readerTables": [this.$store.state.taskAdmin.readerTableName],
+                  "readerColumns": this.$store.state.taskAdmin.selectReaderColumn,
+                  "writerDatasourceId": this.$store.state.taskAdmin.writerDataSourceID,
+                  "writerTables": [this.$store.state.taskAdmin.writerTableName],
+                  "writerColumns": this.$store.state.taskAdmin.selectWriterColumn,
                   "transformer": [""],
                   "hiveReader": {},
                   "hiveWriter": {},
@@ -1113,7 +1124,7 @@ export default {
                   "mongoDBReader": {},
                   "mongoDBWriter": {}
                 }
-
+      
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
           title: 'Fail',
@@ -1144,6 +1155,7 @@ export default {
                             ',' +
                             this.timeFormatType;
           }
+          this.temp.jobParam = JSON.stringify(jobParam);
           job.updateJob(this.temp).then(() => {
             this.fetchData();
             this.dialogFormVisible = false;
@@ -1185,7 +1197,7 @@ export default {
           }
         } else {
           obj = {
-            datasourceId: this.writerForm.datasourceId
+            datasourceId: this.$store.state.taskAdmin.writerDataSourceID
           }
         }
         // 组装
@@ -1197,8 +1209,8 @@ export default {
     // 获取表字段
     getColumns() {
       const obj = {
-        datasourceId: this.writerForm.datasourceId,
-        tableName: this.writerForm.tableName
+        datasourceId: this.$store.state.taskAdmin.writerDataSourceID,
+        tableName: this.$store.state.taskAdmin.writerTableName
       }
       dsQueryApi.getColumns(obj).then(response => {
         this.fromColumnList = response
@@ -1207,38 +1219,37 @@ export default {
         this.writerForm.isIndeterminate = false
 
         this.$store.commit('SET_WRITER_COLUMNS', response);
+        
         this.readerForm.rcolumns = response;
-
         this.toColumnsList = response;
+
+        console.log(response);
 
       })
     },
 
-    lHandleCheckAllChange(val) {
-      this.readerForm.lcolumns = val ? this.fromColumnsList : []
-      this.readerForm.isIndeterminate = false
+   
+   
+    lHandleSelect(index, v) {
+      
     },
-    rHandleCheckAllChange(val) {
-      this.readerForm.rcolumns = val ? this.toColumnsList : []
-      this.readerForm.isIndeterminate = false
+    cHandleSelect(index, v) {},
+    rHandleSelect(index, v) {
+      console.log(index, v)
     },
-    lHandleCheckedChange(value) {
-      const checkedCount = value.length
-      this.readerForm.checkAll = checkedCount === this.fromColumnsList.length
-      this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnsList.length
-    },
-    rHandleCheckedChange(value) {
-      const checkedCount = value.length
-      this.readerForm.checkAll = checkedCount === this.toColumnsList.length
-      this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.toColumnsList.length
-    },
+
+
     bHandleClick(index, v) {
       this.fromColumnsListChecked.splice(index, 1)
       this.toColumnsListChecked.splice(index, 1)
 
       this.readerForm.lcolumns.splice(index, 1)
       this.readerForm.rcolumns.splice(index, 1)
+      this.tableData.splice(index, 1)
     },
+
+
+
     getLColumns() {
       return this.readerForm.lcolumns
     },
@@ -1271,24 +1282,9 @@ export default {
       this.$store.commit('SET_TABLEDATA', arr)
     },
 
-    ruleArr() {
-      const arr = []
-      this.fromColumnsListChecked.forEach((element, index) => {
-        const obj = {
-          sourceField: this.readerForm.lcolumns[index],
-          clearRule: this.readerForm.rules[index],
-          targetField: this.readerForm.rcolumns[index],
-          index: index
-        }
-        arr.push(obj)
-      })
-      this.$store.commit('SET_TABLEDATA', arr)
-    },
-
     readerColumns(newval) {
-
       console.log('newval', newval);
-      this.readerForm.lcolumns = newval;
+      this.readerForm.lcolumns = JSON.parse(JSON.stringify(newval));
       this.fromColumnsList = newval;
       this.tableData = [];
       newval.forEach((row, index) =>{
@@ -1298,6 +1294,11 @@ export default {
         }
         this.tableData.push(obj);
       })
+    },
+
+    writerColumns(newval) {
+      this.readerForm.rcolumns = JSON.parse(JSON.stringify(newval));
+      this.toColumnsList = newval;
     }
 
   }

@@ -47,9 +47,17 @@ const state = {
 
   jobParam: '',//创建任务的jobparam
 
-  readerColumns: [], //编辑reader字段
+  readerColumns: [], //所有reader字段
 
-  writerColumns: [], //编辑writer	字段
+  writerColumns: [], //所有writer	字段
+
+  readerTableName: '',//reader表
+
+  writerTableName: '',// writer表
+
+  selectReaderColumn:[], // 已选中reader字段
+
+  selectWriterColumn:[], // 已选中writer字段
 
 
 }
@@ -109,7 +117,27 @@ const mutations = {
 
   SET_WRITER_COLUMNS: (state, columns) => {
     state.writerColumns = columns
+  },
+
+  SET_READER_TABLENAME: (state, tableName) => {
+    state.readerTableName = tableName
+  },
+
+  SET_WRITER_TABLENAME: (state, tableName) => {
+    state.writerTableName = tableName
+  },
+
+  SET_SELECT_READERCOLUMN: (state,columns) => {
+    state.selectReaderColumn = columns
+  },
+
+  SET_SELECT_WRITERCOLUMN: (state,columns) => {
+    state.selectWriterColumn = columns
   }
+
+  
+
+
 
 }
 
