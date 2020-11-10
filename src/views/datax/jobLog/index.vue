@@ -1,104 +1,116 @@
 <template>
   <div class="app-container">
-    <span style="font-size: 24px;line-height: 64px;">日志管理</span>
-    <el-form label-width="75px" label-position="right" :inline="true">
-      <el-form-item label="任务ID">
-        <el-input v-model="listQuery.jobId" placeholder="输入任务ID" style="width: 200px" clearable />
-      </el-form-item>
-      <el-form-item label="执行器">
-        <el-select v-model="listQuery.jobGroup" placeholder="执行器" style="width: 200px">
-          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="类型">
-        <el-select v-model="listQuery.logStatus" placeholder="类型" style="width: 200px">
-          <el-option v-for="item in logStatusList" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label=" ">
-        <el-button v-waves type="primary" size="small" icon="el-icon-search" @click="fetchData">
-          搜索
-        </el-button>
-        <el-button type="primary" size="small" icon="el-icon-delete" @click="handlerDelete">
-          清除记录
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      fit
-      highlight-current-row
-      :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-      height="calc(100vh - 385px)"
-    >
-      <el-table-column align="center" label="任务ID" width="80">
-        <template slot-scope="scope">{{ scope.row.jobId }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="任务描述">
-        <template slot-scope="scope">{{ scope.row.jobDesc }}</template>
-      </el-table-column>
-      <el-table-column label="调度时间" align="center">
-        <template slot-scope="scope">{{ scope.row.triggerTime }}</template>
-      </el-table-column>
-      <el-table-column label="调度结果" align="center" width="100">
-        <template slot-scope="scope">
-          <span :style="`color:${scope.row.triggerCode==500?'red':''}`">
-            {{ statusList.find(t => t.value === scope.row.triggerCode).label }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="调度备注" align="center">
-        <template slot-scope="scope">
-          <el-popover
-            placement="bottom"
-            width="400"
-            trigger="click"
-          >
-            <h5 v-html="triggerMsg(scope.row.triggerMsg)" />
-            <el-button slot="reference" type="text">查看</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column label="执行时间" align="center">
-        <template slot-scope="scope">{{ scope.row.handleTime }}</template>
-      </el-table-column>
-      <el-table-column label="执行结果" align="center">
-        <template slot-scope="scope">
-          <span :style="`color:${scope.row.handleCode==500?'red':''}`">
-            {{ statusList.find(t => t.value === scope.row.handleCode).label }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="执行备注" align="center">
-        <template slot-scope="scope">
-          <el-popover
-            placement="bottom"
-            width="400"
-            trigger="click"
-          >
-            <h5 v-html="handleMsg(scope.row.handleMsg)" />
-            <el-button slot="reference" type="text">查看</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="300">
-        <template slot-scope="{row}">
-          <el-button v-show="row.executorAddress" type="text" @click="handleViewJobLog(row)">日志查看</el-button>
-          <el-button v-show="row.handleCode===0 && row.triggerCode===200" type="text" @click="killRunningJob(row)">
-            终止任务
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.current"
-      :limit.sync="listQuery.size"
-      @pagination="fetchData"
-    />
+    <div class="filter-container">
+      <el-card class="box-card ">
+        <div class="text item">
+          <div class="left">日志管理</div>
+          <div class="right">
+            <el-input v-model="listQuery.jobId" class="filter-item" placeholder="输入任务ID" style="width: 200px" clearable />
+            <el-select v-model="listQuery.jobGroup" class="filter-item" placeholder="执行器" style="width: 200px">
+              <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+            </el-select>
+            <el-select v-model="listQuery.logStatus" class="filter-item" placeholder="类型" style="width: 200px">
+              <el-option v-for="item in logStatusList" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+            <el-button class="filter-item" type="goon" size="small" icon="el-icon-search" @click="fetchData">
+              搜索
+            </el-button>
+            <el-button class="filter-item" type="goon" size="small" icon="el-icon-delete" @click="handlerDelete">
+              清除记录
+            </el-button>
+          </div>
+        </div>
+      </el-card>
+    </div>
+    <div class="main">
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        fit
+        highlight-current-row
+        :header-cell-style="{background:'#fafafc'}"
+      >
+        <!-- height="calc(100vh - 385px)" -->
+        <el-table-column align="center" label="任务ID" width="80">
+          <template slot-scope="scope">{{ scope.row.jobId }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="任务描述">
+          <template slot-scope="scope">{{ scope.row.jobDesc }}</template>
+        </el-table-column>
+        <el-table-column label="调度时间" align="center">
+          <template slot-scope="scope">{{ scope.row.triggerTime }}</template>
+        </el-table-column>
+        <el-table-column label="调度结果" align="center" width="100">
+          <template slot-scope="scope">
+            <span :style="`color:${scope.row.triggerCode==500?'red':''}`">
+              {{ statusList.find(t => t.value === scope.row.triggerCode).label }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="调度备注" align="center">
+          <template slot-scope="scope">
+            <el-popover
+              placement="bottom"
+              width="400"
+              trigger="click"
+            >
+              <h5 v-html="triggerMsg(scope.row.triggerMsg)" />
+              <el-button slot="reference" type="text">查看</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="执行时间" align="center">
+          <template slot-scope="scope">{{ scope.row.handleTime }}</template>
+        </el-table-column>
+        <el-table-column label="执行结果" align="center">
+          <template slot-scope="scope">
+            <span :style="`color:${scope.row.handleCode==500?'red':''}`">
+              {{ statusList.find(t => t.value === scope.row.handleCode).label }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="执行备注" align="center">
+          <template slot-scope="scope">
+            <el-popover
+              placement="bottom"
+              width="400"
+              trigger="click"
+            >
+              <h5 v-html="handleMsg(scope.row.handleMsg)" />
+              <el-button slot="reference" type="text">查看</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="300">
+          <template slot-scope="{row}">
+            <el-button v-show="row.executorAddress" type="text" @click="handleViewJobLog(row)">日志查看</el-button>
+            <span
+              v-show="row.executorAddress && (row.handleCode===0 && row.triggerCode===200)"
+              style="
+                width: 1px;
+                height: 12px;
+                margin: 0 5px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <el-button v-show="row.handleCode===0 && row.triggerCode===200" type="text" @click="killRunningJob(row)">
+              终止任务
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        style="float: right"
+        :page.sync="listQuery.current"
+        :limit.sync="listQuery.size"
+        @pagination="fetchData"
+      />
+
+    </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="40%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="center" label-width="100px">
@@ -140,10 +152,10 @@
         <pre :loading="logLoading" v-text="logContent" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">
+        <el-button size="small" @click="dialogVisible = false">
           关闭
         </el-button>
-        <el-button type="primary" @click="loadLog">
+        <el-button size="small" type="primary" @click="loadLog">
           刷新日志
         </el-button>
       </div>
@@ -218,7 +230,7 @@ export default {
         { value: 9, label: '清理所有日志数据' }
       ],
       logStatusList: [
-        { value: -1, label: '全部' },
+        { value: -1, label: '类型 - 全部' },
         { value: 1, label: '成功' },
         { value: 2, label: '失败' },
         { value: 3, label: '进行中' }
@@ -264,6 +276,8 @@ export default {
       return resource => {
         if (resource === null) {
           return '无'
+        } else if (resource.indexOf('{') <= -1) {
+          return resource
         } else {
           var temp = ''
           const reg = /^[A-Z]+$/
@@ -322,7 +336,7 @@ export default {
       job.getExecutorList().then(response => {
         const { content } = response
         this.executorList = content
-        const defaultParam = { id: 0, title: '全部' }
+        const defaultParam = { id: 0, title: '执行器 - 全部' }
         this.executorList.unshift(defaultParam)
         this.listQuery.jobGroup = this.executorList[0].id
       })
@@ -396,12 +410,63 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .app-container {
-    margin: 24px;
-    padding: 20px;
-    border-radius: 8px;
-    background: white;
+    .filter-container {
+      overflow: hidden;
+      background-color: #ffffff;
+      padding: 0px;
+      .el-card {
+        .left {
+          float: left;
+          font-size: 24px;
+          font-family: PingFangHK-Medium, PingFangHK;
+          font-weight: 500;
+          color: #333333;
+          margin-left: 24px;
+        }
+        .right {
+          float: right;
+          margin-right: 20px;
+          .filter-item {
+            display: inline-table;
+          }
+          .el-input {
+            overflow: hidden;
+            .el-input__inner {
+              float: left;
+              width: 200px;
+              height: 32px;
+              line-height: 32px;
+              padding-right: 15px;
+            }
+            .el-input-group__append {
+              float: left;
+              width: 60px;
+              padding: 0px 15px;
+              text-align: center;
+              color: #fff;
+              background-color: #3d5fff;
+            }
+          }
+          .el-select {
+            overflow: hidden;
+            .el-input__inner {
+              float: left;
+              width: 200px;
+              height: 32px;
+              line-height: 32px;
+              padding-right: 15px;
+            }
+          }
+        }
+      }
+    }
+    .main {
+      background-color: #fff;
+      overflow: hidden;
+      margin-top: 10px;
+    }
   }
   .log-container {
     margin-bottom: 20px;
@@ -421,13 +486,7 @@ export default {
       border-radius: 1px;
     }
   }
-  .el-button {
-    border-radius: 4px;
-  }
   .el-table {
-    border: 1px solid #e9e9e9dd;
-    border-radius: 2px;
-    color: #333333;
     >>>th {
       background: #fafafc;
     }
@@ -438,9 +497,6 @@ export default {
       font-family: PingFangHK-Medium, PingFangHK;
       font-weight: 500;
     }
-  }
-  >>>.pagination-container {
-    margin-top: 0;
   }
   .el-select {
     >>>.el-input .el-input__inner {

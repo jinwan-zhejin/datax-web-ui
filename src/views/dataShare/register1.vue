@@ -1,332 +1,339 @@
 <template>
-  <div class="infacereg">
-    <div class="top">
-      <p>接口注册</p>
+  <div class="app-container">
+    <div class="filter-container">
+      <el-card class="box-card" style="height: 65px;">
+        <div class="text item">
+          <div class="left">接口注册</div>
+        </div>
+      </el-card>
     </div>
-    <!-- 步骤条 -->
-    <el-steps :active="active" align-center>
-      <el-step title="填写信息接口" />
-      <el-step title="填写出入参数" />
-      <el-step title="注册信息确认" />
-      <el-step title="注册结果" />
-    </el-steps>
-    <!-- tab标签页 -->
-    <el-divider />
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane name="0">
-        <!-- 填写接口信息 -->
-        <el-form ref="form" class="interForm" :rules="rules" :model="form" label-width="120px" label-position="right">
-          <el-form-item label="联系人:" placeholder="最多20个字" prop="contacts">
-            <el-input v-model="form.contacts" />
-          </el-form-item>
-          <el-form-item label="联系电话:" placeholder="请输入联系电话" prop="telephone">
-            <el-input v-model="form.telephone" />
-          </el-form-item>
-          <el-form-item label="注册人:" placeholder="请输入注册人" prop="registerCompany">
-            <!-- <el-input v-model="form.registerCompany" disabled /> -->
-            <span style="color: #666666;">{{ form.registerCompany }}</span>
-          </el-form-item>
-          <el-form-item label="接口名称:" placeholder="(中文)最多20个字" prop="interName">
-            <el-input v-model="form.interName" />
-          </el-form-item>
-          <el-form-item label="接口描述:" placeholder="请输入接口描述" prop="interRemark">
-            <el-input v-model="form.interRemark" />
-          </el-form-item>
-          <el-form-item label="返回数据格式:">
-            <!-- <el-radio-group v-model="form.responseMode" size="medium" @change="changeMode">
-              <el-radio-button size="small" label="JSON" />
-            <el-radio-button label="XML"></el-radio-button>
-            </el-radio-group> -->
-            <span style="color: #666666;">{{ form.responseMode }}</span>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane name="1">
-        <el-form class="paramForm" :model="paramForm" label-width="120px" label-position="right">
-          <el-row>
-            <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
-              <el-form-item label="数据源:">
-                <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 234px" @change="fetchTables">
+
+    <div class="main">
+      <!-- 步骤条 -->
+      <el-steps :active="active" align-center>
+        <el-step title="填写信息接口" />
+        <el-step title="填写出入参数" />
+        <el-step title="注册信息确认" />
+        <el-step title="注册结果" />
+      </el-steps>
+      <!-- tab标签页 -->
+      <el-divider />
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane name="0">
+          <!-- 填写接口信息 -->
+          <el-form ref="form" class="interForm" :rules="rules" :model="form" label-width="120px" label-position="right">
+            <el-form-item label="联系人:" placeholder="最多20个字" prop="contacts">
+              <el-input v-model="form.contacts" />
+            </el-form-item>
+            <el-form-item label="联系电话:" placeholder="请输入联系电话" prop="telephone">
+              <el-input v-model="form.telephone" />
+            </el-form-item>
+            <el-form-item label="注册人:" placeholder="请输入注册人" prop="registerCompany">
+              <!-- <el-input v-model="form.registerCompany" disabled /> -->
+              <span style="color: #666666;">{{ form.registerCompany }}</span>
+            </el-form-item>
+            <el-form-item label="接口名称:" placeholder="(中文)最多20个字" prop="interName">
+              <el-input v-model="form.interName" />
+            </el-form-item>
+            <el-form-item label="接口描述:" placeholder="请输入接口描述" prop="interRemark">
+              <el-input v-model="form.interRemark" />
+            </el-form-item>
+            <el-form-item label="返回数据格式:">
+              <!-- <el-radio-group v-model="form.responseMode" size="medium" @change="changeMode">
+                <el-radio-button size="small" label="JSON" />
+              <el-radio-button label="XML"></el-radio-button>
+              </el-radio-group> -->
+              <span style="color: #666666;">{{ form.responseMode }}</span>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane name="1">
+          <el-form class="paramForm" :model="paramForm" label-width="120px" label-position="right">
+            <el-row>
+              <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
+                <el-form-item label="数据源:">
+                  <el-select v-model="paramForm.serverName" :disabled="isBan" style="width: 234px" @change="fetchTables">
+                    <el-option
+                      v-for="item in dsList"
+                      :key="item.id"
+                      :label="item.datasourceName"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
+                <el-form-item label="数据表:">
+                  <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 234px" @change="fetchColumns">
+                    <el-option
+                      v-for="(item, index) in tableList"
+                      :key="index"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <!-- <el-col :span="7" /> -->
+            </el-row>
+          </el-form>
+          <p>接口输入参数 (*<span>字段名称和字段编码不能重复</span>*)<i id="i1" class="el-icon-plus" @click="addData1" /></p>
+          <el-table
+            :data="tableData1"
+            border
+            style="width: 80%;margin: 0px auto;"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+          >
+            <el-table-column
+              prop="fieldName"
+              label="字段名称"
+            >
+              <template slot-scope="scope">
+                <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName(scope.row.fieldName)">
                   <el-option
-                    v-for="item in dsList"
-                    :key="item.id"
-                    :label="item.datasourceName"
-                    :value="item.id"
+                    v-for="item in options3"
+                    :key="item.COLUMN_NAME"
+                    :label="item.COLUMN_NAME"
+                    :value="item.COLUMN_NAME"
                   />
                 </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
-              <el-form-item label="数据表:">
-                <el-select v-model="paramForm.infoName" :disabled="isBan" style="width: 234px" @change="fetchColumns">
+                <span v-else>{{ scope.row.fieldName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="fieldCode"
+              label="字段编码"
+            />
+            <el-table-column
+              prop="fieldRemark"
+              label="字段描述"
+            />
+            <el-table-column
+              prop="tag"
+              label="操作"
+              width="120"
+            >
+              <template slot-scope="scope">
+                <el-tag style="cursor: pointer;" @click="deleteData1(scope.row)"><i class="el-icon-delete" /></el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+          <p>接口输出参数 (*<span>字段名称和字段编码不能重复</span>*)<i id="i2" class="el-icon-plus" @click="addData2" /></p>
+          <el-table
+            :data="tableData2"
+            border
+            style="width: 80%;margin: 0px auto;"
+            :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+          >
+            <el-table-column
+              prop="fieldName"
+              label="字段名称"
+            >
+              <template slot-scope="scope">
+                <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName1(scope.row.fieldName)">
                   <el-option
-                    v-for="(item, index) in tableList"
-                    :key="index"
-                    :label="item"
-                    :value="item"
+                    v-for="item in options3"
+                    :key="item.COLUMN_NAME"
+                    :label="item.COLUMN_NAME"
+                    :value="item.COLUMN_NAME"
                   />
                 </el-select>
-              </el-form-item>
-            </el-col>
-            <!-- <el-col :span="7" /> -->
-          </el-row>
-        </el-form>
-        <p>接口输入参数 (*<span>字段名称和字段编码不能重复</span>*)<i id="i1" class="el-icon-plus" @click="addData1" /></p>
-        <el-table
-          :data="tableData1"
-          border
-          style="width: 80%;margin: 0px auto;"
-          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-        >
-          <el-table-column
-            prop="fieldName"
-            label="字段名称"
-          >
-            <template slot-scope="scope">
-              <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName(scope.row.fieldName)">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.COLUMN_NAME"
-                  :label="item.COLUMN_NAME"
-                  :value="item.COLUMN_NAME"
-                />
-              </el-select>
-              <span v-else>{{ scope.row.fieldName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="fieldCode"
-            label="字段编码"
-          />
-          <el-table-column
-            prop="fieldRemark"
-            label="字段描述"
-          />
-          <el-table-column
-            prop="tag"
-            label="操作"
-            width="120"
-          >
-            <template slot-scope="scope">
-              <el-tag style="cursor: pointer;" @click="deleteData1(scope.row)"><i class="el-icon-delete" /></el-tag>
-            </template>
-          </el-table-column>
-        </el-table>
-        <p>接口输出参数 (*<span>字段名称和字段编码不能重复</span>*)<i id="i2" class="el-icon-plus" @click="addData2" /></p>
-        <el-table
-          :data="tableData2"
-          border
-          style="width: 80%;margin: 0px auto;"
-          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-        >
-          <el-table-column
-            prop="fieldName"
-            label="字段名称"
-          >
-            <template slot-scope="scope">
-              <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName1(scope.row.fieldName)">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.COLUMN_NAME"
-                  :label="item.COLUMN_NAME"
-                  :value="item.COLUMN_NAME"
-                />
-              </el-select>
-              <span v-else>{{ scope.row.fieldName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="fieldCode"
-            label="字段编码"
-          />
-          <el-table-column
-            prop="fieldRemark"
-            label="字段描述"
-          />
-          <el-table-column
-            prop="tag"
-            label="操作"
-            width="120"
-          >
-            <template slot-scope="scope">
-              <el-tag style="cursor: pointer;" @click="deleteData2(scope.row)"><i class="el-icon-delete" /></el-tag>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane name="2">
-        <div class="interConfirm">
-          <el-row>
-            <el-col class="title">
-              <label>接口注册表单</label>
-            </el-col>
-            <el-col class="tableForm">
-              <el-col class="subtitle">
-                <label>1.信息接口</label>
-                <el-tooltip content="修改" placement="top">
-                  <el-button
-                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
-                    type="text"
-                    icon="el-icon-edit-outline"
-                    @click="() => { active = 1; activeName = '0'; }"
-                  />
-                </el-tooltip>
+                <span v-else>{{ scope.row.fieldName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="fieldCode"
+              label="字段编码"
+            />
+            <el-table-column
+              prop="fieldRemark"
+              label="字段描述"
+            />
+            <el-table-column
+              prop="tag"
+              label="操作"
+              width="120"
+            >
+              <template slot-scope="scope">
+                <el-tag style="cursor: pointer;" @click="deleteData2(scope.row)"><i class="el-icon-delete" /></el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane name="2">
+          <div class="interConfirm">
+            <el-row>
+              <el-col class="title">
+                <label>接口注册表单</label>
               </el-col>
-              <el-col class="table-infos">
-                <el-col>
-                  <el-col class="form-key" :span="9">联系人:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.contacts }}</el-col>
+              <el-col class="tableForm">
+                <el-col class="subtitle">
+                  <label>1.信息接口</label>
+                  <el-tooltip content="修改" placement="top">
+                    <el-button
+                      style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                      type="text"
+                      icon="el-icon-edit-outline"
+                      @click="() => { active = 1; activeName = '0'; }"
+                    />
+                  </el-tooltip>
                 </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">联系电话:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.telephone }}</el-col>
+                <el-col class="table-infos">
+                  <el-col>
+                    <el-col class="form-key" :span="9">联系人:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.contacts }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">联系电话:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.telephone }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">注册人:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.registerCompany }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">接口名称:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.interName }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">接口描述:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.interRemark }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">返回数据格式:</el-col>
+                    <el-col class="form-value" :span="15">{{ form.responseMode }}</el-col>
+                  </el-col>
                 </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">注册人:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.registerCompany }}</el-col>
+                <el-col class="subtitle">
+                  <label>2.出入参数</label>
+                  <el-tooltip content="修改" placement="top">
+                    <el-button
+                      style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                      type="text"
+                      icon="el-icon-edit-outline"
+                      @click="() => { active = 2; activeName = '1'; }"
+                    />
+                  </el-tooltip>
                 </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">接口名称:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.interName }}</el-col>
+                <el-col class="table-infos">
+                  <el-col>
+                    <el-col class="form-key" :span="9">数据源:</el-col>
+                    <el-col class="form-value" :span="15">{{ paramForm.serverName === '' ? '无' : paramForm.serverName }}</el-col>
+                  </el-col>
+                  <el-col>
+                    <el-col class="form-key" :span="9">数据表:</el-col>
+                    <el-col class="form-value" :span="15">{{ paramForm.infoName === '' ? '无' : paramForm.infoName }}</el-col>
+                  </el-col>
                 </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">接口描述:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.interRemark }}</el-col>
+                <el-col class="subtitle">
+                  <label>2.1接口输入参数</label>
+                  <el-tooltip content="修改" placement="top">
+                    <el-button
+                      style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                      type="text"
+                      icon="el-icon-edit-outline"
+                      @click="() => { active = 2; activeName = '1'; }"
+                    />
+                  </el-tooltip>
                 </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">返回数据格式:</el-col>
-                  <el-col class="form-value" :span="15">{{ form.responseMode }}</el-col>
-                </el-col>
-              </el-col>
-              <el-col class="subtitle">
-                <label>2.出入参数</label>
-                <el-tooltip content="修改" placement="top">
-                  <el-button
-                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
-                    type="text"
-                    icon="el-icon-edit-outline"
-                    @click="() => { active = 2; activeName = '1'; }"
-                  />
-                </el-tooltip>
-              </el-col>
-              <el-col class="table-infos">
-                <el-col>
-                  <el-col class="form-key" :span="9">数据源:</el-col>
-                  <el-col class="form-value" :span="15">{{ paramForm.serverName === '' ? '无' : paramForm.serverName }}</el-col>
-                </el-col>
-                <el-col>
-                  <el-col class="form-key" :span="9">数据表:</el-col>
-                  <el-col class="form-value" :span="15">{{ paramForm.infoName === '' ? '无' : paramForm.infoName }}</el-col>
-                </el-col>
-              </el-col>
-              <el-col class="subtitle">
-                <label>2.1接口输入参数</label>
-                <el-tooltip content="修改" placement="top">
-                  <el-button
-                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
-                    type="text"
-                    icon="el-icon-edit-outline"
-                    @click="() => { active = 2; activeName = '1'; }"
-                  />
-                </el-tooltip>
-              </el-col>
-              <el-col class="table-infos">
-                <el-col>
-                  <el-table
-                    :data="tableData1"
-                    border
-                    :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-                  >
-                    <el-table-column
-                      prop="fieldName"
-                      label="字段名称"
+                <el-col class="table-infos">
+                  <el-col>
+                    <el-table
+                      :data="tableData1"
+                      border
+                      :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
                     >
-                      <template slot-scope="scope">
-                        <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName(scope.row.fieldName)">
-                          <el-option
-                            v-for="item in options3"
-                            :key="item.COLUMN_NAME"
-                            :label="item.COLUMN_NAME"
-                            :value="item.COLUMN_NAME"
-                          />
-                        </el-select>
-                        <span v-else>{{ scope.row.fieldName }}</span>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="fieldCode"
-                      label="字段编码"
-                    />
-                    <el-table-column
-                      prop="fieldRemark"
-                      label="字段描述"
-                    />
-                  </el-table>
+                      <el-table-column
+                        prop="fieldName"
+                        label="字段名称"
+                      >
+                        <template slot-scope="scope">
+                          <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName(scope.row.fieldName)">
+                            <el-option
+                              v-for="item in options3"
+                              :key="item.COLUMN_NAME"
+                              :label="item.COLUMN_NAME"
+                              :value="item.COLUMN_NAME"
+                            />
+                          </el-select>
+                          <span v-else>{{ scope.row.fieldName }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="fieldCode"
+                        label="字段编码"
+                      />
+                      <el-table-column
+                        prop="fieldRemark"
+                        label="字段描述"
+                      />
+                    </el-table>
+                  </el-col>
                 </el-col>
-              </el-col>
-              <el-col class="subtitle">
-                <label>2.2接口输出参数</label>
-                <el-tooltip content="修改" placement="top">
-                  <el-button
-                    style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
-                    type="text"
-                    icon="el-icon-edit-outline"
-                    @click="() => { active = 2; activeName = '1'; }"
-                  />
-                </el-tooltip>
-              </el-col>
-              <el-col class="table-infos">
-                <el-col>
-                  <el-table
-                    :data="tableData2"
-                    border
-                    :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
-                  >
-                    <el-table-column
-                      prop="fieldName"
-                      label="字段名称"
+                <el-col class="subtitle">
+                  <label>2.2接口输出参数</label>
+                  <el-tooltip content="修改" placement="top">
+                    <el-button
+                      style="padding:0; position: relative; float: right; font-size: 16px; font-weight: bold;"
+                      type="text"
+                      icon="el-icon-edit-outline"
+                      @click="() => { active = 2; activeName = '1'; }"
+                    />
+                  </el-tooltip>
+                </el-col>
+                <el-col class="table-infos">
+                  <el-col>
+                    <el-table
+                      :data="tableData2"
+                      border
+                      :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
                     >
-                      <template slot-scope="scope">
-                        <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName1(scope.row.fieldName)">
-                          <el-option
-                            v-for="item in options3"
-                            :key="item.COLUMN_NAME"
-                            :label="item.COLUMN_NAME"
-                            :value="item.COLUMN_NAME"
-                          />
-                        </el-select>
-                        <span v-else>{{ scope.row.fieldName }}</span>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      prop="fieldCode"
-                      label="字段编码"
-                    />
-                    <el-table-column
-                      prop="fieldRemark"
-                      label="字段描述"
-                    />
-                  </el-table>
+                      <el-table-column
+                        prop="fieldName"
+                        label="字段名称"
+                      >
+                        <template slot-scope="scope">
+                          <el-select v-if="scope.row.status" v-model="scope.row.fieldName" @change="chooseName1(scope.row.fieldName)">
+                            <el-option
+                              v-for="item in options3"
+                              :key="item.COLUMN_NAME"
+                              :label="item.COLUMN_NAME"
+                              :value="item.COLUMN_NAME"
+                            />
+                          </el-select>
+                          <span v-else>{{ scope.row.fieldName }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="fieldCode"
+                        label="字段编码"
+                      />
+                      <el-table-column
+                        prop="fieldRemark"
+                        label="字段描述"
+                      />
+                    </el-table>
+                  </el-col>
                 </el-col>
               </el-col>
-            </el-col>
-          </el-row>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane name="3">
-        <div class="bor">
-          <i v-show="infoMsg === '注册成功'" class="el-icon-check" style="margin-right: 20px;color: skyblue" />
-          <i v-show="infoMsg !== '注册成功'" class="el-icon-close" style="margin-right: 20px;color: skyblue" />
-          {{ infoMsg }}
-        </div>
-      </el-tab-pane>
-    </el-tabs>
-    <el-divider />
-    <div class="btn">
-      <el-button v-show="active !== 1 && active !== 4" size="small" class="next" type="goon" @click="prev">上一步</el-button>
-      <el-button v-show="active < 3" size="small" class="next" type="goon" @click="next">下一步</el-button>
-      <el-button v-show="active === 3" size="small" class="next" type="goon" @click="sure">确 定</el-button>
-      <el-button v-show="active === 4" size="small" class="next" type="goon" @click="back">确 定</el-button>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane name="3">
+          <div class="bor">
+            <i v-show="infoMsg === '注册成功'" class="el-icon-check" style="margin-right: 20px;color: skyblue" />
+            <i v-show="infoMsg !== '注册成功'" class="el-icon-close" style="margin-right: 20px;color: skyblue" />
+            {{ infoMsg }}
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+      <el-divider />
+      <div class="btn">
+        <el-button v-show="active !== 1 && active !== 4" size="small" class="next" type="goon" @click="prev">上一步</el-button>
+        <el-button v-show="active < 3" size="small" class="next" type="goon" @click="next">下一步</el-button>
+        <el-button v-show="active === 3" size="small" class="next" type="goon" @click="sure">确 定</el-button>
+        <el-button v-show="active === 4" size="small" class="next" type="goon" @click="back">确 定</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -722,24 +729,52 @@ export default {
 </script>
 
 <style lang="scss">
-.infacereg {
-  margin: 24px;
-  background-color: #fff;
-  border-radius: 8px;
-  .top {
-    height: 84px;
-    line-height: 84px;
-    p {
-      width: 96px;
-      font-size: 24px;
-      font-family: PingFangHK-Medium, PingFangHK;
-      font-weight: 500;
-      color: #333333;
-      margin-left: 24px;
+.app-container {
+  .filter-container {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+             width: 60px;
+             padding: 0px 15px;
+             text-align: center;
+             color: #fff;
+             background-color: #3d5fff;
+          }
+        }
+      }
     }
   }
+  .main {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
   .el-steps {
-    padding-top: 10px;
+    padding-top: 20px;
     width: 60%;
     margin: 0 auto;
   }

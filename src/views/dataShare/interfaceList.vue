@@ -1,22 +1,26 @@
 <template>
-  <div class="myRegister">
+  <div class="app-container">
     <!-- 接口注册 -->
-    <div class="interRegister">
-      <div style="margin-top: 20px;">
-        <span class="titSpan">接口列表</span>
-        <el-button type="goon" size="small" @click="gotoInterface">接口注册</el-button>
-        <el-input v-model="interName" size="medium" placeholder="请输入接口名称" class="input-with-select sort" style="width: 208px;">
-          <el-button slot="append" class="search" style="padding: 0px 10px;" @click="getAllData">搜索</el-button>
-        </el-input>
-      </div>
+    <div class="filter-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">接口列表</div>
+          <div class="right">
+            <el-input v-model="interName" size="medium" placeholder="请输入接口名称" class="filter-item" style="width: 268px;">
+              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" @click="getAllData">搜索</el-button>
+            </el-input>
+            <el-button class="filter-item" style="margin-left: 30px" type="goon" size="small" @click="gotoInterface">接口注册</el-button>
+          </div>
+        </div>
+      </el-card>
     </div>
     <!-- 表格 -->
-    <div class="table">
+    <div class="main">
       <el-table
         :data="tableData"
-        height="calc(100vh - 254px)"
-        :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+        :header-cell-style="{background:'#fafafc'}"
       >
+        <!-- height="calc(100vh - 254px)" -->
         <el-table-column
           type="index"
           label="序号"
@@ -68,18 +72,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        background
+        :current-page="pageNum"
+        style="float: right;"
+        :page-size="pageSize"
+        :page-sizes="[30, 60, 90]"
+        layout="total, prev, pager, next, sizes"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
-    <!-- 分页 -->
-    <el-pagination
-      background
-      :current-page="pageNum"
-      :page-size="pageSize"
-      :page-sizes="[30, 60, 90]"
-      layout="total, prev, pager, next, sizes"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
   </div>
 </template>
 
@@ -176,48 +181,41 @@ export default {
 </script>
 
 <style lang="scss">
-.myRegister {
-  padding: 24px;
-  border-radius: 8px;
-  .interRegister {
+.app-container {
+  .filter-container {
     overflow: hidden;
-    height: 84px;
-    line-height: 84px;
-    text-align:right;
-    position: relative;
-    background-color: #fff;
-    border-radius: 8px 8px 0px 0px;
-    .el-button {
-      border-radius: 4px;
-    }
-    .titSpan {
-      position: absolute;
-      left: 24px;
-      top: 50%;
-      font-size: 24px;
-      font-family: PingFangHK-Medium, PingFangHK;
-      font-weight: 500;
-      color: #333333;
-      transform: translateY(-50%);
-    }
-    .sort {
-      width: 300px;
-    }
-    .el-input {
-      float: right;
-      margin-right: 24px;
-    }
-    .el-button {
-      float: right;
-      margin: 0px 24px;
-    }
-    .el-input-group__append {
-      padding: 0;
-      background-color: #3D5FFF;
-      color: #FFF;
-      .el-button {
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
         float: right;
-        margin: 0 auto;
+        margin-right: 20px;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+            width: 60px;
+            padding: 0px 15px;
+            text-align: center;
+            color: #fff;
+            background-color: #3d5fff;
+          }
+        }
       }
     }
   }
@@ -228,31 +226,20 @@ export default {
       }
     }
   }
-  .el-pagination {
+  .main {
     background-color: #fff;
-    padding: 20px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    .el-input__inner {
-      height: 28px;
-    }
-  }
-  .table {
-    background: white;
-    padding: 0 20px;
-    .el-table {
-      color: #333333;
-      margin: 0 0px;
-      border-radius: 4px;
-      border-left: 1px solid #e0e0e0;
-      border-right: 1px solid #e0e0e0;
-      border-top: 1px solid #e0e0e0;
-      th {
-        background: #fafafc;
-        border-bottom: 1px solid #e0e0e0;
+    overflow: hidden;
+    margin-top: 10px;
+    .el-pagination {
+      background-color: #fff;
+      margin-top: 30px;
+      padding: 32px 16px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+      .el-input__inner {
+        height: 28px;
       }
     }
   }
 }
-
 </style>

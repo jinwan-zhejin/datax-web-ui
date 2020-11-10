@@ -1,17 +1,23 @@
 <template>
-  <div class="batch">
+  <div class="app-container">
     <!-- 标题 -->
-    <div class="tit">
-      <span>注册审批</span>
-      <el-input v-model="interName" class="searchInput input-with-select" placeholder="请输入内容">
-        <el-button slot="append" type="goon" @click="search"><spqn style="color: #fff;fontSize: 16px;">搜索</spqn></el-button>
-      </el-input>
+    <div class="filter-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">注册审批</div>
+          <div class="right">
+            <el-input v-model="interName" size="medium" class="filter-item" style="width: 268px;" placeholder="请输入内容" clearable>
+              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" @click="search">搜索</el-button>
+            </el-input>
+          </div>
+        </div>
+      </el-card>
     </div>
     <div class="main">
       <!-- 菜单栏 -->
       <div class="Menu">
         <!-- 切换按钮 -->
-        <div class="btn">
+        <div class="btn" style="line-height: 40px;height: 40px;">
           <el-radio-group v-model="radio" size="small">
             <el-radio-button label="待审批" />
             <el-radio-button label="已同意" />
@@ -36,10 +42,10 @@
         <!-- 待审核 -->
         <el-table
           v-show="wait"
-          height="calc(100vh - 290px)"
           :data="tabelList"
-          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+          :header-cell-style="{background:'#fafafc'}"
         >
+          <!-- height="calc(100vh - 290px)" -->
           <el-table-column
             type="index"
             label="序号"
@@ -90,10 +96,10 @@
         <!-- 已同意 -->
         <el-table
           v-show="agree"
-          height="calc(100vh - 290px)"
           :data="tabelList"
-          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+          :header-cell-style="{background:'#fafafc'}"
         >
+          <!-- height="calc(100vh - 290px)" -->
           <el-table-column
             type="index"
             label="序号"
@@ -144,10 +150,10 @@
         <!-- 已驳回 -->
         <el-table
           v-show="dismiss"
-          height="calc(100vh - 290px)"
           :data="tabelList"
-          :header-cell-style="{background:'#fafafc',color:'#333333',fontSize:'14px',fontWeight:'500'}"
+          :header-cell-style="{background:'#fafafc'}"
         >
+          <!-- height="calc(100vh - 290px)" -->
           <el-table-column
             type="index"
             label="序号"
@@ -476,113 +482,94 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.batch {
-  // width: 100%;
-  // height: 100%;
-  margin: 24px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 0 20px 20px 20px;
-  .tit {
-    height: 84px;
-    line-height: 84px;
-    position: relative;
-    span {
-      font-size: 24px;
-      font-family: PingFangHK-Medium, PingFangHK;
-      font-weight: 500;
-      color: #333333;
-      margin-left: 4px;
-    }
-    .searchInput {
-      width: 30%;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      right: 24px;
-      .el-input {
-        overflow: hidden;
-        .el-input__inner {
-          float: left;
-          width: 200px;
-          height: 32px;
-          line-height: 32px;
-          padding-right: 15px;
+<style lang="scss">
+.app-container {
+  .filter-container {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .right {
+        float: right;
+        margin-right: 20px;
+        .filter-item {
+          display: inline-table;
         }
-        .el-input-group__append {
-          float: left;
-          width: 60px;
-          padding: 0px 15px;
-          text-align: center;
-          color: #fff;
-          background-color: #3d5fff;
+        .el-input {
+          overflow: hidden;
+          .el-input__inner {
+            float: left;
+            width: 200px;
+            height: 32px;
+            line-height: 32px;
+            padding-right: 15px;
+          }
+          .el-input-group__append {
+            float: left;
+             width: 60px;
+             padding: 0px 15px;
+             text-align: center;
+             color: #fff;
+             background-color: #3d5fff;
+          }
         }
       }
     }
   }
   .main {
-    height: 100%;
     background-color: #fff;
-    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
     .Menu {
       width: 100%;
-      margin: 0 auto;
+      margin: 12px auto;
       height: 40px;
       line-height: 40px;
       padding-bottom: 5px;
-      margin-bottom: 24px;
+      padding-left: 14px;
+      // margin-bottom: 24px;
       .btn {
         float: left;
         margin-top: 0px;
-        .el-button {
-          background: cornflowerblue;
-        }
+        // .el-button {
+        //   background: cornflowerblue;
+        // }
         .el-radio-group {
           height: 30px;
-          .el-radio-button {
-            .el-radio-button__inner {
-              border-radius: 20px;
-              border: none;
-              background-color: initial;
-            }
-            .el-radio-button__inner:active {
-              background-color: #409EFF;
-              color: #ffffff;
-            }
-          }
-          .is-active {
-            background-color: #409EFF;
-            border-radius: 20px;
-            color: #ffffff;
-          }
-        }
-      }
-      .block {
-        float: right;
-        .el-date-editor {
-          width: 360px;
-        }
-      }
-      .search {
-        float: right;
-        margin-left: 10px;
-        .el-input {
-          width: 150px;
+          // .el-radio-button {
+          //   .el-radio-button__inner {
+          //     border-radius: 20px;
+          //     border: none;
+          //     background-color: initial;
+          //   }
+          //   .el-radio-button__inner:active {
+          //     background-color: #409EFF;
+          //     color: #ffffff;
+          //   }
+          // }
+          // .is-active {
+          //   background-color: #409EFF;
+          //   border-radius: 20px;
+          //   color: #ffffff;
+          // }
         }
       }
     }
     .tabel {
       width: 100%;
       background-color: #fff;
-      border-radius: 4px;
-      border-left: 1px solid #E0E0E0;
-      border-right: 1px solid #E0E0E0;
-      border-top: 1px solid #E0E0E0;
-      .el-table {
-        color: #333333;
-        // background: #f8f8fa;
-      }
+      // border-radius: 4px;
+      // border-left: 1px solid #E0E0E0;
+      // border-right: 1px solid #E0E0E0;
+      // border-top: 1px solid #E0E0E0;
     }
   }
   .el-dialog {
