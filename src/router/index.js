@@ -218,12 +218,12 @@ export const asyncRoutes = [
         name: 'compare',
         meta: { title: '元数据比对', icon: 'form', keepAlive: true }
       },
-      {
-        path: 'analysis',
-        component: () => import('@/views/cloudbeaveratlas/index'),
-        name: 'streamanalysis',
-        meta: { title: '数据流分析', icon: 'form', keepAlive: true }
-      }
+      // {
+      //   path: 'analysis',
+      //   component: () => import('@/views/cloudbeaveratlas/index'),
+      //   name: 'streamanalysis',
+      //   meta: { title: '数据流分析', icon: 'form', keepAlive: true }
+      // }
     ]
   },
   {
