@@ -51,6 +51,14 @@ const state = {
 
   writerColumns: [], //编辑writer	字段
 
+  readerTableName: '',//reader表
+
+  writerTableName: '',// writer表
+
+  allreaderColumn:[], //
+
+  allwriterColumn:[], //
+
 
 }
 
@@ -109,7 +117,23 @@ const mutations = {
 
   SET_WRITER_COLUMNS: (state, columns) => {
     state.writerColumns = columns
-  }
+  },
+
+  SET_READER_TABLENAME: (state, tableName) => {
+    state.readerTableName = tableName
+  },
+
+  SET_WRITER_TABLENAME: (state, tableName) => {
+    state.writerTableName = tableName
+  },
+
+  SET_ALL_READERCOLUMN: (state,columns) => {
+    state.allReaderColumns = columns
+  },
+
+  
+
+
 
 }
 

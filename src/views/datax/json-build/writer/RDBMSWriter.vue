@@ -184,14 +184,17 @@ export default {
         this.writerForm.columns = response
         this.writerForm.checkAll = true
         this.writerForm.isIndeterminate = false
+
       })
     },
     // 表切换
     wTbChange(t) {
       this.writerForm.tableName = t
-      this.fromColumnList = []
+      this.fromColumnList = [] 
       this.writerForm.columns = []
       this.getColumns('writer')
+      this.$store.commit('SET_WRITER_TABLENAME', t)
+
     },
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
