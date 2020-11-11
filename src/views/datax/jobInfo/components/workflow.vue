@@ -60,12 +60,12 @@
             <el-form-item label="类型id">
               <span>{{ projId }}</span>
             </el-form-item>
-            <el-form-item v-if="!isNewTask" label="记录id">
+            <el-form-item v-if="!isNewTask" label="虚任务id">
               <span>{{ id }}</span>
             </el-form-item>
-            <el-form-item label="虚任务id">
+            <!-- <el-form-item label="虚任务id">
               <span>{{ infoId }}</span>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="Cron表达式">
               <!-- <span>{{ jobCron }}</span> -->
               <el-input v-model="jobCron" placeholder="Cron表达式" readonly>
@@ -222,17 +222,6 @@ export default {
     /** 是否为新建虚任务 */
     isNewTask() {
       return !this.isSave.hasOwnProperty('content')
-    },
-    guid() {
-      // -xxxxxxxxxxxxx
-      return ('xxxxxxxxxxxxxxxxxxx'.concat(this.timeStamp)).replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0;
-        var v = c === 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16);
-      })
-    },
-    timeStamp() {
-      return (new Date()).valueOf().toString()
     }
   },
   watch: {
@@ -244,6 +233,7 @@ export default {
           this.$nextTick(() => {
             this.myDiagram.model = go.Model.fromJson(this.isSave.content.jobJson)
             this.jobCron = this.isSave.content.jobCron
+            this.taskTrigger = this.isSave.content.triggerStatus === 1
           })
         }
       },
@@ -257,7 +247,7 @@ export default {
   },
   created() {
     // console.log(this.isSave)
-    this.myId = this.guid
+    this.myId = this.guid()
     // console.log(this.taskList)
   },
   mounted() {
@@ -612,7 +602,7 @@ export default {
       console.log(selectNode)
       selectNode.pb.j[0].data.text = this.form.name
       selectNode.pb.j[0].data.id = this.form.id.toString()
-      selectNode.pb.j[0].data.infoId = this.myId
+      selectNode.pb.j[0].data.infoId = this.guid()
       // console.log(selectNode)
       this.myDiagram.model.updateTargetBindings(selectNode.pb.j[0].data);
       // this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
@@ -727,7 +717,7 @@ export default {
                 title: '成功',
                 message: response.msg
               })
-              this.$emit('refreshList')
+              this.$emit('refreshList', this.isSave)
             } else {
               this.$notify.error({
                 title: '错误',
@@ -846,7 +836,15 @@ export default {
         this.taskTrigger
           ? handlerStart.call(this, this.isSave.content)
           : handlerStop.call(this, this.isSave.content)
+        this.$emit('refreshList', this.isSave)
       }
+    },
+    guid() {
+      return ('xxxxxxxxxxxxxxxxxxx'.concat((new Date()).valueOf().toString())).replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16);
+      })
     }
   }
 }
