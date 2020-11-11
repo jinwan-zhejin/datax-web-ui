@@ -100,7 +100,8 @@
             </el-tab-pane>
 
             <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
-                <JobDetail :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
+                <JobDetail v-if="item.content.jobType!=='VJOB'" :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
+                <Workflow v-else :is-save="item" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="getItem" />
             </el-tab-pane>
 
             <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
@@ -138,7 +139,7 @@
                     <MetaCompare />
                 </div>
                 <div v-if="jobType === 'VJOB'" class="rg">
-                    <Workflow :is-save="item" :project-id="selectValue" :task-list="List" @fromChild="getChild" />
+                    <Workflow :is-save="{}" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="getItem" />
                 </div>
             </el-tab-pane>
 
@@ -190,7 +191,9 @@ export default {
                 name: '1'
             }],
             tabIndex: 1,
+            /** el-select选项 */
             options: '',
+            /** el-select激活项 */
             selectValue: '',
             search: '',
             List: [],
@@ -199,6 +202,7 @@ export default {
                 pageSize: 1000,
                 searchVal: ''
             },
+            /** 任务类型 */
             jobType: 'SHOWDETAIL',
             jobDetailIdx: '欢迎',
             jobTypeMap: '',
@@ -368,7 +372,7 @@ export default {
         },
 
         getJobDetail(data) {
-            console.log(data);
+            // console.log(data);
             const a = {};
             a.title = data.jobDesc;
             a.name = data.jobDesc;
@@ -439,7 +443,6 @@ export default {
                         content
                     } = response;
                     this.List = content.data;
-                    console.log(this.list);
                     const firstElement = content?.data[0] || {};
                     const a = {};
 

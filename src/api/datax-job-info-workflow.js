@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 10:05:53
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-11-06 18:26:45
+ * @LastEditTime: 2020-11-11 11:29:27
  * @FilePath: \datax-web-ui\src\api\datax-job-info-workflow.js
  * @Description: 任务管理 - 虚任务 接口
  */
@@ -13,11 +13,11 @@ import request from '@/utils/request'
  * @description: 保存虚任务
  * @param {object} data
  *  {
-      "jobInfoName": "(R)任务描述",
+      "id": 任务Id【分类Id】,
+      "jobDesc": "(R)任务描述",
       "jobCron": "(R)Cron表达式",
-      "flowChatInformation": "(R)流程图信息",
+      "jobJson": "(R)流程图信息"【包含infoId当前虚任务id】
       "triggerNextTime": (N)<Bigint>下次调度时间,
-      "jobInfoId": "(R)任务Id【为空时为添加任务，否则对当前任务进行修改】"
     }
  * @return {Promise}
  *  {
@@ -38,7 +38,7 @@ export function addVirtualTask(data) {
  * @description: 触发虚任务
  * @param {object} data
  *  {
-      "jobInfoId": "(R)任务Id"
+      "id": 任务Id
     }
  * @return {Promise}
  *  {
