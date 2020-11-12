@@ -93,6 +93,7 @@
             </div>
         </div>
     </div>
+    <!-- {{ jobDetailIdx }} -->
     <div class="rg rt">
         <el-tabs v-model="jobDetailIdx" type="border-card" closable class="el-bar-tab" @tab-remove="removeJobTab" @tab-click="JobTabClick">
             <el-tab-pane v-if="!$store.state.taskAdmin.taskDetailList.length" label="欢迎" name="欢迎">
@@ -101,7 +102,7 @@
 
             <el-tab-pane v-for="item in $store.state.taskAdmin.taskDetailList" :key="item.content.id" :label="item.title" :name="item.content.id + ''">
                 <JobDetail v-if="item.content.jobType!=='VJOB'" :job-info="item.content" @deleteJob="getItem" @deleteDetailTab="clearJobTab" />
-                <Workflow v-else :is-save="item" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="getItem" />
+                <Workflow v-else :is-save="item" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="refreshList" />
             </el-tab-pane>
 
             <el-tab-pane v-if="$store.state.taskAdmin.tabType" :name="$store.state.taskAdmin.tabType" :label="$store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]">
@@ -139,7 +140,7 @@
                     <MetaCompare />
                 </div>
                 <div v-if="jobType === 'VJOB'" class="rg">
-                    <Workflow :is-save="{}" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="getItem" />
+                    <Workflow :is-save="{}" job-type="VJOB" :project-id="selectValue" :task-list="List" @fromChild="getChild" @refreshList="getItem()" />
                 </div>
             </el-tab-pane>
 
@@ -443,6 +444,7 @@ export default {
                         content
                     } = response;
                     this.List = content.data;
+                    console.log(this.List);
                     const firstElement = content?.data[0] || {};
                     const a = {};
 
@@ -455,6 +457,65 @@ export default {
                             this.$store.commit('ADD_TASKDETAIL', a)
                             this.jobDetailIdx = a.content.id + '';
                         }
+                    } else {
+                        this.firstTime = false;
+                    }
+                    this.jobDetailLoading = false;
+                });
+            });
+        },
+
+        /**
+         * @description: 刷新列表
+         */
+        refreshList(isSaveInfo) {
+            const removeIndex = _.findIndex(
+                this.$store.state.taskAdmin.taskDetailList,
+                (ele) => ele.content.id === isSaveInfo.content.id + ''
+            );
+            this.$store.commit('DELETE_TASKDETAIL', removeIndex)
+            jobProjectApi.list(this.listQuery).then((response) => {
+                const {
+                    records
+                } = response;
+                const {
+                    total
+                } = response;
+                this.total = total;
+                this.options = records;
+                this.selectValue = this.options[0].id;
+                this.fetchJobs(this.selectValue)
+
+                const listQuery = {
+                    current: 1,
+                    size: 10000,
+                    jobGroup: 0,
+                    // projectIds: '',
+                    triggerStatus: -1,
+                    jobDesc: '',
+                    glueType: ''
+                };
+                listQuery.projectIds = this.projectIds ? this.projectIds : this.options[0].id;
+                job.getList(listQuery).then((response) => {
+                    const {
+                        content
+                    } = response;
+                    this.List = content.data;
+                    console.log(this.List);
+                    const a = {};
+                    const eleIndex = _.findIndex(
+                        this.List,
+                        (ele) => ele.id === isSaveInfo.content.id
+                    );
+                    a.title = this.List[eleIndex].jobDesc;
+                    a.name = this.List[eleIndex].jobDesc;
+                    a.content = this.List[eleIndex];
+                    if (!this.firstTime) {
+                        // if (!del) {
+                            // this.$store.state.taskAdmin.taskDetailList.push(a);
+                            this.$store.commit('ADD_TASKDETAIL', a)
+                            this.jobDetailIdx = a.content.id + '';
+                        // }
                     } else {
                         this.firstTime = false;
                     }

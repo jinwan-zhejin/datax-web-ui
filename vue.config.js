@@ -42,11 +42,11 @@ module.exports = {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
         // target: 'http://47.103.79.104:9527',
-        // target: 'http://47.103.79.104:9090',
+        target: 'http://47.103.79.104:9090',
         // target: 'http://192.168.3.66:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
-        target: 'http://192.168.3.70:8080', // 刘向前
+        // target: 'http://192.168.3.70:8080', // 刘向前
         // target: 'http://192.168.3.74:7000', // 侯峰
         changeOrigin: true,
         pathRewrite: {
