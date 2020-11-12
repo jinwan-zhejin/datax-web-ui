@@ -8,7 +8,7 @@
         <i class="el-icon-refresh" /> 运行查询
       </el-button>
       <el-button size="mini">
-        <i class="el-icon-copy-document" /> 保存查询
+        <i class="el-icon-copy-document" @click="saveQuery" /> 保存查询
       </el-button>
 
       <el-button size="mini" @click="sqlJobBuild">
