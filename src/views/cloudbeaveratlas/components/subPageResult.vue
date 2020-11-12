@@ -2,7 +2,7 @@
  * @Date: 2020-09-28 17:52:31
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-11-09 14:34:50
+ * @LastEditTime: 2020-11-12 15:44:43
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageResult.vue
  * @Description: 右半部分显示 - 表
 -->
@@ -83,7 +83,7 @@
             >确认</el-button>
           </span>
         </el-popover> -->
-        <el-button type="primary" size="mini" plain icon="el-icon-delete" @click="backToSearch">清除</el-button>
+        <el-button type="primary" size="mini" plain icon="el-icon-delete" @click="msgShow=true">清除</el-button>
         <el-tooltip content="保存为自定义筛选器" placement="top">
           <el-button type="primary" size="mini" plain @click="saveAsCustomFilter">
             <svg-icon icon-class="save-light" /> 保存过滤器
@@ -116,7 +116,13 @@
     </el-row>
     <el-row>
       <el-col :span="24">
-        <el-table v-loading="tableLoading" height="59vh" class="tableStyle" :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}">
+        <el-table
+          v-loading="tableLoading"
+          height="59vh"
+          class="tableStyle"
+          :data="tableData"
+          :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'500'}"
+        >
           <el-table-column key="名称" label="名称" prop="attributes.name" min-width="100" :show-overflow-tooltip="true" sortable>
             <template v-slot:default="{ row }">
               <a
@@ -147,7 +153,7 @@
           </el-table-column>
           <el-table-column key="分类" label="分类" width="150">
             <template v-slot:default="{ row }">
-              <el-button-group v-if="row.classifications.length > 1" style="width: 150px;">
+              <el-button-group v-if="row.classifications.length > 0" style="width: 150px;">
                 <el-tooltip :content="row.classifications[0].typeName">
                   <el-button
                     plain
@@ -298,11 +304,16 @@
       </el-form>
       <el-divider />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
-        <el-button type="primary" @click="handledeleteClassification">提交</el-button>
+        <el-button size="small" type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="handledeleteClassification">提交</el-button>
       </div>
     </el-dialog>
     <AddCustomFilter :add-custom-filter-show="addCustomFilterShow" @closeaddcustomfilter="addCustomFilterShow = false" />
+    <MsgBox width="30%" :is-show="msgShow" title="提示" type="question" @submit="backToSearch" @close="msgShow = false">
+      <div slot="content">
+        搜索参数将被重置，将返回到默认搜索页面。是否继续 ?
+      </div>
+    </MsgBox>
   </div>
 </template>
 
@@ -312,12 +323,14 @@ import AddClassification from './addClassification';
 import * as apiatlas from '@/api/datax-metadata-atlas';
 import { translater } from '@/utils/dictionary';
 import AddCustomFilter from './addCustomFilter';
+import MsgBox from './msgBox'
 
 export default {
   name: 'SubPageResult',
   components: {
     AddClassification,
-    AddCustomFilter
+    AddCustomFilter,
+    MsgBox
   },
   props: {
     classificationList: {
@@ -331,6 +344,7 @@ export default {
   },
   data() {
     return {
+      msgShow: false,
       tableColumnsSelected: [],
       tableColumns: [{
         label: 'Contact_info',
@@ -462,7 +476,8 @@ export default {
       excludeSubClassifications: false,
       excludeSubTypes: false,
       pagerLayout: 'total, prev, pager, next, sizes',
-      tableLoading: false
+      tableLoading: false,
+      isLoading: false
     };
   },
   computed: {
@@ -706,7 +721,7 @@ export default {
         // console.log(res)
         if (res.status === 200 && res.statusText === 'OK') {
           this.allData = res.data;
-          // console.log(this.allData);
+          console.log(this.allData);
           this.tableData = res.data.entities;
           this.tableTotal = res.data.approximateCount;
           this.openFilter = false;
@@ -881,6 +896,7 @@ export default {
       this.deleteClassificationFlag = true;
     },
     async handledeleteClassification() {
+      this.isLoading = true
       const res = await apiatlas.deleteClassification(
         this.deleteGuid,
         this.deleteClass
@@ -894,6 +910,7 @@ export default {
           type: 'success',
           duration: 4000
         });
+        this.isLoading = false
         this.refreshList();
       } else {
         this.$message({
@@ -902,6 +919,7 @@ export default {
           type: 'error',
           duration: 4000
         });
+        this.isLoading = false
       }
     },
     /**

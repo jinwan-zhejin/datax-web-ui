@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-11-09 15:06:47
+ * @LastEditTime: 2020-11-12 14:17:17
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -1397,9 +1397,13 @@ export default {
 }
 ::v-deep .el-table {
   color: #333333;
+  font-family: PingFangHK-Medium, PingFangHK;
+}
+::v-deep .el-table th {
+  background: #f8f8fa;
 }
 ::v-deep .el-table td {
-  border-bottom: 1px solid #f8f8fa;
+  border-bottom: 1px solid #f2f2f2;
 }
 ::v-deep .el-table th.is-leaf {
   border-bottom: 0;

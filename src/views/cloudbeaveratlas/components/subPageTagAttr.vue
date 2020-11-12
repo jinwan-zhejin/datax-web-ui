@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-10-26 16:24:24
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 18:48:31
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-12 15:48:14
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageTagAttr.vue
  * @Description: 查看编辑页
 -->
 <template>
@@ -47,7 +47,7 @@
           <!-- {{ properties.entity.classifications }} -->
           属性：
           <span v-for="(item,index) in thisAttribute.attributeDefs" :key="index">
-            <el-tag type="info" size="medium">{{ item.name }}</el-tag>
+            <el-tag type="info" effect="plain" size="medium" style="margin-right: 10px;">{{ item.name }}</el-tag>
           </span>
           <el-button type="success" plain size="mini" icon="el-icon-plus" @click="addAttributeShow=true" />
         </el-col>
@@ -58,7 +58,12 @@
           <el-checkbox v-model="showHistorical">显示历史实体</el-checkbox>
         </el-col>
         <el-col>
-          <el-table :data="tableData" :header-cell-style="{background:'#F8F8FA',color:'#333333',fontWeight:'bold'}" style="border: 1px solid #f8f8fa;margin-bottom: 20px;">
+          <el-table
+            :data="tableData"
+            :header-cell-style="{background:'#f8f8fa',color:'#333333',fontWeight:'500'}"
+            style="border: 1px solid #f8f8fa;margin-bottom: 20px;"
+            height="calc(100vh - 500px)"
+          >
             <el-table-column label="名称" prop="attributes.name">
               <template v-slot:default="{row}">
                 <a :class="[row.status==='DELETED'?'tableItemLinkRed':'tableItemLink']" @click="goToDetails(row)"><i class="el-icon-document" />&nbsp;{{ row.attributes.name }}</a>
@@ -78,14 +83,14 @@
             </el-table-column>
             <el-table-column label="分类" width="150">
               <template v-slot:default="{ row }">
-                <el-button-group v-if="row.classifications.length > 1" style="width: 150px">
+                <el-button-group v-if="row.classifications.length > 0" style="width: 150px">
                   <el-tooltip :content="row.classifications[0].typeName">
                     <el-button plain size="mini" style="width:100px;overflow:hidden;text-overflow:ellipsis;" @click="gotoResultTag(row.classifications[0].typeName)">{{ row.classifications[0].typeName }}</el-button>
                   </el-tooltip>
                   <el-button v-if="row.status!=='DELETED'" plain size="mini" style="width:12px;" icon="el-icon-close" @click="deleteClassification(row.guid, row.classifications[0].typeName, row.attributes.name)" />
                 </el-button-group>
                 <el-dropdown v-if="row.classifications.length > 1" trigger="click" placement="bottom-start" :hide-on-click="false" @click.stop.native>
-                  <el-button type="success" plain size="mini">
+                  <el-button type="text" style="color: #38bb9b">
                     <i class="el-icon-more" />
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
@@ -101,7 +106,7 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-button v-if="row.status!=='DELETED'" type="success" plain size="mini" icon="el-icon-plus" @click="addClassification(row)" />
+                <el-button v-if="row.status!=='DELETED'" type="text" icon="el-icon-plus" @click="addClassification(row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -133,8 +138,8 @@
       </el-form>
       <el-divider />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
-        <el-button v-loading="isLoading" type="primary" @click="handledeleteClassification">提交</el-button>
+        <el-button size="small" type="primary" plain @click="deleteClassificationFlag = false">取消</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="handledeleteClassification">提交</el-button>
       </div>
     </el-dialog>
     <el-dialog title="添加属性" :visible.sync="addAttributeShow">
@@ -171,12 +176,12 @@
       </el-form>
       <el-divider />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" plain @click="addAttributeShow = false">取消</el-button>
-        <el-button v-loading="isLoading" type="primary" @click="handleAddAttribute('dataForm')">提交</el-button>
+        <el-button type="primary" size="small" plain @click="addAttributeShow = false">取消</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="handleAddAttribute('dataForm')">提交</el-button>
       </div>
     </el-dialog>
     <el-dialog title="编辑分类" :visible.sync="editDescriptionShow">
-      <el-form>
+      <el-form label-position="right">
         <el-form-item label="名称">
           {{ classification }}
         </el-form-item>
@@ -186,8 +191,8 @@
       </el-form>
       <el-divider />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" plain @click="editDescriptionShow = false">取消</el-button>
-        <el-button v-loading="isLoading" type="primary" @click="handleEditDescription('dataForm2')">提交</el-button>
+        <el-button size="small" type="primary" plain @click="editDescriptionShow = false">取消</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="handleEditDescription('dataForm2')">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -394,7 +399,7 @@ export default {
           duration: 4000
         })
         this.getList()
-        this.isLoading = true
+        this.isLoading = false
       } else {
         this.$message({
           message: '删除分类失败',
@@ -402,7 +407,7 @@ export default {
           type: 'error',
           duration: 4000
         })
-        this.isLoading = true
+        this.isLoading = false
       }
     },
     /**
@@ -514,7 +519,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin: 20px;
+  margin: 0 20px 20px 20px;
   .topBar {
     margin: 0 auto 20px auto;
     min-width: 65px;
@@ -566,6 +571,16 @@ export default {
 }
 .tableItemLinkRed:hover {
     text-decoration: underline;
+}
+
+.el-tag {
+  transition: .3s linear;
+}
+.el-tag:hover {
+  color: #fff;
+  background: #909399;
+  transition: .3s linear;
+  cursor: default;
 }
 
 </style>

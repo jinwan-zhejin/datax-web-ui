@@ -2,7 +2,7 @@
  * @Date: 2020-09-30 17:20:24
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-11-09 14:58:59
+ * @LastEditTime: 2020-11-12 14:38:05
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\subPageDetails.vue
  * @Description: 详情页
 -->
@@ -339,12 +339,14 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
+          size="small"
           plain
           @click="deleteClassificationFlag = false"
         >取消</el-button>
         <el-button
           v-loading="isLoading"
           type="primary"
+          size="small"
           @click="handledeleteClassification"
         >提交</el-button>
       </div>

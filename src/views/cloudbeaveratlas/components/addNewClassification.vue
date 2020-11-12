@@ -1,14 +1,14 @@
 <!--
  * @Date: 2020-10-23 14:05:25
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 18:51:32
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-12 15:50:28
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addNewClassification.vue
  * @Description: 添加新分类
 -->
 <template>
   <div>
-    <el-dialog :visible.sync="addNewClassificationShow" :title="superTypes===''?'添加新分类':'添加子分类'" @close="closeAddNewClassification">
+    <el-dialog :visible="addNewClassificationShow" :title="superTypes===''?'添加新分类':'添加子分类'" @close="closeAddNewClassification">
       <el-form ref="dataForm" :model="dataForm" label-position="right">
         <el-form-item label="名称" prop="name" :rules="[{ required: true, message: '输入名称', trigger: 'blur' }]">
           <el-input v-model="dataForm.name" placeholder="名称（必须）" clearable />
