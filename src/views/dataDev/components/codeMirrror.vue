@@ -7,8 +7,8 @@
       <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
         <i class="el-icon-refresh" /> 运行查询
       </el-button>
-      <el-button size="mini">
-        <i class="el-icon-copy-document" @click="saveQuery" /> 保存查询
+      <el-button size="mini" @click="saveQuery">
+        <i class="el-icon-copy-document" /> 保存查询
       </el-button>
 
       <el-button size="mini" @click="sqlJobBuild">
@@ -57,32 +57,43 @@ export default {
       }
     },
     columnList(val) {
+      // this.tips = {}
       const columeObj = {};
       val.forEach((ele) => {
-        columeObj[ele] = [];
+        columeObj[ele.name] = [];
       });
+      // for (let i = 0; i < val.length; i++) {
+      //   columeObj[val[i].name] = [];
+      // }
       this.tips = Object.assign(this.tips, columeObj);
+      console.log(this.tips, 'tips1');
       // this.mountCodeMirror();
     },
     tableList(val) {
+      // this.tips = {}
       const tableObj = {};
       val.forEach((ele) => {
-        tableObj[ele] = [];
+        tableObj[ele.name] = [];
       });
-      this.tips = Object.assign(this.tips, tableObj);
       // this.mountCodeMirror();
+      // for (let i = 0; i < val.length; i++) {
+      //   tableObj[val[i].name] = [];
+      // }
+      this.tips = Object.assign(this.tips, tableObj);
+      console.log(this.tips, 'tips2');
     }
   },
   beforeMount() {
-    const columeObj = {};
-    this.columnList.forEach((ele) => {
-      columeObj[ele] = [];
-    });
-    const tableObj = {};
-    this.tableList.forEach((ele) => {
-      tableObj[ele] = [];
-    });
-    this.tips = Object.assign(this.tips, columeObj, tableObj);
+    // const columeObj = {};
+    // this.columnList.forEach((ele) => {
+    //   columeObj[ele.name] = [];
+    // });
+    // const tableObj = {};
+    // this.tableList.forEach((ele) => {
+    //   tableObj[ele.name] = [];
+    // });
+    // this.tips = Object.assign(this.tips, columeObj, tableObj);
+    // console.log(this.tips, 'tips');
   },
   mounted() {
     this.mountCodeMirror();
@@ -160,6 +171,7 @@ export default {
         } else {
           if (change.origin == '+delete') {
             console.log(_this.code, '删除前code')
+            console.log(_this.tips)
             _this.code = editor.getValue()
           }
         }

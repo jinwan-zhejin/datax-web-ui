@@ -39,7 +39,7 @@ export default {
     TableDetail,
     name: 'DataDevContent'
   },
-  props: ['dblparams', 'parentlist'],
+  props: ['dblparams', 'parentlist', 'clist', 'tlist'],
 
   data() {
     return {
@@ -73,6 +73,14 @@ export default {
       if (val.length > 0) {
         this.options = val
       }
+    },
+    clist(val) {
+      console.log(val, 'clist')
+      this.columnList = val
+    },
+    tlist(val) {
+      console.log(val, 'tlist')
+      this.tableList = val
     }
   },
   created() {

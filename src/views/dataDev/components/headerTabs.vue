@@ -69,7 +69,7 @@
       <!-- @tab-remove="removeTab" -->
       <!-- @edit="handleTabsEdit" -->
       <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-        <DataDevContent ref="content" :parentlist="sourceList" />
+        <DataDevContent ref="content" :parentlist="sourceList" :tlist="tableList" :clist="columnList" />
       </el-tab-pane>
 
     </el-tabs>
@@ -129,7 +129,9 @@ export default {
       currentNode: {},
       selectedDatasource: {},
       selectedDbName: '',
-      selectedDsName: ''
+      selectedDsName: '',
+      tableList: [],
+      columnList: []
     };
   },
   watch: {
@@ -216,7 +218,7 @@ export default {
           schema: data.name
         }).then(res => {
           console.log('res', res);
-          // this.tableList = res;
+          this.tableList = res;
           const arr = []
           for (let j = 0; j < res.length; j++) {
             arr.push({
@@ -236,6 +238,7 @@ export default {
           schema: data.schema
         }).then((res) => {
           console.log(res.datas)
+          this.columnList = res.datas
           const arr = []
           for (let j = 0; j < res.datas.length; j++) {
             arr.push({
