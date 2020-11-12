@@ -3,12 +3,12 @@
     <div style="padding: 10px 0px;backgroundColor: #E2ECFA" class="tit">
       <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">{{ isNewTask?'新建':'编辑' }}</el-button>
       <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="save">执行一次</el-button> -->
-      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="runVirtualOnce">执行一次</el-button>
+      <el-button v-if="!isNewTask" size="small" type="goon" style="marginLeft: 24px;" @click="runVirtualOnce">执行一次</el-button>
       <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">查看日志</el-button> -->
-      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button>
+      <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button> -->
       <!-- <el-button @click="getVirtualTaskInfo">test-info</el-button>
       <el-button @click="getAllVirtualTask">test-all</el-button> -->
-      <el-switch v-model="taskTrigger" active-text="启动" inactive-text="停止" inactive-color="#FE4646" active-color="#00A854" @change="changeSwitch" />
+      <el-switch v-if="!isNewTask" v-model="taskTrigger" style="float: right; margin-right: 10px; height: 30px;" active-text="启动" inactive-text="停止" inactive-color="#FE4646" active-color="#00A854" @change="changeSwitch" />
     </div>
     <!-- isSave   {{ isSave }} -->
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
@@ -66,10 +66,10 @@
             <!-- <el-form-item label="虚任务id">
               <span>{{ infoId }}</span>
             </el-form-item> -->
-            <el-form-item label="Cron表达式">
+            <el-form-item label="调度时间">
               <!-- <span>{{ jobCron }}</span> -->
               <el-input v-model="jobCron" placeholder="Cron表达式" readonly>
-                <el-button slot="append" icon="el-icon-edit" @click="setCron" />
+                <el-button slot="append" icon="el-icon-edit" @click="setCron">设置</el-button>
               </el-input>
             </el-form-item>
             <el-form-item label="虚任务名称" prop="virtualProjectName" :rules="[{ required: true, message: '请输入虚任务名称', trigger: 'blur' }]">
@@ -860,6 +860,13 @@ export default {
     .el-button {
       margin: 0px 24px;
     }
+  }
+}
+</style>
+<style lang="scss" scoped>
+.el-input {
+  .el-input__inner {
+    text-overflow: ellipsis;
   }
 }
 </style>

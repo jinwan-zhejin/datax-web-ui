@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-10-23 10:25:52
  * @Author: Anybody
- * @LastEditors: ,: Anybody
- * @LastEditTime: ,: 2020-11-02 18:52:25
- * @FilePath: ,: \datax-web-ui\src\views\cloudbeaveratlas\components\addCustomFilter.vue
+ * @LastEditors: Anybody
+ * @LastEditTime: 2020-11-12 14:54:53
+ * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\addCustomFilter.vue
  * @Description: 添加自定义过滤器
 -->
 <template>
@@ -25,7 +25,7 @@
       <el-divider />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" plain type="primary" @click="closeAddCustomFilter">取 消</el-button>
-        <el-button size="small" type="primary" @click="submit('dataForm')">确 定</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="submit('dataForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -44,7 +44,8 @@ export default {
         name: '', // 名称
         form: '' // 提交的数据
       },
-      filterList: []
+      filterList: [],
+      isLoading: false
     }
   },
   watch: {
@@ -75,6 +76,7 @@ export default {
       }
     },
     async setCF(data) {
+      this.isLoading = true
       const res = await setCustomFilters(data)
       if (res.status === 200 && res.statusText === 'OK') {
         this.$message({
@@ -83,6 +85,7 @@ export default {
           type: 'success',
           duration: 4000
         })
+        this.isLoading = false
         this.getCFList()
         this.closeAddCustomFilter()
         this.refresh()
@@ -93,9 +96,11 @@ export default {
           type: 'error',
           duration: 4000
         })
+        this.isLoading = false
       }
     },
     async addCF(data) {
+      this.isLoading = true
       const res = await addCustomFilters(data)
       if (res.status === 200 && res.statusText === 'OK') {
         this.$message({
@@ -104,6 +109,7 @@ export default {
           type: 'success',
           duration: 4000
         })
+        this.isLoading = false
         this.getCFList()
         this.closeAddCustomFilter()
         this.refresh()
@@ -114,6 +120,7 @@ export default {
           type: 'error',
           duration: 4000
         })
+        this.isLoading = false
       }
     },
     refresh() {

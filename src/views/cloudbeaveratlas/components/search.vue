@@ -2,7 +2,7 @@
  * @Date: 2020-10-13 16:53:00
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-10-30 16:37:18
+ * @LastEditTime: 2020-11-12 14:59:50
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\components\search.vue
  * @Description: 搜索组件
 -->
@@ -52,8 +52,8 @@
                 <el-input v-model="searchByQuery" placeholder="通过查询语句查找 例如其中name=&quot;sales_fact&quot;" />
               </el-row>
               <el-row style="margin-top: 15px;">
-                <el-button plain type="primary" @click="clearCardInput">清空</el-button>
-                <el-button plain type="primary" :disabled="entityType===''&&searchByQuery===''" style="float:right; position:relative;" @click="searchEntity">搜索</el-button>
+                <el-button size="small" plain type="primary" @click="clearCardInput">清空</el-button>
+                <el-button size="small" plain type="primary" :disabled="entityType===''&&searchByQuery===''" style="float:right; position:relative;" @click="searchEntity">搜索</el-button>
               </el-row>
             </el-card>
           </el-collapse-transition>
@@ -125,7 +125,7 @@
       </ul>
       <a href="http://atlas.apache.org/#/SearchAdvance" style="color:#409eff"><i class="el-icon-info" />更多示例查询和用例</a>
       <div slot="footer" class="dialog-footer">
-        <el-button plain type="primary" @click="advanced = false">确 定</el-button>
+        <el-button size="small" plain type="primary" @click="advanced = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
