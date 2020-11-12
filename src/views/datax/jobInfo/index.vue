@@ -732,10 +732,14 @@ export default {
     // min-height: 630px;
 
     .el-tabs {
+      .el-tabs__content {
+        height: calc(100vh - 150px);
+        overflow-y: auto;
+        overflow-x: auto;
+      }
       .el-tab-pane {
         // padding: 10px;
         height: 100%;
-
         .job_detail {
           height: 100%;
         }
@@ -744,7 +748,9 @@ export default {
   }
 
   .rt {
-    overflow-x: scroll;
+    // overflow-x: scroll;
+    overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   .input_serach > .el-input__prefix > .el-input__icon {

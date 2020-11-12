@@ -7,8 +7,14 @@
           filterable
           @change="wDsChange"
         >
-          <el-option
+          <!-- <el-option
             v-for="item in wDsList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          /> -->
+          <el-option
+            v-for="item in dataSourceCompute"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -16,7 +22,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
-        <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable  @change="schemaChange">
+        <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
           <el-option
             v-for="item in schemaList"
             :key="item"
@@ -52,10 +58,10 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="前置sql语句：">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3"  />
+        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" />
       </el-form-item>
       <el-form-item label="postSql：">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3"  />
+        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" />
       </el-form-item>
     </el-form>
   </div>
@@ -75,7 +81,7 @@ export default {
         ascs: 'datasource_name',
         projectId: ''
       },
-      datasourceId:'',
+      datasourceId: '',
       wDsList: [],
       schemaList: [],
       fromTableName: '',
@@ -99,6 +105,21 @@ export default {
         datasourceId: [{ required: true, message: 'this is required', trigger: 'change' }],
         tableName: [{ required: true, message: 'this is required', trigger: 'change' }],
         tableSchema: [{ required: true, message: 'this is required', trigger: 'change' }]
+      }
+    }
+  },
+  computed: {
+    dataSourceCompute() {
+      if (this.$store.state.taskAdmin.tabType === 'NORMAL') {
+        return this.wDsList
+      } else if (this.$store.state.taskAdmin.tabType === 'EXPORT') {
+        return this.wDsList.filter(item => {
+          return item.datasource !== 'impala' && item.datasource !== 'hive'
+        })
+      } else {
+        return this.wDsList.filter(item => {
+          return item.datasource === 'impala' || item.datasource === 'hive'
+        })
       }
     }
   },
@@ -184,17 +205,15 @@ export default {
         this.writerForm.columns = response
         this.writerForm.checkAll = true
         this.writerForm.isIndeterminate = false
-
       })
     },
     // 表切换
     wTbChange(t) {
       this.writerForm.tableName = t
-      this.fromColumnList = [] 
+      this.fromColumnList = []
       this.writerForm.columns = []
       this.getColumns('writer')
       this.$store.commit('SET_WRITER_TABLENAME', t)
-
     },
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []

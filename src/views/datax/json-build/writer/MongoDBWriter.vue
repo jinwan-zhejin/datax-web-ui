@@ -7,8 +7,14 @@
           filterable
           @change="wDsChange"
         >
-          <el-option
+          <!-- <el-option
             v-for="item in wDsList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          /> -->
+          <el-option
+            v-for="item in dataSourceCompute"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -93,6 +99,21 @@ export default {
         fromTableName: [{ required: true, message: 'this is required', trigger: 'blur' }]
       },
       readerForm: this.getReaderData()
+    }
+  },
+  computed: {
+    dataSourceCompute() {
+      if (this.$store.state.taskAdmin.tabType === 'NORMAL') {
+        return this.wDsList
+      } else if (this.$store.state.taskAdmin.tabType === 'EXPORT') {
+        return this.wDsList.filter(item => {
+          return item.datasource !== 'impala' && item.datasource !== 'hive'
+        })
+      } else {
+        return this.wDsList.filter(item => {
+          return item.datasource === 'impala' || item.datasource === 'hive'
+        })
+      }
     }
   },
   watch: {

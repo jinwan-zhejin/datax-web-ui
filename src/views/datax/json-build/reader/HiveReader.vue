@@ -3,8 +3,14 @@
     <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
       <el-form-item label="数据源：" prop="datasourceId">
         <el-select v-model="readerForm.datasourceId" filterable @change="rDsChange">
-          <el-option
+          <!-- <el-option
             v-for="item in rDsList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          /> -->
+          <el-option
+            v-for="item in dataSourceCompute"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -102,6 +108,21 @@ export default {
         { value: 'true', label: '读取跳过表头' },
         { value: 'false', label: '读取包含表头' }
       ]
+    }
+  },
+  computed: {
+    dataSourceCompute() {
+      if (this.$store.state.taskAdmin.tabType === 'NORMAL') {
+        return this.rDsList
+      } else if (this.$store.state.taskAdmin.tabType === 'IMPORT') {
+        return this.rDsList.filter(item => {
+          return item.datasource !== 'impala' && item.datasource !== 'hive'
+        })
+      } else {
+        return this.rDsList.filter(item => {
+          return item.datasource === 'impala' || item.datasource === 'hive'
+        })
+      }
     }
   },
   watch: {

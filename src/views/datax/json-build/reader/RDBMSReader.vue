@@ -2,9 +2,15 @@
   <div class="app-container">
     <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
       <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select :value="$store.state.taskAdmin.readerDataSourceID" filterable  @change="rDsChange">
-          <el-option
+        <el-select :value="$store.state.taskAdmin.readerDataSourceID" filterable @change="rDsChange">
+          <!-- <el-option
             v-for="item in $store.state.taskAdmin.dataSourceList"
+            :key="item.id"
+            :label="item.datasourceName"
+            :value="item.id"
+          /> -->
+          <el-option
+            v-for="item in dataSourceCompute"
             :key="item.id"
             :label="item.datasourceName"
             :value="item.id"
@@ -12,16 +18,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
-        <el-select v-model="$store.state.taskAdmin.readerTableName" allow-create default-first-option filterable  @change="rTbChange">
+        <el-select v-model="$store.state.taskAdmin.readerTableName" allow-create default-first-option filterable @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item label="SQL语句：">
         <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 85px)" />
-        <el-button size='small' style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
+        <el-button size="small" style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
       </el-form-item>
       <el-form-item label="切分字段：">
-        <el-input v-model="readerForm.splitPk" placeholder="切分主键"  />
+        <el-input v-model="readerForm.splitPk" placeholder="切分主键" />
       </el-form-item>
       <el-form-item label="表所有字段：">
         <el-checkbox
@@ -36,7 +42,7 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="where条件：" prop="where">
-        <el-input v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea"  />
+        <el-input v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea" />
       </el-form-item>
     </el-form>
   </div>
@@ -56,7 +62,7 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
-      datasourceId:'',
+      datasourceId: '',
       rDsList: [],
       rTbList: [],
       schemaList: [],
@@ -85,21 +91,36 @@ export default {
       }
     }
   },
+  computed: {
+    dataSourceCompute() {
+      if (this.$store.state.taskAdmin.tabType === 'NORMAL') {
+        return this.$store.state.taskAdmin.dataSourceList
+      } else if (this.$store.state.taskAdmin.tabType === 'IMPORT') {
+        return this.$store.state.taskAdmin.dataSourceList.filter(item => {
+          return item.datasource !== 'impala' && item.datasource !== 'hive'
+        })
+      } else {
+        return this.$store.state.taskAdmin.dataSourceList.filter(item => {
+          return item.datasource === 'impala' || item.datasource === 'hive'
+        })
+      }
+    }
+  },
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
       if (this.dataSource === 'postgresql' || this.dataSource === 'greenplum' || this.dataSource === 'oracle' || this.dataSource === 'sqlserver') {
         this.getSchema()
       }
       this.getTables('rdbmsReader')
-    },
+    }
   },
-  mounted(){
+  mounted() {
     this.getTableColumns()
     this.getTables('rdbmsReader')
   },
- 
+
   methods: {
-   
+
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsReader') {
@@ -157,13 +178,13 @@ export default {
         datasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         tableName: this.$store.state.taskAdmin.readerTableName
       }
-      
+
       dsQueryApi.getColumns(obj).then(response => {
         this.rColumnList = response
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
-        
+
         this.$store.commit('SET_READER_COLUMNS', response);
       })
     },
@@ -177,7 +198,6 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
-       
       })
     },
     // 获取表字段
@@ -196,9 +216,9 @@ export default {
       this.rColumnList = []
       this.readerForm.columns = []
       this.getColumns('reader')
-      this.$store.commit('SET_READER_TABLENAME',t)
+      this.$store.commit('SET_READER_TABLENAME', t)
     },
-    
+
     rHandleCheckAllChange(val) {
       this.readerForm.columns = val ? this.rColumnList : []
       this.readerForm.isIndeterminate = false
@@ -209,7 +229,7 @@ export default {
       this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.rColumnList.length
       // this.$store.commit('SET_READER_COLUMNS',value)
-      this.$store.commit('SET_SELECT_READERCOLUMN',value)
+      this.$store.commit('SET_SELECT_READERCOLUMN', value)
     },
     getData() {
       if (Bus.dataSourceId) {
@@ -217,8 +237,7 @@ export default {
       }
       return this.readerForm
     }
-  },
-
+  }
 
 }
 </script>
