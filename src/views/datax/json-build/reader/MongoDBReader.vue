@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules">
+    <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
       <el-form-item label="数据源" prop="datasourceId">
-        <el-select v-model="readerForm.datasourceId" filterable @change="rDsChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">
           <!-- <el-option
             v-for="item in rDsList"
             :key="item.id"
@@ -16,20 +16,23 @@
             :value="item.id"
           />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.datasourceId, dataSourceCompute, 'id', 'datasourceName')) }}</span>
       </el-form-item>
       <el-form-item label="文档" prop="tableName">
-        <el-select v-model="readerForm.tableName" filterable @change="rTbChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.tableName" filterable @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.tableName) }}</span>
       </el-form-item>
       <el-form-item label="字段">
         <el-checkbox
           v-model="readerForm.checkAll"
+          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
         >全选</el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="readerForm.columns" @change="rHandleCheckedChange">
+        <el-checkbox-group v-model="readerForm.columns" :disabled="!$store.state.taskAdmin.readerAllowEdit" @change="rHandleCheckedChange">
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -41,6 +44,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { finder, dashOrValue } from '../private'
 
 export default {
   name: 'MongoDBReader',
@@ -184,7 +188,22 @@ export default {
         this.readerForm.datasourceId = Bus.dataSourceId
       }
       return this.readerForm
+    },
+    finder(item, sets, attr, distAttr) {
+      return finder(item, sets, attr, distAttr)
+    },
+    dashOrValue(val) {
+      return dashOrValue(val)
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.form-label-class {
+  >>>.el-form-item__label {
+    font-weight: 500;
+    color: #999999;
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
+}
+</style>

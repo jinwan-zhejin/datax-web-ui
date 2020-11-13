@@ -30,3 +30,10 @@ export function viewJobLog(executorAddress, triggerTime, logId, fromLineNum) {
     method: 'get'
   })
 }
+
+export function viewJobLogVirtual(executorAddress, triggerTime, logId, fromLineNum) {
+  return request({
+    url: '/api/log/logDetailCatVirtual?executorAddress=' + executorAddress + '&triggerTime=' + triggerTime + '&logId=' + logId + '&fromLineNum=' + fromLineNum,
+    method: 'get'
+  })
+}
