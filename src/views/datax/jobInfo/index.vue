@@ -156,7 +156,6 @@
             v-else
             :is-save="item"
             job-type="VJOB"
-            :project-id="selectValue"
             :task-list="List"
             @fromChild="getChild"
             @refreshList="refreshList"
@@ -217,7 +216,6 @@
             <Workflow
               :is-save="{}"
               job-type="VJOB"
-              :project-id="selectValue"
               :task-list="List"
               @fromChild="getChild"
               @refreshList="getItem()"

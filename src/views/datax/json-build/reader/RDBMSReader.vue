@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules">
+    <el-form label-position="right" label-width="120px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
       <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select :value="$store.state.taskAdmin.readerDataSourceID" filterable @change="rDsChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" :value="$store.state.taskAdmin.readerDataSourceID" filterable @change="rDsChange">
           <!-- <el-option
             v-for="item in $store.state.taskAdmin.dataSourceList"
             :key="item.id"
@@ -16,33 +16,39 @@
             :value="item.id"
           />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder($store.state.taskAdmin.readerDataSourceID, dataSourceCompute, 'id', 'datasourceName')) }}</span>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
-        <el-select v-model="$store.state.taskAdmin.readerTableName" allow-create default-first-option filterable @change="rTbChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="$store.state.taskAdmin.readerTableName" allow-create default-first-option filterable @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue($store.state.taskAdmin.readerTableName) }}</span>
       </el-form-item>
       <el-form-item label="SQL语句：">
-        <el-input v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 85px)" />
-        <el-button size="small" style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 85px)" />
+        <el-button v-show="$store.state.taskAdmin.readerAllowEdit" size="small" style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.querySql) }}</span>
       </el-form-item>
       <el-form-item label="切分字段：">
-        <el-input v-model="readerForm.splitPk" placeholder="切分主键" />
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.splitPk" placeholder="切分主键" />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.splitPk) }}</span>
       </el-form-item>
       <el-form-item label="表所有字段：">
         <el-checkbox
           v-model="readerForm.checkAll"
+          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
         >全选
         </el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="$store.state.taskAdmin.selectReaderColumn" @change="rHandleCheckedChange">
+        <el-checkbox-group v-model="$store.state.taskAdmin.selectReaderColumn" :disabled="!$store.state.taskAdmin.readerAllowEdit" @change="rHandleCheckedChange">
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="where条件：" prop="where">
-        <el-input v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea" />
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.where" placeholder="where条件，不需要再加where" type="textarea" />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.where) }}</span>
       </el-form-item>
     </el-form>
   </div>
@@ -52,6 +58,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { finder, dashOrValue } from '../private'
 
 export default {
   name: 'RDBMSReader',
@@ -236,11 +243,24 @@ export default {
         this.readerForm.datasourceId = Bus.dataSourceId
       }
       return this.readerForm
+    },
+    finder(item, sets, attr, distAttr) {
+      return finder(item, sets, attr, distAttr)
+    },
+    dashOrValue(val) {
+      return dashOrValue(val)
     }
   }
 
 }
 </script>
 
-<style >
+<style lang="scss" scoped>
+.form-label-class {
+  >>>.el-form-item__label {
+    font-weight: 500;
+    color: #999999;
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
+}
 </style>

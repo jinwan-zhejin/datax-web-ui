@@ -217,7 +217,7 @@ export const asyncRoutes = [
         component: () => import('@/views/cloudbeaveratlas/metaCompare'),
         name: 'compare',
         meta: { title: '元数据比对', icon: 'form', keepAlive: true }
-      },
+      }
       // {
       //   path: 'analysis',
       //   component: () => import('@/views/cloudbeaveratlas/index'),
@@ -568,13 +568,19 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/user',
     name: 'user',
-    meta: { title: '用户管理', icon: 'user', roles: ['ROLE_ADMIN'] },
+    meta: { title: '账户管理', icon: 'g-角色权限', roles: ['ROLE_ADMIN'] },
     children: [
       {
         path: 'user',
         name: 'User',
         component: () => import('@/views/datax/user/index'),
-        meta: { title: '用户管理', icon: 'user' }
+        meta: { title: '用户管理', icon: 'yonghuguanli' }
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/datax/user/role/index'),
+        meta: { title: '角色管理', icon: 'jiaoseguanli' }
       }
     ]
   },

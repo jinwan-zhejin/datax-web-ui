@@ -22,7 +22,7 @@
 import 'codemirror/theme/ambiance.css';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
-import sqlFormatter from "sql-formatter";
+import sqlFormatter from 'sql-formatter';
 
 const CodeMirror = require('codemirror/lib/codemirror');
 require('codemirror/addon/edit/matchbrackets');
@@ -145,9 +145,9 @@ export default {
                 },
                 extraKeys: {
                     'Ctrl-F': function (editor) {
-                        let sqlContent = "";
+                        let sqlContent = '';
                         sqlContent = editor.getValue();
-                        /*将sql内容进行格式后放入编辑器中*/
+                        /* 将sql内容进行格式后放入编辑器中*/
                         editor.setValue(sqlFormatter.format(sqlContent));
                     }
                 }

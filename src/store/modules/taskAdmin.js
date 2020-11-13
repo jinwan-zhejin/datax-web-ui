@@ -59,7 +59,9 @@ const state = {
 
   selectWriterColumn:[], // 已选中writer字段
 
+  readerAllowEdit: true, // reader启用编辑
 
+  logViewType: 0
 }
 
 const mutations = {
@@ -133,12 +135,15 @@ const mutations = {
 
   SET_SELECT_WRITERCOLUMN: (state,columns) => {
     state.selectWriterColumn = columns
+  },
+
+  SET_READER_EDITABLE: (state, editable) => {
+    state.readerAllowEdit = editable
+  },
+
+  SET_LOGVIEW_TYPE: (state, type) => {
+    state.logViewType = type
   }
-
-  
-
-
-
 }
 
 const actions = {

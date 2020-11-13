@@ -8,9 +8,9 @@ const toolRouter = {
   path: '/tool',
   component: Layout,
   redirect: 'noRedirect',
-  name: '工具',
+  name: 'JSON 格式化',
   meta: {
-    title: '工具',
+    title: 'JSON 格式化',
     icon: 'icon_svg16'
   },
   children: [

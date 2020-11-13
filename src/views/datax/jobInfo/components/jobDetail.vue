@@ -133,317 +133,351 @@
       </transition>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1000px" :before-close="handleClose">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="执行器" prop="jobGroup">
-              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-                <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="任务名称" prop="jobDesc">
-              <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="路由策略" prop="executorRouteStrategy">
-              <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
-                <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-dialog title="提示" :visible.sync="showCronBox" width="60%" append-to-body>
-              <cron v-model="temp.jobCron" />
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="showCronBox = false;">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false">确 定</el-button>
-              </span>
-            </el-dialog>
-            <el-form-item label="Cron" prop="jobCron">
-              <el-input v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
-                <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
-                <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="报警邮件">
-              <el-input v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="任务类型" prop="glueType">
-              <el-select v-model="temp.glueType" placeholder="任务脚本类型">
-                <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="失败重试次数">
-              <el-input-number v-model="temp.executorFailRetryCount" size="small" :min="0" :max="20" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="所属项目" prop="projectId">
-              <el-select v-model="temp.projectId" placeholder="所属项目" class="filter-item">
-                <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="超时时间(分钟)">
-              <el-input-number v-model="temp.executorTimeout" size="small" :min="0" :max="120" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="子任务">
-              <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
-                <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" />
-        </el-row>
-        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="辅助参数" prop="incrementType">
-              <el-select v-model="temp.incrementType" placeholder="请选择参数类型" value="">
-                <el-option v-for="item in incrementTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="增量主键ID" prop="incStartId">
-              <el-input v-model="temp.incStartId" placeholder="首次增量使用" style="width: 56%" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="ID增量参数" prop="replaceParam">
-              <el-input v-model="temp.replaceParam" placeholder="-DstartId='%s' -DendId='%s'" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="reader数据源" prop="datasourceId">
-              <el-select v-model="temp.datasourceId" placeholder="reader数据源" class="filter-item">
-                <el-option v-for="item in dataSourceList" :key="item.id" :label="item.datasourceName" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="reader表" prop="readerTable">
-              <el-input v-model="temp.readerTable" placeholder="读表的表名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="主键" label-width="40px" prop="primaryKey">
-              <el-input v-model="temp.primaryKey" placeholder="请填写主键字段名" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 2" :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="增量开始时间" prop="incStartTime">
-              <el-date-picker v-model="temp.incStartTime" type="datetime" placeholder="首次增量使用" format="yyyy-MM-dd HH:mm:ss" style="width: 57%" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="增量时间字段" prop="replaceParam">
-              <el-input v-model="temp.replaceParam" placeholder="-DlastTime='%s' -DcurrentTime='%s'" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="增量时间格式" prop="replaceParamType">
-              <el-select v-model="temp.replaceParamType" placeholder="增量时间格式" @change="incStartTimeFormat">
-                <el-option v-for="item in replaceFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
+    <el-dialog :title="translaterMaster(textMap[dialogStatus]||'')" :visible.sync="dialogFormVisible" width="50%" :before-close="handleClose">
+      <h3>
+        1.新建任务
+        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.newTask=!editable.newTask">{{ editable.newTask ? '取消' : '编辑' }}</el-button>
+        <el-button v-if="dialogStatus!=='create' && editable.newTask" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+      </h3>
+      <div class="part-container">
+        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="110px" :class="[editable.newTask?'':'form-item-class']">
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="执行器" prop="jobGroup">
+                <el-select v-if="editable.newTask" v-model="temp.jobGroup" placeholder="请选择执行器">
+                  <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.jobGroup, executorList, 'id', 'title')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="任务名称" prop="jobDesc">
+                <el-input v-if="editable.newTask" v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.jobDesc) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="路由策略" prop="executorRouteStrategy">
+                <el-select v-if="editable.newTask" v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
+                  <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.executorRouteStrategy, routeStrategies, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-dialog title="提示" :visible.sync="showCronBox" width="60%" append-to-body>
+                <cron v-model="temp.jobCron" />
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="showCronBox = false;">关闭</el-button>
+                  <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+                </span>
+              </el-dialog>
+              <el-form-item label="Cron表达式" prop="jobCron">
+                <el-input v-if="editable.newTask" v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
+                  <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+                  <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+                </el-input>
+                <span v-else class="info-detail">{{ dashOrValue(temp.jobCron) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+                <el-select v-if="editable.newTask" v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
+                  <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.executorBlockStrategy, blockStrategies, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="报警邮件">
+                <el-input v-if="editable.newTask" v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.alarmEmail) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="任务类型" prop="glueType">
+                <el-select v-if="editable.newTask" v-model="temp.glueType" placeholder="任务脚本类型">
+                  <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.glueType, glueTypes, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="失败重试次数">
+                <el-input-number v-if="editable.newTask" v-model="temp.executorFailRetryCount" size="small" :min="0" :max="20" />
+                <span v-else class="info-detail">{{ temp.executorFailRetryCount }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="所属项目" prop="projectId">
+                <el-select v-if="editable.newTask" v-model="temp.projectId" placeholder="所属项目" class="filter-item">
+                  <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.projectId, jobProjectList, 'id', 'name')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="超时时间(分钟)">
+                <el-input-number v-if="editable.newTask" v-model="temp.executorTimeout" size="small" :min="0" :max="120" />
+                <span v-else class="info-detail">{{ temp.executorTimeout }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="子任务">
+                <el-select v-if="editable.newTask" v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
+                  <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
+                </el-select>
+                <span v-else class="info-detail">{{ reorganizeChildJob }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12" />
+          </el-row>
+          <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="辅助参数" prop="incrementType">
+                <el-select v-if="editable.newTask" v-model="temp.incrementType" placeholder="请选择参数类型" value="">
+                  <el-option v-for="item in incrementTypes" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.incrementType, incrementTypes, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="增量主键ID" prop="incStartId">
+                <el-input v-if="editable.newTask" v-model="temp.incStartId" placeholder="首次增量使用" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.incStartId) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="ID增量参数" prop="replaceParam">
+                <el-input v-if="editable.newTask" v-model="temp.replaceParam" placeholder="-DstartId='%s' -DendId='%s'" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.replaceParam) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="reader数据源" prop="datasourceId">
+                <el-select v-if="editable.newTask" v-model="temp.datasourceId" placeholder="reader数据源" class="filter-item">
+                  <el-option v-for="item in dataSourceList" :key="item.id" :label="item.datasourceName" :value="item.id" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.datasourceId, dataSourceList, 'id', 'datasourceName')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="14" :sm="14" :md="14" :lg="7" :xl="7">
+              <el-form-item label="reader表" prop="readerTable">
+                <el-input v-if="editable.newTask" v-model="temp.readerTable" placeholder="读表的表名" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.readerTable) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="10" :sm="10" :md="10" :lg="5" :xl="5">
+              <el-form-item label="主键" label-width="40px" prop="primaryKey">
+                <el-input v-if="editable.newTask" v-model="temp.primaryKey" placeholder="请填写主键字段名" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.primaryKey) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 2" :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="增量开始时间" prop="incStartTime">
+                <el-date-picker v-if="editable.newTask" v-model="temp.incStartTime" type="datetime" placeholder="首次增量使用" format="yyyy-MM-dd HH:mm:ss" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.incStartTime) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="增量时间字段" prop="replaceParam">
+                <el-input v-if="editable.newTask" v-model="temp.replaceParam" placeholder="-DlastTime='%s' -DcurrentTime='%s'" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.replaceParam) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="增量时间格式" prop="replaceParamType">
+                <el-select v-if="editable.newTask" v-model="temp.replaceParamType" placeholder="增量时间格式" @change="incStartTimeFormat">
+                  <el-option v-for="item in replaceFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(temp.replaceParamType, replaceFormatTypes, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
 
-        </el-row>
-        <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 3" :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="分区字段" prop="partitionField">
-              <el-input v-model="partitionField" placeholder="请输入分区字段" style="width: 56%" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="分区时间">
-              <el-select v-model="timeFormatType" placeholder="分区时间格式">
-                <el-option v-for="item in timeFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-input-number v-model="timeOffset" :min="-20" :max="0" style="width: 65%" />
-          </el-col>
-        </el-row>
-        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="JVM启动参数">
-              <el-input v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+          </el-row>
+          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 3" :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+              <el-form-item label="分区字段" prop="partitionField">
+                <el-input v-if="editable.newTask" v-model="partitionField" placeholder="请输入分区字段" />
+                <span v-else class="info-detail">{{ dashOrValue(partitionField) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="14" :sm="14" :md="14" :lg="7" :xl="7">
+              <el-form-item label="分区时间">
+                <el-select v-if="editable.newTask" v-model="timeFormatType" placeholder="分区时间格式">
+                  <el-option v-for="item in timeFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <span v-else class="info-detail">{{ dashOrValue(finder(timeFormatType, timeFormatTypes, 'value', 'label')) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="10" :sm="10" :md="10" :lg="5" :xl="5">
+              <el-input-number v-if="editable.newTask" v-model="timeOffset" size="small" :min="-20" :max="0" style="width: 65%" />
+              <span v-else class="info-detail">{{ dashOrValue(timeOffset) }}</span>
+            </el-col>
+          </el-row>
+          <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="JVM启动参数">
+                <el-input v-if="editable.newTask" v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
+                <span v-else class="info-detail">{{ dashOrValue(temp.jvmParam) }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
 
-      <h3>2.构建reader</h3>
-      <reader ref="reader" ></reader>
-     
-      <h3>3.构建writer</h3>
-      <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules">
-      <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select
-          filterable
-          :value="$store.state.taskAdmin.writerDataSourceID"
-          @change="wDsChange"
-        >
-          <el-option
-            v-for="item in $store.state.taskAdmin.dataSourceList"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="数据库表名：" prop="tableName">
-        <el-select
-          allow-create
-          default-first-option
-          filterable
-          :value="$store.state.taskAdmin.writerTableName"
-          @change="wTbChange"
-        >
-          <el-option
-            v-for="item in wTbList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-      <div style="margin: 5px 0;" />
-      <el-form-item label="字段：">
-        <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
-        <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="$store.state.taskAdmin.selectWriterColumn" @change="wHandleCheckedChange">
-          <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="前置sql语句：">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3"  />
-      </el-form-item>
-      <el-form-item label="postSql：">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3"  />
-      </el-form-item>
-    </el-form>
+      <h3>
+        2.构建reader
+        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editReader">{{ editable.reader ? '取消' : '编辑' }}</el-button>
+        <el-button v-if="dialogStatus!=='create' && editable.reader" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+      </h3>
+      <div class="part-container">
+        <reader ref="reader" />
+      </div>
 
-      <h3>4.字段映射</h3>
-      <el-table
-        :data="tableData"
-        stripe
-        :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
-        style="width: 100%"
-      >
-        <el-table-column
-          label="数据源库"
-          width="180"
-        >
-          <template slot-scope="scope">
+      <h3>
+        3.构建writer
+        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.writer=!editable.writer">{{ editable.writer ? '取消' : '编辑' }}</el-button>
+        <el-button v-if="dialogStatus!=='create' && editable.writer" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+      </h3>
+      <div class="part-container">
+        <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules" :class="[editable.writer?'':'form-item-class']">
+          <el-form-item label="数据库源：" prop="datasourceId">
             <el-select
-              v-model="readerForm.lcolumns[scope.row.index]"
-              placeholder="请选择"
+              v-if="editable.writer"
               filterable
-              value-key="index"
-              @change="lHandleSelect(scope.row.index,$event)"
+              :value="$store.state.taskAdmin.writerDataSourceID"
+              @change="wDsChange"
             >
-              <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              <el-option
+                v-for="item in $store.state.taskAdmin.dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
             </el-select>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          label="目标字段"
-        >
-          <template slot-scope="scope">
+            <span v-else class="info-detail">{{ dashOrValue(finder($store.state.taskAdmin.writerDataSourceID, $store.state.taskAdmin.dataSourceList, 'id', 'datasourceName')) }}</span>
+          </el-form-item>
+          <el-form-item label="数据库表名：" prop="tableName">
             <el-select
-              v-model="readerForm.rcolumns[scope.row.index]"
-              placeholder="请选择"
+              v-if="editable.writer"
+              allow-create
+              default-first-option
               filterable
-              value-key="index"
-              @change="rHandleSelect(scope.row.index,$event)"
+              :value="$store.state.taskAdmin.writerTableName"
+              @change="wTbChange"
             >
-              <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              <el-option
+                v-for="item in wTbList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
             </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
+            <span v-else class="info-detail">{{ dashOrValue($store.state.taskAdmin.writerTableName) }}</span>
+          </el-form-item>
+          <div style="margin: 5px 0;" />
+          <el-form-item label="字段：">
+            <el-checkbox v-model="writerForm.checkAll" :disabled="!editable.writer" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
+            <div style="margin: 15px 0;" />
+            <el-checkbox-group v-model="$store.state.taskAdmin.selectWriterColumn" :disabled="!editable.writer" @change="wHandleCheckedChange">
+              <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="前置sql语句：">
+            <el-input v-if="editable.writer" v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" />
+            <span v-else class="info-detail">{{ dashOrValue(writerForm.preSql) }}</span>
+          </el-form-item>
+          <el-form-item label="postSql：">
+            <el-input v-if="editable.writer" v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" />
+            <span v-else class="info-detail">{{ dashOrValue(writerForm.postSql) }}</span>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <h3>
+        4.字段映射
+        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.mapping=!editable.mapping">{{ editable.mapping ? '取消' : '编辑' }}</el-button>
+        <el-button v-if="dialogStatus!=='create' && editable.mapping" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+      </h3>
+      <div style="margin: 0 24px">
+        <el-table
+          :data="tableData"
+          :header-cell-style="{ background: '#f8f8fa',color:'#666666','font-family': 'PingFangHK-Medium, PingFangHK' }"
+          style="width: 100%"
         >
-          <template slot-scope="scope">
-            <el-button
-              type="infor"
-              icon="el-icon-delete"
-              circle
-              size="small"
-              value-key="index"
-              @click="bHandleClick(scope.row.index,$event)"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column
+            label="数据源库"
+            width="180"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="editable.mapping"
+                v-model="readerForm.lcolumns[scope.row.index]"
+                placeholder="请选择"
+                filterable
+                value-key="index"
+                @change="lHandleSelect(scope.row.index,$event)"
+              >
+                <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              </el-select>
+              <span v-else class="info-detail">{{ dashOrValue(readerForm.lcolumns[scope.row.index]) }}</span>
+            </template>
+          </el-table-column>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <el-table-column
+            label="目标字段"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="editable.mapping"
+                v-model="readerForm.rcolumns[scope.row.index]"
+                placeholder="请选择"
+                filterable
+                value-key="index"
+                @change="rHandleSelect(scope.row.index,$event)"
+              >
+                <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              </el-select>
+              <span v-else class="info-detail">{{ dashOrValue(readerForm.rcolumns[scope.row.index]) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="infor"
+                icon="el-icon-delete"
+                circle
+                size="small"
+                value-key="index"
+                :disabled="!editable.mapping"
+                @click="bHandleClick(scope.row.index,$event)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="small" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button v-if="isEditable" size="small" type="primary" @click="dialogStatus==='create'?createData():updateData()">
           确定
         </el-button>
       </div>
@@ -490,6 +524,7 @@ import {
   nextTriggerTime,
   handlerUpdate
 } from '../method';
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'SimpleJob',
@@ -518,7 +553,9 @@ export default {
       return statusMap[status];
     }
   },
-  props: ['jobInfo'],
+  props: {
+    jobInfo: { type: Object, default: () => ({}) }
+  },
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
@@ -533,7 +570,7 @@ export default {
       callback();
     };
     return {
-      tableData:[],
+      tableData: [],
       mapperJson: {},
       fromColumnsList: [],
       fromColumnsListChecked: [],
@@ -857,7 +894,18 @@ export default {
         value: 0,
         label: '无'
       }
-      ]
+      ],
+      /** 可编辑 */
+      editable: {
+        /** 新建任务 */
+        newTask: false,
+        /** 构建reader */
+        reader: false,
+        /** 构建writer */
+        writer: false,
+        /** 字段映射 */
+        mapping: false
+      }
     };
   },
 
@@ -884,6 +932,109 @@ export default {
 
     writerColumns() {
       return this.$store.state.taskAdmin.writerColumns
+    },
+
+    /**
+     * @description: 查找sets中某一项的attr属性与item相同，若有则返回sets中某一项的distAttr属性值
+     * @param {String} item
+     * @param {array} sets
+     * @param {String} attr
+     * @param {String} distAttr
+     * @returns {String}
+     */
+    finder() {
+      return (item, sets, attr, distAttr) => {
+        var temp = ''
+        if (sets) {
+          temp = sets.find(ele => ele[attr] === item)
+        }
+        if (!temp) {
+          return ''
+        }
+        return temp[distAttr]
+      }
+    },
+    /** 提取子任务下拉列表数组jobDesc属性 */
+    reorganizeChildJob() {
+      var tmp = '-'
+      if (this.temp.childJobId) {
+        this.temp.childJobId.forEach(ele => {
+          if (tmp === '-') {
+            tmp = ele.jobDesc
+          } else {
+            tmp += ', '.concat(ele.jobDesc)
+          }
+        })
+      }
+      return tmp
+    },
+    /** 没有值显示短横线，有值显示值 */
+    dashOrValue() {
+      return val => {
+        if (val) {
+          return val
+        } else {
+          return '-'
+        }
+      }
+    },
+    isEditable() {
+      var temp = null
+      for (var i in this.editable) {
+        if (temp === null) {
+          temp = this.editable[i]
+        } else {
+          temp = (temp || this.editable[i])
+        }
+      }
+      return temp
+    }
+  },
+  watch: {
+    'writerForm.datasourceId': function(oldVal, newVal) {
+      this.getTables('rdbmsWriter')
+    },
+
+    fromColumnsListChecked(newval) {
+      const arr = []
+      newval.forEach((element, index) => {
+        const obj = {
+          sourceField: this.readerForm.lcolumns[index],
+          clearRule: this.readerForm.rules[index],
+          targetField: this.readerForm.rcolumns[index],
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
+    },
+
+    readerColumns(newval) {
+      console.log('newval', newval);
+      this.readerForm.lcolumns = JSON.parse(JSON.stringify(newval));
+      this.fromColumnsList = newval;
+      this.tableData = [];
+      newval.forEach((row, index) => {
+        const obj = {
+          column: row,
+          index
+        }
+        this.tableData.push(obj);
+      })
+    },
+
+    writerColumns(newval) {
+      this.readerForm.rcolumns = JSON.parse(JSON.stringify(newval));
+      this.toColumnsList = newval;
+    },
+
+    dialogFormVisible(val) {
+      this.$store.commit('SET_READER_EDITABLE', !val);
+      if (!val) {
+        for (var i in this.editable) {
+          this.editable[i] = false
+        }
+      }
     }
   },
   created() {
@@ -894,7 +1045,6 @@ export default {
     this.getDataSourceList();
     this.getSchemaList();
     this.temp = this.jobInfo;
-
   },
 
   methods: {
@@ -909,7 +1059,7 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
-      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.writerForm.columns)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
@@ -936,6 +1086,7 @@ export default {
     // 查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
+      this.$store.commit('SET_LOGVIEW_TYPE', 0)
       this.logview = true;
       this.jobId = temp.id;
             this.$refs.jobLog?.fetchData();
@@ -974,19 +1125,19 @@ export default {
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
 
-      let jobParam = JSON.parse(row.jobParam);
+      const jobParam = JSON.parse(row.jobParam);
       console.log('jobParam', jobParam);
       this.$store.commit('SET_READER_DATASOURCE_ID', jobParam.readerDatasourceId)
 
       this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0])
 
-      this.$store.commit('SET_SELECT_READERCOLUMN',jobParam.readerColumns)
+      this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns)
 
       this.$store.commit('SET_WRITER_DATASOURCE_ID', jobParam.writerDatasourceId)
 
       this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0])
 
-      this.$store.commit('SET_SELECT_WRITERCOLUMN',jobParam.writerColumns)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', jobParam.writerColumns)
 
       this.getColumns()
 
@@ -1098,33 +1249,33 @@ export default {
     },
 
     updateData() {
-      this.$store.commit('SET_SELECT_WRITERCOLUMN',this.readerForm.rcolumns);
-      this.$store.commit('SET_SELECT_READERCOLUMN',this.readerForm.lcolumns);
-      let jobParam = {
-                  "readerDatasourceId": this.$store.state.taskAdmin.readerDataSourceID,
-                  "readerTables": [this.$store.state.taskAdmin.readerTableName],
-                  "readerColumns": this.$store.state.taskAdmin.selectReaderColumn,
-                  "writerDatasourceId": this.$store.state.taskAdmin.writerDataSourceID,
-                  "writerTables": [this.$store.state.taskAdmin.writerTableName],
-                  "writerColumns": this.$store.state.taskAdmin.selectWriterColumn,
-                  "transformer": [""],
-                  "hiveReader": {},
-                  "hiveWriter": {},
-                  "rdbmsReader": {
-                    "readerSplitPk": "",
-                    "whereParams": "",
-                    "querySql": ""
-                  },
-                  "rdbmsWriter": {
-                    "preSql": "",
-                    "postSql": ""
-                  },
-                  "hbaseReader": {},
-                  "hbaseWriter": {},
-                  "mongoDBReader": {},
-                  "mongoDBWriter": {}
-                }
-      
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.rcolumns);
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.lcolumns);
+      const jobParam = {
+        'readerDatasourceId': this.$store.state.taskAdmin.readerDataSourceID,
+        'readerTables': [this.$store.state.taskAdmin.readerTableName],
+        'readerColumns': this.$store.state.taskAdmin.selectReaderColumn,
+        'writerDatasourceId': this.$store.state.taskAdmin.writerDataSourceID,
+        'writerTables': [this.$store.state.taskAdmin.writerTableName],
+        'writerColumns': this.$store.state.taskAdmin.selectWriterColumn,
+        'transformer': [''],
+        'hiveReader': {},
+        'hiveWriter': {},
+        'rdbmsReader': {
+          'readerSplitPk': '',
+          'whereParams': '',
+          'querySql': ''
+        },
+        'rdbmsWriter': {
+          'preSql': '',
+          'postSql': ''
+        },
+        'hbaseReader': {},
+        'hbaseWriter': {},
+        'mongoDBReader': {},
+        'mongoDBWriter': {}
+      }
+
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
           title: 'Fail',
@@ -1174,19 +1325,19 @@ export default {
 
     viewJson() {
       this.jsonshow = !this.jsonshow
-      if(this.showLog){
+      if (this.showLog) {
         this.showLog = false;
       }
     },
 
-    showRunLogDetails(){
-      this.showLog=!this.showLog;
-      if(this.jsonshow){
-        this.jsonshow=false;
+    showRunLogDetails() {
+      this.showLog = !this.showLog;
+      if (this.jsonshow) {
+        this.jsonshow = false;
       }
     },
 
-     // 获取表名
+    // 获取表名
     getTables(type) {
       if (type === 'rdbmsWriter') {
         let obj = {}
@@ -1219,25 +1370,21 @@ export default {
         this.writerForm.isIndeterminate = false
 
         this.$store.commit('SET_WRITER_COLUMNS', response);
-        
+
         this.readerForm.rcolumns = response;
         this.toColumnsList = response;
 
         console.log(response);
-
       })
     },
 
-   
-   
     lHandleSelect(index, v) {
-      
+
     },
     cHandleSelect(index, v) {},
     rHandleSelect(index, v) {
       console.log(index, v)
     },
-
 
     bHandleClick(index, v) {
       this.fromColumnsListChecked.splice(index, 1)
@@ -1248,8 +1395,6 @@ export default {
       this.tableData.splice(index, 1)
     },
 
-
-
     getLColumns() {
       return this.readerForm.lcolumns
     },
@@ -1258,49 +1403,17 @@ export default {
     },
     getRules() {
       return this.readerForm.rules
+    },
+    editReader() {
+      this.editable.reader = !this.editable.reader
+      this.$store.commit('SET_READER_EDITABLE', this.editable.reader);
+    },
+    exStatus(param) {
+      param = !param
+    },
+    translaterMaster(str) {
+      return translaterMaster(str)
     }
-
-    
-
-  },
-  watch: {
-    'writerForm.datasourceId': function(oldVal, newVal) {
-      this.getTables('rdbmsWriter')
-    },
-
-    fromColumnsListChecked(newval) {
-      const arr = []
-      newval.forEach((element, index) => {
-        const obj = {
-          sourceField: this.readerForm.lcolumns[index],
-          clearRule: this.readerForm.rules[index],
-          targetField: this.readerForm.rcolumns[index],
-          index: index
-        }
-        arr.push(obj)
-      })
-      this.$store.commit('SET_TABLEDATA', arr)
-    },
-
-    readerColumns(newval) {
-      console.log('newval', newval);
-      this.readerForm.lcolumns = JSON.parse(JSON.stringify(newval));
-      this.fromColumnsList = newval;
-      this.tableData = [];
-      newval.forEach((row, index) =>{
-        let obj = {
-          column: row,
-          index
-        }
-        this.tableData.push(obj);
-      })
-    },
-
-    writerColumns(newval) {
-      this.readerForm.rcolumns = JSON.parse(JSON.stringify(newval));
-      this.toColumnsList = newval;
-    }
-
   }
 };
 </script>
@@ -1486,5 +1599,61 @@ export default {
 
 .log_detail_window >>> .el-dialog__body {
     padding: 20px 40px;
+}
+</style>
+<style lang="scss" scoped>
+.el-dialog {
+  h3 {
+    font-size: 20px;
+    font-family: PingFangHK-Medium, PingFangHK;
+    margin: 22px 0;
+    color: #333333;
+    .el-button {
+      position:relative;
+      float: right;
+      padding: 0;
+      font-size: 16px;
+      margin: 0 10px;
+    }
+  }
+  .el-form {
+    .info-detail {
+      color: #333333;
+      font-family: PingFangHK-Regular, PingFangHK;
+    }
+    .el-select {
+      width: 100%;
+    }
+    .el-date-editor {
+      width: 100%;
+    }
+  }
+  .part-container {
+    padding: 24px;
+    background: #f8f8fa;
+    margin: 0 24px;
+  }
+  .el-table {
+    border: 1px solid #f3f3f3;
+    >>>td {
+      border-bottom: 1px solid #f3f3f3;
+    }
+    >>>th {
+      border-bottom: 1px solid #f3f3f3;
+    }
+  }
+}
+>>>.el-dialog {
+  margin-bottom: 15vh;
+  .el-dialog__body {
+    padding-top: 0;
+  }
+}
+.form-item-class {
+  >>>.el-form-item__label {
+    font-weight: 500;
+    color: #999999;
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
 }
 </style>

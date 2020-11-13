@@ -41,7 +41,6 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        // target: 'http://47.103.79.104:9527',
         target: 'http://47.103.79.104:9090',
         // target: 'http://192.168.3.66:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生

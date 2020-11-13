@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules">
+    <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
       <el-form-item label="数据源" prop="datasourceId">
-        <el-select v-model="readerForm.datasourceId" filterable @change="rDsChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">
           <!-- <el-option
             v-for="item in rDsList"
             :key="item.id"
@@ -16,39 +16,47 @@
             :value="item.id"
           />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.datasourceId, dataSourceCompute, 'id', 'datasourceName')) }}</span>
       </el-form-item>
       <el-form-item label="表" prop="tableName">
-        <el-select v-model="readerForm.tableName" filterable @change="rTbChange">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.tableName" filterable @change="rTbChange">
           <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.tableName) }}</span>
       </el-form-item>
       <el-form-item label="mode" prop="mode">
-        <el-select v-model="readerForm.mode" placeholder="读取hbase的模式">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.mode" placeholder="读取hbase的模式">
           <el-option v-for="item in modeTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.mode, modeTypes, 'value', 'label')) }}</span>
       </el-form-item>
       <el-form-item label="maxVersion">
-        <el-input v-model="readerForm.maxVersion" placeholder="多版本模式下读取的版本数,取值只能为－1或者大于1的数字" style="width: 50%" />
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.maxVersion" placeholder="多版本模式下读取的版本数,取值只能为－1或者大于1的数字" style="width: 50%" />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.maxVersion) }}</span>
       </el-form-item>
       <el-form-item label="range">
-        <el-input v-model="readerForm.range.startRowkey" placeholder="startRowkey指定开始rowkey" style="width: 50%" />
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.range.startRowkey" placeholder="startRowkey指定开始rowkey" style="width: 50%" />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.range.startRowkey) }}</span>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="readerForm.range.endRowkey" placeholder="endRowkey指定结束rowkey" style="width: 50%" />
+        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.range.endRowkey" placeholder="endRowkey指定结束rowkey" style="width: 50%" />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.range.endRowkey) }}</span>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="readerForm.range.isBinaryRowkey" placeholder="转换方式">
+        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.range.isBinaryRowkey" placeholder="转换方式">
           <el-option v-for="item in binaryRowkeyTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.range.isBinaryRowkey, binaryRowkeyTypes, 'value', 'label')) }}</span>
       </el-form-item>
       <el-form-item label="字段">
         <el-checkbox
           v-model="readerForm.checkAll"
+          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
         >全选</el-checkbox>
         <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="readerForm.columns" @change="rHandleCheckedChange">
+        <el-checkbox-group v-model="readerForm.columns" :disabled="!$store.state.taskAdmin.readerAllowEdit" @change="rHandleCheckedChange">
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -60,6 +68,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { finder, dashOrValue } from '../private'
 
 export default {
   name: 'HBaseReader',
@@ -218,7 +227,22 @@ export default {
         this.readerForm.datasourceId = Bus.dataSourceId
       }
       return this.readerForm
+    },
+    finder(item, sets, attr, distAttr) {
+      return finder(item, sets, attr, distAttr)
+    },
+    dashOrValue(val) {
+      return dashOrValue(val)
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.form-label-class {
+  >>>.el-form-item__label {
+    font-weight: 500;
+    color: #999999;
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
+}
+</style>
