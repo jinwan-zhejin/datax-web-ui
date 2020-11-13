@@ -13,6 +13,10 @@
         <i class="el-icon-s-order" />
         <span>查询日志</span>
       </div>
+      <div class="header_action" @click="handlerDelete">
+        <i class="el-icon-delete-solid" />
+        <span>删除</span>
+      </div>
       <div v-if="!isNewTask" class="header_switch" style="margin-right:10px;">
         <el-switch v-model="taskTrigger" active-color="#00A854" active-text="启动" inactive-color="#F04134" inactive-text="停止" @change="changeSwitch" />
       </div>
@@ -188,7 +192,7 @@
 import go from 'gojs';
 import cron from '@/components/Cron'
 import * as wfApi from '@/api/datax-job-info-workflow'
-import { handlerStart, handlerStop } from '../method'
+import { handlerStart, handlerStop, handlerDelete } from '../method'
 import jobLog from './jobLog';
 import * as job from '@/api/datax-job-info';
 
@@ -772,7 +776,8 @@ export default {
               jobDesc: this.virtualProjectInfo.virtualProjectName,
               jobCron: this.jobCron,
               jobJson: this.myDiagram.model.toJson(),
-              jobType: this.jobType
+              jobType: this.jobType,
+              triggerStatus: this.taskTrigger ? 1 : 0
               // triggerNextTime: 0
             }
           ).then(response => {
@@ -866,7 +871,17 @@ export default {
         this.$store.commit('SET_TASKLIST', this.list)
       });
     },
-
+    // 删除
+    handlerDelete() {
+      handlerDelete
+        .call(this, this.isSave.content)
+        .then(() => {
+          this.$emit('deleteDetailTab', this.isSave.content.id);
+          this.$emit('deleteJob', true);
+          this.$emit('refreshList', this.isSave)
+        })
+        .then(() => {});
+    }
   }
 }
 </script>

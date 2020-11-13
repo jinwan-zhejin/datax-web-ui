@@ -133,7 +133,7 @@
       </transition>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="50%" :before-close="handleClose">
+    <el-dialog :title="translaterMaster(textMap[dialogStatus]||'')" :visible.sync="dialogFormVisible" width="50%" :before-close="handleClose">
       <h3>
         1.新建任务
         <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.newTask=!editable.newTask">{{ editable.newTask ? '取消' : '编辑' }}</el-button>
@@ -414,64 +414,65 @@
         <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.mapping=!editable.mapping">{{ editable.mapping ? '取消' : '编辑' }}</el-button>
         <el-button v-if="dialogStatus!=='create' && editable.mapping" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
       </h3>
-      <el-table
-        :data="tableData"
-        :header-cell-style="{ background: '#f8f8fa',color:'#666666','font-family': 'PingFangHK-Medium, PingFangHK' }"
-        style="width: 100%"
-      >
-        <el-table-column
-          label="数据源库"
-          width="180"
+      <div style="margin: 0 24px">
+        <el-table
+          :data="tableData"
+          :header-cell-style="{ background: '#f8f8fa',color:'#666666','font-family': 'PingFangHK-Medium, PingFangHK' }"
+          style="width: 100%"
         >
-          <template slot-scope="scope">
-            <el-select
-              v-if="editable.mapping"
-              v-model="readerForm.lcolumns[scope.row.index]"
-              placeholder="请选择"
-              filterable
-              value-key="index"
-              @change="lHandleSelect(scope.row.index,$event)"
-            >
-              <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
-            </el-select>
-            <span v-else class="info-detail">{{ dashOrValue(readerForm.lcolumns[scope.row.index]) }}</span>
-          </template>
-        </el-table-column>
+          <el-table-column
+            label="数据源库"
+            width="180"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="editable.mapping"
+                v-model="readerForm.lcolumns[scope.row.index]"
+                placeholder="请选择"
+                filterable
+                value-key="index"
+                @change="lHandleSelect(scope.row.index,$event)"
+              >
+                <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              </el-select>
+              <span v-else class="info-detail">{{ dashOrValue(readerForm.lcolumns[scope.row.index]) }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column
-          label="目标字段"
-        >
-          <template slot-scope="scope">
-            <el-select
-              v-if="editable.mapping"
-              v-model="readerForm.rcolumns[scope.row.index]"
-              placeholder="请选择"
-              filterable
-              value-key="index"
-              @change="rHandleSelect(scope.row.index,$event)"
-            >
-              <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
-            </el-select>
-            <span v-else class="info-detail">{{ dashOrValue(readerForm.rcolumns[scope.row.index]) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="infor"
-              icon="el-icon-delete"
-              circle
-              size="small"
-              value-key="index"
-              :disabled="!editable.mapping"
-              @click="bHandleClick(scope.row.index,$event)"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
-
+          <el-table-column
+            label="目标字段"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="editable.mapping"
+                v-model="readerForm.rcolumns[scope.row.index]"
+                placeholder="请选择"
+                filterable
+                value-key="index"
+                @change="rHandleSelect(scope.row.index,$event)"
+              >
+                <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+              </el-select>
+              <span v-else class="info-detail">{{ dashOrValue(readerForm.rcolumns[scope.row.index]) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="infor"
+                icon="el-icon-delete"
+                circle
+                size="small"
+                value-key="index"
+                :disabled="!editable.mapping"
+                @click="bHandleClick(scope.row.index,$event)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogFormVisible = false">
           取消
@@ -523,6 +524,7 @@ import {
   nextTriggerTime,
   handlerUpdate
 } from '../method';
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'SimpleJob',
@@ -1408,6 +1410,9 @@ export default {
     },
     exStatus(param) {
       param = !param
+    },
+    translaterMaster(str) {
+      return translaterMaster(str)
     }
   }
 };
@@ -1624,8 +1629,9 @@ export default {
     }
   }
   .part-container {
-    padding: 36px;
+    padding: 24px;
     background: #f8f8fa;
+    margin: 0 24px;
   }
   .el-table {
     border: 1px solid #f3f3f3;
@@ -1639,6 +1645,9 @@ export default {
 }
 >>>.el-dialog {
   margin-bottom: 15vh;
+  .el-dialog__body {
+    padding-top: 0;
+  }
 }
 .form-item-class {
   >>>.el-form-item__label {
