@@ -167,20 +167,51 @@ export default {
         // 获取日志
         loadLog() {
             this.logLoading = true
-            log.viewJobLog(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
-                this.jobLogQuery.fromLineNum).then(response => {
-                // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-                if (response.content.logContent === '\n') {
-                    // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
-                    // 重新加载
-                    // setTimeout(() => {
-                    //   this.loadLog()
-                    // }, 2000);
-                } else {
-                    this.logContent = response.content.logContent
-                }
-                this.logLoading = false
-            })
+            // log.viewJobLog(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
+            //     this.jobLogQuery.fromLineNum).then(response => {
+            //     // 判断是否是 '\n'，如果是表示显示完成，不重新加载
+            //     if (response.content.logContent === '\n') {
+            //         // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
+            //         // 重新加载
+            //         // setTimeout(() => {
+            //         //   this.loadLog()
+            //         // }, 2000);
+            //     } else {
+            //         this.logContent = response.content.logContent
+            //     }
+            //     this.logLoading = false
+            // })
+            if (this.$store.state.taskAdmin.logViewType === 0) {
+        log.viewJobLog(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
+          this.jobLogQuery.fromLineNum).then(response => {
+          // 判断是否是 '\n'，如果是表示显示完成，不重新加载
+          if (response.content.logContent === '\n') {
+            // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
+            // 重新加载
+            // setTimeout(() => {
+            //   this.loadLog()
+            // }, 2000);
+          } else {
+            this.logContent = response.content.logContent
+          }
+          this.logLoading = false
+        })
+      } else if (this.$store.state.taskAdmin.logViewType === 1) {
+        log.viewJobLogVirtual(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
+          this.jobLogQuery.fromLineNum).then(response => {
+          // 判断是否是 '\n'，如果是表示显示完成，不重新加载
+          if (response.content.logContent === '\n') {
+            // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
+            // 重新加载
+            // setTimeout(() => {
+            //   this.loadLog()
+            // }, 2000);
+          } else {
+            this.logContent = response.content.logContent
+          }
+          this.logLoading = false
+        })
+      }
         }
     }
 };

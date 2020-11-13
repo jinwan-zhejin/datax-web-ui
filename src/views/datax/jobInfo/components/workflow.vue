@@ -1,15 +1,59 @@
 <template>
   <div id="sample">
-    <div style="padding: 10px 0px;backgroundColor: #E2ECFA" class="tit">
-      <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">{{ isNewTask?'新建':'编辑' }}</el-button>
-      <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="save">执行一次</el-button> -->
-      <el-button v-if="!isNewTask" size="small" type="goon" style="marginLeft: 24px;" @click="runVirtualOnce">执行一次</el-button>
-      <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="DataSave">查看日志</el-button> -->
-      <!-- <el-button size="small" type="goon" style="marginLeft: 24px;" @click="setCron">设置调度时间</el-button> -->
-      <!-- <el-button @click="getVirtualTaskInfo">test-info</el-button>
-      <el-button @click="getAllVirtualTask">test-all</el-button> -->
-      <el-switch v-if="!isNewTask" v-model="taskTrigger" style="float: right; margin-right: 10px; height: 30px;" active-text="启动" inactive-text="停止" inactive-color="#FE4646" active-color="#00A854" @change="changeSwitch" />
+    <div class="header">
+      <div class="header_action" style="margin-left:17px;" @click="DataSave">
+        <i :class="[isNewTask?'el-icon-plus':'el-icon-edit']" />
+        <span>{{ isNewTask?'新建':'编辑' }}</span>
+      </div>
+      <div v-if="!isNewTask" class="header_action" style="margin-left:17px;" @click="runVirtualOnce">
+        <i class="el-icon-video-play" />
+        <span>执行一次</span>
+      </div>
+      <div v-if="!isNewTask" class="header_action" @click="handlerViewLog">
+        <i class="el-icon-s-order" />
+        <span>查询日志</span>
+      </div>
+      <div v-if="!isNewTask" class="header_switch" style="margin-right:10px;">
+        <el-switch v-model="taskTrigger" active-color="#00A854" active-text="启动" inactive-color="#F04134" inactive-text="停止" @change="changeSwitch" />
+      </div>
     </div>
+    <!-- <div class="header-second">
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="撤回" placement="top">
+          <svg-icon class="svgIcon" icon-class="undo" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="还原" placement="top">
+          <svg-icon class="svgIcon" icon-class="redo" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="删除" placement="top">
+          <svg-icon class="svgIcon" icon-class="delete" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="放大" placement="top">
+          <svg-icon class="svgIcon" icon-class="zoomin" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="缩小" placement="top">
+          <svg-icon class="svgIcon" icon-class="zoomout" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="置顶" placement="top">
+          <svg-icon class="svgIcon" icon-class="top" />
+        </el-tooltip>
+      </div>
+      <div class="header_action" style="margin-left:17px;">
+        <el-tooltip content="置底" placement="top">
+          <svg-icon class="svgIcon" icon-class="bottom" />
+        </el-tooltip>
+      </div>
+    </div> -->
     <!-- isSave   {{ isSave }} -->
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
@@ -83,6 +127,10 @@
         <el-button size="small" type="primary" @click="sureSave('virtualProjectInfo')">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog width="75%" class="log_detail_window" title="日志信息" :visible.sync="logview">
+      <jobLog :id="jobId" ref="jobLog" />
+    </el-dialog>
     <!-- <p>
       The FlowChart sample demonstrates several key features of GoJS,
       namely <a href="../intro/palette.html">Palette</a>s,
@@ -141,11 +189,14 @@ import go from 'gojs';
 import cron from '@/components/Cron'
 import * as wfApi from '@/api/datax-job-info-workflow'
 import { handlerStart, handlerStop } from '../method'
+import jobLog from './jobLog';
+import * as job from '@/api/datax-job-info';
 
 export default {
   name: 'Flow',
   components: {
-    cron
+    cron,
+    jobLog
   },
   props: {
     isSave: { type: Object, default: () => ({}) },
@@ -153,7 +204,6 @@ export default {
      * @description: 任务列表
      */
     taskList: { type: Array, default: () => ([]) },
-    projectId: { type: Number, default: 0 },
     jobType: { type: String, default: '' }
   },
   data() {
@@ -178,7 +228,21 @@ export default {
       virtualProjectInfo: {
         virtualProjectName: ''
       },
-      taskTrigger: false
+      taskTrigger: false,
+      logview: false,
+      jobId: '',
+      listLoading: false,
+      listQuery: {
+        current: 1,
+        size: 10000,
+        jobGroup: 0,
+        projectIds: '',
+        triggerStatus: -1,
+        jobDesc: '',
+        glueType: ''
+      },
+      total: 0,
+      list: null
     }
   },
   computed: {
@@ -216,7 +280,7 @@ export default {
       if (this.isSave.hasOwnProperty('content')) {
         return this.isSave.content.projectId
       } else {
-        return this.projectId
+        return this.$store.state.taskAdmin.projectId
       }
     },
     /** 是否为新建虚任务 */
@@ -763,72 +827,6 @@ export default {
       })
     },
     /**
-     * @description: 获取具体虚任务信息
-     */
-    // getVirtualTaskInfo() {
-    //   wfApi.listVirtualTask({
-    //     jobInfoId: '0f464fae35fb40b6a85d5d1b69e36d07',
-    //     projectId: this.projectId
-    //   }).then(response => {
-    //     console.log(response);
-    //     if (response.code === 200) {
-    //       this.$message({
-    //         message: response.msg,
-    //         showClose: true,
-    //         type: 'success',
-    //         duration: 4000
-    //       })
-    //     } else {
-    //       this.$message({
-    //         message: response.msg,
-    //         showClose: true,
-    //         type: 'error',
-    //         duration: 4000
-    //       })
-    //     }
-    //   }).catch(err => {
-    //     this.$message({
-    //       message: err.response,
-    //       showClose: true,
-    //       type: 'error',
-    //       duration: 4000
-    //     })
-    //   })
-    // },
-    /**
-     * @description: 获取虚任务列表
-     */
-    // getAllVirtualTask() {
-    //   wfApi.listVirtualTask({
-    //     jobInfoId: '',
-    //     projectId: 0
-    //   }).then(response => {
-    //     console.log(response);
-    //     if (response.code === 200) {
-    //       this.$message({
-    //         message: response.msg,
-    //         showClose: true,
-    //         type: 'success',
-    //         duration: 4000
-    //       })
-    //     } else {
-    //       this.$message({
-    //         message: response.msg,
-    //         showClose: true,
-    //         type: 'error',
-    //         duration: 4000
-    //       })
-    //     }
-    //   }).catch(err => {
-    //     this.$message({
-    //       message: err.response,
-    //       showClose: true,
-    //       type: 'error',
-    //       duration: 4000
-    //     })
-    //   })
-    // },
-    /**
      * @description: 任务启停
      */
     changeSwitch() {
@@ -845,7 +843,30 @@ export default {
         var v = c === 'x' ? r : (r & 0x3 | 0x8)
         return v.toString(16);
       })
-    }
+    },
+    // 查看日志
+    handlerViewLog() {
+      // handlerViewLog.call(this, temp);
+      this.$store.commit('SET_LOGVIEW_TYPE', 1)
+      this.logview = true;
+      this.jobId = this.isSave.content.id;
+      this.$refs.jobLog?.fetchData();
+    },
+    fetchData() {
+      this.listLoading = true;
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
+      job.getList(this.listQuery).then((response) => {
+        const {
+          content
+        } = response;
+        this.total = content.recordsTotal;
+        this.list = content.data;
+        this.listLoading = false;
+
+        this.$store.commit('SET_TASKLIST', this.list)
+      });
+    },
+
   }
 }
 </script>
@@ -869,4 +890,44 @@ export default {
     text-overflow: ellipsis;
   }
 }
+.svg-icon {
+  font-size: 16px;
+}
+.svg-icon:hover {
+  color: #3d5eff;
+}
+</style>
+<style scoped>
+.header {
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+}
+.header_action {
+    font-size: 14px;
+    font-family: PingFangHK-Regular, PingFangHK;
+    font-weight: 400;
+    line-height: 20px;
+    float: left;
+    cursor: pointer;
+}
+.svgIcon {
+  font-size: 18px;
+}
+.header_action:not(:first-child) {
+    margin-left: 32px;
+}
+.header_action span {
+    margin-left: 4px;
+}
+.header_switch {
+    float: right;
+}
+.header-second {
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  background: #f8f8fa;
+}
+
 </style>

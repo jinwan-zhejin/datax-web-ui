@@ -19,7 +19,7 @@ export default {
     return {
       dataSource: ''
     }
-  }, 
+  },
   methods: {
     getData() {
       if (this.dataSource === 'hive') {
