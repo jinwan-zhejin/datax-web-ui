@@ -5,7 +5,7 @@
         <div class="text item">
           <div class="left">角色管理</div>
           <div class="right">
-            <el-input v-model="listQuery.username" size="medium" class="filter-item" placeholder="用户名" style="width: 268px;" clearable>
+            <el-input v-model="roleName" size="medium" class="filter-item" placeholder="用户名" style="width: 268px;" clearable>
               <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" type="goon" @click="fetchData">
                 搜索
               </el-button>
@@ -39,18 +39,29 @@
         <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
-        <el-table-column label="角色名" align="center">
-          <template slot-scope="scope">{{ scope.row.username }}</template>
-        </el-table-column>
-        <el-table-column label="角色" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.role }}</span>
-          </template>
+        <el-table-column label="角色名" align="center" prop="name" />
+        <el-table-column label="角色" align="center" prop="type">
+          <!-- <template slot-scope="scope">
+            <span>{{ scope }}</span>
+          </template> -->
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
             <el-button type="text" @click="handleUpdate(row)">
               编辑
+            </el-button>
+            <span
+              v-show="row.status!='deleted'"
+              style="
+                width: 1px;
+                height: 12px;
+                margin: 0 5px;
+                background: #e6e6e8;
+                display: inline-block;
+              "
+            />
+            <el-button type="text" @click="showMenu(row)">
+              权限
             </el-button>
             <span
               v-show="row.status!='deleted'"
@@ -85,6 +96,12 @@
             <el-form-item label="角色名称">
               <el-input v-model="form.roleName" />
             </el-form-item>
+            <el-form-item label="角色类型">
+              <el-select v-model="form.type" placeholder="请选择角色类型">
+                <el-option label="管理员" value="ROLE_ADMIN" />
+                <el-option label="普通用户" value="ROLE_USER" />
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col></el-row>
       <div slot="footer" class="dialog-footer">
@@ -104,6 +121,12 @@
             <el-form-item label="角色名称">
               <el-input v-model="editForm.roleName" />
             </el-form-item>
+            <el-form-item label="角色类型">
+              <el-select v-model="editForm.type" placeholder="请选择角色类型">
+                <el-option label="管理员" value="ROLE_ADMIN" />
+                <el-option label="普通用户" value="ROLE_USER" />
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col></el-row>
       <div slot="footer" class="dialog-footer">
@@ -120,12 +143,15 @@
       <el-row>
         <el-col :span="18" :offset="3">
           <el-tree
+            ref="tree"
             :data="treeData"
             show-checkbox
+            current-node-key
             node-key="name"
             :default-expanded-keys="[2, 3]"
             :default-checked-keys="[5]"
             :props="defaultProps"
+            @node-click="handleClickNode"
           />
         </el-col>
       </el-row>
@@ -143,10 +169,10 @@
 
 <script>
 import * as user from '@/api/datax-user'
+import * as role from '@/api/datax-role'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { translaterMaster } from '@/utils/dictionary'
-import { actions } from '@/store/modules/permission'
 
 export default {
   name: 'User',
@@ -171,9 +197,10 @@ export default {
       }
     }
     return {
-      list: null,
+      list: [],
       listLoading: true,
       total: 0,
+      roleName: '',
       listQuery: {
         current: 1,
         size: 10,
@@ -362,10 +389,10 @@ export default {
     // 获取角色列表
     fetchData() {
       this.listLoading = true
-      user.getList(this.listQuery).then(response => {
-        const { content } = response
-        this.total = content.recordsTotal
-        this.list = content.data
+      role.getList(this.roleName).then(res => {
+        console.log(res, 'res')
+        this.list = res
+        console.log('list', this.list)
         this.listLoading = false
       })
     },
@@ -374,39 +401,67 @@ export default {
       this.dialogAddVisible = true
     },
     addRole() {
+      role.addRole({
+        id: '',
+        name: this.form.roleName,
+        permission: '',
+        type: this.form.type
+      }).then(res => {
+        console.log(res, 'res')
+        if (res.code === 200) {
+          this.dialogAddVisible = false
+          this.fetchData()
+          this.$message.success('添加成功')
+        }
+      })
       console.log('添加角色')
     },
     // 显示编辑对话框
     handleUpdate(row) {
+      console.log(row)
       this.dialogEditVisible = true
+      this.editForm.roleName = row.name
+      this.editForm.type = row.type
     },
     editRole() {
+      role.addRole({
+        id: '',
+        name: this.editForm.roleName,
+        permission: '',
+        type: this.editForm.type
+      }).then(res => {
+        console.log(res, 'res')
+        if (res.code === 200) {
+          this.dialogEditVisible = false
+          this.fetchData()
+          this.$message.success('编辑成功')
+        }
+      })
       console.log('编辑角色')
+    },
+    // 显示菜单分配对话框
+    showMenu() {
+      this.dialogTreeVisible = true
+      setTimeout(() => {
+        this.$refs.tree.setCheckedKeys(['质量评估', '质量监控', '通用规则', '个性化规则', '规则审核', '文档管理'])
+      }, 200)
     },
     menuAss() {
       console.log('菜单赋予')
+      // console.log(this.$refs.tree.getCheckedKeys())
+      this.$refs.tree.setCheckedKeys(['质量评估', '质量监控', '通用规则', '个性化规则', '规则审核', '文档管理'])
     },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          user.createUser(this.temp).then(() => {
-            this.fetchData()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    updateData() {
-
+    handleClickNode(data) {
+      console.log(data, 'data')
     },
     handleDelete(row) {
-      console.log(this.$store.getters.permission_routes)
+      role.delRole(row.id).then(res => {
+        console.log(res, 'res')
+        if (res.code === 200) {
+          this.fetchData()
+          this.$message.success('删除成功')
+        }
+      })
     }
   }
 }
