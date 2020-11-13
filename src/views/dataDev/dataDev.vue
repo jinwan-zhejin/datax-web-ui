@@ -1,19 +1,19 @@
 <template>
-<div style="margin:30px;min-height:500px;border-radius: 0px 0px 8px 8px;">
+  <div style="margin:30px;min-height:500px;border-radius: 0px 0px 8px 8px;">
     <HeaderTabs />
     <!-- <DataDevContent /> -->
-</div>
+  </div>
 </template>
 
 <script>
 import HeaderTabs from './components/headerTabs'
 import DataDevContent from './components/content'
 export default {
-    name: 'DataDev',
-    components: {
-        HeaderTabs,
-        DataDevContent
-    }
+  name: 'DataDev',
+  components: {
+    HeaderTabs,
+    DataDevContent
+  }
 }
 </script>
 
