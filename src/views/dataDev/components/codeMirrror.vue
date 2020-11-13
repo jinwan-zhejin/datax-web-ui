@@ -176,6 +176,7 @@ export default {
                     }
                 }
                 _this.code = editor.getValue();
+                console.log(editor.getLineNumber(), 'line number')
             });
         }
     }

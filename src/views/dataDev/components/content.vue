@@ -184,12 +184,7 @@ export default {
         runQuery(val) {
             console.log(val, '子传父');
             console.log(this.queryDsInfo)
-
-            if (val.msg === 0) {
-                this.$message.info('请输入SQL语句')
-            } else {
-                this.$refs.table.queryData(this.queryDsInfo, val.code, {})
-            }
+            this.$refs.table.queryData(this.queryDsInfo, val.code, {})
         },
         previewData(params) {
             this.$refs.table.initData(params)
