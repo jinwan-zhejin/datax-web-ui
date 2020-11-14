@@ -178,7 +178,6 @@ export default {
 
                 // 当前行
                 if (curLineContent.indexOf(';') == -1) {
-                    console.log('无分号')
                     //当前行无分号
                     // 往前找;
                     let i = curLineNo - 1
@@ -196,7 +195,6 @@ export default {
                     }
                     // 往后找;
                     let j = curLineNo + 1
-                    console.log(editor.lastLine(), 'last line')
                     for (; j <= editor.lastLine(); j++) {
                         var tempLine = editor.getLine(j)
                         if (tempLine.indexOf(';') != -1) {
@@ -211,7 +209,6 @@ export default {
                     }
                 } else if ((curLineContent.indexOf(';') + 1) >= curCh) {
                     // 当前行分号在当前鼠标后
-                    console.log('有分号，在后面')
                     endPos.line = curLineNo
                     endPos.ch = curLineContent.indexOf(';')
                     // 往前找;
@@ -230,8 +227,6 @@ export default {
                     }
                 } else {
                     // 当前行分号在当前鼠标前
-                    console.log('有分号，在前面')
-
                     startPos.line = curLineNo
                     startPos.ch = curLineContent.indexOf(';') + 1
                     // 往后找;
@@ -250,11 +245,6 @@ export default {
                     }
                 }
 
-                // console.log(curLineContent.indexOf(';'), 'find ;');
-                // console.log(startPos, 'start pos')
-                // console.log(endPos, 'end pos')
-                // console.log(JSON.stringify(endPos), 'end pos2')
-                // console.log(editor.getRange(startPos, endPos), 'start-end')
                 _this.code = editor.getRange(startPos, endPos)
                 console.log(_this.code, ' -- SQL')
             });
