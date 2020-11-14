@@ -39,7 +39,7 @@
               <div class="txtInfo">
                 <div class="p1">{{ item.taskName }}</div>
                 <p>
-                  <span><i class="el-icon-user-solid" />{{ userName }}</span>
+                  <span><i class="el-icon-user-solid" />{{ userName === '1' ? '管理员' : '普通用户' }}</span>
                 </p>
                 <p>
                   <span><i class="el-icon-present" />{{ item.tableName }}</span>
@@ -250,7 +250,11 @@ export default {
   created() {
     this.fetchData()
     this.getAllData()
-    this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
+    if (localStorage.getItem('roles') === 'ROLE_ADMIN') {
+      this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
+    } else {
+      this.userName = JSON.parse(localStorage.getItem('roles'))[0]
+    }
     if (localStorage.getItem('newData')) {
       if (JSON.parse(localStorage.getItem('newData')) !== this.ObjList) {
         this.ObjList = JSON.parse(localStorage.getItem('newData'))

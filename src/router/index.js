@@ -568,7 +568,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/user',
     name: 'user',
-    meta: { title: '账户管理', icon: 'g-角色权限', roles: ['ROLE_ADMIN'] },
+    meta: { title: '账户管理', icon: 'g-角色权限', roles: ['1'] },
     children: [
       {
         path: 'user',
