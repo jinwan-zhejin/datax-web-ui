@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <el-form
+      ref="readerFrom"
       class="input_from"
       label-position="right"
       label-width="120px"
       :model="readerForm"
       :rules="rules"
-      ref="readerFrom"
     >
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
@@ -37,7 +37,7 @@
           allow-create
           default-first-option
           filterable
-          
+
           @change="schemaChange"
         >
           <el-option
@@ -54,7 +54,7 @@
           allow-create
           default-first-option
           filterable
-          
+
           @change="rTbChange"
         >
           <el-option
@@ -82,7 +82,7 @@
             :header-row-style="{'height':'40px','padding':0}"
             style="width: 100%"
           >
-            <el-table-column prop="columnName" align="center" width="150"  label="字段名称">
+            <el-table-column prop="columnName" align="center" width="150" label="字段名称">
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
@@ -107,10 +107,10 @@
                   v-model="row.row.ruleId"
                   clearable
                   filterable
-                  
+
                   multiple
                   placeholder="请选择规则名称"
-                  class='ruleName'
+                  class="ruleName"
                 >
                   <el-option
                     v-for="item in nameList"
@@ -119,7 +119,7 @@
                     :value="item.code"
                   />
                 </el-select>
-                
+
                 <p v-for="(my, index) in row.row.ruleId" v-else :key="index">
                   {{ my }}
                 </p>
@@ -146,7 +146,7 @@
         </div>
         <div class="addRow_btn" @click="addRow"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
       </el-form-item>
-     
+
       <el-form-item label="切分字段：">
         <el-input
           v-model="readerForm.splitPk"
@@ -181,6 +181,7 @@
 import * as dsQueryApi from '@/api/metadata-query';
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 import Bus from '../busReader';
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'RDBMSReader',
@@ -191,8 +192,8 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
-      datasourceId:'',
-      datasourceName:'',
+      datasourceId: '',
+      datasourceName: '',
       arr: [],
       tableData1: [],
       rDsList: [],
@@ -220,13 +221,13 @@ export default {
       },
       rules: {
         datasourceId: [
-          { required: true, message: 'this is required', trigger: 'change' }
+          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
         ],
         tableName: [
-          { required: true, message: 'this is required', trigger: 'change' }
-        ],
+          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+        ]
         // tableSchema: [
-        //   { required: true, message: 'this is required', trigger: 'change' }
+        //   { required: true, message: translaterMaster('this is require'), trigger: 'change' }
         // ]
       }
     };
@@ -247,14 +248,13 @@ export default {
       console.log(newVal);
     },
 
-    tableData1:{ //深度监听规则字段表格，表格内容变化时，直接改变readerForm参数
+    tableData1: { // 深度监听规则字段表格，表格内容变化时，直接改变readerForm参数
       handler(newVal) {
-
-        let arr = JSON.parse(JSON.stringify(newVal));
+        const arr = JSON.parse(JSON.stringify(newVal));
         arr.forEach(ele => {
-          let codeArr = []
+          const codeArr = []
           ele.ruleId.forEach(code => {
-            codeArr.push({code})
+            codeArr.push({ code })
           })
           ele.ruleId = codeArr;
         });
@@ -273,22 +273,22 @@ export default {
     addRow() {
       // this.tableData1.map((item) => {
       //   if (item.status) {
-          // console.log('this.readerForm', this.readerForm);
-          // console.log('item',item)
-          // item.columnName = this.readerForm.columnName;
-          // for (let i = 0; i < this.nameList.length; i++) {
-          //   for (let j = 0; j < this.readerForm.rule.length; j++) {
-          //     if (this.nameList[i].code === this.readerForm.rule[j]) {
-          //       const obj = {};
-          //       obj.name = this.nameList[i].name;
-          //       obj.code = this.nameList[i].code;
-          //       item.ruleId.push(obj);
-          //     }
-          //   }
-          // }
-          // this.readerForm.columnName = '';
-        //   item.status = 0;
-        // }
+      // console.log('this.readerForm', this.readerForm);
+      // console.log('item',item)
+      // item.columnName = this.readerForm.columnName;
+      // for (let i = 0; i < this.nameList.length; i++) {
+      //   for (let j = 0; j < this.readerForm.rule.length; j++) {
+      //     if (this.nameList[i].code === this.readerForm.rule[j]) {
+      //       const obj = {};
+      //       obj.name = this.nameList[i].name;
+      //       obj.code = this.nameList[i].code;
+      //       item.ruleId.push(obj);
+      //     }
+      //   }
+      // }
+      // this.readerForm.columnName = '';
+      //   item.status = 0;
+      // }
       //   return item;
       // });
 
@@ -300,7 +300,7 @@ export default {
     },
     // 编辑行
     editRow(row) {
-      console.log('row',row);
+      console.log('row', row);
       this.tableData1.map((item) => {
         if (item.status) {
           item.status = 0;
@@ -319,7 +319,7 @@ export default {
       const index = this.tableData1.indexOf(row.row);
       this.tableData1.splice(index, 1);
       this.readerForm.rule = this.tableData1;
-      console.log('this.readerForm.rule',this.readerForm.rule);
+      console.log('this.readerForm.rule', this.readerForm.rule);
     },
 
     // 获取可用数据源

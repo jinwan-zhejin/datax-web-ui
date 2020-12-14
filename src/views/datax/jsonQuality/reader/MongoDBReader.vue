@@ -35,6 +35,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'MongoDBReader',
@@ -61,9 +62,9 @@ export default {
         isIndeterminate: true
       },
       rules: {
-        mode: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        datasourceId: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        tableName: [{ required: true, message: 'this is required', trigger: 'blur' }]
+        mode: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        datasourceId: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        tableName: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }]
       }
     }
   },

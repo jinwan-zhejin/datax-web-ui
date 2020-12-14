@@ -58,6 +58,8 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
+import { translaterMaster } from '@/utils/dictionary'
+
 export default {
   name: 'MongoDBWriter',
   data() {
@@ -88,9 +90,9 @@ export default {
         { value: false, label: '不做更新' }
       ],
       rules: {
-        mode: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        datasourceId: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        fromTableName: [{ required: true, message: 'this is required', trigger: 'blur' }]
+        mode: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        datasourceId: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        fromTableName: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }]
       },
       readerForm: this.getReaderData()
     }

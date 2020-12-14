@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-form
+      ref="writerFrom"
       class="input_from"
       label-position="right"
       label-width="150px"
       :model="writerForm"
       :rules="rules"
-      ref="writerFrom"
     >
       <el-form-item label="数据库源:" prop="datasourceId">
         <el-select v-model="datasourceId" filterable @change="wDsChange">
@@ -21,9 +21,9 @@
       <el-form-item
         v-show="
           dataSource === 'postgresql' ||
-          dataSource === 'greenplum' ||
-          dataSource === 'oracle' ||
-          dataSource === 'sqlserver'
+            dataSource === 'greenplum' ||
+            dataSource === 'oracle' ||
+            dataSource === 'sqlserver'
         "
         label="Schema:"
         prop="tableSchema"
@@ -74,8 +74,7 @@
           v-model="writerForm.checkAll"
           :indeterminate="writerForm.isIndeterminate"
           @change="wHandleCheckAllChange"
-          >全选</el-checkbox
-        >
+        >全选</el-checkbox>
         <div style="margin: 15px 0" />
         <el-checkbox-group
           v-model="writerForm.columns"
@@ -105,84 +104,86 @@
 </template>
 
 <script>
-import * as dsQueryApi from "@/api/metadata-query";
-import { list as jdbcDsList } from "@/api/datax-jdbcDatasource";
-import Bus from "../busWriter";
+import * as dsQueryApi from '@/api/metadata-query';
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
+import Bus from '../busWriter';
+import { translaterMaster } from '@/utils/dictionary'
+
 export default {
-  name: "RDBMSWriter",
+  name: 'RDBMSWriter',
   data() {
     return {
       jdbcDsQuery: {
         current: 1,
         size: 200,
-        ascs: "datasource_name",
+        ascs: 'datasource_name'
       },
-      datasourceId: "",
-      datasourceName: "",
+      datasourceId: '',
+      datasourceName: '',
       wDsList: [],
       schemaList: [],
-      fromTableName: "",
+      fromTableName: '',
       fromColumnList: [],
       wTbList: [],
-      dataSource: "",
-      createTableName: "",
+      dataSource: '',
+      createTableName: '',
       writerForm: {
         datasourceId: undefined,
-        tableName: "",
+        tableName: '',
         columns: [],
         checkAll: false,
         isIndeterminate: true,
-        preSql: "",
-        postSql: "",
+        preSql: '',
+        postSql: '',
         ifCreateTable: false,
-        tableSchema: "",
+        tableSchema: ''
       },
       readerForm: this.getReaderData(),
       rules: {
         datasourceId: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
         ],
         tableName: [
-          { required: true, message: "this is required", trigger: "change" },
-        ],
+          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+        ]
         // tableSchema: [
-        //   { required: true, message: "this is required", trigger: "change" },
+        //   { required: true, message: translaterMaster('this is require'), trigger: "change" },
         // ],
-      },
+      }
     };
   },
   watch: {
-    "writerForm.datasourceId": function (oldVal, newVal) {
+    'writerForm.datasourceId': function(oldVal, newVal) {
       if (
-        this.dataSource === "postgresql" ||
-        this.dataSource === "greenplum" ||
-        this.dataSource === "oracle" ||
-        this.dataSource === "sqlserver"
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
       ) {
         this.getSchema();
       }
-      this.getTables("rdbmsWriter");
-    },
+      this.getTables('rdbmsWriter');
+    }
   },
   methods: {
-    
+
     // 获取表名
     getTables(type) {
-      if (type === "rdbmsWriter") {
+      if (type === 'rdbmsWriter') {
         let obj = {};
         if (
-          this.dataSource === "postgresql" ||
-          this.dataSource === "greenplum" ||
-          this.dataSource === "oracle" ||
-          this.dataSource === "sqlserver"
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
         ) {
           obj = {
             datasourceId: this.writerForm.datasourceId,
-            tableSchema: this.writerForm.tableSchema,
+            tableSchema: this.writerForm.tableSchema
           };
         } else {
           obj = {
-            datasourceId: this.writerForm.datasourceId,
+            datasourceId: this.writerForm.datasourceId
           };
         }
         // 组装
@@ -193,7 +194,7 @@ export default {
     },
     getSchema() {
       const obj = {
-        datasourceId: this.writerForm.datasourceId,
+        datasourceId: this.writerForm.datasourceId
       };
       dsQueryApi.getTableSchema(obj).then((response) => {
         this.schemaList = response;
@@ -203,12 +204,12 @@ export default {
     schemaChange(e) {
       this.writerForm.tableSchema = e;
       // 获取可用表
-      this.getTables("rdbmsWriter");
+      this.getTables('rdbmsWriter');
     },
     wDsChange(e) {
       this.datasourceId = e;
       // 清空
-      this.writerForm.tableName = "";
+      this.writerForm.tableName = '';
       this.writerForm.datasourceId = e;
       this.wDsList = this.$store.state.taskAdmin.dataSourceList
       this.wDsList.find((item) => {
@@ -218,13 +219,13 @@ export default {
         }
       });
       Bus.dataSourceId = e;
-      this.$emit("selectDataSource", this.dataSource);
+      this.$emit('selectDataSource', this.dataSource);
     },
     // 获取表字段
     getColumns() {
       const obj = {
         datasourceId: this.writerForm.datasourceId,
-        tableName: this.writerForm.tableName,
+        tableName: this.writerForm.tableName
       };
       dsQueryApi.getColumns(obj).then((response) => {
         this.fromColumnList = response;
@@ -238,7 +239,7 @@ export default {
       this.writerForm.tableName = t;
       this.fromColumnList = [];
       this.writerForm.columns = [];
-      this.getColumns("writer");
+      this.getColumns('writer');
     },
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : [];
@@ -265,21 +266,21 @@ export default {
     createTable() {
       const obj = {
         datasourceId: this.writerForm.datasourceId,
-        tableName: this.createTableName,
+        tableName: this.createTableName
       };
       dsQueryApi
         .createTable(obj)
         .then((response) => {
           this.$notify({
-            title: "Success",
-            message: "Create Table Successfully",
-            type: "success",
-            duration: 2000,
+            title: 'Success',
+            message: 'Create Table Successfully',
+            type: 'success',
+            duration: 2000
           });
         })
-        .catch(() => console.log("promise catch err"));
-    },
-  },
+        .catch(() => console.log('promise catch err'));
+    }
+  }
 };
 </script>
 

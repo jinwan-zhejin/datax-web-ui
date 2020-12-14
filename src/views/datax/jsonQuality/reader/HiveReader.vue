@@ -54,6 +54,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'HiveReader',
@@ -85,11 +86,11 @@ export default {
         skipHeader: ''
       },
       rules: {
-        path: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        defaultFS: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        fileType: [{ required: true, message: 'this is required', trigger: 'change' }],
-        datasourceId: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        tableName: [{ required: true, message: 'this is required', trigger: 'blur' }]
+        path: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        defaultFS: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        fileType: [{ required: true, message: translaterMaster('this is require'), trigger: 'change' }],
+        datasourceId: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        tableName: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }]
       },
       fileTypes: [
         { value: 'text', label: 'text' },

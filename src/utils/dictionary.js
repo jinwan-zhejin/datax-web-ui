@@ -180,7 +180,16 @@ const translate = {
   'username': '用户名',
   'is': '为',
   'require': '必须',
-  'role': '角色'
+  'role': '角色',
+  'jobdesc': '任务描述',
+  'jobgroup': '执行器',
+  'executorroutestrategy': '路由策略',
+  'executorblockstrategy': '阻塞处理策略',
+  'jobtype': '任务类型',
+  'jobcron': '任务计划',
+  'jobproject': '任务项目',
+  'projectid': '项目ID',
+  'this': '当前'
 }
 // export default translate
 
