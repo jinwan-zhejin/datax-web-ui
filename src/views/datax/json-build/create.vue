@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <el-form
       ref="dataForm"
       :model="temp"
@@ -12,7 +12,6 @@
           v-model="temp.jobDesc"
           size="medium"
           placeholder="请输入任务名称"
-          
         />
       </el-form-item>
 
@@ -54,7 +53,6 @@
           />
         </el-select>
       </el-form-item>
-      
 
       <el-form-item label="子任务：">
         <el-select
@@ -305,7 +303,6 @@ export default {
 
         this.$store.dispatch('getTaskList', true)
         this.$store.commit('SET_TAB_TYPE', '');
-
       });
     }
 

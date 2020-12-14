@@ -25,7 +25,18 @@ export default {
       //     console.log(i, 'i')
       //   }
       // }
+      if (this.$route.name === 'analysis') {
+        this.getAnalysis()
+      }
       return this.$route.path
+    }
+  },
+  methods: {
+    getAnalysis() {
+      window.location = 'http://192.168.3.60:9000/login?username=admin&password=123'
+      setTimeout(() => {
+        window.location = 'http://192.168.3.60:9000/superset/welcome'
+      }, 10)
     }
   }
 }

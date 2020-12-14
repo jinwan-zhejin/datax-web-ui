@@ -1,9 +1,9 @@
 <template>
-  <div class="analysis">
+  <div v-loading="loading" class="analysis">
     <!-- <keep-alive>
       {{ analysis }}
     </keep-alive> -->
-    <el-button @click="getAnalysis">链接</el-button>
+    <!-- <el-button @click="getAnalysis">链接</el-button> -->
     <!-- <iframe src="47.103.79.104:8080"></iframe> -->
   </div>
 </template>
@@ -18,10 +18,11 @@ export default {
       checkok: false,
       welcomePage: '',
       analysis: {
-        csrf_token: '',
+        // csrf_token: '',
         username: 'admin',
         password: 'admin'
-      }
+      },
+      loading: true
     }
   },
   watch: {
@@ -34,26 +35,28 @@ export default {
   },
   created() {
     // this.getAnalysis()
+    console.log(this.$route)
   },
   methods: {
     getAnalysis() {
-      goLoginGet()
-        .then(res => {
-          // csrf_token
-          console.log(res)
-          this.analysis.csrf_token = this.getTokenFromHTML(res.data);
-          // post info
-          goLoginPost(qs.stringify(this.analysis))
-            .then(() => {
-              this.checkok = !this.checkok;
-            })
-            .catch(() => {
-              this.checkok = !this.checkok;
-            });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // this.analysis.csrf_token = this.getTokenFromHTML();
+      window.location = 'http://192.168.3.60:9000/login?username=admin&password=123'
+      setTimeout(() => {
+        window.location = 'http://192.168.3.60:9000/superset/welcome'
+      }, 10)
+      // this.$router.push('/superset/welcome')
+      // post info
+      //   goLoginPost(qs.stringify(this.analysis))
+      //     .then(() => {
+      //       this.checkok = !this.checkok;
+      //     })
+      //     .catch(() => {
+      //       this.checkok = !this.checkok;
+      //     });
+      // })
+      // .catch(err => {
+      //   console.log(err);
+      // });
     },
     getAnalysisPage() {
       goWelcome(qs.stringify(this.analysis))
@@ -85,5 +88,6 @@ export default {
 <style>
 .analysis {
   padding: 20px;
+  min-height: calc(100vh - 50px);
 }
 </style>
