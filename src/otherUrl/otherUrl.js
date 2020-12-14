@@ -4,7 +4,8 @@ import request from '@/utils/request'
 export async function goLoginGet() {
   return request({
     url: '/login/',
-    method: 'get'
+    method: 'get',
+    withCredentials: true
   })
 }
 
@@ -15,7 +16,8 @@ export async function goLoginPost(data) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    data
+    data,
+    withCredentials: true
   })
 }
 
@@ -23,9 +25,21 @@ export async function goLoginPost(data) {
  * @description 获取csrf_token登录跳转到welcome页面
  * @param {json} data
  */
-export async function goWelcome(data, csrf_token) {
+export async function goWelcome(data) {
   return request({
     url: '/welcome',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data,
+    withCredentials: true
+  })
+}
+
+export async function goWhere(data) {
+  return request({
+    url: '/',
     method: 'get',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
