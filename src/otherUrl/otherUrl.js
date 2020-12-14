@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 // 其他地址登录 res.code: undefined
-export async function goLoginGet() {
+export function goLoginGet(params) {
   return request({
-    url: '/login/',
+    url: 'login',
     method: 'get',
-    withCredentials: true
+    params
   })
 }
 

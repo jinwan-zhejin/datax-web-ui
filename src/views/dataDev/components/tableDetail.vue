@@ -58,6 +58,15 @@ export default {
                 });
                 return
             }
+            if (sql.trim() == '') {
+                this.$notify({
+                    title: '警告',
+                    message: '请先选中需要执行的SQL！',
+                    type: 'warn',
+                    duration: 2000
+                });
+                return
+            }
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
             sql = sql.replace(';', '')
             // console.log(sql, 'sql')
@@ -107,7 +116,10 @@ export default {
                     }
                 }
             };
+
             const resCreateConnection = await createConnection(params1);
+            console.log(resCreateConnection, 'create connection');
+
             if (resCreateConnection.data == null) {
                 this.$notify({
                     title: '错误',
@@ -118,7 +130,6 @@ export default {
                 this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
             }
 
-            console.log(resCreateConnection, 'response');
             this.connectionId = resCreateConnection.data.createConnection.id;
 
             // 2、初始化连接

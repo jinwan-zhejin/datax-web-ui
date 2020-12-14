@@ -59,6 +59,20 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  created() {
+    if (this.$route.name === 'analysis') {
+      console.log(this.$route, ',.....................')
+      this.getAnalysis()
+    }
+  },
+  methods: {
+    getAnalysis() {
+      window.location = 'http://192.168.3.60:9000/login?username=admin&password=123'
+      setTimeout(() => {
+        window.location = 'http://192.168.3.60:9000/superset/welcome'
+      }, 200)
+    }
   }
 }
 </script>

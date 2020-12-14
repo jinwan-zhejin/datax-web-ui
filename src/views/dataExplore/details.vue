@@ -404,7 +404,11 @@ export default {
   },
   created() {
     console.log(this.$route)
-    this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
+    if (localStorage.getItem('roles') === 'ROLE_ADMIN') {
+      this.userName = localStorage.getItem('roles').split('_')[1].split('"')[0]
+    } else {
+      this.userName = localStorage.getItem('roles')
+    }
     if (this.$route.query !== {}) {
       this.obj = this.$route.query
       console.log(this.obj)

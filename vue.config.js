@@ -41,8 +41,8 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        target: 'http://47.103.79.104:9090',
-        // target: 'http://192.168.3.66:9527',
+        // target: 'http://47.103.79.104:9090',
+        target: 'http://192.168.3.66:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
         // target: 'http://192.168.3.70:8080', // 刘向前
@@ -107,6 +107,33 @@ module.exports = {
           ['^' + '/test']: '/api'
         }
       },
+      // 韩家敏接口跳转登录成功返回页面
+      '/login': {
+        ws: false,
+        target: 'http://192.168.3.60:9000', // 韩家敏
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/login']: '/login'
+        }
+      },
+      // 韩家敏接口跳转登录成功返回页面
+      '/superset/welcome': {
+        ws: false,
+        target: 'http://192.168.3.60:9000', // 韩家敏
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/superset/welcome']: '/superset/welcome'
+        }
+      },
+      // // Datains接口
+      // '/welcome': {
+      //   ws: false,
+      //   target: 'http://47.103.79.104:8080',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + '/welcome']: '/datains/welcome'
+      //   }
+      // },
       '/dbeaver/gql': {
         ws: false,
         target: 'http://192.168.3.66:8978',
