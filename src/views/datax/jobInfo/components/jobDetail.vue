@@ -1,6 +1,6 @@
 <template>
   <div class="job_detail">
-    <!-- {{ jobInfo }} -->
+    {{ jobInfo }}
     <div class="header">
       <div
         class="header_action"
@@ -1599,6 +1599,15 @@ export default {
 
     // 编辑
     handlerUpdate(row) {
+      this.$store.commit(
+        'SET_JOBINFO_TYPE',
+        this.jobInfo.jobType
+      )
+      this.$store.commit(
+        'SET_JOBRULE',
+        JSON.parse(this.jobInfo.jobParam).rule
+      )
+
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
 
@@ -1785,9 +1794,9 @@ export default {
               ',' +
               this.timeFormatType;
           }
-          if (this.temp.jobType === 'DQCJOB') {
-            jobParam.rule = this.getRules()
-          }
+          // if (this.temp.jobType === 'DQCJOB') {
+          //   jobParam.rule = this.getRules()
+          // }
           this.temp.jobParam = JSON.stringify(jobParam);
           job.updateJob(this.temp).then(() => {
             this.fetchData();

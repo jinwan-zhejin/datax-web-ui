@@ -61,7 +61,11 @@ const state = {
 
   readerAllowEdit: true, // reader启用编辑
 
-  logViewType: 0
+  logViewType: 0,
+  
+  jobInfoType: '',
+
+  jobRule: [] // 规则
 }
 
 const mutations = {
@@ -143,6 +147,22 @@ const mutations = {
 
   SET_LOGVIEW_TYPE: (state, type) => {
     state.logViewType = type
+  },
+
+  SET_JOBINFO_TYPE: (state, type) => {
+    state.jobInfoType = type
+  },
+
+  SET_JOBRULE: (state, rule) => {
+    state.jobRule = rule
+  },
+
+  ADD_RULEITEM: (state, ruleItem) => {
+    state.jobRule.push(ruleItem)
+  },
+
+  DELETE_RULEITEM: (state, ruleItemIndex) => {
+    state.jobRule.splice(ruleItemIndex, 1)
   }
 }
 
@@ -177,7 +197,16 @@ const actions = {
       }
     })
   },
-
+  addRuleItem({ commit }) {
+    commit('ADD_RULEITEM', {
+      columnName: '',
+      ruleId: [],
+      status: undefined
+    })
+  },
+  delRuleItem({ commit }, index) {
+    commit('DELETE_RULEITEM', index)
+  }
 }
 
 export default {
