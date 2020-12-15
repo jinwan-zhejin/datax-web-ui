@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <el-form
       ref="readerFrom"
       class="input_from"
@@ -125,7 +125,7 @@
                 </p>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" width="100">
+            <el-table-column label="操作" align="center" width="80">
               <template slot="header">
                 <span>操作</span>
               </template>

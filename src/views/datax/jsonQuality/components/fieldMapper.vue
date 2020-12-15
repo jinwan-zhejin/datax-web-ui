@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <div style="border: 1px solid #F3F3F3;">
       <el-table
         :data="tableData"
@@ -24,7 +24,6 @@
         </el-table-column>
         <el-table-column
           label="目标字段"
-          
         >
           <template slot-scope="scope">
             <el-select
@@ -40,6 +39,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
+          width="100"
         >
           <template slot-scope="scope">
             <el-button

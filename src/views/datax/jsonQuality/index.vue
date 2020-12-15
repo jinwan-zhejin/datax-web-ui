@@ -11,11 +11,11 @@
       >
         <div style="width: 80%; margin: 0 auto">
           <el-steps :active="active" align-center>
-            <el-step title="新建任务" description="">1</el-step>
-            <el-step title="添加质量规则" description="">2</el-step>
-            <el-step title="选择结果数据存放位置" description="">3</el-step>
-            <el-step title="字段映射" description="">4</el-step>
-            <el-step title="构建" description="">5</el-step>
+            <el-step title="新建任务" description="">step0</el-step>
+            <el-step title="添加质量规则" description="">step1</el-step>
+            <el-step title="选择结果数据存放位置" description="">step2</el-step>
+            <el-step title="字段映射" description="">step3</el-step>
+            <el-step title="构建" description="">step4</el-step>
           </el-steps>
         </div>
       </div>
@@ -168,7 +168,6 @@
             </el-form-item>
           </el-form>
         </div>
-
         <div v-show="active === 1" class="step1">
           <Reader ref="reader" />
         </div>
@@ -315,7 +314,7 @@
 
       <div class="from_footer">
         <el-button
-          :disabled="active === 0"
+          :disabled="active <= 0"
           style="margin-top: 12px"
           size="small"
           @click="last"
@@ -344,17 +343,17 @@
 import * as dataxJsonApi from '@/api/datax-json';
 import * as jobTemplate from '@/api/datax-job-template';
 import * as job from '@/api/datax-job-info';
-import Pagination from '@/components/Pagination';
-import JsonEditor from '@/components/JsonEditor';
+// import Pagination from '@/components/Pagination';
+// import JsonEditor from '@/components/JsonEditor';
 import * as jobProjectApi from '@/api/datax-job-project';
-import ShellEditor from '@/components/ShellEditor';
-import PythonEditor from '@/components/PythonEditor';
-import PowershellEditor from '@/components/PowershellEditor';
+// import ShellEditor from '@/components/ShellEditor';
+// import PythonEditor from '@/components/PythonEditor';
+// import PowershellEditor from '@/components/PowershellEditor';
 import Reader from './reader';
 import Writer from './writer';
 import clip from '@/utils/clipboard';
 import Mapper from './mapper';
-import { isJSON } from '@/utils/validate';
+// import { isJSON } from '@/utils/validate';
 import Cron from '@/components/Cron';
 import { translaterMaster } from '@/utils/dictionary'
 
@@ -363,11 +362,11 @@ export default {
   components: {
     Reader,
     Writer,
-    Pagination,
-    JsonEditor,
-    ShellEditor,
-    PythonEditor,
-    PowershellEditor,
+    // Pagination,
+    // JsonEditor,
+    // ShellEditor,
+    // PythonEditor,
+    // PowershellEditor,
     Mapper,
     Cron
   },
@@ -817,13 +816,16 @@ export default {
 .from_footer {
   text-align: right;
   border-top: 1px solid #f3f3f3;
-  margin-top: 0;
+  margin-top: 20px;
 }
 
 .main_content {
-  width: 78%;
+  width: 100%;
+  padding-left: 11%;
+  padding-right: 11%;
   margin: 0 auto;
-  min-height: 500px;
+  height: calc(100vh - 423px);
+  overflow-y: auto;
 }
 
 .main_content >>> .el-select {

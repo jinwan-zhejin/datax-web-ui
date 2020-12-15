@@ -34,20 +34,8 @@
     <div class="line">
       <el-radio v-model="type" label="4" size="mini" border>指定</el-radio>
       <el-checkbox-group v-model="appoint">
-        <div v-for="i in 4" :key="i" style="margin-left: 10px;  line-height: 25px;">
-          <span v-for="j in 10" :key="j">
-            <el-checkbox v-if="parseInt((i - 1) + '' + (j - 1)) < 32 && !(i === 1 && j === 1)" :label="(i - 1) + '' + (j - 1)" style="margin-right: 30px;" @change="type = '4'" />
-          </span>
-        </div>
+        <el-checkbox v-for="i in 31" :key="i" :label="i < 10 ? '0'+i : ''+i" @change="type = '4'" />
       </el-checkbox-group>
-      <!-- <el-select v-model="appoint" multiple :placeholder="'选择' + lable" clearable style="margin-bottom: 10px; width: 70%;" @change="type = '4'">
-        <el-option
-          v-for="k in 31"
-          :key="k"
-          :value="k <= 9 ? ('0' + k) : ('' + k)"
-          :label="k <= 9 ? ('0' + k) : ('' + k)"
-        />
-      </el-select> -->
     </div>
   </div>
 </template>
@@ -124,6 +112,11 @@ export default {
   watch: {
     value(a, b) {
       this.updateVal()
+    },
+    type(val) {
+      if (val !== '4') {
+        this.appoint = []
+      }
     }
   },
   created() {
@@ -178,8 +171,11 @@ export default {
 }
 </script>
 
-<style lang="css">
-.el-checkbox + .el-checkbox {
-  margin-left: 10px;
+<style lang="css" scoped>
+.el-checkbox {
+  margin: 7px 10px;
+}
+.el-radio {
+  width: 121px;
 }
 </style>
