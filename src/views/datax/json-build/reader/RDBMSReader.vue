@@ -24,6 +24,82 @@
         </el-select>
         <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue($store.state.taskAdmin.readerTableName) }}</span>
       </el-form-item>
+      <el-form-item v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" label="添加规则字段：">
+        <div style="border:1px solid #f3f3f3;width:100%;">
+          <el-table
+            :data="ruleList"
+            :header-cell-style="{
+              background: '#F8F8FA',
+              'font-size': '12px',
+              'font-family': 'PingFangHK-Medium, PingFangHK',
+              'font-weight': '500',
+              'color': '#333333',
+              'padding':0,
+              'padding-left':'25px',
+              'text-align':'left'
+            }"
+            :header-row-style="{'height':'40px','padding':0}"
+            style="width: 100%"
+          >
+            <el-table-column prop="columnName" align="center" label="字段名称">
+              <template v-slot:default="row">
+                <el-select
+                  v-if="row.row.status"
+                  v-model="row.row.columnName"
+                  filterable
+                  placeholder="请选择字段"
+                >
+                  <el-option
+                    v-for="item in rColumnList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+                <span v-else>{{ row.row.columnName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rules" align="center" label="规则名称">
+              <template v-slot:default="row">
+                <el-select
+                  v-if="row.row.status"
+                  v-model="row.row.ruleId"
+                  clearable
+                  filterable
+
+                  multiple
+                  placeholder="请选择规则名称"
+                  class="ruleName"
+                >
+                  <el-option
+                    v-for="item in nameList"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  />
+                </el-select>
+
+                <p v-for="(my, index) in row.row.ruleId" v-else :key="index">
+                  {{ my }}
+                </p>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" width="80">
+              <template slot="header">
+                <span>操作</span>
+              </template>
+              <template v-slot:default="row">
+                <i
+                  style="cursor: pointer;color:red;"
+                  class="el-icon-delete"
+                  @click="delRow(row)"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="addRow_btn" @click="addRow"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
+      </el-form-item>
       <el-form-item label="SQL语句：">
         <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.querySql" :autosize="{ minRows: 3, maxRows: 20}" type="textarea" placeholder="sql查询，一般用于多表关联查询时才用" style="width: calc(100% - 85px)" />
         <el-button v-show="$store.state.taskAdmin.readerAllowEdit" size="small" style="background:rgba(61, 95, 255, 1)" type="primary" @click.prevent="getColumns('reader')">解析字段</el-button>

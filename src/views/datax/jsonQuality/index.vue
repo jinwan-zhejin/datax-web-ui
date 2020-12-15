@@ -340,7 +340,7 @@
 </template>
 
 <script>
-import * as dataxJsonApi from '@/api/datax-json';
+// import * as dataxJsonApi from '@/api/datax-json';
 import * as jobTemplate from '@/api/datax-job-template';
 import * as job from '@/api/datax-job-info';
 // import Pagination from '@/components/Pagination';
@@ -666,7 +666,7 @@ export default {
           this.showNext = false;
           this.showSubmit = true;
         } else if (this.active === 5) {
-          this.temp.jobJson = this.configJson;
+          this.temp.jobParam = this.configJson;
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
           let str = '';
@@ -676,16 +676,24 @@ export default {
 
           this.temp.childJobId = str;
           console.log('this.temp', this.temp);
-          job.createJob(this.temp).then(() => {
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            });
-
-            this.$store.dispatch('getTaskList', true);
-            this.$store.commit('SET_TAB_TYPE', '');
+          job.createJob(this.temp).then(response => {
+            if (response.code === 200) {
+              this.$notify({
+                title: 'Success',
+                message: '创建质量任务成功',
+                type: 'success',
+                duration: 2000
+              });
+              this.$store.dispatch('getTaskList', true);
+              this.$store.commit('SET_TAB_TYPE', '');
+            } else {
+              this.$notify({
+                title: 'Error',
+                message: '创建质量任务失败',
+                type: 'error',
+                duration: 2000
+              });
+            }
           });
         }
       }
@@ -772,9 +780,10 @@ export default {
         mongoDBWriter: mongoDBWriter
       };
       // 调api
-      dataxJsonApi.buildJson(obj).then((response) => {
-        this.configJson = response;
-      });
+      // dataxJsonApi.buildJson(obj).then((response) => {
+      //   this.configJson = response;
+      // });
+      this.configJson = JSON.stringify(obj)
     },
     handleCopy(text, event) {
       clip(this.configJson, event);
