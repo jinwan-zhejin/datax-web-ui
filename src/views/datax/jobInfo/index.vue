@@ -22,7 +22,9 @@
             <i class="el-icon-coin" />
             <el-dropdown @command="createNewJob">
               <i class="el-icon-folder-add" />
-              <el-dropdown-menu style="max-height: calc(100vh - 180px); overflow: auto;">
+              <el-dropdown-menu
+                style="max-height: calc(100vh - 180px); overflow: auto;"
+              >
                 <el-dropdown-item command="NORMAL">
                   <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                 </el-dropdown-item>
@@ -110,6 +112,7 @@
               <li
                 v-for="item in List"
                 :key="item.id"
+                :class="[selectedId === item.id ? 'list-highlight' : '']"
                 @click="getJobDetail(item)"
               >
                 <svg-icon :icon-class="item.jobType" />
@@ -286,7 +289,8 @@ export default {
       jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
-      projectIds: ''
+      projectIds: '',
+      selectedId: undefined // list选中项
     };
   },
   computed: {
@@ -456,6 +460,7 @@ export default {
 
     getJobDetail(data) {
       // console.log(data);
+      this.selectedId = data.id
       const a = {};
       a.title = data.jobDesc;
       a.name = data.jobDesc;
@@ -715,7 +720,7 @@ export default {
               cursor: pointer;
             }
             li:hover {
-              background-color: rgb(218, 243, 253);
+              background-color: #DAF3FD;
             }
           }
         }
@@ -788,5 +793,8 @@ export default {
 }
 .svg_icon {
   margin-right: 5px;
+}
+.list-highlight {
+  background: #DAF3FD;
 }
 </style>

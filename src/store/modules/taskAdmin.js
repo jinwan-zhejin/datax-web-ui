@@ -1,6 +1,5 @@
 import * as job from '@/api/datax-job-info';
 
-
 const state = {
   allTabType: {
     'NORMAL': '普通任务',
@@ -43,26 +42,26 @@ const state = {
 
   taskDetailList: [], // 任务详情列表
 
-  taskDetailID: '',// 当前选中任务详情id
+  taskDetailID: '', // 当前选中任务详情id
 
-  jobParam: '',//创建任务的jobparam
+  jobParam: '', // 创建任务的jobparam
 
-  readerColumns: [], //所有reader字段
+  readerColumns: [], // 所有reader字段
 
-  writerColumns: [], //所有writer	字段
+  writerColumns: [], // 所有writer	字段
 
-  readerTableName: '',//reader表
+  readerTableName: '', // reader表
 
-  writerTableName: '',// writer表
+  writerTableName: '', // writer表
 
-  selectReaderColumn:[], // 已选中reader字段
+  selectReaderColumn: [], // 已选中reader字段
 
-  selectWriterColumn:[], // 已选中writer字段
+  selectWriterColumn: [], // 已选中writer字段
 
   readerAllowEdit: true, // reader启用编辑
 
   logViewType: 0,
-  
+
   jobInfoType: '',
 
   jobRule: [] // 规则
@@ -113,7 +112,7 @@ const mutations = {
     state.taskDetailID = id // 设置当前选中id
   },
 
-  SET_JOBPARAM: (state,param) => {
+  SET_JOBPARAM: (state, param) => {
     state.jobParam = param
   },
 
@@ -133,11 +132,11 @@ const mutations = {
     state.writerTableName = tableName
   },
 
-  SET_SELECT_READERCOLUMN: (state,columns) => {
+  SET_SELECT_READERCOLUMN: (state, columns) => {
     state.selectReaderColumn = columns
   },
 
-  SET_SELECT_WRITERCOLUMN: (state,columns) => {
+  SET_SELECT_WRITERCOLUMN: (state, columns) => {
     state.selectWriterColumn = columns
   },
 
@@ -170,7 +169,7 @@ const actions = {
 
   /**
    * @method getTaskList
-   * @param {*} param0 
+   * @param {*} param0
    * @param {*} isAddTask 是否是新建任务，并设置当前选中任务为添加的任务
    */
   getTaskList({ commit, state }, isAddTask) {
