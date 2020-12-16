@@ -153,10 +153,10 @@ export default {
           { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fileType: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         writeMode: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fieldDelimiter: [
           { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
@@ -185,6 +185,12 @@ export default {
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hiveWriter');
+    },
+    fromTableName(val) {
+      this.writerForm.tableName = val;
+      this.fromColumnList = [];
+      this.writerForm.columns = [];
+      this.getColumns('writer');
     }
   },
   created() {
@@ -209,7 +215,12 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
           this.wTbList = response;
-        });
+          this.fromTableName = this.wTbList[0]
+        }).catch((error) => {
+          console.log(error)
+          this.wTbList = [];
+          this.fromTableName = ''
+        })
       }
     },
     wDsChange(e) {

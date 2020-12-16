@@ -64,7 +64,9 @@ const state = {
 
   jobInfoType: '',
 
-  jobRule: [] // 规则
+  jobRule: [], // 规则
+
+  readerSchema: '' // Schema
 }
 
 const mutations = {
@@ -156,12 +158,25 @@ const mutations = {
     state.jobRule = rule
   },
 
-  ADD_RULEITEM: (state, ruleItem) => {
-    state.jobRule.push(ruleItem)
+  ADD_RULEITEM: (state) => {
+    state.jobRule.push({
+      columnName: '',
+      ruleId: [],
+      status: 1
+    })
   },
 
-  DELETE_RULEITEM: (state, ruleItemIndex) => {
-    state.jobRule.splice(ruleItemIndex, 1)
+  EDIT_RULEITEM: (state, ruleItem, index) => {
+    state.jobRule.splice(index, 1, ruleItem)
+  },
+
+  DELETE_RULEITEM: (state, ruleItem) => {
+    const index = state.jobRule.indexOf(ruleItem);
+    state.jobRule.splice(index, 1)
+  },
+
+  SET_READER_SCHEMA: (state, schema) => {
+    state.readerSchema = schema
   }
 }
 
@@ -195,16 +210,6 @@ const actions = {
         commit('SET_TASKDETAIL_ID', a.content.id + '');
       }
     })
-  },
-  addRuleItem({ commit }) {
-    commit('ADD_RULEITEM', {
-      columnName: '',
-      ruleId: [],
-      status: undefined
-    })
-  },
-  delRuleItem({ commit }, index) {
-    commit('DELETE_RULEITEM', index)
   }
 }
 

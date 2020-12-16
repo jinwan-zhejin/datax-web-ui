@@ -1,6 +1,5 @@
 <template>
-  <div class="app-container">
-    {{ $store.state.taskAdmin.jobRule }}
+  <div>
     <el-form
       label-position="right"
       label-width="120px"
@@ -13,19 +12,13 @@
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
           v-show="$store.state.taskAdmin.readerAllowEdit"
-          :value="$store.state.taskAdmin.readerDataSourceID"
+          v-model="$store.state.taskAdmin.readerDataSourceID"
           filterable
           @change="rDsChange"
         >
-          <!-- <el-option
-            v-for="item in $store.state.taskAdmin.dataSourceList"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          /> -->
           <el-option
-            v-for="item in dataSourceCompute"
-            :key="item.id"
+            v-for="(item, index) in dataSourceCompute"
+            :key="index"
             :label="item.datasourceName"
             :value="item.id"
           />
@@ -51,8 +44,8 @@
           @change="rTbChange"
         >
           <el-option
-            v-for="item in rTbList"
-            :key="item"
+            v-for="(item, index) in rTbList"
+            :key="index"
             :label="item"
             :value="item"
           />
@@ -60,101 +53,6 @@
         <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
           dashOrValue($store.state.taskAdmin.readerTableName)
         }}</span>
-      </el-form-item>
-      <el-form-item
-        v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'"
-        label="添加规则字段："
-      >
-        <div style="border:1px solid #f3f3f3;width:100%;">
-          <el-table
-            :data="$store.state.taskAdmin.jobRule"
-            :header-cell-style="{
-              background: '#F8F8FA',
-              'font-size': '12px',
-              'font-family': 'PingFangHK-Medium, PingFangHK',
-              'font-weight': '500',
-              color: '#333333',
-              padding: 0,
-              'padding-left': '25px',
-              'text-align': 'left'
-            }"
-            :header-row-style="{ height: '40px', padding: 0 }"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="columnName"
-              align="center"
-              min-width="100"
-              label="字段名称"
-            >
-              <template v-slot:default="row">
-                <el-select
-                  v-if="row.row.status"
-                  v-model="row.row.columnName"
-                  filterable
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
-                  placeholder="请选择字段"
-                >
-                  <el-option
-                    v-for="item in rColumnList"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  />
-                </el-select>
-                <span v-else>{{ row.row.columnName }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="rules" align="center" label="规则名称">
-              <template v-slot:default="row">
-                <el-select
-                  v-if="row.row.status"
-                  v-model="row.row.ruleId"
-                  clearable
-                  filterable
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
-                  multiple
-                  placeholder="请选择规则名称"
-                  class="ruleName"
-                >
-                  <el-option
-                    v-for="item in nameList"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  />
-                </el-select>
-
-                <p v-for="(my, index) in row.row.ruleId" v-else :key="index">
-                  {{ my }}
-                </p>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" width="80">
-              <template slot="header">
-                <span>操作</span>
-              </template>
-              <template v-slot:default="row">
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="small"
-                  circle
-                  plain
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
-                  @click="delRow(row)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          class="addRow_btn"
-          @click="addRow"
-        >
-          <span><i class="el-icon-plus" /> 添加规则字段</span>
-        </div>
       </el-form-item>
       <el-form-item label="SQL语句：">
         <el-input
@@ -240,6 +138,7 @@ export default {
       rTbList: [],
       schemaList: [],
       rColumnList: [],
+      rNameList: [],
       loading: false,
       active: 1,
       customFields: '',
@@ -443,5 +342,12 @@ export default {
     color: #999999;
     font-family: PingFangHK-Regular, PingFangHK;
   }
+}
+.ruleName >>> .el-tag {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -108,6 +108,12 @@ export default {
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hiveReader')
+    },
+    'readerForm.tableName'(val) {
+      this.readerForm.tableName = val
+      this.rColumnList = []
+      this.readerForm.columns = []
+      this.getColumns('reader')
     }
   },
   created() {
@@ -133,6 +139,11 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then(response => {
           this.rTbList = response
+          this.readerForm.tableName = this.rTbList[0]
+        }).catch(error => {
+          console.log(error);
+          this.rTbList = []
+          this.readerForm.tableName = ''
         })
       }
     },
@@ -161,6 +172,12 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
+      }).catch(error => {
+        console.log(error)
+        this.rColumnList = []
+        this.readerForm.columns = []
+        this.readerForm.checkAll = false
+        this.readerForm.isIndeterminate = true
       })
     },
     getColumnsByQuerySql() {

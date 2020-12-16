@@ -1,6 +1,5 @@
 <template>
   <div class="job_detail">
-    <!-- {{ jobInfo }} -->
     <div class="header">
       <div
         class="header_action"
@@ -698,7 +697,8 @@
         >保存更改</el-button>
       </h3>
       <div class="part-container">
-        <reader ref="reader" />
+        <quality-reader v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityReader" />
+        <reader v-else ref="reader" />
       </div>
 
       <h3>
@@ -717,6 +717,7 @@
         >保存更改</el-button>
       </h3>
       <div class="part-container">
+        <!-- <quality-writer v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityWriter" /> -->
         <el-form
           label-position="right"
           label-width="150px"
@@ -942,6 +943,8 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import * as jobProjectApi from '@/api/datax-job-project';
 import reader from '@/views/datax/json-build/reader';
 import writer from '@/views/datax/json-build/writer';
+import qualityReader from '../../jsonQuality/reader';
+import qualityWriter from '../../jsonQuality/writer';
 import mapper from '@/views/datax/json-build/mapper';
 import { isJSON } from '@/utils/validate';
 import jobLog from './jobLog';
@@ -971,6 +974,8 @@ export default {
     jobLog,
     reader,
     writer,
+    qualityReader,
+    qualityWriter,
     mapper
   },
   directives: {
@@ -1603,10 +1608,17 @@ export default {
         'SET_JOBINFO_TYPE',
         this.jobInfo.jobType
       )
-      this.$store.commit(
-        'SET_JOBRULE',
-        JSON.parse(this.jobInfo.jobParam).rule
-      )
+      if (this.$store.state.taskAdmin.jobInfoType === 'DQCJOB') {
+        const jobParamRule = JSON.parse(this.jobInfo.jobParam).rule
+        jobParamRule.forEach(ele => {
+          const codeArr = []
+          ele.ruleId.forEach(code => {
+            codeArr.push(code.code)
+          })
+          ele.ruleId = codeArr
+        })
+        this.$store.commit('SET_JOBRULE', jobParamRule)
+      }
 
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
@@ -1794,9 +1806,17 @@ export default {
               ',' +
               this.timeFormatType;
           }
-          // if (this.temp.jobType === 'DQCJOB') {
-          //   jobParam.rule = this.getRules()
-          // }
+          if (this.temp.jobType === 'DQCJOB') {
+            const tempjobRule = JSON.parse(JSON.stringify(this.$store.state.taskAdmin.jobRule))
+            tempjobRule.forEach(ele => {
+              const codeArr = []
+              ele.ruleId.forEach(code => {
+                codeArr.push({ code })
+              })
+              ele.ruleId = codeArr;
+            });
+            jobParam.rule = tempjobRule
+          }
           this.temp.jobParam = JSON.stringify(jobParam);
           job.updateJob(this.temp).then(() => {
             this.fetchData();

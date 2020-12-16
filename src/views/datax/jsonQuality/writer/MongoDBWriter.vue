@@ -100,6 +100,12 @@ export default {
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('mongodbWriter')
+    },
+    fromTableName(val) {
+      this.writerForm.tableName = val;
+      this.fromColumnList = [];
+      this.writerForm.columns = [];
+      this.getColumns('writer');
     }
   },
   created() {
@@ -123,7 +129,12 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response
+          this.wTbList = response;
+          this.fromTableName = this.wTbList[0]
+        }).catch((error) => {
+          console.log(error)
+          this.wTbList = [];
+          this.fromTableName = ''
         })
       }
     },

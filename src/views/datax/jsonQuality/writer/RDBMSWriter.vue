@@ -141,10 +141,10 @@ export default {
       readerForm: this.getReaderData(),
       rules: {
         datasourceId: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         tableName: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ]
         // tableSchema: [
         //   { required: true, message: translaterMaster('this is require'), trigger: "change" },
@@ -163,6 +163,12 @@ export default {
         this.getSchema();
       }
       this.getTables('rdbmsWriter');
+    },
+    fromTableName(val) {
+      this.writerForm.tableName = val;
+      this.fromColumnList = [];
+      this.writerForm.columns = [];
+      this.getColumns('writer');
     }
   },
   methods: {
@@ -189,7 +195,12 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
           this.wTbList = response;
-        });
+          this.fromTableName = this.wTbList[0]
+        }).catch((error) => {
+          console.log(error)
+          this.wTbList = [];
+          this.fromTableName = ''
+        })
       }
     },
     getSchema() {
