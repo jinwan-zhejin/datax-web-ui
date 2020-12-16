@@ -1,6 +1,6 @@
 <template>
   <div class="job_detail">
-    {{ jobInfo }}
+    <!-- {{ jobInfo }} -->
     <div class="header">
       <div
         class="header_action"
