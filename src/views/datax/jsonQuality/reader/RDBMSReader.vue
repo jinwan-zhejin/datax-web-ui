@@ -99,7 +99,7 @@
             :header-row-style="{'height':'40px','padding':0}"
             style="width: 100%"
           >
-            <el-table-column prop="columnName" align="center" width="150" label="字段名称">
+            <el-table-column prop="columnName" align="center" min-width="100" label="字段名称">
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
@@ -177,13 +177,18 @@
 
       <el-form-item label="切分字段：">
         <el-input
+          v-show="$store.state.taskAdmin.readerAllowEdit"
           v-model="readerForm.splitPk"
           placeholder="切分主键"
         />
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">
+          {{ dashOrValue(readerForm.splitPk) }}
+        </span>
       </el-form-item>
       <el-form-item label="表所有字段：">
         <el-checkbox
           v-model="readerForm.checkAll"
+          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
         >全选
@@ -191,6 +196,7 @@
         <div style="margin: 15px 0" />
         <el-checkbox-group
           v-model="readerForm.columns"
+          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           @change="rHandleCheckedChange"
         >
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
