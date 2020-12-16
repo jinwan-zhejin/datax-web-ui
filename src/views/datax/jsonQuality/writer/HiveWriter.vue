@@ -24,7 +24,7 @@
 
       <el-form-item label="表：" prop="fromTableName">
         <el-select
-          v-model="fromTableName"
+          v-model="writerForm.fromTableName"
           :disabled="writerForm.ifCreateTable"
           filterable
           @change="wTbChange"
@@ -124,7 +124,6 @@ export default {
         size: 200
       },
       wDsList: [],
-      fromTableName: '',
       fromColumnList: [],
       wTbList: [],
       dataSource: '',
@@ -140,7 +139,8 @@ export default {
         path: '',
         fileName: '',
         writeMode: '',
-        fieldDelimiter: ''
+        fieldDelimiter: '',
+        fromTableName: ''
       },
       rules: {
         path: [
@@ -186,7 +186,7 @@ export default {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hiveWriter');
     },
-    fromTableName(val) {
+    'writerForm.fromTableName'(val) {
       this.writerForm.tableName = val;
       this.fromColumnList = [];
       this.writerForm.columns = [];
@@ -215,11 +215,11 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
           this.wTbList = response;
-          this.fromTableName = this.wTbList[0]
+          this.writerForm.fromTableName = this.wTbList[0]
         }).catch((error) => {
           console.log(error)
           this.wTbList = [];
-          this.fromTableName = ''
+          this.writerForm.fromTableName = ''
         })
       }
     },
@@ -284,10 +284,10 @@ export default {
       return this.$parent.getReaderData();
     },
     getTableName() {
-      return this.fromTableName;
+      return this.writerForm.fromTableName;
     },
     createTable() {
-      const tableName = this.fromTableName;
+      const tableName = this.writerForm.fromTableName;
       const datasourceId = this.writerForm.datasourceId;
       const columns = this.fromColumnList;
       const jsonString = {};
