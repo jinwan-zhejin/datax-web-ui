@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column label="角色" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.role }}</span>
+            <span>{{ scope.row.roleName }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -62,7 +62,7 @@
                 display: inline-block;
               "
             />
-            <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
+            <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="open(row)">
               删除
             </el-button>
           </template>
@@ -92,11 +92,11 @@
               <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
             </el-form-item>
             <el-form-item label="密  码" prop="password">
-              <el-input v-model="temp.password" placeholder="密码" />
+              <el-input v-model="temp.password" type="password" placeholder="请输入密码" />
             </el-form-item>
             <el-form-item label="角色" prop="role">
-              <el-select v-model="temp.role" class="filter-item" placeholder="角色类型" style="width: 100%;">
-                <el-option v-for="item in roles" :key="item.key" :label="item" :value="item" />
+              <el-select v-model="temp.roleIdList" multiple class="filter-item" placeholder="角色类型" style="width: 100%;">
+                <el-option v-for="item in roles" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
               </el-select>
             </el-form-item>
           </el-form>
@@ -116,6 +116,7 @@
 
 <script>
 import * as user from '@/api/datax-user'
+import * as role from '@/api/datax-role'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { translaterMaster } from '@/utils/dictionary'
@@ -157,11 +158,10 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '新增'
       },
       rules: {
-        role: [{ required: true, message: translaterMaster('role is require'), trigger: 'change' }],
         username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
@@ -179,14 +179,26 @@ export default {
   },
   created() {
     this.fetchData()
+    this.getRoleList()
   },
   methods: {
+    // 获取角色列表
+    getRoleList() {
+      role.getList().then((res) => {
+        this.roles = res.records
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     fetchData() {
       this.listLoading = true
-      user.getList(this.listQuery).then(response => {
-        const { content } = response
-        this.total = content.recordsTotal
-        this.list = content.data
+      user.getList1({
+        page: this.listQuery.current,
+        limit: this.listQuery.size,
+        username: this.listQuery.username
+      }).then(res => {
+        this.total = res.total
+        this.list = res.records
         this.listLoading = false
       })
     },
@@ -205,8 +217,8 @@ export default {
             this.fetchData()
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              title: '成功',
+              message: '新增成功',
               type: 'success',
               duration: 2000
             })
@@ -223,6 +235,7 @@ export default {
       })
     },
     updateData() {
+      console.log(this.tempData, 'oppopo')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
@@ -230,8 +243,8 @@ export default {
             this.fetchData()
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '修改成功',
               type: 'success',
               duration: 2000
             })
@@ -243,10 +256,24 @@ export default {
       user.deleteUser(row.id).then(response => {
         this.fetchData()
         this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
+          title: '成功',
+          message: '删除成功',
           type: 'success',
           duration: 2000
+        })
+      })
+    },
+    open(row) {
+      this.$confirm('此操作将会删除该角色，是否确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
         })
       })
     }

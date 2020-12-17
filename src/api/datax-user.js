@@ -10,6 +10,14 @@ export function getList(params) {
   })
 }
 
+export function getList1(params) {
+  return request({
+    url: '/api/user/list',
+    method: 'get',
+    params
+  })
+}
+
 export function updateUser(data) {
   return request({
     url: '/api/user/update',

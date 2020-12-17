@@ -39,8 +39,8 @@
         <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
-        <el-table-column label="角色名" align="center" prop="name" />
-        <el-table-column label="角色" align="center" prop="type">
+        <el-table-column label="角色名" align="center" prop="roleName" />
+        <el-table-column label="角色描述" align="center" prop="remark">
           <!-- <template slot-scope="scope">
             <span>{{ scope }}</span>
           </template> -->
@@ -73,7 +73,7 @@
                 display: inline-block;
               "
             />
-            <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
+            <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="open(row)">
               删除
             </el-button>
           </template>
@@ -83,9 +83,8 @@
         v-show="total>0"
         style="float: right;"
         :total="total"
-        :page.sync="listQuery.current"
-        :limit.sync="listQuery.size"
-        @pagination="fetchData"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
       />
     </div>
     <!-- 添加角色 -->
@@ -96,14 +95,18 @@
             <el-form-item label="角色名称">
               <el-input v-model="form.roleName" />
             </el-form-item>
-            <el-form-item label="角色类型">
+            <el-form-item label="角色备注">
+              <el-input v-model="form.remark" />
+            </el-form-item>
+            <!-- <el-form-item label="角色类型">
               <el-select v-model="form.type" placeholder="请选择角色类型">
                 <el-option label="管理员" value="ROLE_ADMIN" />
                 <el-option label="普通用户" value="ROLE_USER" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
-        </el-col></el-row>
+        </el-col>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogAddVisible = false">
           取消
@@ -121,14 +124,18 @@
             <el-form-item label="角色名称">
               <el-input v-model="editForm.roleName" />
             </el-form-item>
-            <el-form-item label="角色类型">
+            <el-form-item label="角色备注">
+              <el-input v-model="editForm.remark" />
+            </el-form-item>
+            <!-- <el-form-item label="角色类型">
               <el-select v-model="editForm.type" placeholder="请选择角色类型">
                 <el-option label="管理员" value="ROLE_ADMIN" />
                 <el-option label="普通用户" value="ROLE_USER" />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
-        </el-col></el-row>
+        </el-col>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogEditVisible = false">
           取消
@@ -147,11 +154,11 @@
             :data="treeData"
             show-checkbox
             current-node-key
-            node-key="name"
-            :default-expanded-keys="[2, 3]"
-            :default-checked-keys="[5]"
+            node-key="menuId"
+            default-expand-all
             :props="defaultProps"
-            @node-click="handleClickNode"
+            @check-change="handleCheckChange"
+            @setCurrentKey="handleNode"
           />
         </el-col>
       </el-row>
@@ -202,9 +209,8 @@ export default {
       total: 0,
       roleName: '',
       listQuery: {
-        current: 1,
-        size: 10,
-        username: undefined
+        page: 1,
+        limit: 10
       },
       roles: ['ROLE_USER', 'ROLE_ADMIN'],
       dialogPluginVisible: false,
@@ -217,8 +223,18 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
-      form: {},
-      editForm: {},
+      form: {
+        roleName: '',
+        remark: '',
+        menu: ''
+      },
+      editForm: {
+        roleName: '',
+        remark: '',
+        menu: ''
+      },
+      editRoleId: '',
+      menuList: [],
       rules: {
         role: [{ required: true, message: translaterMaster('role is require'), trigger: 'change' }],
         username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }],
@@ -360,7 +376,7 @@ export default {
       // },
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'title'
       },
       temp: {
         id: undefined,
@@ -372,7 +388,11 @@ export default {
       resetTemp() {
         this.temp = this.$options.data().temp
         this.dialogFormVisible = true
-      }
+      },
+      checkedArr: [],
+      getArr: [],
+      half: [],
+      rid: ''
     }
   },
   created() {
@@ -383,15 +403,29 @@ export default {
     //     this.treeData.push(arr[i])
     //   }
     // }
+    this.getMenuList()
     console.log(this.treeData, 'tree')
   },
   methods: {
+    // 获取权限列表
+    getMenuList() {
+      role.menuList().then(res => {
+        console.log(res, '权限列表')
+        this.treeData = res
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     // 获取角色列表
     fetchData() {
       this.listLoading = true
-      role.getList(this.roleName).then(res => {
+      let params = {}
+      params = this.listQuery
+      params['roleName'] = this.roleName
+      role.getList(params).then(res => {
         console.log(res, 'res')
-        this.list = res
+        this.list = res.records
+        this.total = res.total
         console.log('list', this.list)
         this.listLoading = false
       })
@@ -401,18 +435,10 @@ export default {
       this.dialogAddVisible = true
     },
     addRole() {
-      role.addRole({
-        id: '',
-        name: this.form.roleName,
-        permission: '',
-        type: this.form.type
-      }).then(res => {
-        console.log(res, 'res')
-        if (res.code === 200) {
-          this.dialogAddVisible = false
-          this.fetchData()
-          this.$message.success('添加成功')
-        }
+      role.addRole(this.form).then(res => {
+        this.dialogAddVisible = false
+        this.fetchData()
+        this.$message.success(res)
       })
       console.log('添加角色')
     },
@@ -420,47 +446,73 @@ export default {
     handleUpdate(row) {
       console.log(row)
       this.dialogEditVisible = true
-      this.editForm.roleName = row.name
-      this.editForm.type = row.type
+      this.editForm.roleName = row.roleName
+      this.editForm.remark = row.remark
+      this.editRoleId = row.roleId
     },
     editRole() {
-      role.addRole({
-        id: '',
-        name: this.editForm.roleName,
-        permission: '',
-        type: this.editForm.type
+      role.updataRole({
+        roleId: this.editRoleId,
+        roleName: this.editForm.roleName,
+        remark: this.editForm.remark
       }).then(res => {
-        console.log(res, 'res')
-        if (res.code === 200) {
-          this.dialogEditVisible = false
-          this.fetchData()
-          this.$message.success('编辑成功')
-        }
+        this.dialogEditVisible = false
+        this.fetchData()
+        this.$message.success(res)
       })
       console.log('编辑角色')
     },
     // 显示菜单分配对话框
-    showMenu() {
+    showMenu(row) {
       this.dialogTreeVisible = true
+      console.log(row.menuIdList)
       setTimeout(() => {
-        this.$refs.tree.setCheckedKeys(['质量评估', '质量监控', '通用规则', '个性化规则', '规则审核', '文档管理'])
-      }, 200)
+        this.$refs.tree.setCheckedKeys(row.menuIdList)
+      }, 10)
+      console.log(row)
+      this.rid = row.roleId
     },
     menuAss() {
       console.log('菜单赋予')
-      // console.log(this.$refs.tree.getCheckedKeys())
-      this.$refs.tree.setCheckedKeys(['质量评估', '质量监控', '通用规则', '个性化规则', '规则审核', '文档管理'])
+      role.updataRole({
+        roleId: this.rid,
+        menuIdList: this.getArr
+      }).then(res => {
+        this.dialogTreeVisible = false
+        this.fetchData()
+        this.$message.success('权限设置成功')
+      })
     },
-    handleClickNode(data) {
-      console.log(data, 'data')
+    handleCheckChange(val, node) {
+      this.getArr = this.$refs.tree.getCheckedKeys()
+      this.half = this.$refs.tree.getHalfCheckedKeys()
+      console.log(this.half)
+      console.log(this.getArr)
+      console.log(val, '123')
+      console.log(node, '123weqw')
+    },
+    handleNode(key) {
+      console.log(key)
     },
     handleDelete(row) {
-      role.delRole(row.id).then(res => {
+      role.delRole(row.roleId).then(res => {
         console.log(res, 'res')
-        if (res.code === 200) {
-          this.fetchData()
-          this.$message.success('删除成功')
-        }
+        this.fetchData()
+        this.$message.success(res)
+      })
+    },
+    open(row) {
+      this.$confirm('此操作将会删除该角色，是否确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
