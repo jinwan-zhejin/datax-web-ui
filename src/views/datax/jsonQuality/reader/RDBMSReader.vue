@@ -7,14 +7,10 @@
       label-width="120px"
       :model="readerForm"
       :rules="rules"
-      :class="[
-        $store.state.taskAdmin.readerAllowEdit ? '' : 'form-label-class'
-      ]"
     >
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerDataSourceID"
+          v-model="datasourceId"
           filterable
           @change="rDsChange"
         >
@@ -25,16 +21,6 @@
             :value="item.id"
           />
         </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue(
-            finder(
-              $store.state.taskAdmin.readerDataSourceID,
-              $store.state.taskAdmin.dataSourceList,
-              "id",
-              "datasourceName"
-            )
-          )
-        }}</span>
       </el-form-item>
       <el-form-item
         v-show="
@@ -64,11 +50,11 @@
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
         <el-select
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerTableName"
+          v-model="readerForm.tableName"
           allow-create
           default-first-option
           filterable
+
           @change="rTbChange"
         >
           <el-option
@@ -78,14 +64,11 @@
             :value="item"
           />
         </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue($store.state.taskAdmin.readerTableName)
-        }}</span>
       </el-form-item>
       <el-form-item label="添加规则字段：">
         <div style="border:1px solid #f3f3f3;width:100%;">
           <el-table
-            :data="$store.state.taskAdmin.jobRule"
+            :data="tableData1"
             :header-cell-style="{
               background: '#F8F8FA',
               'font-size': '12px',
@@ -99,12 +82,11 @@
             :header-row-style="{'height':'40px','padding':0}"
             style="width: 100%"
           >
-            <el-table-column prop="columnName" align="center" min-width="100" label="字段名称">
+            <el-table-column prop="columnName" align="center" width="150" label="字段名称">
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
                   v-model="row.row.columnName"
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
                   filterable
                   placeholder="请选择字段"
                 >
@@ -123,7 +105,6 @@
                 <el-select
                   v-if="row.row.status"
                   v-model="row.row.ruleId"
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
                   clearable
                   filterable
 
@@ -154,41 +135,27 @@
                   class="el-icon-edit"
                   @click="editRow(row)"
                 /> -->
-                <!-- <i
+                <i
                   style="cursor: pointer;color:red;"
                   class="el-icon-delete"
                   @click="delRow(row)"
-                /> -->
-                <el-button
-                  :disabled="!$store.state.taskAdmin.readerAllowEdit"
-                  icon="el-icon-delete"
-                  type="danger"
-                  circle
-                  plain
-                  size="small"
-                  @click="$store.commit('DELETE_RULEITEM', row.row)"
                 />
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <div v-if="$store.state.taskAdmin.readerAllowEdit" class="addRow_btn" @click="$store.commit('ADD_RULEITEM')"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
+        <div class="addRow_btn" @click="addRow"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
       </el-form-item>
 
       <el-form-item label="切分字段：">
         <el-input
-          v-show="$store.state.taskAdmin.readerAllowEdit"
           v-model="readerForm.splitPk"
           placeholder="切分主键"
         />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">
-          {{ dashOrValue(readerForm.splitPk) }}
-        </span>
       </el-form-item>
       <el-form-item label="表所有字段：">
         <el-checkbox
           v-model="readerForm.checkAll"
-          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           :indeterminate="readerForm.isIndeterminate"
           @change="rHandleCheckAllChange"
         >全选
@@ -196,7 +163,6 @@
         <div style="margin: 15px 0" />
         <el-checkbox-group
           v-model="readerForm.columns"
-          :disabled="!$store.state.taskAdmin.readerAllowEdit"
           @change="rHandleCheckedChange"
         >
           <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
@@ -216,7 +182,6 @@ import * as dsQueryApi from '@/api/metadata-query';
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 import Bus from '../busReader';
 import { translaterMaster } from '@/utils/dictionary'
-import { finder, dashOrValue } from '../private';
 
 export default {
   name: 'RDBMSReader',
@@ -297,17 +262,10 @@ export default {
         this.readerForm.rule = arr;
       },
       deep: true
-    },
-
-    'readerForm.tableName'(val) {
-      this.readerForm.tableName = val
-      this.rColumnList = []
-      this.readerForm.columns = []
-      this.getColumns('reader')
     }
+
   },
   created() {
-    this.readerForm.datasourceId = this.$store.state.taskAdmin.readerDataSourceID
     this.getJdbcDs();
   },
   methods: {
@@ -395,14 +353,10 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
-          this.rTbList = response
-          this.readerForm.tableName = this.rTbList[0]
-        }).catch(error => {
-          console.log(error);
-          this.rTbList = []
-          this.readerForm.tableName = ''
-          this.$store.commit('SET_READER_TABLENAME', '')
-        })
+          if (response) {
+            this.rTbList = response;
+          }
+        });
       }
     },
     getSchema() {
@@ -422,7 +376,6 @@ export default {
     // reader 数据源切换
     rDsChange(e) {
       this.datasourceId = e;
-      this.$store.commit('SET_READER_DATASOURCE_ID', e);
       this.rDsList = this.$store.state.taskAdmin.dataSourceList;
       // 清空
       this.readerForm.tableName = '';
@@ -446,14 +399,7 @@ export default {
         this.readerForm.columns = response;
         this.readerForm.checkAll = true;
         this.readerForm.isIndeterminate = false;
-        this.$store.commit('SET_READER_COLUMNS', response);
-      }).catch(error => {
-        console.log(error)
-        this.rColumnList = []
-        this.readerForm.columns = []
-        this.readerForm.checkAll = false
-        this.readerForm.isIndeterminate = true
-      })
+      });
     },
     // 获取规则名称
     getNameList() {
@@ -504,40 +450,28 @@ export default {
       this.rColumnList = [];
       this.readerForm.columns = [];
       this.getColumns('reader');
-      this.$store.commit('SET_READER_TABLENAME', t);
     },
     rHandleCheckAllChange(val) {
       this.readerForm.columns = val ? this.rColumnList : [];
       this.readerForm.isIndeterminate = false;
-      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
     },
     rHandleCheckedChange(value) {
       const checkedCount = value.length;
       this.readerForm.checkAll = checkedCount === this.rColumnList.length;
       this.readerForm.isIndeterminate =
         checkedCount > 0 && checkedCount < this.rColumnList.length;
-      this.$store.commit('SET_SELECT_READERCOLUMN', value);
     },
     getData() {
       if (Bus.dataSourceId) {
         this.readerForm.datasourceId = Bus.dataSourceId;
       }
       return this.readerForm;
-    },
-    finder,
-    dashOrValue
+    }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.form-label-class {
-  >>> .el-form-item__label {
-    font-weight: 500;
-    color: #999999;
-    font-family: PingFangHK-Regular, PingFangHK;
-  }
-}
+<style scoped>
 .input_from >>> .el-form-item {
   margin-bottom: 15px;
 }
