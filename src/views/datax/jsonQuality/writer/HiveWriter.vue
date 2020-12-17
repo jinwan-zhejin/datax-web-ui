@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-form
+      ref="writerFrom"
       label-position="right"
       label-width="120px"
       :model="writerForm"
       :rules="rules"
-      ref="writerFrom"
     >
       <el-form-item label="数据源：" prop="datasourceId">
         <el-select
@@ -24,7 +24,7 @@
 
       <el-form-item label="表：" prop="fromTableName">
         <el-select
-          v-model="fromTableName"
+          v-model="writerForm.fromTableName"
           :disabled="writerForm.ifCreateTable"
           filterable
           @change="wTbChange"
@@ -94,8 +94,7 @@
           v-model="writerForm.checkAll"
           :indeterminate="writerForm.isIndeterminate"
           @change="wHandleCheckAllChange"
-          >全选</el-checkbox
-        >
+        >全选</el-checkbox>
         <div style="margin: 15px 0" />
         <el-checkbox-group
           v-model="writerForm.columns"
@@ -111,80 +110,88 @@
 </template>
 
 <script>
-import * as dsQueryApi from "@/api/metadata-query";
-import { list as jdbcDsList } from "@/api/datax-jdbcDatasource";
-import Bus from "../busWriter";
+import * as dsQueryApi from '@/api/metadata-query';
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
+import Bus from '../busWriter';
+import { translaterMaster } from '@/utils/dictionary'
+
 export default {
-  name: "HiveWriter",
+  name: 'HiveWriter',
   data() {
     return {
       jdbcDsQuery: {
         current: 1,
-        size: 200,
+        size: 200
       },
       wDsList: [],
-      fromTableName: "",
       fromColumnList: [],
       wTbList: [],
-      dataSource: "",
+      dataSource: '',
       writerForm: {
         datasourceId: undefined,
-        tableName: "",
+        tableName: '',
         columns: [],
         checkAll: false,
         isIndeterminate: true,
         ifCreateTable: false,
-        defaultFS: "",
-        fileType: "",
-        path: "",
-        fileName: "",
-        writeMode: "",
-        fieldDelimiter: "",
+        defaultFS: '',
+        fileType: '',
+        path: '',
+        fileName: '',
+        writeMode: '',
+        fieldDelimiter: '',
+        fromTableName: ''
       },
       rules: {
         path: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         defaultFS: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fileName: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fileType: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         writeMode: [
-          { required: true, message: "this is required", trigger: "change" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fieldDelimiter: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         datasourceId: [
-          { required: true, message: "this is required", trigger: "blur" },
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
         ],
         fromTableName: [
-          { required: true, message: "this is required", trigger: "blur" },
-        ],
+          { required: true, message: translaterMaster('this is require'), trigger: 'blur' }
+        ]
       },
       readerForm: this.getReaderData(),
       fileTypes: [
-        { value: "text", label: "text" },
-        { value: "orc", label: "orc" },
+        { value: 'text', label: 'text' },
+        { value: 'orc', label: 'orc' }
       ],
       writeModes: [
-        { value: "append", label: "append 写入前不做任何处理" },
+        { value: 'append', label: 'append 写入前不做任何处理' },
         {
-          value: "nonConflict",
-          label: "nonConflict 目录下有fileName前缀的文件，直接报错",
-        },
-      ],
+          value: 'nonConflict',
+          label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
+        }
+      ]
     };
   },
   watch: {
-    "writerForm.datasourceId": function (oldVal, newVal) {
-      this.getTables("hiveWriter");
+    'writerForm.datasourceId': function(oldVal, newVal) {
+      this.getTables('hiveWriter');
     },
+    'writerForm.fromTableName'(val) {
+      this.writerForm.tableName = val;
+      this.fromColumnList = [];
+      this.writerForm.columns = [];
+      this.getColumns('writer');
+    }
   },
   created() {
     this.getJdbcDs();
@@ -201,19 +208,24 @@ export default {
     },
     // 获取表名
     getTables(type) {
-      if (type === "hiveWriter") {
+      if (type === 'hiveWriter') {
         const obj = {
-          datasourceId: this.writerForm.datasourceId,
+          datasourceId: this.writerForm.datasourceId
         };
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
           this.wTbList = response;
-        });
+          this.writerForm.fromTableName = this.wTbList[0]
+        }).catch((error) => {
+          console.log(error)
+          this.wTbList = [];
+          this.writerForm.fromTableName = ''
+        })
       }
     },
     wDsChange(e) {
       // 清空
-      this.writerForm.tableName = "";
+      this.writerForm.tableName = '';
       this.writerForm.datasourceId = e;
       this.wDsList.find((item) => {
         if (item.id === e) {
@@ -221,7 +233,7 @@ export default {
         }
       });
       Bus.dataSourceId = e;
-      this.$emit("selectDataSource", this.dataSource);
+      this.$emit('selectDataSource', this.dataSource);
       // 获取可用表
       this.getTables();
     },
@@ -229,7 +241,7 @@ export default {
     getColumns() {
       const obj = {
         datasourceId: this.writerForm.datasourceId,
-        tableName: this.writerForm.tableName,
+        tableName: this.writerForm.tableName
       };
       dsQueryApi.getColumns(obj).then((response) => {
         this.fromColumnList = response;
@@ -243,7 +255,7 @@ export default {
       this.writerForm.tableName = t;
       this.fromColumnList = [];
       this.writerForm.columns = [];
-      this.getColumns("writer");
+      this.getColumns('writer');
     },
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : [];
@@ -256,7 +268,7 @@ export default {
         checkedCount > 0 && checkedCount < this.fromColumnList.length;
     },
     createTableCheckedChange(val) {
-      this.writerForm.tableName = val ? this.readerForm.tableName : "";
+      this.writerForm.tableName = val ? this.readerForm.tableName : '';
       this.fromColumnList = this.readerForm.columns;
       this.writerForm.columns = this.readerForm.columns;
       this.writerForm.checkAll = true;
@@ -272,29 +284,29 @@ export default {
       return this.$parent.getReaderData();
     },
     getTableName() {
-      return this.fromTableName;
+      return this.writerForm.fromTableName;
     },
     createTable() {
-      const tableName = this.fromTableName;
+      const tableName = this.writerForm.fromTableName;
       const datasourceId = this.writerForm.datasourceId;
       const columns = this.fromColumnList;
       const jsonString = {};
-      jsonString["datasourceId"] = datasourceId;
-      jsonString["tableName"] = tableName;
-      jsonString["columns"] = columns;
+      jsonString['datasourceId'] = datasourceId;
+      jsonString['tableName'] = tableName;
+      jsonString['columns'] = columns;
       console.info(jsonString);
       dsQueryApi
         .createTable(jsonString)
         .then((response) => {
           this.$notify({
-            title: "Success",
-            message: "Create Table Successfully",
-            type: "success",
-            duration: 2000,
+            title: 'Success',
+            message: 'Create Table Successfully',
+            type: 'success',
+            duration: 2000
           });
         })
-        .catch(() => console.log("promise catch err"));
-    },
-  },
+        .catch(() => console.log('promise catch err'));
+    }
+  }
 };
 </script>

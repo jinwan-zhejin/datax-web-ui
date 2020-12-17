@@ -64,6 +64,8 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
+import { translaterMaster } from '@/utils/dictionary'
+
 export default {
   name: 'HBaseWriter',
   data() {
@@ -118,9 +120,9 @@ export default {
         { value: 'empty', label: '写入new byte [0]' }
       ],
       rules: {
-        mode: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        datasourceId: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        fromTableName: [{ required: true, message: 'this is required', trigger: 'blur' }],
+        mode: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        datasourceId: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        fromTableName: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
         rowkeyColumn: [{ required: true, trigger: 'blur', validator: checkJson }]
       },
       readerForm: this.getReaderData()
@@ -129,6 +131,12 @@ export default {
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hbaseWriter')
+    },
+    fromTableName(val) {
+      this.writerForm.tableName = val;
+      this.fromColumnList = [];
+      this.writerForm.columns = [];
+      this.getColumns('writer');
     }
   },
   created() {
@@ -152,7 +160,12 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response
+          this.wTbList = response;
+          this.fromTableName = this.wTbList[0]
+        }).catch((error) => {
+          console.log(error)
+          this.wTbList = [];
+          this.fromTableName = ''
         })
       }
     },

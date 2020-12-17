@@ -11,11 +11,11 @@
       >
         <div style="width: 80%; margin: 0 auto">
           <el-steps :active="active" align-center>
-            <el-step title="新建任务" description="">1</el-step>
-            <el-step title="添加质量规则" description="">2</el-step>
-            <el-step title="选择结果数据存放位置" description="">3</el-step>
-            <el-step title="字段映射" description="">4</el-step>
-            <el-step title="构建" description="">5</el-step>
+            <el-step title="新建任务" description="">step0</el-step>
+            <el-step title="添加质量规则" description="">step1</el-step>
+            <el-step title="选择结果数据存放位置" description="">step2</el-step>
+            <el-step title="字段映射" description="">step3</el-step>
+            <el-step title="构建" description="">step4</el-step>
           </el-steps>
         </div>
       </div>
@@ -101,18 +101,18 @@
             >
               <cron v-model="temp.jobCron" />
               <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="showCronBox = false"
-                  >关闭</el-button
-                >
+                <el-button
+                  size="small"
+                  @click="showCronBox = false"
+                >关闭</el-button>
                 <el-button
                   size="small"
                   type="primary"
                   @click="showCronBox = false"
-                  >确 定</el-button
-                >
+                >确 定</el-button>
               </span>
             </el-dialog>
-            <el-form-item label="Cron" prop="jobCron">
+            <el-form-item label="Cron：" prop="jobCron">
               <el-input
                 v-model="temp.jobCron"
                 auto-complete="off"
@@ -168,7 +168,6 @@
             </el-form-item>
           </el-form>
         </div>
-
         <div v-show="active === 1" class="step1">
           <Reader ref="reader" />
         </div>
@@ -278,7 +277,7 @@
               </div>
               <div>
                 <span class="step5content_key">前置Sql语句：</span>
-                <span class="step5content_value">{{  $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || "-" }}</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || "-" }}</span>
               </div>
             </div>
           </div>
@@ -315,87 +314,85 @@
 
       <div class="from_footer">
         <el-button
-          :disabled="active === 0"
+          :disabled="active <= 0"
           style="margin-top: 12px"
-          @click="last"
           size="small"
-          >上一步</el-button
-        >
+          @click="last"
+        >上一步</el-button>
         <el-button
           v-show="showNext"
           type="primary"
           style="margin-top: 12px; margin-bottom: 12px"
-          @click="next"
           size="small"
-          >下一步</el-button
-        >
+          @click="next"
+        >下一步</el-button>
         <el-button
           v-show="showSubmit"
           :disabled="isBan"
           type="primary"
           style="margin-top: 12px; margin-bottom: 12px"
-          @click="next"
           size="small"
-          >提交任务</el-button
-        >
+          @click="next"
+        >提交任务</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import * as dataxJsonApi from "@/api/datax-json";
-import * as jobTemplate from "@/api/datax-job-template";
-import * as job from "@/api/datax-job-info";
-import Pagination from "@/components/Pagination";
-import JsonEditor from "@/components/JsonEditor";
-import * as jobProjectApi from "@/api/datax-job-project";
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
-import Reader from "./reader";
-import Writer from "./writer";
-import clip from "@/utils/clipboard";
-import Mapper from "./mapper";
-import { isJSON } from "@/utils/validate";
-import Cron from "@/components/Cron";
+// import * as dataxJsonApi from '@/api/datax-json';
+import * as jobTemplate from '@/api/datax-job-template';
+import * as job from '@/api/datax-job-info';
+// import Pagination from '@/components/Pagination';
+// import JsonEditor from '@/components/JsonEditor';
+import * as jobProjectApi from '@/api/datax-job-project';
+// import ShellEditor from '@/components/ShellEditor';
+// import PythonEditor from '@/components/PythonEditor';
+// import PowershellEditor from '@/components/PowershellEditor';
+import Reader from './reader';
+import Writer from './writer';
+import clip from '@/utils/clipboard';
+import Mapper from './mapper';
+// import { isJSON } from '@/utils/validate';
+import Cron from '@/components/Cron';
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
-  name: "JsonBuild",
+  name: 'JsonBuild',
   components: {
     Reader,
     Writer,
-    Pagination,
-    JsonEditor,
-    ShellEditor,
-    PythonEditor,
-    PowershellEditor,
+    // Pagination,
+    // JsonEditor,
+    // ShellEditor,
+    // PythonEditor,
+    // PowershellEditor,
     Mapper,
-    Cron,
+    Cron
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("Increment parameters is required"));
+        callback(new Error('Increment parameters is required'));
       }
       callback();
     };
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error("Partition parameters is required"));
+        callback(new Error('Partition parameters is required'));
       }
       callback();
     };
     return {
-      configJson: "",
+      configJson: '',
       isBan: false,
       active: 0,
-      jobTemplate: "",
-      radio: "使用模板",
+      jobTemplate: '',
+      radio: '使用模板',
       dialogFormVisible: false,
-      executorList: "",
-      jobProjectList: "",
-      jobIdList: "",
+      executorList: '',
+      jobProjectList: '',
+      jobIdList: '',
       showSubmit: false,
       showNext: true,
       jobTemplateSelectDrawer: false,
@@ -409,139 +406,139 @@ export default {
         size: 10,
         jobGroup: 0,
         triggerStatus: -1,
-        jobDesc: "",
-        executorHandler: "",
-        userId: 0,
+        jobDesc: '',
+        executorHandler: '',
+        userId: 0
       },
       blockStrategies: [
-        { value: "SERIAL_EXECUTION", label: "单机串行" },
-        { value: "DISCARD_LATER", label: "丢弃后续调度" },
-        { value: "COVER_EARLY", label: "覆盖之前调度" },
+        { value: 'SERIAL_EXECUTION', label: '单机串行' },
+        { value: 'DISCARD_LATER', label: '丢弃后续调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
-        { value: "FIRST", label: "第一个" },
-        { value: "LAST", label: "最后一个" },
-        { value: "ROUND", label: "轮询" },
-        { value: "RANDOM", label: "随机" },
-        { value: "CONSISTENT_HASH", label: "一致性HASH" },
-        { value: "LEAST_FREQUENTLY_USED", label: "最不经常使用" },
-        { value: "LEAST_RECENTLY_USED", label: "最近最久未使用" },
-        { value: "FAILOVER", label: "故障转移" },
-        { value: "BUSYOVER", label: "忙碌转移" },
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       incrementTypes: [
-        { value: 0, label: "无" },
-        { value: 1, label: "主键自增" },
-        { value: 2, label: "时间自增" },
-        { value: 3, label: "HIVE分区" },
-        { value: 4, label: "HIVE分区自增" },
-        { value: 5, label: "MongoDB主键增量" },
+        { value: 0, label: '无' },
+        { value: 1, label: '主键自增' },
+        { value: 2, label: '时间自增' },
+        { value: 3, label: 'HIVE分区' },
+        { value: 4, label: 'HIVE分区自增' },
+        { value: 5, label: 'MongoDB主键增量' }
       ],
       glueTypes: [
-        { value: "BEAN", label: "DataX任务" },
-        { value: "GLUE_SHELL", label: "Shell任务" },
-        { value: "GLUE_PYTHON", label: "Python任务" },
-        { value: "GLUE_POWERSHELL", label: "PowerShell任务" },
+        { value: 'BEAN', label: 'DataX任务' },
+        { value: 'GLUE_SHELL', label: 'Shell任务' },
+        { value: 'GLUE_PYTHON', label: 'Python任务' },
+        { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
-      triggerNextTimes: "",
+      triggerNextTimes: '',
       registerNode: [],
-      jobJson: "",
+      jobJson: '',
       isUse: true,
-      glueSource: "",
+      glueSource: '',
       rules: {
         jobGroup: [
           {
             required: true,
-            message: "jobGroup is required",
-            trigger: "change",
-          },
+            message: translaterMaster('jobGroup is require'),
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
-            message: "executorRouteStrategy is required",
-            trigger: "change",
-          },
+            message: translaterMaster('executorRouteStrategy is require'),
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
-            message: "executorBlockStrategy is required",
-            trigger: "change",
-          },
+            message: translaterMaster('executorBlockStrategy is require'),
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: "jobType is required", trigger: "change" },
+          { required: true, message: translaterMaster('jobType is require'), trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
-            message: "projectId is required",
-            trigger: "change",
-          },
+            message: translaterMaster('projectId is require'),
+            trigger: 'change'
+          }
         ],
         jobDesc: [
-          { required: true, message: "jobDesc is required", trigger: "blur" },
+          { required: true, message: translaterMaster('jobDesc is require'), trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
-            message: "jobProject is required",
-            trigger: "blur",
-          },
+            message: translaterMaster('jobProject is require'),
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: "jobCron is required", trigger: "blur" },
+          { required: true, message: translaterMaster('jobCron is require'), trigger: 'blur' }
         ],
-        incStartId: [{ trigger: "blur", validator: validateIncParam }],
-        replaceParam: [{ trigger: "blur", validator: validateIncParam }],
-        primaryKey: [{ trigger: "blur", validator: validateIncParam }],
-        incStartTime: [{ trigger: "change", validator: validateIncParam }],
-        replaceParamType: [{ trigger: "change", validator: validateIncParam }],
+        incStartId: [{ trigger: 'blur', validator: validateIncParam }],
+        replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
+        primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
+        incStartTime: [{ trigger: 'change', validator: validateIncParam }],
+        replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: "blur", validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
-        datasourceId: [{ trigger: "change", validator: validateIncParam }],
-        readerTable: [{ trigger: "blur", validator: validateIncParam }],
+        datasourceId: [{ trigger: 'change', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       temp: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
         childJobIdArr: [],
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "executorJobHandler",
-        glueType: "BEAN",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: 'executorJobHandler',
+        glueType: 'BEAN',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
+        incStartId: '',
+        primaryKey: '',
         projectId: this.$store.state.taskAdmin.projectId,
-        datasourceId: "",
-        readerTable: "",
-      },
+        datasourceId: '',
+        readerTable: ''
+      }
     };
   },
   watch: {
-    radio: function (newValue) {
+    radio: function(newValue) {
       console.log(newValue);
-      if (newValue === "使用模板") {
+      if (newValue === '使用模板') {
         this.isUse = true;
         this.isBan = false;
         this.handleJobTemplateSelectDrawer();
@@ -551,7 +548,7 @@ export default {
         this.isBan = true;
         this.dialogFormVisible = true;
       }
-    },
+    }
   },
   created() {
     // this.getJdbcDs()
@@ -591,7 +588,7 @@ export default {
       // const fromTableName = this.$refs.reader.getData().tableName
       // 第一步 reader 判断是否已选字段
       if (this.active === 0) {
-        this.$refs["dataForm"].validate((valid) => {
+        this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.active++;
           } else {
@@ -602,7 +599,7 @@ export default {
         // 实现第一步骤读取的表和字段直接带到第二步骤
         // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
         // 取子组件的数据
-        this.$refs["reader"].$refs["rdbmsreader"].$refs["readerFrom"].validate(
+        this.$refs['reader'].$refs['rdbmsreader'].$refs['readerFrom'].validate(
           (valid) => {
             if (valid) {
               this.active++;
@@ -617,14 +614,14 @@ export default {
       } else {
         // 将第一步和第二步得到的字段名字发送到第三步
         if (this.active === 2) {
-          let datasource = this.$refs.writer.dataSource;
-          let ref = {
-            db2: "rdbmswriter",
-            hive: "hivewriter",
+          const datasource = this.$refs.writer.dataSource;
+          const ref = {
+            db2: 'rdbmswriter',
+            hive: 'hivewriter'
           };
 
-          this.$refs["writer"].$refs[ref[datasource] || "rdbmswriter"].$refs[
-            "writerFrom"
+          this.$refs['writer'].$refs[ref[datasource] || 'rdbmswriter'].$refs[
+            'writerFrom'
           ].validate((valid) => {
             if (valid) {
               this.active++;
@@ -636,9 +633,9 @@ export default {
               return false;
             }
           });
-        } else if(this.active === 3 || this.active === 4) {
+        } else if (this.active === 3 || this.active === 4) {
           this.active++
-        };
+        }
 
         if (this.active === 3) {
           this.showNext = true;
@@ -649,18 +646,18 @@ export default {
           var tmps = JSON.parse(JSON.stringify(readerColumns)).sort();
           for (var i = 0; i < tmps.length - 1; i++) {
             if (tmps[i] === tmps[i + 1]) {
-              this.$message("源端有相同字段【" + tmps[i] + "】，请注意修改");
-              throw new Error("源端有相同字段【" + tmps[i] + "】，请注意修改");
+              this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改');
+              throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改');
             }
           }
           var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort();
           for (i = 0; i < tmps1.length - 1; i++) {
             if (tmps1[i] === tmps1[i + 1]) {
               this.$message(
-                "目标端含有相同字段【" + tmps1[i] + "】，请注意修改"
+                '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
               );
               throw new Error(
-                "目标端含有相同字段【" + tmps1[i] + "】，请注意修改"
+                '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
               );
             }
           }
@@ -669,26 +666,34 @@ export default {
           this.showNext = false;
           this.showSubmit = true;
         } else if (this.active === 5) {
-          this.temp.jobJson = this.configJson;
+          this.temp.jobParam = this.configJson;
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
-          let str = "";
+          let str = '';
           this.temp.childJobIdArr.forEach((child) => {
             str += `${child.id},`;
           });
 
           this.temp.childJobId = str;
-          console.log("this.temp", this.temp);
-          job.createJob(this.temp).then(() => {
-            this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
-            });
-
-            this.$store.dispatch("getTaskList", true);
-            this.$store.commit("SET_TAB_TYPE", "");
+          console.log('this.temp', this.temp);
+          job.createJob(this.temp).then(response => {
+            if (response.code === 200) {
+              this.$notify({
+                title: 'Success',
+                message: '创建质量任务成功',
+                type: 'success',
+                duration: 2000
+              });
+              this.$store.dispatch('getTaskList', true);
+              this.$store.commit('SET_TAB_TYPE', '');
+            } else {
+              this.$notify({
+                title: 'Error',
+                message: '创建质量任务失败',
+                type: 'error',
+                duration: 2000
+              });
+            }
           });
         }
       }
@@ -722,7 +727,7 @@ export default {
         readerDefaultFS: readerData.defaultFS,
         readerFileType: readerData.fileType,
         readerFieldDelimiter: readerData.fieldDelimiter,
-        readerSkipHeader: readerData.skipHeader,
+        readerSkipHeader: readerData.skipHeader
       };
       const hiveWriter = {
         writerDefaultFS: writeData.defaultFS,
@@ -730,31 +735,31 @@ export default {
         writerPath: writeData.path,
         writerFileName: writeData.fileName,
         writeMode: writeData.writeMode,
-        writeFieldDelimiter: writeData.fieldDelimiter,
+        writeFieldDelimiter: writeData.fieldDelimiter
       };
       const hbaseReader = {
         readerMode: readerData.mode,
         readerMaxVersion: readerData.maxVersion,
-        readerRange: readerData.range,
+        readerRange: readerData.range
       };
       const hbaseWriter = {
         writerMode: writeData.mode,
         writerRowkeyColumn: writeData.rowkeyColumn,
         writerVersionColumn: writeData.versionColumn,
-        writeNullMode: writeData.nullMode,
+        writeNullMode: writeData.nullMode
       };
       const mongoDBReader = {};
       const mongoDBWriter = {
-        upsertInfo: writeData.upsertInfo,
+        upsertInfo: writeData.upsertInfo
       };
       const rdbmsReader = {
         readerSplitPk: readerData.splitPk,
         whereParams: readerData.where,
-        querySql: readerData.querySql,
+        querySql: readerData.querySql
       };
       const rdbmsWriter = {
         preSql: writeData.preSql,
-        postSql: writeData.postSql,
+        postSql: writeData.postSql
       };
       const obj = {
         readerDatasourceId: readerData.datasourceId,
@@ -772,18 +777,19 @@ export default {
         hbaseWriter: hbaseWriter,
         rule: this.$refs.reader.getData().rule,
         mongoDBReader: mongoDBReader,
-        mongoDBWriter: mongoDBWriter,
+        mongoDBWriter: mongoDBWriter
       };
       // 调api
-      dataxJsonApi.buildJson(obj).then((response) => {
-        this.configJson = response;
-      });
+      // dataxJsonApi.buildJson(obj).then((response) => {
+      //   this.configJson = response;
+      // });
+      this.configJson = JSON.stringify(obj)
     },
     handleCopy(text, event) {
       clip(this.configJson, event);
       this.$message({
-        message: "copy success",
-        type: "success",
+        message: 'copy success',
+        type: 'success'
       });
     },
     handleJobTemplateSelectDrawer() {
@@ -809,9 +815,9 @@ export default {
       this.temp.id = undefined;
       this.temp.jobDesc = this.getReaderData().tableName;
       this.$refs.jobTemplateSelectDrawer.closeDrawer();
-      this.jobTemplate = val.id + "(" + val.jobDesc + ")";
-    },
-  },
+      this.jobTemplate = val.id + '(' + val.jobDesc + ')';
+    }
+  }
 };
 </script>
 
@@ -819,13 +825,16 @@ export default {
 .from_footer {
   text-align: right;
   border-top: 1px solid #f3f3f3;
-  margin-top: 0;
+  margin-top: 20px;
 }
 
 .main_content {
-  width: 78%;
+  width: 100%;
+  padding-left: 11%;
+  padding-right: 11%;
   margin: 0 auto;
-  min-height: 500px;
+  height: calc(100vh - 423px);
+  overflow-y: auto;
 }
 
 .main_content >>> .el-select {

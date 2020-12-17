@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <FieldMapper ref="mapper" />
   </div>
 </template>

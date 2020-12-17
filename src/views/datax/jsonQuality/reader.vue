@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <RDBMSReader ref="rdbmsreader" @selectDataSource="showDataSource" />
     <HiveReader v-show="false" ref="hivereader" @selectDataSource="showDataSource" />
     <HBaseReader v-show="false" ref="hbasereader" @selectDataSource="showDataSource" />
@@ -20,7 +20,7 @@ export default {
       dataSource: ''
     }
   },
-  
+
   methods: {
     getData() {
       // if (this.dataSource === 'hive') {

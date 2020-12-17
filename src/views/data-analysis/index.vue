@@ -5,11 +5,16 @@
     </keep-alive> -->
     <!-- <el-button @click="getAnalysis">链接</el-button> -->
     <!-- <iframe src="47.103.79.104:8080"></iframe> -->
+    <el-button @click="goLoginGet">goLoginGet</el-button>
+    <el-button @click="goLoginPost({username: 'admin',password: 'admin'})">goLoginPost</el-button>
+    <el-button @click="goWhere({username: 'admin',password: 'admin'})">goWhere</el-button>
+    <el-button @click="goWelcome({username: 'admin',password: 'admin'})">goWelcome</el-button>
+
   </div>
 </template>
 
 <script>
-import { goLoginGet, goLoginPost, goWelcome } from '../../otherUrl/otherUrl';
+import { goLoginGet, goLoginPost, goWelcome, goWhere } from '../../otherUrl/otherUrl';
 import qs from 'qs'
 
 export default {
@@ -80,6 +85,18 @@ export default {
         formData.append(key, json[key]);
       });
       return formData;
+    },
+    goLoginGet() {
+      goLoginGet()
+    },
+    goLoginPost(data) {
+      goLoginPost(data)
+    },
+    goWelcome(data) {
+      goWelcome(data)
+    },
+    goWhere(data) {
+      goWhere(data)
     }
   }
 };

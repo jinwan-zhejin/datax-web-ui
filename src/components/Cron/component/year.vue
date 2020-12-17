@@ -123,8 +123,8 @@ export default {
 }
 </script>
 
-<style lang="css">
-.el-checkbox+.el-checkbox {
-    margin-left: 10px;
+<style lang="css" scoped>
+.el-radio {
+  width: 85px;
 }
 </style>

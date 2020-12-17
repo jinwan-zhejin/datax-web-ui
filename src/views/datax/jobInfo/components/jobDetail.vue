@@ -1,8 +1,11 @@
 <template>
   <div class="job_detail">
-
     <div class="header">
-      <div class="header_action" style="margin-left:17px;" @click="handlerExecute(temp)">
+      <div
+        class="header_action"
+        style="margin-left:17px;"
+        @click="handlerExecute(temp)"
+      >
         <i class="el-icon-video-play" />
         <span>执行一次</span>
       </div>
@@ -15,7 +18,11 @@
           <el-table :data="registerNode">
             <el-table-column width="150" property="title" label="执行器名称" />
             <el-table-column width="150" property="appName" label="appName" />
-            <el-table-column width="150" property="registryList" label="机器地址" />
+            <el-table-column
+              width="150"
+              property="registryList"
+              label="机器地址"
+            />
           </el-table>
           <div slot="reference" style="float: left">
             <i class="el-icon-s-tools" />
@@ -25,7 +32,11 @@
       </div>
 
       <div class="header_action">
-        <el-popover placement="bottom" width="300" @show="nextTriggerTime(temp)">
+        <el-popover
+          placement="bottom"
+          width="300"
+          @show="nextTriggerTime(temp)"
+        >
           <h5 v-html="triggerNextTimes" />
           <div slot="reference" style="float: left">
             <i class="el-icon-message-solid" />
@@ -39,7 +50,16 @@
         <span>删除</span>
       </div>
       <div class="header_switch" style="margin-right:10px;">
-        <el-switch v-model="temp.triggerStatus" active-color="#00A854" active-text="启动" :active-value="1" inactive-color="#F04134" inactive-text="停止" :inactive-value="0" @change="changeSwitch(temp)" />
+        <el-switch
+          v-model="temp.triggerStatus"
+          active-color="#00A854"
+          active-text="启动"
+          :active-value="1"
+          inactive-color="#F04134"
+          inactive-text="停止"
+          :inactive-value="0"
+          @change="changeSwitch(temp)"
+        />
       </div>
     </div>
 
@@ -64,7 +84,17 @@
           <span class="key">所属项目：</span>
           <span class="value">{{ temp.projectName }}</span>
         </div>
-        <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" class="detail_target">
+        <div
+          v-if="
+            jobType === 'NORMAL' ||
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT' ||
+              jobType === 'SHELL' ||
+              jobType === 'POWERSHELL' ||
+              jobType === 'PYTHON'
+          "
+          class="detail_target"
+        >
           <span class="key">路由策略：</span>
           <span class="value">{{ temp.executorRouteStrategy }}</span>
         </div>
@@ -72,7 +102,17 @@
           <span class="key">子任务：</span>
           <span class="value">{{ temp.childJobId }}</span>
         </div>
-        <div v-if="jobType === 'NORMAL' || jobType === 'IMPORT' || jobType === 'EXPORT' || jobType === 'SHELL' || jobType === 'POWERSHELL' || jobType === 'PYTHON'" class="detail_target">
+        <div
+          v-if="
+            jobType === 'NORMAL' ||
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT' ||
+              jobType === 'SHELL' ||
+              jobType === 'POWERSHELL' ||
+              jobType === 'PYTHON'
+          "
+          class="detail_target"
+        >
           <span class="key">阻塞处理：</span>
           <span class="value">{{ temp.executorBlockStrategy }}</span>
         </div>
@@ -114,7 +154,11 @@
         <p class="json_title" @click="viewJson">查看json：</p>
       </div>
       <div v-if="jsonshow" class="json_content">
-        <json-editor ref="jsonEditor" v-model="temp.jobJson" :cani-edit="false" />
+        <json-editor
+          ref="jsonEditor"
+          v-model="temp.jobJson"
+          :cani-edit="false"
+        />
       </div>
     </div>
 
@@ -133,207 +177,504 @@
       </transition>
     </div>
 
-    <el-dialog :title="translaterMaster(textMap[dialogStatus]||'')" :visible.sync="dialogFormVisible" width="50%" :before-close="handleClose">
+    <el-dialog
+      :title="translaterMaster(textMap[dialogStatus] || '')"
+      :visible.sync="dialogFormVisible"
+      width="50%"
+      :before-close="handleClose"
+    >
       <h3>
         1.新建任务
-        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.newTask=!editable.newTask">{{ editable.newTask ? '取消' : '编辑' }}</el-button>
-        <el-button v-if="dialogStatus!=='create' && editable.newTask" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create'"
+          type="text"
+          icon="el-icon-edit"
+          @click="editable.newTask = !editable.newTask"
+        >{{ editable.newTask ? "取消" : "编辑" }}</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create' && editable.newTask"
+          type="text"
+          icon="el-icon-upload"
+          @click="updateData()"
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="110px" :class="[editable.newTask?'':'form-item-class']">
+        <el-form
+          ref="dataForm"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="110px"
+          :class="[editable.newTask ? '' : 'form-item-class']"
+        >
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="执行器" prop="jobGroup">
-                <el-select v-if="editable.newTask" v-model="temp.jobGroup" placeholder="请选择执行器">
-                  <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.jobGroup"
+                  placeholder="请选择执行器"
+                >
+                  <el-option
+                    v-for="item in executorList"
+                    :key="item.id"
+                    :label="item.title"
+                    :value="item.id"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.jobGroup, executorList, 'id', 'title')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(temp.jobGroup, executorList, "id", "title")
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="任务名称" prop="jobDesc">
-                <el-input v-if="editable.newTask" v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.jobDesc) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.jobDesc"
+                  size="medium"
+                  placeholder="请输入任务描述"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.jobDesc)
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="路由策略" prop="executorRouteStrategy">
-                <el-select v-if="editable.newTask" v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
-                  <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.executorRouteStrategy"
+                  placeholder="请选择路由策略"
+                >
+                  <el-option
+                    v-for="item in routeStrategies"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.executorRouteStrategy, routeStrategies, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(
+                      temp.executorRouteStrategy,
+                      routeStrategies,
+                      "value",
+                      "label"
+                    )
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-              <el-dialog title="提示" :visible.sync="showCronBox" width="60%" append-to-body>
+              <el-dialog
+                title="提示"
+                :visible.sync="showCronBox"
+                width="60%"
+                append-to-body
+              >
                 <cron v-model="temp.jobCron" />
                 <span slot="footer" class="dialog-footer">
-                  <el-button @click="showCronBox = false;">关闭</el-button>
-                  <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+                  <el-button @click="showCronBox = false">关闭</el-button>
+                  <el-button
+                    type="primary"
+                    @click="showCronBox = false"
+                  >确 定</el-button>
                 </span>
               </el-dialog>
               <el-form-item label="Cron表达式" prop="jobCron">
-                <el-input v-if="editable.newTask" v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
-                  <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
-                  <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.jobCron"
+                  auto-complete="off"
+                  placeholder="请输入Cron表达式"
+                >
+                  <el-button
+                    v-if="!showCronBox"
+                    slot="append"
+                    icon="el-icon-turn-off"
+                    title="打开图形配置"
+                    @click="showCronBox = true"
+                  />
+                  <el-button
+                    v-else
+                    slot="append"
+                    icon="el-icon-open"
+                    title="关闭图形配置"
+                    @click="showCronBox = false"
+                  />
                 </el-input>
-                <span v-else class="info-detail">{{ dashOrValue(temp.jobCron) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.jobCron)
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-                <el-select v-if="editable.newTask" v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-                  <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.executorBlockStrategy"
+                  placeholder="请选择阻塞处理策略"
+                >
+                  <el-option
+                    v-for="item in blockStrategies"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.executorBlockStrategy, blockStrategies, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(
+                      temp.executorBlockStrategy,
+                      blockStrategies,
+                      "value",
+                      "label"
+                    )
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="报警邮件">
-                <el-input v-if="editable.newTask" v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.alarmEmail) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.alarmEmail"
+                  placeholder="请输入报警邮件，多个用逗号分隔"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.alarmEmail)
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="任务类型" prop="glueType">
-                <el-select v-if="editable.newTask" v-model="temp.glueType" placeholder="任务脚本类型">
-                  <el-option v-for="item in glueTypes" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.glueType"
+                  placeholder="任务脚本类型"
+                >
+                  <el-option
+                    v-for="item in glueTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.glueType, glueTypes, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(temp.glueType, glueTypes, "value", "label")
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="失败重试次数">
-                <el-input-number v-if="editable.newTask" v-model="temp.executorFailRetryCount" size="small" :min="0" :max="20" />
-                <span v-else class="info-detail">{{ temp.executorFailRetryCount }}</span>
+                <el-input-number
+                  v-if="editable.newTask"
+                  v-model="temp.executorFailRetryCount"
+                  size="small"
+                  :min="0"
+                  :max="20"
+                />
+                <span v-else class="info-detail">{{
+                  temp.executorFailRetryCount
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="所属项目" prop="projectId">
-                <el-select v-if="editable.newTask" v-model="temp.projectId" placeholder="所属项目" class="filter-item">
-                  <el-option v-for="item in jobProjectList" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.projectId"
+                  placeholder="所属项目"
+                  class="filter-item"
+                >
+                  <el-option
+                    v-for="item in jobProjectList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.projectId, jobProjectList, 'id', 'name')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(temp.projectId, jobProjectList, "id", "name")
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="超时时间(分钟)">
-                <el-input-number v-if="editable.newTask" v-model="temp.executorTimeout" size="small" :min="0" :max="120" />
-                <span v-else class="info-detail">{{ temp.executorTimeout }}</span>
+                <el-input-number
+                  v-if="editable.newTask"
+                  v-model="temp.executorTimeout"
+                  size="small"
+                  :min="0"
+                  :max="120"
+                />
+                <span v-else class="info-detail">{{
+                  temp.executorTimeout
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="子任务">
-                <el-select v-if="editable.newTask" v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
-                  <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.childJobId"
+                  multiple
+                  placeholder="子任务"
+                  value-key="id"
+                >
+                  <el-option
+                    v-for="item in jobIdList"
+                    :key="item.id"
+                    :label="item.jobDesc"
+                    :value="item"
+                  />
                 </el-select>
                 <span v-else class="info-detail">{{ reorganizeChildJob }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12" />
           </el-row>
-          <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+          <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="辅助参数" prop="incrementType">
-                <el-select v-if="editable.newTask" v-model="temp.incrementType" placeholder="请选择参数类型" value="">
-                  <el-option v-for="item in incrementTypes" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.incrementType"
+                  placeholder="请选择参数类型"
+                  value=""
+                >
+                  <el-option
+                    v-for="item in incrementTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.incrementType, incrementTypes, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(temp.incrementType, incrementTypes, "value", "label")
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
+          <el-row
+            v-if="temp.glueType === 'BEAN' && temp.incrementType === 1"
+            :gutter="20"
+          >
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="增量主键ID" prop="incStartId">
-                <el-input v-if="editable.newTask" v-model="temp.incStartId" placeholder="首次增量使用" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.incStartId) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.incStartId"
+                  placeholder="首次增量使用"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.incStartId)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="ID增量参数" prop="replaceParam">
-                <el-input v-if="editable.newTask" v-model="temp.replaceParam" placeholder="-DstartId='%s' -DendId='%s'" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.replaceParam) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.replaceParam"
+                  placeholder="-DstartId='%s' -DendId='%s'"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.replaceParam)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="reader数据源" prop="datasourceId">
-                <el-select v-if="editable.newTask" v-model="temp.datasourceId" placeholder="reader数据源" class="filter-item">
-                  <el-option v-for="item in dataSourceList" :key="item.id" :label="item.datasourceName" :value="item.id" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.datasourceId"
+                  placeholder="reader数据源"
+                  class="filter-item"
+                >
+                  <el-option
+                    v-for="item in dataSourceList"
+                    :key="item.id"
+                    :label="item.datasourceName"
+                    :value="item.id"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.datasourceId, dataSourceList, 'id', 'datasourceName')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(
+                      temp.datasourceId,
+                      dataSourceList,
+                      "id",
+                      "datasourceName"
+                    )
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="14" :sm="14" :md="14" :lg="7" :xl="7">
               <el-form-item label="reader表" prop="readerTable">
-                <el-input v-if="editable.newTask" v-model="temp.readerTable" placeholder="读表的表名" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.readerTable) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.readerTable"
+                  placeholder="读表的表名"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.readerTable)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="10" :sm="10" :md="10" :lg="5" :xl="5">
               <el-form-item label="主键" label-width="40px" prop="primaryKey">
-                <el-input v-if="editable.newTask" v-model="temp.primaryKey" placeholder="请填写主键字段名" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.primaryKey) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.primaryKey"
+                  placeholder="请填写主键字段名"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.primaryKey)
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 2" :gutter="20">
+          <el-row
+            v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
+            :gutter="20"
+          >
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="增量开始时间" prop="incStartTime">
-                <el-date-picker v-if="editable.newTask" v-model="temp.incStartTime" type="datetime" placeholder="首次增量使用" format="yyyy-MM-dd HH:mm:ss" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.incStartTime) }}</span>
+                <el-date-picker
+                  v-if="editable.newTask"
+                  v-model="temp.incStartTime"
+                  type="datetime"
+                  placeholder="首次增量使用"
+                  format="yyyy-MM-dd HH:mm:ss"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.incStartTime)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="增量时间字段" prop="replaceParam">
-                <el-input v-if="editable.newTask" v-model="temp.replaceParam" placeholder="-DlastTime='%s' -DcurrentTime='%s'" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.replaceParam) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.replaceParam"
+                  placeholder="-DlastTime='%s' -DcurrentTime='%s'"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.replaceParam)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="增量时间格式" prop="replaceParamType">
-                <el-select v-if="editable.newTask" v-model="temp.replaceParamType" placeholder="增量时间格式" @change="incStartTimeFormat">
-                  <el-option v-for="item in replaceFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="temp.replaceParamType"
+                  placeholder="增量时间格式"
+                  @change="incStartTimeFormat"
+                >
+                  <el-option
+                    v-for="item in replaceFormatTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(temp.replaceParamType, replaceFormatTypes, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(
+                      temp.replaceParamType,
+                      replaceFormatTypes,
+                      "value",
+                      "label"
+                    )
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
-
           </el-row>
-          <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 3" :gutter="20">
+          <el-row
+            v-if="temp.glueType === 'BEAN' && temp.incrementType === 3"
+            :gutter="20"
+          >
             <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item label="分区字段" prop="partitionField">
-                <el-input v-if="editable.newTask" v-model="partitionField" placeholder="请输入分区字段" />
-                <span v-else class="info-detail">{{ dashOrValue(partitionField) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="partitionField"
+                  placeholder="请输入分区字段"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(partitionField)
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="14" :sm="14" :md="14" :lg="7" :xl="7">
               <el-form-item label="分区时间">
-                <el-select v-if="editable.newTask" v-model="timeFormatType" placeholder="分区时间格式">
-                  <el-option v-for="item in timeFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select
+                  v-if="editable.newTask"
+                  v-model="timeFormatType"
+                  placeholder="分区时间格式"
+                >
+                  <el-option
+                    v-for="item in timeFormatTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
-                <span v-else class="info-detail">{{ dashOrValue(finder(timeFormatType, timeFormatTypes, 'value', 'label')) }}</span>
+                <span v-else class="info-detail">{{
+                  dashOrValue(
+                    finder(timeFormatType, timeFormatTypes, "value", "label")
+                  )
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :xs="10" :sm="10" :md="10" :lg="5" :xl="5">
-              <el-input-number v-if="editable.newTask" v-model="timeOffset" size="small" :min="-20" :max="0" style="width: 65%" />
-              <span v-else class="info-detail">{{ dashOrValue(timeOffset) }}</span>
+              <el-input-number
+                v-if="editable.newTask"
+                v-model="timeOffset"
+                size="small"
+                :min="-20"
+                :max="0"
+                style="width: 65%"
+              />
+              <span v-else class="info-detail">{{
+                dashOrValue(timeOffset)
+              }}</span>
             </el-col>
           </el-row>
-          <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+          <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
             <el-col :span="24">
               <el-form-item label="JVM启动参数">
-                <el-input v-if="editable.newTask" v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
-                <span v-else class="info-detail">{{ dashOrValue(temp.jvmParam) }}</span>
+                <el-input
+                  v-if="editable.newTask"
+                  v-model="temp.jvmParam"
+                  placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
+                />
+                <span v-else class="info-detail">{{
+                  dashOrValue(temp.jvmParam)
+                }}</span>
               </el-form-item>
             </el-col>
           </el-row>
@@ -342,20 +683,48 @@
 
       <h3>
         2.构建reader
-        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editReader">{{ editable.reader ? '取消' : '编辑' }}</el-button>
-        <el-button v-if="dialogStatus!=='create' && editable.reader" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create'"
+          type="text"
+          icon="el-icon-edit"
+          @click="editReader"
+        >{{ editable.reader ? "取消" : "编辑" }}</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create' && editable.reader"
+          type="text"
+          icon="el-icon-upload"
+          @click="updateData()"
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
-        <reader ref="reader" />
+        <quality-reader v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityReader" />
+        <reader v-else ref="reader" />
       </div>
 
       <h3>
         3.构建writer
-        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.writer=!editable.writer">{{ editable.writer ? '取消' : '编辑' }}</el-button>
-        <el-button v-if="dialogStatus!=='create' && editable.writer" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create'"
+          type="text"
+          icon="el-icon-edit"
+          @click="editable.writer = !editable.writer"
+        >{{ editable.writer ? "取消" : "编辑" }}</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create' && editable.writer"
+          type="text"
+          icon="el-icon-upload"
+          @click="updateData()"
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
-        <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules" :class="[editable.writer?'':'form-item-class']">
+        <!-- <quality-writer v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityWriter" /> -->
+        <el-form
+          label-position="right"
+          label-width="150px"
+          :model="writerForm"
+          :rules="rules"
+          :class="[editable.writer ? '' : 'form-item-class']"
+        >
           <el-form-item label="数据库源：" prop="datasourceId">
             <el-select
               v-if="editable.writer"
@@ -370,7 +739,16 @@
                 :value="item.id"
               />
             </el-select>
-            <span v-else class="info-detail">{{ dashOrValue(finder($store.state.taskAdmin.writerDataSourceID, $store.state.taskAdmin.dataSourceList, 'id', 'datasourceName')) }}</span>
+            <span v-else class="info-detail">{{
+              dashOrValue(
+                finder(
+                  $store.state.taskAdmin.writerDataSourceID,
+                  $store.state.taskAdmin.dataSourceList,
+                  "id",
+                  "datasourceName"
+                )
+              )
+            }}</span>
           </el-form-item>
           <el-form-item label="数据库表名：" prop="tableName">
             <el-select
@@ -388,42 +766,82 @@
                 :value="item"
               />
             </el-select>
-            <span v-else class="info-detail">{{ dashOrValue($store.state.taskAdmin.writerTableName) }}</span>
+            <span v-else class="info-detail">{{
+              dashOrValue($store.state.taskAdmin.writerTableName)
+            }}</span>
           </el-form-item>
           <div style="margin: 5px 0;" />
           <el-form-item label="字段：">
-            <el-checkbox v-model="writerForm.checkAll" :disabled="!editable.writer" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
+            <el-checkbox
+              v-model="writerForm.checkAll"
+              :disabled="!editable.writer"
+              :indeterminate="writerForm.isIndeterminate"
+              @change="wHandleCheckAllChange"
+            >全选</el-checkbox>
             <div style="margin: 15px 0;" />
-            <el-checkbox-group v-model="$store.state.taskAdmin.selectWriterColumn" :disabled="!editable.writer" @change="wHandleCheckedChange">
-              <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+            <el-checkbox-group
+              v-model="$store.state.taskAdmin.selectWriterColumn"
+              :disabled="!editable.writer"
+              @change="wHandleCheckedChange"
+            >
+              <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{
+                c
+              }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="前置sql语句：">
-            <el-input v-if="editable.writer" v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" />
-            <span v-else class="info-detail">{{ dashOrValue(writerForm.preSql) }}</span>
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.preSql"
+              placeholder="前置sql在insert之前执行"
+              type="textarea"
+              :rows="3"
+            />
+            <span v-else class="info-detail">{{
+              dashOrValue(writerForm.preSql)
+            }}</span>
           </el-form-item>
           <el-form-item label="postSql：">
-            <el-input v-if="editable.writer" v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" />
-            <span v-else class="info-detail">{{ dashOrValue(writerForm.postSql) }}</span>
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.postSql"
+              placeholder="多个用;分隔"
+              type="textarea"
+              :rows="3"
+            />
+            <span v-else class="info-detail">{{
+              dashOrValue(writerForm.postSql)
+            }}</span>
           </el-form-item>
         </el-form>
       </div>
 
       <h3>
         4.字段映射
-        <el-button v-if="dialogStatus!=='create'" type="text" icon="el-icon-edit" @click="editable.mapping=!editable.mapping">{{ editable.mapping ? '取消' : '编辑' }}</el-button>
-        <el-button v-if="dialogStatus!=='create' && editable.mapping" type="text" icon="el-icon-upload" @click="updateData()">保存更改</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create'"
+          type="text"
+          icon="el-icon-edit"
+          @click="editable.mapping = !editable.mapping"
+        >{{ editable.mapping ? "取消" : "编辑" }}</el-button>
+        <el-button
+          v-if="dialogStatus !== 'create' && editable.mapping"
+          type="text"
+          icon="el-icon-upload"
+          @click="updateData()"
+        >保存更改</el-button>
       </h3>
       <div style="margin: 0 24px">
         <el-table
           :data="tableData"
-          :header-cell-style="{ background: '#f8f8fa',color:'#666666','font-family': 'PingFangHK-Medium, PingFangHK' }"
+          :header-cell-style="{
+            background: '#f8f8fa',
+            color: '#666666',
+            'font-family': 'PingFangHK-Medium, PingFangHK'
+          }"
           style="width: 100%"
         >
-          <el-table-column
-            label="数据源库"
-            width="180"
-          >
+          <el-table-column label="数据源库" width="180">
             <template slot-scope="scope">
               <el-select
                 v-if="editable.mapping"
@@ -431,17 +849,22 @@
                 placeholder="请选择"
                 filterable
                 value-key="index"
-                @change="lHandleSelect(scope.row.index,$event)"
+                @change="lHandleSelect(scope.row.index, $event)"
               >
-                <el-option v-for="tmp in fromColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+                <el-option
+                  v-for="tmp in fromColumnsList"
+                  :key="tmp"
+                  :label="tmp"
+                  :value="tmp"
+                />
               </el-select>
-              <span v-else class="info-detail">{{ dashOrValue(readerForm.lcolumns[scope.row.index]) }}</span>
+              <span v-else class="info-detail">{{
+                dashOrValue(readerForm.lcolumns[scope.row.index])
+              }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="目标字段"
-          >
+          <el-table-column label="目标字段">
             <template slot-scope="scope">
               <el-select
                 v-if="editable.mapping"
@@ -449,16 +872,21 @@
                 placeholder="请选择"
                 filterable
                 value-key="index"
-                @change="rHandleSelect(scope.row.index,$event)"
+                @change="rHandleSelect(scope.row.index, $event)"
               >
-                <el-option v-for="tmp in toColumnsList" :key="tmp" :label="tmp" :value="tmp" />
+                <el-option
+                  v-for="tmp in toColumnsList"
+                  :key="tmp"
+                  :label="tmp"
+                  :value="tmp"
+                />
               </el-select>
-              <span v-else class="info-detail">{{ dashOrValue(readerForm.rcolumns[scope.row.index]) }}</span>
+              <span v-else class="info-detail">{{
+                dashOrValue(readerForm.rcolumns[scope.row.index])
+              }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-          >
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 type="infor"
@@ -467,7 +895,7 @@
                 size="small"
                 value-key="index"
                 :disabled="!editable.mapping"
-                @click="bHandleClick(scope.row.index,$event)"
+                @click="bHandleClick(scope.row.index, $event)"
               />
             </template>
           </el-table-column>
@@ -477,13 +905,23 @@
         <el-button size="small" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button v-if="isEditable" size="small" type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button
+          v-if="isEditable"
+          size="small"
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >
           确定
         </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog width="75%" class="log_detail_window" title="日志信息" :visible.sync="logview">
+    <el-dialog
+      width="75%"
+      class="log_detail_window"
+      title="日志信息"
+      :visible.sync="logview"
+    >
       <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
   </div>
@@ -505,14 +943,12 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import * as jobProjectApi from '@/api/datax-job-project';
 import reader from '@/views/datax/json-build/reader';
 import writer from '@/views/datax/json-build/writer';
+import qualityReader from '../../jsonQuality/reader';
+import qualityWriter from '../../jsonQuality/writer';
 import mapper from '@/views/datax/json-build/mapper';
-import {
-  isJSON
-} from '@/utils/validate';
+import { isJSON } from '@/utils/validate';
 import jobLog from './jobLog';
-import {
-  getTableSchema
-} from '@/api/metadata-query';
+import { getTableSchema } from '@/api/metadata-query';
 
 import {
   handlerExecute,
@@ -524,7 +960,7 @@ import {
   nextTriggerTime,
   handlerUpdate
 } from '../method';
-import { translaterMaster } from '@/utils/dictionary'
+import { translaterMaster } from '@/utils/dictionary';
 
 export default {
   name: 'SimpleJob',
@@ -538,6 +974,8 @@ export default {
     jobLog,
     reader,
     writer,
+    qualityReader,
+    qualityWriter,
     mapper
   },
   directives: {
@@ -633,78 +1071,110 @@ export default {
         create: 'Create'
       },
       rules: {
-        jobGroup: [{
-          required: true,
-          message: 'jobGroup is required',
-          trigger: 'change'
-        }],
-        executorRouteStrategy: [{
-          required: true,
-          message: 'executorRouteStrategy is required',
-          trigger: 'change'
-        }],
-        executorBlockStrategy: [{
-          required: true,
-          message: 'executorBlockStrategy is required',
-          trigger: 'change'
-        }],
-        glueType: [{
-          required: true,
-          message: 'jobType is required',
-          trigger: 'change'
-        }],
-        projectId: [{
-          required: true,
-          message: 'projectId is required',
-          trigger: 'change'
-        }],
-        jobDesc: [{
-          required: true,
-          message: 'jobDesc is required',
-          trigger: 'blur'
-        }],
-        jobProject: [{
-          required: true,
-          message: 'jobProject is required',
-          trigger: 'blur'
-        }],
-        jobCron: [{
-          required: true,
-          message: 'jobCron is required',
-          trigger: 'blur'
-        }],
-        incStartId: [{
-          trigger: 'blur',
-          validator: validateIncParam
-        }],
-        replaceParam: [{
-          trigger: 'blur',
-          validator: validateIncParam
-        }],
-        primaryKey: [{
-          trigger: 'blur',
-          validator: validateIncParam
-        }],
-        incStartTime: [{
-          trigger: 'change',
-          validator: validateIncParam
-        }],
-        replaceParamType: [{
-          trigger: 'change',
-          validator: validateIncParam
-        }],
-        partitionField: [{
-          trigger: 'blur',
-          validator: validatePartitionParam
-        }],
-        datasourceId: [{
-          trigger: 'change',
-          validator: validateIncParam
-        }],
-        readerTable: [{
-          trigger: 'blur',
-          validator: validateIncParam
-        }]
+        jobGroup: [
+          {
+            required: true,
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }
+        ],
+        executorRouteStrategy: [
+          {
+            required: true,
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }
+        ],
+        executorBlockStrategy: [
+          {
+            required: true,
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }
+        ],
+        glueType: [
+          {
+            required: true,
+            message: 'jobType is required',
+            trigger: 'change'
+          }
+        ],
+        projectId: [
+          {
+            required: true,
+            message: 'projectId is required',
+            trigger: 'change'
+          }
+        ],
+        jobDesc: [
+          {
+            required: true,
+            message: 'jobDesc is required',
+            trigger: 'blur'
+          }
+        ],
+        jobProject: [
+          {
+            required: true,
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }
+        ],
+        jobCron: [
+          {
+            required: true,
+            message: 'jobCron is required',
+            trigger: 'blur'
+          }
+        ],
+        incStartId: [
+          {
+            trigger: 'blur',
+            validator: validateIncParam
+          }
+        ],
+        replaceParam: [
+          {
+            trigger: 'blur',
+            validator: validateIncParam
+          }
+        ],
+        primaryKey: [
+          {
+            trigger: 'blur',
+            validator: validateIncParam
+          }
+        ],
+        incStartTime: [
+          {
+            trigger: 'change',
+            validator: validateIncParam
+          }
+        ],
+        replaceParamType: [
+          {
+            trigger: 'change',
+            validator: validateIncParam
+          }
+        ],
+        partitionField: [
+          {
+            trigger: 'blur',
+            validator: validatePartitionParam
+          }
+        ],
+        datasourceId: [
+          {
+            trigger: 'change',
+            validator: validateIncParam
+          }
+        ],
+        readerTable: [
+          {
+            trigger: 'blur',
+            validator: validateIncParam
+          }
+        ]
       },
       temp: {
         id: undefined,
@@ -714,6 +1184,7 @@ export default {
         executorRouteStrategy: '',
         executorBlockStrategy: '',
         childJobId: '',
+        childJobIdArr: '',
         executorFailRetryCount: '',
         alarmEmail: '',
         executorTimeout: '',
@@ -734,7 +1205,8 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: ''
+        readerTable: '',
+        jobType: ''
       },
       resetTemp() {
         this.temp = this.$options.data().temp;
@@ -748,90 +1220,94 @@ export default {
       jobIdList: '',
       jobProjectList: '',
       dataSourceList: '',
-      blockStrategies: [{
-        value: 'SERIAL_EXECUTION',
-        label: '单机串行'
-      },
-      {
-        value: 'DISCARD_LATER',
-        label: '丢弃后续调度'
-      },
-      {
-        value: 'COVER_EARLY',
-        label: '覆盖之前调度'
-      }
+      blockStrategies: [
+        {
+          value: 'SERIAL_EXECUTION',
+          label: '单机串行'
+        },
+        {
+          value: 'DISCARD_LATER',
+          label: '丢弃后续调度'
+        },
+        {
+          value: 'COVER_EARLY',
+          label: '覆盖之前调度'
+        }
       ],
-      routeStrategies: [{
-        value: 'FIRST',
-        label: '第一个'
-      },
-      {
-        value: 'LAST',
-        label: '最后一个'
-      },
-      {
-        value: 'ROUND',
-        label: '轮询'
-      },
-      {
-        value: 'RANDOM',
-        label: '随机'
-      },
-      {
-        value: 'CONSISTENT_HASH',
-        label: '一致性HASH'
-      },
-      {
-        value: 'LEAST_FREQUENTLY_USED',
-        label: '最不经常使用'
-      },
-      {
-        value: 'LEAST_RECENTLY_USED',
-        label: '最近最久未使用'
-      },
-      {
-        value: 'FAILOVER',
-        label: '故障转移'
-      },
-      {
-        value: 'BUSYOVER',
-        label: '忙碌转移'
-      }
+      routeStrategies: [
+        {
+          value: 'FIRST',
+          label: '第一个'
+        },
+        {
+          value: 'LAST',
+          label: '最后一个'
+        },
+        {
+          value: 'ROUND',
+          label: '轮询'
+        },
+        {
+          value: 'RANDOM',
+          label: '随机'
+        },
+        {
+          value: 'CONSISTENT_HASH',
+          label: '一致性HASH'
+        },
+        {
+          value: 'LEAST_FREQUENTLY_USED',
+          label: '最不经常使用'
+        },
+        {
+          value: 'LEAST_RECENTLY_USED',
+          label: '最近最久未使用'
+        },
+        {
+          value: 'FAILOVER',
+          label: '故障转移'
+        },
+        {
+          value: 'BUSYOVER',
+          label: '忙碌转移'
+        }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
-      glueTypes: [{
-        value: 'BEAN',
-        label: 'DataX任务'
-      },
-      {
-        value: 'GLUE_SHELL',
-        label: 'Shell任务'
-      },
-      {
-        value: 'GLUE_PYTHON',
-        label: 'Python任务'
-      },
-      {
-        value: 'GLUE_POWERSHELL',
-        label: 'PowerShell任务'
-      }
+      glueTypes: [
+        {
+          value: 'BEAN',
+          label: 'DataX任务'
+        },
+        {
+          value: 'GLUE_SHELL',
+          label: 'Shell任务'
+        },
+        {
+          value: 'GLUE_PYTHON',
+          label: 'Python任务'
+        },
+        {
+          value: 'GLUE_POWERSHELL',
+          label: 'PowerShell任务'
+        }
       ],
-      incrementTypes: [{
-        value: 0,
-        label: '无'
-      },
-      {
-        value: 1,
-        label: '主键自增'
-      },
-      {
-        value: 2,
-        label: '时间自增'
-      },
-      {
-        value: 3,
-        label: 'HIVE分区'
-      }
+      incrementTypes: [
+        {
+          value: 0,
+          label: '无'
+        },
+        {
+          value: 1,
+          label: '主键自增'
+        },
+        {
+          value: 2,
+          label: '时间自增'
+        },
+        {
+          value: 3,
+          label: 'HIVE分区'
+        }
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -840,60 +1316,63 @@ export default {
       timeOffset: 0,
       timeFormatType: 'yyyy-MM-dd',
       partitionField: '',
-      timeFormatTypes: [{
-        value: 'yyyy-MM-dd',
-        label: 'yyyy-MM-dd'
-      },
-      {
-        value: 'yyyyMMdd',
-        label: 'yyyyMMdd'
-      },
-      {
-        value: 'yyyy/MM/dd',
-        label: 'yyyy/MM/dd'
-      }
+      timeFormatTypes: [
+        {
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
+        },
+        {
+          value: 'yyyyMMdd',
+          label: 'yyyyMMdd'
+        },
+        {
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
+        }
       ],
-      replaceFormatTypes: [{
-        value: 'yyyy/MM/dd',
-        label: 'yyyy/MM/dd'
-      },
-      {
-        value: 'yyyy-MM-dd',
-        label: 'yyyy-MM-dd'
-      },
-      {
-        value: 'HH:mm:ss',
-        label: 'HH:mm:ss'
-      },
-      {
-        value: 'yyyy/MM/dd HH:mm:ss',
-        label: 'yyyy/MM/dd HH:mm:ss'
-      },
-      {
-        value: 'yyyy-MM-dd HH:mm:ss',
-        label: 'yyyy-MM-dd HH:mm:ss'
-      },
-      {
-        value: 'Timestamp',
-        label: '时间戳'
-      }
+      replaceFormatTypes: [
+        {
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
+        },
+        {
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
+        },
+        {
+          value: 'HH:mm:ss',
+          label: 'HH:mm:ss'
+        },
+        {
+          value: 'yyyy/MM/dd HH:mm:ss',
+          label: 'yyyy/MM/dd HH:mm:ss'
+        },
+        {
+          value: 'yyyy-MM-dd HH:mm:ss',
+          label: 'yyyy-MM-dd HH:mm:ss'
+        },
+        {
+          value: 'Timestamp',
+          label: '时间戳'
+        }
       ],
-      statusList: [{
-        value: 500,
-        label: '失败'
-      },
-      {
-        value: 502,
-        label: '失败(超时)'
-      },
-      {
-        value: 200,
-        label: '成功'
-      },
-      {
-        value: 0,
-        label: '无'
-      }
+      statusList: [
+        {
+          value: 500,
+          label: '失败'
+        },
+        {
+          value: 502,
+          label: '失败(超时)'
+        },
+        {
+          value: 200,
+          label: '成功'
+        },
+        {
+          value: 0,
+          label: '无'
+        }
       ],
       /** 可编辑 */
       editable: {
@@ -915,7 +1394,9 @@ export default {
     },
 
     jobGroupName() {
-      return this.executorList.find(element => element.id === this.temp.jobGroup)?.title;
+      return this.executorList.find(
+        element => element.id === this.temp.jobGroup
+      )?.title;
     },
 
     jobParam() {
@@ -927,11 +1408,11 @@ export default {
     },
 
     readerColumns() {
-      return this.$store.state.taskAdmin.selectReaderColumn
+      return this.$store.state.taskAdmin.selectReaderColumn;
     },
 
     writerColumns() {
-      return this.$store.state.taskAdmin.writerColumns
+      return this.$store.state.taskAdmin.writerColumns;
     },
 
     /**
@@ -944,69 +1425,69 @@ export default {
      */
     finder() {
       return (item, sets, attr, distAttr) => {
-        var temp = ''
+        var temp = '';
         if (sets) {
-          temp = sets.find(ele => ele[attr] === item)
+          temp = sets.find(ele => ele[attr] === item);
         }
         if (!temp) {
-          return ''
+          return '';
         }
-        return temp[distAttr]
-      }
+        return temp[distAttr];
+      };
     },
     /** 提取子任务下拉列表数组jobDesc属性 */
     reorganizeChildJob() {
-      var tmp = '-'
+      var tmp = '-';
       if (this.temp.childJobId) {
         this.temp.childJobId.forEach(ele => {
           if (tmp === '-') {
-            tmp = ele.jobDesc
+            tmp = ele.jobDesc;
           } else {
-            tmp += ', '.concat(ele.jobDesc)
+            tmp += ', '.concat(ele.jobDesc);
           }
-        })
+        });
       }
-      return tmp
+      return tmp;
     },
     /** 没有值显示短横线，有值显示值 */
     dashOrValue() {
       return val => {
         if (val) {
-          return val
+          return val;
         } else {
-          return '-'
+          return '-';
         }
-      }
+      };
     },
     isEditable() {
-      var temp = null
+      var temp = null;
       for (var i in this.editable) {
         if (temp === null) {
-          temp = this.editable[i]
+          temp = this.editable[i];
         } else {
-          temp = (temp || this.editable[i])
+          temp = temp || this.editable[i];
         }
       }
-      return temp
+      return temp;
     }
   },
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
-      this.getTables('rdbmsWriter')
+      this.getTables('rdbmsWriter');
     },
 
     fromColumnsListChecked(newval) {
-      const arr = []
+      const arr = [];
       newval.forEach((element, index) => {
         const obj = {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
           index: index
-        }
-        arr.push(obj)
-      })
-      this.$store.commit('SET_TABLEDATA', arr)
+        };
+        arr.push(obj);
+      });
+      this.$store.commit('SET_TABLEDATA', arr);
     },
 
     readerColumns(newval) {
@@ -1018,9 +1499,9 @@ export default {
         const obj = {
           column: row,
           index
-        }
+        };
         this.tableData.push(obj);
-      })
+      });
     },
 
     writerColumns(newval) {
@@ -1032,7 +1513,7 @@ export default {
       this.$store.commit('SET_READER_EDITABLE', !val);
       if (!val) {
         for (var i in this.editable) {
-          this.editable[i] = false
+          this.editable[i] = false;
         }
       }
     }
@@ -1054,29 +1535,30 @@ export default {
     },
 
     getReaderData() {
-      return this.$refs.reader.getData()
+      return this.$refs.reader.getData();
     },
     wHandleCheckAllChange(val) {
-      this.writerForm.columns = val ? this.fromColumnList : []
-      this.writerForm.isIndeterminate = false
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
+      this.writerForm.columns = val ? this.fromColumnList : [];
+      this.writerForm.isIndeterminate = false;
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     },
     wHandleCheckedChange(value) {
-      const checkedCount = value.length
-      this.writerForm.checkAll = checkedCount === this.fromColumnList.length
-      this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
+      const checkedCount = value.length;
+      this.writerForm.checkAll = checkedCount === this.fromColumnList.length;
+      this.writerForm.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.fromColumnList.length;
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value);
     },
     wTbChange(t) {
-      this.writerForm.tableName = t
-      this.getColumns('writer')
-      this.$store.commit('SET_WRITER_TABLENAME', t)
+      this.writerForm.tableName = t;
+      this.getColumns('writer');
+      this.$store.commit('SET_WRITER_TABLENAME', t);
     },
 
     // 执行一次
     handlerExecute(temp) {
       handlerExecute.call(this, temp).then(() => {
-        this.newstlogContent = ''
+        this.newstlogContent = '';
         this.logList();
         this.showLog = true;
         this.jsonshow = false;
@@ -1086,10 +1568,10 @@ export default {
     // 查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
-      this.$store.commit('SET_LOGVIEW_TYPE', 0)
+      this.$store.commit('SET_LOGVIEW_TYPE', 0);
       this.logview = true;
       this.jobId = temp.id;
-            this.$refs.jobLog?.fetchData();
+      this.$refs.jobLog?.fetchData();
     },
 
     // 删除
@@ -1122,44 +1604,67 @@ export default {
 
     // 编辑
     handlerUpdate(row) {
+      this.$store.commit(
+        'SET_JOBINFO_TYPE',
+        this.jobInfo.jobType
+      )
+      if (this.$store.state.taskAdmin.jobInfoType === 'DQCJOB') {
+        const jobParamRule = JSON.parse(this.jobInfo.jobParam).rule
+        jobParamRule.forEach(ele => {
+          const codeArr = []
+          ele.ruleId.forEach(code => {
+            codeArr.push(code.code)
+          })
+          ele.ruleId = codeArr
+        })
+        this.$store.commit('SET_JOBRULE', jobParamRule)
+      }
+
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
 
       const jobParam = JSON.parse(row.jobParam);
       console.log('jobParam', jobParam);
-      this.$store.commit('SET_READER_DATASOURCE_ID', jobParam.readerDatasourceId)
+      this.$store.commit(
+        'SET_READER_DATASOURCE_ID',
+        jobParam.readerDatasourceId
+      );
 
-      this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0])
+      this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0]);
 
-      this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns)
+      this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns);
 
-      this.$store.commit('SET_WRITER_DATASOURCE_ID', jobParam.writerDatasourceId)
+      this.$store.commit(
+        'SET_WRITER_DATASOURCE_ID',
+        jobParam.writerDatasourceId
+      );
 
-      this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0])
+      this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0]);
 
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', jobParam.writerColumns)
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', jobParam.writerColumns);
 
-      this.getColumns()
+      this.getColumns();
 
-      this.getTables('rdbmsWriter')
+      this.getTables('rdbmsWriter');
     },
 
     // 实时更新日志
     logList() {
-      const param = Object.assign({}, {
-        current: 1,
-        size: 10,
-        jobGroup: 0,
-        jobId: this.temp.id,
-        logStatus: -1,
-        filterTime: ''
-      });
+      const param = Object.assign(
+        {},
+        {
+          current: 1,
+          size: 10,
+          jobGroup: 0,
+          jobId: this.temp.id,
+          logStatus: -1,
+          filterTime: ''
+        }
+      );
       let status = 0;
 
-      log.getList(param).then((response) => {
-        const {
-          content
-        } = response;
+      log.getList(param).then(response => {
+        const { content } = response;
 
         const newestLog = content.data[0] || {};
         if (!newestLog?.executorAddress) {
@@ -1170,7 +1675,7 @@ export default {
         const triggerTime = Date.parse(newestLog?.triggerTime);
         log
           .viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
-          .then((response) => {
+          .then(response => {
             this.newstlogContent = response.content.logContent;
           })
           .then(() => {
@@ -1191,35 +1696,31 @@ export default {
 
     handleClose(done) {
       this.$confirm('确认关闭？')
-        .then((_) => {
+        .then(_ => {
           done();
         })
-        .catch((_) => {});
+        .catch(_ => {});
     },
     getExecutor() {
-      job.getExecutorList().then((response) => {
-        const {
-          content
-        } = response;
+      job.getExecutorList().then(response => {
+        const { content } = response;
         this.executorList = content;
         console.log('this.executorList', content);
       });
     },
     getJobIdList() {
-      job.getJobIdList().then((response) => {
-        const {
-          content
-        } = response;
+      job.getJobIdList().then(response => {
+        const { content } = response;
         this.jobIdList = content;
       });
     },
     getJobProject() {
-      jobProjectApi.getJobProjectList().then((response) => {
+      jobProjectApi.getJobProjectList().then(response => {
         this.jobProjectList = response;
       });
     },
     getDataSourceList() {
-      datasourceApi.getDataSourceList().then((response) => {
+      datasourceApi.getDataSourceList().then(response => {
         this.dataSourceList = response;
         console.log('this.dataSourceList', this.dataSourceList);
       });
@@ -1227,15 +1728,13 @@ export default {
     fetchData() {
       this.listLoading = true;
       this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
-      job.getList(this.listQuery).then((response) => {
-        const {
-          content
-        } = response;
+      job.getList(this.listQuery).then(response => {
+        const { content } = response;
         this.total = content.recordsTotal;
         this.list = content.data;
         this.listLoading = false;
 
-        this.$store.commit('SET_TASKLIST', this.list)
+        this.$store.commit('SET_TASKLIST', this.list);
       });
     },
     incStartTimeFormat(vData) {},
@@ -1252,29 +1751,29 @@ export default {
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.rcolumns);
       this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.lcolumns);
       const jobParam = {
-        'readerDatasourceId': this.$store.state.taskAdmin.readerDataSourceID,
-        'readerTables': [this.$store.state.taskAdmin.readerTableName],
-        'readerColumns': this.$store.state.taskAdmin.selectReaderColumn,
-        'writerDatasourceId': this.$store.state.taskAdmin.writerDataSourceID,
-        'writerTables': [this.$store.state.taskAdmin.writerTableName],
-        'writerColumns': this.$store.state.taskAdmin.selectWriterColumn,
-        'transformer': [''],
-        'hiveReader': {},
-        'hiveWriter': {},
-        'rdbmsReader': {
-          'readerSplitPk': '',
-          'whereParams': '',
-          'querySql': ''
+        readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
+        readerTables: [this.$store.state.taskAdmin.readerTableName],
+        readerColumns: this.$store.state.taskAdmin.selectReaderColumn,
+        writerDatasourceId: this.$store.state.taskAdmin.writerDataSourceID,
+        writerTables: [this.$store.state.taskAdmin.writerTableName],
+        writerColumns: this.$store.state.taskAdmin.selectWriterColumn,
+        transformer: [''],
+        hiveReader: {},
+        hiveWriter: {},
+        rdbmsReader: {
+          readerSplitPk: '',
+          whereParams: '',
+          querySql: ''
         },
-        'rdbmsWriter': {
-          'preSql': '',
-          'postSql': ''
+        rdbmsWriter: {
+          preSql: '',
+          postSql: ''
         },
-        'hbaseReader': {},
-        'hbaseWriter': {},
-        'mongoDBReader': {},
-        'mongoDBWriter': {}
-      }
+        hbaseReader: {},
+        hbaseWriter: {},
+        mongoDBReader: {},
+        mongoDBWriter: {}
+      };
 
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
@@ -1285,14 +1784,15 @@ export default {
         });
         return;
       }
-      this.$refs['dataForm'].validate((valid) => {
-        const tabName = this.temp.id;
+      this.$refs['dataForm'].validate(valid => {
+        // const tabName = this.temp.id;
         if (valid) {
           if (this.temp.childJobId) {
             const auth = [];
             for (const i in this.temp.childJobId) {
               auth.push(this.temp.childJobId[i].id);
             }
+            this.temp.childJobIdArr = auth
             this.temp.childJobId = auth.toString();
           }
           // this.temp.executorHandler =
@@ -1300,11 +1800,22 @@ export default {
           this.temp.glueSource = this.glueSource;
           if (this.partitionField) {
             this.temp.partitionInfo =
-                            this.partitionField +
-                            ',' +
-                            this.timeOffset +
-                            ',' +
-                            this.timeFormatType;
+              this.partitionField +
+              ',' +
+              this.timeOffset +
+              ',' +
+              this.timeFormatType;
+          }
+          if (this.temp.jobType === 'DQCJOB') {
+            const tempjobRule = JSON.parse(JSON.stringify(this.$store.state.taskAdmin.jobRule))
+            tempjobRule.forEach(ele => {
+              const codeArr = []
+              ele.ruleId.forEach(code => {
+                codeArr.push({ code })
+              })
+              ele.ruleId = codeArr;
+            });
+            jobParam.rule = tempjobRule
           }
           this.temp.jobParam = JSON.stringify(jobParam);
           job.updateJob(this.temp).then(() => {
@@ -1324,7 +1835,7 @@ export default {
     },
 
     viewJson() {
-      this.jsonshow = !this.jsonshow
+      this.jsonshow = !this.jsonshow;
       if (this.showLog) {
         this.showLog = false;
       }
@@ -1340,21 +1851,26 @@ export default {
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsWriter') {
-        let obj = {}
-        if (this.dataSource === 'postgresql' || this.dataSource === 'greenplum' || this.dataSource === 'oracle' || this.dataSource === 'sqlserver') {
+        let obj = {};
+        if (
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
+        ) {
           obj = {
             datasourceId: this.writerForm.datasourceId,
             tableSchema: this.writerForm.tableSchema
-          }
+          };
         } else {
           obj = {
             datasourceId: this.$store.state.taskAdmin.writerDataSourceID
-          }
+          };
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response
-        })
+          this.wTbList = response;
+        });
       }
     },
     // 获取表字段
@@ -1362,12 +1878,12 @@ export default {
       const obj = {
         datasourceId: this.$store.state.taskAdmin.writerDataSourceID,
         tableName: this.$store.state.taskAdmin.writerTableName
-      }
+      };
       dsQueryApi.getColumns(obj).then(response => {
-        this.fromColumnList = response
-        this.writerForm.columns = response
-        this.writerForm.checkAll = true
-        this.writerForm.isIndeterminate = false
+        this.fromColumnList = response;
+        this.writerForm.columns = response;
+        this.writerForm.checkAll = true;
+        this.writerForm.isIndeterminate = false;
 
         this.$store.commit('SET_WRITER_COLUMNS', response);
 
@@ -1375,44 +1891,42 @@ export default {
         this.toColumnsList = response;
 
         console.log(response);
-      })
+      });
     },
 
-    lHandleSelect(index, v) {
-
-    },
+    lHandleSelect(index, v) {},
     cHandleSelect(index, v) {},
     rHandleSelect(index, v) {
-      console.log(index, v)
+      console.log(index, v);
     },
 
     bHandleClick(index, v) {
-      this.fromColumnsListChecked.splice(index, 1)
-      this.toColumnsListChecked.splice(index, 1)
+      this.fromColumnsListChecked.splice(index, 1);
+      this.toColumnsListChecked.splice(index, 1);
 
-      this.readerForm.lcolumns.splice(index, 1)
-      this.readerForm.rcolumns.splice(index, 1)
-      this.tableData.splice(index, 1)
+      this.readerForm.lcolumns.splice(index, 1);
+      this.readerForm.rcolumns.splice(index, 1);
+      this.tableData.splice(index, 1);
     },
 
     getLColumns() {
-      return this.readerForm.lcolumns
+      return this.readerForm.lcolumns;
     },
     getRColumns() {
-      return this.readerForm.rcolumns
+      return this.readerForm.rcolumns;
     },
     getRules() {
-      return this.readerForm.rules
+      return this.readerForm.rules;
     },
     editReader() {
-      this.editable.reader = !this.editable.reader
+      this.editable.reader = !this.editable.reader;
       this.$store.commit('SET_READER_EDITABLE', this.editable.reader);
     },
     exStatus(param) {
-      param = !param
+      param = !param;
     },
     translaterMaster(str) {
-      return translaterMaster(str)
+      return translaterMaster(str);
     }
   }
 };
@@ -1420,185 +1934,184 @@ export default {
 
 <style scoped>
 .header {
-    overflow: hidden;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(235, 235, 235, 1);
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
 }
 
 .header_action {
-    font-size: 14px;
-    font-family: PingFangHK-Regular, PingFangHK;
-    font-weight: 400;
-    line-height: 20px;
-    float: left;
-    cursor: pointer;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  line-height: 20px;
+  float: left;
+  cursor: pointer;
 }
 
 .header_action:not(:first-child) {
-    margin-left: 32px;
+  margin-left: 32px;
 }
 
 .header_action span {
-    margin-left: 4px;
+  margin-left: 4px;
 }
 
 .header_switch {
-    float: right;
+  float: right;
 }
 
 .content {
-    padding: 0 16px 16px;
+  padding: 0 16px 16px;
 }
 
 .title {
-    margin-top: 31px;
+  margin-top: 31px;
 }
 
 .task_img {
-    width: 21px;
+  width: 21px;
 }
 
 .jobDesc {
-    font-size: 24px;
-    font-family: PingFangHK-Medium, PingFangHK;
-    font-weight: 500;
-    color: #333333;
-    line-height: 33px;
-    margin-left: 10px;
+  font-size: 24px;
+  font-family: PingFangHK-Medium, PingFangHK;
+  font-weight: 500;
+  color: #333333;
+  line-height: 33px;
+  margin-left: 10px;
 }
 
 .edit {
-    float: right;
-    font-size: 14px;
-    font-family: PingFangHK-Regular, PingFangHK;
-    font-weight: 400;
-    color: #3D5FFF;
-    height: 33px;
-    line-height: 33px;
-    cursor: pointer;
+  float: right;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  color: #3d5fff;
+  height: 33px;
+  line-height: 33px;
+  cursor: pointer;
 }
 
 .detail {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .detail .key {
-    font-size: 14px;
-    font-family: PingFangHK-Regular, PingFangHK;
-    font-weight: 400;
-    color: #999999;
-    line-height: 20px;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  color: #999999;
+  line-height: 20px;
 }
 
 .detail .value {
-
-    font-size: 14px;
-    font-family: PingFangHK-Regular, PingFangHK;
-    font-weight: 400;
-    line-height: 20px;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .detail_target {
-    width: 50%;
-    padding: 8px;
-    /* background: red; */
+  width: 50%;
+  padding: 8px;
+  /* background: red; */
 }
 
 .json_title {
-    font-size: 14px;
-    font-family: PingFangHK-Regular, PingFangHK;
-    font-weight: 400;
-    color: #3D5FFF;
-    line-height: 20px;
-    padding: 8px;
-    cursor: pointer;
+  font-size: 14px;
+  font-family: PingFangHK-Regular, PingFangHK;
+  font-weight: 400;
+  color: #3d5fff;
+  line-height: 20px;
+  padding: 8px;
+  cursor: pointer;
 }
 
-.json_content>>>.CodeMirror {
-    background: white;
-    color: #333333;
+.json_content >>> .CodeMirror {
+  background: white;
+  color: #333333;
 }
 
-.json_content>>>.CodeMirror-gutters {
-    background: #F8F8FA;
-    border: none;
+.json_content >>> .CodeMirror-gutters {
+  background: #f8f8fa;
+  border: none;
 }
 
-.json_content>>>.CodeMirror-lint-markers {
-    width: 0;
+.json_content >>> .CodeMirror-lint-markers {
+  width: 0;
 }
 
-.json_content>>>.CodeMirror-linenumber {
-    color: rgba(102, 102, 102, 1);
-    left: 0 !important;
-    /* width: 44px !important; */
+.json_content >>> .CodeMirror-linenumber {
+  color: rgba(102, 102, 102, 1);
+  left: 0 !important;
+  /* width: 44px !important; */
 }
 
 .job_detail {
-    position: relative;
+  position: relative;
 }
 
 .log_detail {
-    width: 100%;
-    background: #F8F8FA;
-    border: 2px solid #F8F8FA;
-    border-left: none;
-    position: absolute;
-    bottom: 0
+  width: 100%;
+  background: #f8f8fa;
+  border: 2px solid #f8f8fa;
+  border-left: none;
+  position: absolute;
+  bottom: 0;
 }
 
 .log_title {
-    height: 36px;
-    line-height: 36px;
-    font-size: 14px;
-    font-family: PingFangHK-Medium, PingFangHK;
-    font-weight: 500;
-    color: #333333;
-    /* background: white; */
+  height: 36px;
+  line-height: 36px;
+  font-size: 14px;
+  font-family: PingFangHK-Medium, PingFangHK;
+  font-weight: 500;
+  color: #333333;
+  /* background: white; */
 }
 
 .log_log {
-    background: white;
-    display: inline-block;
-    padding: 0 24px;
+  background: white;
+  display: inline-block;
+  padding: 0 24px;
 }
 
 .log_container {
-    padding-left: 24px;
-    height: 240px;
-    overflow: scroll;
-    background: white;
-    font-size: 13px;
+  padding-left: 24px;
+  height: 240px;
+  overflow: scroll;
+  background: white;
+  font-size: 13px;
 }
 
 .unflod {
-    color: black;
-    float: right;
-    cursor: pointer;
-    margin-right: 10px;
+  color: black;
+  float: right;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: height .5s;
+  transition: height 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to
 
 /* .fade-leave-active below version 2.1.8 */
-    {
-    height: 0;
+ {
+  height: 0;
 }
 
 .log_detail_window >>> .el-dialog {
-    border-radius: 8px;
+  border-radius: 8px;
 }
 
 .log_detail_window >>> .el-dialog__body {
-    padding: 20px 40px;
+  padding: 20px 40px;
 }
 </style>
 <style lang="scss" scoped>
@@ -1609,7 +2122,7 @@ export default {
     margin: 22px 0;
     color: #333333;
     .el-button {
-      position:relative;
+      position: relative;
       float: right;
       padding: 0;
       font-size: 16px;
@@ -1635,22 +2148,22 @@ export default {
   }
   .el-table {
     border: 1px solid #f3f3f3;
-    >>>td {
+    >>> td {
       border-bottom: 1px solid #f3f3f3;
     }
-    >>>th {
+    >>> th {
       border-bottom: 1px solid #f3f3f3;
     }
   }
 }
->>>.el-dialog {
+>>> .el-dialog {
   margin-bottom: 15vh;
   .el-dialog__body {
     padding-top: 0;
   }
 }
 .form-item-class {
-  >>>.el-form-item__label {
+  >>> .el-form-item__label {
     font-weight: 500;
     color: #999999;
     font-family: PingFangHK-Regular, PingFangHK;

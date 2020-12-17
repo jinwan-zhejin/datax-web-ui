@@ -79,14 +79,23 @@ module.exports = {
           ['^' + '/j_spring_security_check']: '/j_spring_security_check'
         }
       },
-      // '/login': {
-      //   ws: false,
-      //   target: 'http://47.103.79.104:8080',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     ['^' + '/login']: '/login'
-      //   }
-      // },
+      '/login': {
+        ws: false,
+        target: 'http://47.103.79.104:8079',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/login']: '/login'
+        }
+      },
+      // Datains接口
+      '/welcome': {
+        ws: false,
+        target: 'http://47.103.79.104:8079',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + '/welcome']: '/datains/welcome'
+        }
+      },
       '/test': {
         ws: false,
         // target: 'http://192.168.3.60:9000', // 韩家敏

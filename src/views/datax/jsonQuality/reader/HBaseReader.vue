@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules">
       <el-form-item label="数据源" prop="datasourceId">
         <el-select v-model="readerForm.datasourceId" filterable @change="rDsChange">
@@ -54,6 +54,7 @@
 import * as dsQueryApi from '@/api/metadata-query'
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'HBaseReader',
@@ -95,15 +96,21 @@ export default {
         { value: 'false', label: '调用Bytes.toBytes(rowkey)' }
       ],
       rules: {
-        mode: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        datasourceId: [{ required: true, message: 'this is required', trigger: 'blur' }],
-        tableName: [{ required: true, message: 'this is required', trigger: 'blur' }]
+        mode: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        datasourceId: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }],
+        tableName: [{ required: true, message: translaterMaster('this is require'), trigger: 'blur' }]
       }
     }
   },
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hbaseReader')
+    },
+    'readerForm.tableName'(val) {
+      this.readerForm.tableName = val
+      this.rColumnList = []
+      this.readerForm.columns = []
+      this.getColumns('reader')
     }
   },
   created() {
@@ -128,6 +135,11 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then(response => {
           this.rTbList = response
+          this.readerForm.tableName = this.rTbList[0]
+        }).catch(error => {
+          console.log(error);
+          this.rTbList = []
+          this.readerForm.tableName = ''
         })
       }
     },
@@ -156,6 +168,12 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
+      }).catch(error => {
+        console.log(error)
+        this.rColumnList = []
+        this.readerForm.columns = []
+        this.readerForm.checkAll = false
+        this.readerForm.isIndeterminate = true
       })
     },
     getColumnsByQuerySql() {
