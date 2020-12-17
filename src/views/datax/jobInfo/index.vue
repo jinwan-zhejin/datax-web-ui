@@ -460,6 +460,7 @@ export default {
 
     getJobDetail(data) {
       // console.log(data);
+      this.$store.commit('SET_JOB_INFO', data)
       this.selectedId = data.id
       const a = {};
       a.title = data.jobDesc;
@@ -643,6 +644,7 @@ export default {
     },
 
     createNewJob(command) {
+      this.$store.commit('SET_READER_ISEDIT', false)
       console.log(command);
       this.$store.commit('SET_TAB_TYPE', command);
       this.jobType = command;

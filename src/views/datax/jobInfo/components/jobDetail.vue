@@ -717,8 +717,194 @@
         >保存更改</el-button>
       </h3>
       <div class="part-container">
-        <!-- <quality-writer v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityWriter" /> -->
+        <!-- {{ jobInfo.jobParam }} -->
         <el-form
+          v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'"
+          label-position="right"
+          label-width="150px"
+          :class="[editable.writer ? '' : 'form-item-class']"
+        >
+          <el-form-item label="数据库源：">
+            <el-select
+              v-if="editable.writer"
+              v-model="$store.state.taskAdmin.writerDataSourceID"
+              filterable
+              @change="wDsChange_Quality"
+            >
+              <el-option
+                v-for="item in $store.state.taskAdmin.dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+            <span v-else class="info-detail">{{
+              dashOrValue(
+                finder(
+                  $store.state.taskAdmin.writerDataSourceID,
+                  $store.state.taskAdmin.dataSourceList,
+                  "id",
+                  "datasourceName"
+                )
+              )
+            }}</span>
+          </el-form-item>
+          <el-form-item
+            v-if="dataSource === 'postgresql' ||
+              dataSource === 'greenplum' ||
+              dataSource === 'oracle' ||
+              dataSource === 'sqlserver'"
+            label="Schema："
+          >
+            <el-select
+              v-if="editable.writer"
+              v-model="$store.state.taskAdmin.writerSchema"
+              allow-create
+              default-first-option
+              filterable
+              @change="schemaChange"
+            >
+              <el-option
+                v-for="(item, index) in schemaList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+            <span v-else class="info-detail">
+              {{ dashOrValue($store.state.taskAdmin.writerSchema) }}
+            </span>
+          </el-form-item>
+          <el-form-item label="数据库表名：" prop="tableName">
+            <el-select
+              v-if="editable.writer"
+              v-model="$store.state.taskAdmin.writerTableName"
+              allow-create
+              default-first-option
+              filterable
+              @change="wTbChange"
+            >
+              <el-option
+                v-for="item in wTbList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+            <span v-else class="info-detail">{{
+              dashOrValue($store.state.taskAdmin.writerTableName)
+            }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="path：" prop="path">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.path"
+              :autosize="{ minRows: 2, maxRows: 20 }"
+              type="textarea"
+              placeholder="为与hive表关联，请填写hive表在hdfs上的存储路径"
+            />
+            <span v-else>{{ writerForm.path }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="defaultFS：" prop="defaultFS">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.defaultFS"
+              placeholder="Hadoop hdfs文件系统namenode节点地址"
+            />
+            <span v-else>{{ writerForm.defaultFS }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="fileName：" prop="fileName">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.fileName"
+              placeholder="HdfsWriter写入时的文件名"
+            />
+            <span v-else>{{ writerForm.fileName }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="fileType：" prop="fileType">
+            <el-select
+              v-if="editable.writer"
+              v-model="writerForm.fileType"
+              placeholder="文件的类型"
+            >
+              <el-option
+                v-for="item in fileTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <span v-else>{{ dashOrValue(finder(writerForm.fileType, fileTypes, 'value', 'label')) }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="writeMode：" prop="writeMode">
+            <el-select
+              v-if="editable.writer"
+              v-model="writerForm.writeMode"
+              placeholder="文件的类型"
+            >
+              <el-option
+                v-for="item in writeModes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <span v-else>{{ dashOrValue(finder(writerForm.writeMode, writeModes, 'value', 'label')) }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource === 'hive'" label="fieldDelimiter：" prop="fieldDelimiter">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.fieldDelimiter"
+              placeholder="与创建表的分隔符一致"
+            />
+            <span v-else>{{ dashOrValue(writerForm.fieldDelimiter) }}</span>
+          </el-form-item>
+          <el-form-item label="字段：">
+            <el-checkbox
+              v-model="writerForm.checkAll"
+              :disabled="!editable.writer"
+              :indeterminate="writerForm.isIndeterminate"
+              @change="wHandleCheckAllChange"
+            >全选</el-checkbox>
+            <div style="margin: 15px 0;" />
+            <el-checkbox-group
+              v-model="$store.state.taskAdmin.selectWriterColumn"
+              :disabled="!editable.writer"
+              @change="wHandleCheckedChange"
+            >
+              <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{
+                c
+              }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item v-if="dataSource !== 'hive'" label="前置sql语句：">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.preSql"
+              placeholder="前置sql在insert之前执行"
+              type="textarea"
+              :rows="3"
+            />
+            <span v-else class="info-detail">{{
+              dashOrValue(writerForm.preSql)
+            }}</span>
+          </el-form-item>
+          <el-form-item v-if="dataSource !== 'hive'" label="后置Sql语句：">
+            <el-input
+              v-if="editable.writer"
+              v-model="writerForm.postSql"
+              placeholder="多个用;分隔"
+              type="textarea"
+              :rows="3"
+            />
+            <span v-else class="info-detail">{{
+              dashOrValue(writerForm.postSql)
+            }}</span>
+          </el-form-item>
+        </el-form>
+        <!-- 非质量任务 writer -->
+        <el-form
+          v-else
           label-position="right"
           label-width="150px"
           :model="writerForm"
@@ -728,8 +914,8 @@
           <el-form-item label="数据库源：" prop="datasourceId">
             <el-select
               v-if="editable.writer"
+              v-model="$store.state.taskAdmin.writerDataSourceID"
               filterable
-              :value="$store.state.taskAdmin.writerDataSourceID"
               @change="wDsChange"
             >
               <el-option
@@ -801,7 +987,7 @@
               dashOrValue(writerForm.preSql)
             }}</span>
           </el-form-item>
-          <el-form-item label="postSql：">
+          <el-form-item label="后置Sql语句：">
             <el-input
               v-if="editable.writer"
               v-model="writerForm.postSql"
@@ -1036,6 +1222,8 @@ export default {
         ifCreateTable: false,
         tableSchema: ''
       },
+      /** 质量任务表单 */
+      writerFormQuality: {},
       rColumnList: [],
       rTbList: [],
       jsonshow: false,
@@ -1384,7 +1572,19 @@ export default {
         writer: false,
         /** 字段映射 */
         mapping: false
-      }
+      },
+      dataSource: '',
+      fileTypes: [
+        { value: 'text', label: 'text' },
+        { value: 'orc', label: 'orc' }
+      ],
+      writeModes: [
+        { value: 'append', label: 'append 写入前不做任何处理' },
+        {
+          value: 'nonConflict',
+          label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
+        }
+      ]
     };
   },
 
@@ -1473,6 +1673,14 @@ export default {
   },
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
+      if (
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
+      ) {
+        this.getSchemaList()
+      }
       this.getTables('rdbmsWriter');
     },
 
@@ -1515,7 +1723,17 @@ export default {
         for (var i in this.editable) {
           this.editable[i] = false;
         }
+      } else {
+        this.$store.state.taskAdmin.dataSourceList.find((item) => {
+          if (item.id === this.$store.state.taskAdmin.writerDataSourceID) {
+            this.dataSource = item.datasource;
+          }
+        })
       }
+    },
+
+    '$store.state.taskAdmin.writerSchema'(val) {
+      this.getTables('rdbmsWriter')
     }
   },
   created() {
@@ -1526,12 +1744,24 @@ export default {
     this.getDataSourceList();
     this.getSchemaList();
     this.temp = this.jobInfo;
+    this.writerFormQuality = JSON.parse(this.jobInfo.jobParam)
   },
 
   methods: {
     wDsChange(e) {
       this.writerForm.datasourceId = e;
       this.$store.commit('SET_WRITER_DATASOURCE_ID', e);
+    },
+    /**
+     * @description: 质量任务编辑 - 数据源切换
+     */
+    wDsChange_Quality(e) {
+      this.wDsChange(e)
+      this.$store.state.taskAdmin.dataSourceList.find((item) => {
+        if (item.id === e) {
+          this.dataSource = item.datasource;
+        }
+      });
     },
 
     getReaderData() {
@@ -1608,6 +1838,7 @@ export default {
         'SET_JOBINFO_TYPE',
         this.jobInfo.jobType
       )
+      this.$store.commit('SET_READER_ISEDIT', true)
       if (this.$store.state.taskAdmin.jobInfoType === 'DQCJOB') {
         const jobParamRule = JSON.parse(this.jobInfo.jobParam).rule
         jobParamRule.forEach(ele => {
@@ -1631,6 +1862,10 @@ export default {
       );
 
       this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0]);
+
+      this.$store.commit('SET_READER_SCHEMA', jobParam.readerSchema)
+
+      this.$store.commit('SET_WRITER_SCHEMA', jobParam.writerSchema)
 
       this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns);
 
@@ -1689,7 +1924,8 @@ export default {
     // schema列表
     async getSchemaList() {
       const schemaList = await getTableSchema({
-        datasourceId: this.temp.datasourceId
+        // datasourceId: this.temp.datasourceId
+        datasourceId: this.writerForm.datasourceId
       });
       this.schemaList = schemaList;
     },
@@ -1757,6 +1993,8 @@ export default {
         writerDatasourceId: this.$store.state.taskAdmin.writerDataSourceID,
         writerTables: [this.$store.state.taskAdmin.writerTableName],
         writerColumns: this.$store.state.taskAdmin.selectWriterColumn,
+        readerSchema: this.$store.state.taskAdmin.readerSchema,
+        writerSchema: this.$store.state.taskAdmin.writerSchema,
         transformer: [''],
         hiveReader: {},
         hiveWriter: {},
@@ -1860,7 +2098,8 @@ export default {
         ) {
           obj = {
             datasourceId: this.writerForm.datasourceId,
-            tableSchema: this.writerForm.tableSchema
+            // tableSchema: this.writerForm.tableSchema
+            tableSchema: this.$store.state.taskAdmin.writerSchema
           };
         } else {
           obj = {
@@ -1869,8 +2108,13 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response;
-        });
+          this.wTbList = response
+          this.$store.commit('SET_WRITER_TABLENAME', this.wTbList[0])
+        }).catch(error => {
+          console.log(error)
+          this.wTbList = []
+          this.$store.commit('SET_WRITER_TABLENAME', '')
+        })
       }
     },
     // 获取表字段
@@ -1925,8 +2169,12 @@ export default {
     exStatus(param) {
       param = !param;
     },
-    translaterMaster(str) {
-      return translaterMaster(str);
+    translaterMaster,
+    /**
+     * @description: 点击Schema触发表改变
+     */
+    schemaChange() {
+      this.getTables('rdbmsWriter')
     }
   }
 };

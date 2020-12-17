@@ -66,7 +66,25 @@ const state = {
 
   jobRule: [], // 规则
 
-  readerSchema: '' // Schema
+  readerSchema: '', // reader Schema
+
+  writerSchema: '', // writer Schema
+
+  jobInfo: {}, // 任务信息
+
+  readerIsEdit: true, // true编辑，false更新
+
+  writerPath: '',
+
+  writerDefaultFS: '',
+
+  writerFileName: '',
+
+  writerFileType: '',
+
+  writerWriteMode: '',
+
+  writerFieldDelimiter: ''
 }
 
 const mutations = {
@@ -177,6 +195,18 @@ const mutations = {
 
   SET_READER_SCHEMA: (state, schema) => {
     state.readerSchema = schema
+  },
+
+  SET_WRITER_SCHEMA: (state, schema) => {
+    state.writerSchema = schema
+  },
+
+  SET_JOB_INFO: (state, jobInfo) => {
+    state.jobInfo = JSON.parse(JSON.stringify(jobInfo))
+  },
+
+  SET_READER_ISEDIT: (state, isEdit) => {
+    state.readerIsEdit = isEdit
   }
 }
 

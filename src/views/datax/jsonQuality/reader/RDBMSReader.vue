@@ -14,7 +14,7 @@
       <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
           v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerDataSourceID"
+          v-model="readerForm.datasourceId"
           filterable
           @change="rDsChange"
         >
@@ -47,11 +47,11 @@
         prop="tableSchema"
       >
         <el-select
+          v-show="$store.state.taskAdmin.readerAllowEdit"
           v-model="readerForm.tableSchema"
           allow-create
           default-first-option
           filterable
-
           @change="schemaChange"
         >
           <el-option
@@ -61,11 +61,14 @@
             :value="item"
           />
         </el-select>
+        <span v-show="!$store.state.taskAdmin.readerAllowEdit">
+          {{ dashOrValue($store.state.taskAdmin.readerSchema) }}
+        </span>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
         <el-select
           v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerTableName"
+          v-model="readerForm.tableName"
           allow-create
           default-first-option
           filterable
@@ -85,21 +88,30 @@
       <el-form-item label="添加规则字段：">
         <div style="border:1px solid #f3f3f3;width:100%;">
           <el-table
-            :data="$store.state.taskAdmin.jobRule"
+            :data="
+              $store.state.taskAdmin.readerIsEdit
+                ? $store.state.taskAdmin.jobRule
+                : tableData1
+            "
             :header-cell-style="{
               background: '#F8F8FA',
               'font-size': '12px',
               'font-family': 'PingFangHK-Medium, PingFangHK',
               'font-weight': '500',
-              'color': '#333333',
-              'padding':0,
-              'padding-left':'25px',
-              'text-align':'left'
+              color: '#333333',
+              padding: 0,
+              'padding-left': '25px',
+              'text-align': 'left'
             }"
-            :header-row-style="{'height':'40px','padding':0}"
+            :header-row-style="{ height: '40px', padding: 0 }"
             style="width: 100%"
           >
-            <el-table-column prop="columnName" align="center" min-width="100" label="字段名称">
+            <el-table-column
+              prop="columnName"
+              align="center"
+              min-width="100"
+              label="字段名称"
+            >
               <template v-slot:default="row">
                 <el-select
                   v-if="row.row.status"
@@ -126,7 +138,6 @@
                   :disabled="!$store.state.taskAdmin.readerAllowEdit"
                   clearable
                   filterable
-
                   multiple
                   placeholder="请选择规则名称"
                   class="ruleName"
@@ -166,13 +177,27 @@
                   circle
                   plain
                   size="small"
-                  @click="$store.commit('DELETE_RULEITEM', row.row)"
+                  @click="
+                    $store.state.taskAdmin.readerIsEdit
+                      ? $store.commit('DELETE_RULEITEM', row.row)
+                      : delRow(row)
+                  "
                 />
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <div v-if="$store.state.taskAdmin.readerAllowEdit" class="addRow_btn" @click="$store.commit('ADD_RULEITEM')"><span><i class="el-icon-plus" /> 添加规则字段</span></div>
+        <div
+          v-if="$store.state.taskAdmin.readerAllowEdit"
+          class="addRow_btn"
+          @click="
+            $store.state.taskAdmin.readerIsEdit
+              ? $store.commit('ADD_RULEITEM')
+              : addRow()
+          "
+        >
+          <span><i class="el-icon-plus" /> 添加规则字段</span>
+        </div>
       </el-form-item>
 
       <el-form-item label="切分字段：">
@@ -215,7 +240,7 @@
 import * as dsQueryApi from '@/api/metadata-query';
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 import Bus from '../busReader';
-import { translaterMaster } from '@/utils/dictionary'
+import { translaterMaster } from '@/utils/dictionary';
 import { finder, dashOrValue } from '../private';
 
 export default {
@@ -243,7 +268,7 @@ export default {
       customValue: '',
       dataSource: '',
       readerForm: {
-        datasourceId: undefined,
+        datasourceId: '',
         tableName: '',
         columns: [],
         where: '',
@@ -256,10 +281,18 @@ export default {
       },
       rules: {
         datasourceId: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          {
+            required: true,
+            message: translaterMaster('this is require'),
+            trigger: 'change'
+          }
         ],
         tableName: [
-          { required: true, message: translaterMaster('this is require'), trigger: 'change' }
+          {
+            required: true,
+            message: translaterMaster('this is require'),
+            trigger: 'change'
+          }
         ]
         // tableSchema: [
         //   { required: true, message: translaterMaster('this is require'), trigger: 'change' }
@@ -283,14 +316,15 @@ export default {
       console.log(newVal);
     },
 
-    tableData1: { // 深度监听规则字段表格，表格内容变化时，直接改变readerForm参数
+    tableData1: {
+      // 深度监听规则字段表格，表格内容变化时，直接改变readerForm参数
       handler(newVal) {
         const arr = JSON.parse(JSON.stringify(newVal));
         arr.forEach(ele => {
-          const codeArr = []
+          const codeArr = [];
           ele.ruleId.forEach(code => {
-            codeArr.push({ code })
-          })
+            codeArr.push({ code });
+          });
           ele.ruleId = codeArr;
         });
 
@@ -300,15 +334,36 @@ export default {
     },
 
     'readerForm.tableName'(val) {
-      this.readerForm.tableName = val
-      this.rColumnList = []
-      this.readerForm.columns = []
-      this.getColumns('reader')
+      this.readerForm.tableName = val;
+      this.rColumnList = [];
+      this.readerForm.columns = [];
+      this.getColumns('reader');
     }
   },
   created() {
-    this.readerForm.datasourceId = this.$store.state.taskAdmin.readerDataSourceID
+    this.readerForm.datasourceId = this.$store.state.taskAdmin.readerIsEdit
+      ? this.$store.state.taskAdmin.readerDataSourceID
+      : ''
+    this.readerForm.tableName = this.$store.state.taskAdmin.readerIsEdit
+      ? this.$store.state.taskAdmin.readerTableName
+      : ''
+    this.readerForm.tableSchema = this.$store.state.taskAdmin.readerIsEdit
+      ? this.$store.state.taskAdmin.readerSchema
+      : ''
     this.getJdbcDs();
+    this.getNameList();
+    if (this.$store.state.taskAdmin.readerIsEdit) {
+      this.$store.state.taskAdmin.dataSourceList.find(item => {
+        if (item.id === this.readerForm.datasourceId) {
+          this.dataSource = item.datasource;
+        }
+      });
+    }
+    if (this.$store.state.taskAdmin.readerIsEdit) {
+      this.getTables('rdbmsReader')
+      this.getSchema()
+      this.getTableColumns()
+    }
   },
   methods: {
     // 添加行
@@ -343,7 +398,7 @@ export default {
     // 编辑行
     editRow(row) {
       console.log('row', row);
-      this.tableData1.map((item) => {
+      this.tableData1.map(item => {
         if (item.status) {
           item.status = 0;
         }
@@ -368,7 +423,7 @@ export default {
     getJdbcDs(type) {
       this.loading = true;
       this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId;
-      jdbcDsList(this.jdbcDsQuery).then((response) => {
+      jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response;
         this.rDsList = records;
         this.loading = false;
@@ -394,22 +449,25 @@ export default {
           };
         }
         // 组装
-        dsQueryApi.getTables(obj).then((response) => {
-          this.rTbList = response
-          this.readerForm.tableName = this.rTbList[0]
-        }).catch(error => {
-          console.log(error);
-          this.rTbList = []
-          this.readerForm.tableName = ''
-          this.$store.commit('SET_READER_TABLENAME', '')
-        })
+        dsQueryApi
+          .getTables(obj)
+          .then(response => {
+            this.rTbList = response;
+            this.readerForm.tableName = this.rTbList[0];
+          })
+          .catch(error => {
+            console.log(error);
+            this.rTbList = [];
+            this.readerForm.tableName = '';
+            this.$store.commit('SET_READER_TABLENAME', '');
+          });
       }
     },
     getSchema() {
       const obj = {
         datasourceId: this.readerForm.datasourceId
       };
-      dsQueryApi.getTableSchema(obj).then((response) => {
+      dsQueryApi.getTableSchema(obj).then(response => {
         this.schemaList = response;
       });
     },
@@ -427,7 +485,7 @@ export default {
       // 清空
       this.readerForm.tableName = '';
       this.readerForm.datasourceId = e;
-      this.rDsList.find((item) => {
+      this.rDsList.find(item => {
         if (item.id === e) {
           this.dataSource = item.datasource;
           this.datasourceName = item.datasourceName;
@@ -441,25 +499,28 @@ export default {
         datasourceId: this.readerForm.datasourceId,
         tableName: this.readerForm.tableName
       };
-      dsQueryApi.getColumns(obj).then((response) => {
-        this.rColumnList = response;
-        this.readerForm.columns = response;
-        this.readerForm.checkAll = true;
-        this.readerForm.isIndeterminate = false;
-        this.$store.commit('SET_READER_COLUMNS', response);
-      }).catch(error => {
-        console.log(error)
-        this.rColumnList = []
-        this.readerForm.columns = []
-        this.readerForm.checkAll = false
-        this.readerForm.isIndeterminate = true
-      })
+      dsQueryApi
+        .getColumns(obj)
+        .then(response => {
+          this.rColumnList = response;
+          this.readerForm.columns = response;
+          this.readerForm.checkAll = true;
+          this.readerForm.isIndeterminate = false;
+          this.$store.commit('SET_READER_COLUMNS', response);
+        })
+        .catch(error => {
+          console.log(error);
+          this.rColumnList = [];
+          this.readerForm.columns = [];
+          this.readerForm.checkAll = false;
+          this.readerForm.isIndeterminate = true;
+        });
     },
     // 获取规则名称
     getNameList() {
       dsQueryApi
         .getAllName()
-        .then((res) => {
+        .then(res => {
           console.log(res);
           this.nameList = [];
           if (res.code === 200) {
@@ -471,7 +532,7 @@ export default {
             }
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -480,7 +541,7 @@ export default {
         datasourceId: this.readerForm.datasourceId,
         querySql: this.readerForm.querySql
       };
-      dsQueryApi.getColumnsByQuerySql(obj).then((response) => {
+      dsQueryApi.getColumnsByQuerySql(obj).then(response => {
         this.rColumnList = response;
         this.readerForm.columns = response;
         this.readerForm.checkAll = true;
@@ -547,7 +608,7 @@ export default {
   width: 100%;
   cursor: pointer;
   /* background: red; */
-  border: 1px solid #F3F3F3;;
+  border: 1px solid #f3f3f3;
   border-top: 0;
 }
 
@@ -555,7 +616,7 @@ export default {
   display: inline-block;
   max-width: 150px;
   overflow: hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
