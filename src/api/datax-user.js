@@ -40,3 +40,10 @@ export function deleteUser(id) {
     method: 'post'
   })
 }
+
+export function getPermission() {
+  return request({
+    url: '/api/user/permission',
+    method: 'get'
+  })
+}

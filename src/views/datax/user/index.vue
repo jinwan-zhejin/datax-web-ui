@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column label="角色" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.roleName }}</span>
+            <span v-for="item in scope.row.roleName" :key="item">{{ item }}</br></span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -91,7 +91,7 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
             </el-form-item>
-            <el-form-item label="密  码" prop="password">
+            <el-form-item label="密  码">
               <el-input v-model="temp.password" type="password" placeholder="请输入密码" />
             </el-form-item>
             <el-form-item label="角色" prop="role">
@@ -162,8 +162,7 @@ export default {
         create: '新增'
       },
       rules: {
-        username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }]
       },
       temp: {
         id: undefined,
@@ -227,7 +226,9 @@ export default {
       })
     },
     handleUpdate(row) {
+      console.log(row)
       this.temp = Object.assign({}, row) // copy obj
+      console.log(this.temp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -235,7 +236,6 @@ export default {
       })
     },
     updateData() {
-      console.log(this.tempData, 'oppopo')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
@@ -281,7 +281,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
   .filter-container {
     overflow: hidden;

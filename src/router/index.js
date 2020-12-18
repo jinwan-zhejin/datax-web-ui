@@ -75,6 +75,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    name: '首页',
     meta: { title: '运行报表', icon: 'icon_svg01' },
     children: [
       {
@@ -413,7 +414,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/model',
     name: 'modeldesign',
-    meta: { title: '数据模型', icon: 'icon_svg10' },
+    meta: { title: '数据建模', icon: 'icon_svg10' },
     children: [
       {
         path: 'design',
@@ -447,6 +448,7 @@ export const asyncRoutes = [
   {
     path: '/dataExplore',
     component: Layout,
+    name: 'dataExplore',
     redirect: '/dataExplore/dataDiscovery',
     children: [
       {
@@ -467,6 +469,7 @@ export const asyncRoutes = [
   {
     path: '/dataMask',
     component: Layout,
+    name: 'dataMask',
     redirect: '/dataMask',
     children: [
       {
@@ -538,6 +541,7 @@ export const asyncRoutes = [
     path: '/data-analysis',
     component: Layout,
     redirect: '/data-analysis/analysis',
+    name: 'analysis',
     meta: { title: '数据分析', icon: 'work' },
     children: [
       {
@@ -581,6 +585,12 @@ export const asyncRoutes = [
         name: 'Role',
         component: () => import('@/views/datax/user/role/index'),
         meta: { title: '角色管理', icon: 'jiaoseguanli' }
+      },
+      {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('@/views/datax/user/menu/index'),
+        meta: { title: '菜单管理', icon: 'chuangjianyingyong' }
       }
     ]
   },
