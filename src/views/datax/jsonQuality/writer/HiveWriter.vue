@@ -7,7 +7,7 @@
       :model="writerForm"
       :rules="rules"
     >
-      <el-form-item label="数据源：" prop="datasourceId">
+      <el-form-item label="数据库源：" prop="datasourceId">
         <el-select
           v-model="writerForm.datasourceId"
           filterable
@@ -22,7 +22,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="表：" prop="fromTableName">
+      <el-form-item label="数据库表名：" prop="fromTableName">
         <el-select
           v-model="writerForm.fromTableName"
           :disabled="writerForm.ifCreateTable"

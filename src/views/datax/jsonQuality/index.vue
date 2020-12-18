@@ -272,7 +272,7 @@
                 <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns || "-" }}</span>
               </div>
               <div>
-                <span class="step5content_key">postSql：</span>
+                <span class="step5content_key">后置Sql语句：</span>
                 <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql || "-" }}</span>
               </div>
               <div>
@@ -552,6 +552,7 @@ export default {
   },
   created() {
     // this.getJdbcDs()
+    this.$store.commit('SET_READER_ISEDIT', false)
     this.getExecutor();
     this.getJobProject();
     this.getJobIdList();
@@ -765,6 +766,8 @@ export default {
         readerDatasourceId: readerData.datasourceId,
         readerTables: [readerData.tableName],
         readerColumns: readerColumns,
+        readerSchema: readerData.tableSchema,
+        writerSchema: writeData.tableSchema,
         writerDatasourceId: writeData.datasourceId,
         writerTables: [writeData.tableName],
         writerColumns: writerColumns,

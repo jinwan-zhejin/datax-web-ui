@@ -12,160 +12,160 @@
           </el-steps>
         </div>
       </div>
-      
+
       <div class="main_content">
-      <div v-show="active===1" class="step0 first_content">
-        <Create ref="create" :fjson="configJson" />
-      </div>
-      <div v-show="active===2" class="step1 first_content">
-        <Reader ref="reader" />
-      </div>
-      <div v-show="active===3" class="step2 first_content">
-        <Writer ref="writer" />
-      </div>
-      <div v-show="active===4" class="step3">
-        <Mapper ref="mapper" />
-      </div>
-      <div v-show="active===5" class="step4 last_content">
-        <div style="margin-top:20px;">
-          <p>1.新建任务</p>
-          <div class="step5content">
-            <div>
-              <span class="step5content_key">执行器：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobGroup || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">所属项目：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.projectId || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">路由策略：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorRouteStrategy || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">子项目：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.childJobIdArr || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">阻塞处理：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorBlockStrategy || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">任务名称：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobDesc || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">任务类型：</span>
-              <span class="step5content_value">{{ $store.state.taskAdmin.tabType }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">Cron：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobCron || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">报警邮件：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.alarmEmail || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">失败重试次数：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorFailRetryCount || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">超时时间：</span>
-              <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorTimeout || '-' }}</span>
+        <div v-show="active===1" class="step0 first_content">
+          <Create ref="create" :fjson="configJson" />
+        </div>
+        <div v-show="active===2" class="step1 first_content">
+          <Reader ref="reader" />
+        </div>
+        <div v-show="active===3" class="step2 first_content">
+          <Writer ref="writer" />
+        </div>
+        <div v-show="active===4" class="step3">
+          <Mapper ref="mapper" />
+        </div>
+        <div v-show="active===5" class="step4 last_content">
+          <div style="margin-top:20px;">
+            <p>1.新建任务</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">执行器：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobGroup || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">所属项目：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.projectId || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">路由策略：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorRouteStrategy || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">子项目：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.childJobIdArr || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">阻塞处理：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorBlockStrategy || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">任务名称：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobDesc || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">任务类型：</span>
+                <span class="step5content_value">{{ $store.state.taskAdmin.tabType }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">Cron：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.jobCron || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">报警邮件：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.alarmEmail || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">失败重试次数：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorFailRetryCount || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">超时时间：</span>
+                <span class="step5content_value">{{ $refs.create && $refs.create.temp.executorTimeout || '-' }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <p>2.构建reader</p>
-          <div class="step5content">
-            <div>
-              <span class="step5content_key">数据库源：</span>
-              <span class="step5content_value">{{ datasourceName1 || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">切分字段：</span>
-              <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">数据库表名：</span>
-              <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">SQL语句：</span>
-              <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.querySql || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">表所有字段：</span>
-              <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">Where条件：</span>
-              <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.where || '-' }}</span>
+          <div>
+            <p>2.构建reader</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">数据库源：</span>
+                <span class="step5content_value">{{ datasourceName1 || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">切分字段：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.splitPk || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">数据库表名：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.tableName || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">SQL语句：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.querySql || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">表所有字段：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.columns || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">Where条件：</span>
+                <span class="step5content_value">{{ $refs.reader && $refs.reader.$refs.rdbmsreader.readerForm.where || '-' }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <p>3.构建writer</p>
-          <div class="step5content">
-            <div>
-              <span class="step5content_key">数据库源：</span>
-              <span class="step5content_value">{{ datasourceName2 || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">数据库表名：</span>
-              <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.ifCreateTable || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">字段：</span>
-              <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">postSql：</span>
-              <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql || '-' }}</span>
-            </div>
-            <div>
-              <span class="step5content_key">前置Sql语句：</span>
-              <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || '-' }}</span>
+          <div>
+            <p>3.构建writer</p>
+            <div class="step5content">
+              <div>
+                <span class="step5content_key">数据库源：</span>
+                <span class="step5content_value">{{ datasourceName2 || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">数据库表名：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.ifCreateTable || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">字段：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.columns || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">postSql：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.postSql || '-' }}</span>
+              </div>
+              <div>
+                <span class="step5content_key">前置Sql语句：</span>
+                <span class="step5content_value">{{ $refs.writer && $refs.writer.$refs.rdbmswriter.writerForm.preSql || '-' }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style="margin-top:20px;">
-          <p style="margin: 20px 0;">4.字段映射</p>
-          <div style="border: 1px solid #F3F3F3;">
-            <el-table
-              :data="tableData"
-              stripe
-              :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
-              style="width: 100%"
-            >
-              <el-table-column
-                prop="sourceField"
-                label="数据源库"
-                width="180"
-              />
-              <el-table-column
-                prop="clearRule"
-                label="清洗规则"
-                width="180"
-              />
-              <el-table-column
-                prop="targetField"
-                label="目标字段"
-              />
-            </el-table>
+          <div style="margin-top:20px;">
+            <p style="margin: 20px 0;">4.字段映射</p>
+            <div style="border: 1px solid #F3F3F3;">
+              <el-table
+                :data="tableData"
+                stripe
+                :header-cell-style="{ background: '#FAFAFC',color:'rgba(51, 51, 51, 1)','font-family': 'PingFangHK-Medium, PingFangHK' }"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="sourceField"
+                  label="数据源库"
+                  width="180"
+                />
+                <el-table-column
+                  prop="clearRule"
+                  label="清洗规则"
+                  width="180"
+                />
+                <el-table-column
+                  prop="targetField"
+                  label="目标字段"
+                />
+              </el-table>
+            </div>
           </div>
-        </div>
 
-      </div>
+        </div>
       </div>
 
       <div style="width:200px;float:right;">
-        <el-button size='small' :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
-        <el-button size='small' type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
+        <el-button size="small" :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
+        <el-button size="small" type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
       </div>
 
     </div>
@@ -242,7 +242,7 @@ export default {
         executorHandler: 'executorJobHandler',
         glueType: 'BEAN',
         jobJson: '',
-        jobParam:'',
+        jobParam: '',
         executorParam: '',
         replaceParam: '',
         jvmParam: '',
@@ -470,7 +470,7 @@ export default {
 .main_content {
   /* width: 60%; */
   min-height: 480px;
-  
+
 }
 
 .main_content >>> .el-select {
