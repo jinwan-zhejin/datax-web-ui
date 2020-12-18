@@ -18,7 +18,7 @@
           </template>
           <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
         </el-menu-item>
-        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item v-for="route in beforeRouter" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -29,6 +29,7 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
+import * as permission from '@/api/datax-user.js'
 
 export default {
   components: { SidebarItem, Logo },
@@ -60,11 +61,20 @@ export default {
       return !this.sidebar.opened
     }
   },
+  data() {
+    return {
+      userRouter: [],
+      beforeRouter: [],
+      arr: []
+    }
+  },
   created() {
     if (this.$route.name === 'analysis') {
       console.log(this.$route, ',.....................')
       this.getAnalysis()
     }
+    console.log(JSON.parse(sessionStorage.getItem('permission')), 'session')
+    this.showUserPer()
   },
   methods: {
     getAnalysis() {
@@ -72,6 +82,36 @@ export default {
       setTimeout(() => {
         window.location = 'http://192.168.3.60:9000/superset/welcome'
       }, 200)
+    },
+    // 当前用户权限显示
+    showUserPer() {
+      this.userRouter = JSON.parse(sessionStorage.getItem('permission'))
+      console.log(this.permission_routes, '123')
+      for (let i = 0; i < this.permission_routes.length; i++) {
+        if (!this.permission_routes[i].name) {
+          this.arr.push(this.permission_routes[i])
+        } else if (this.permission_routes[i].name === ('ErrorPages')) {
+          this.arr.push(this.permission_routes[i])
+        }
+      }
+      console.log(this.beforeRouter, this.arr, 'beforeRouter')
+      for (let k = 0; k < this.permission_routes.length; k++) {
+        for (let j = 0; j < this.userRouter.length; j++) {
+          if (this.permission_routes[k].meta) {
+            if (this.permission_routes[k].meta.title.replace(/\s*/g, '') === this.userRouter[j].meta.title.replace(/\s*/g, '') || this.permission_routes[k].name === this.userRouter[j].meta.title) {
+              this.beforeRouter.push(this.permission_routes[k])
+            }
+          } else {
+            if (this.permission_routes[k].children && this.permission_routes[k].children[0].meta) {
+              if (this.permission_routes[k].children[0].meta.title === this.userRouter[j].meta.title) {
+                this.beforeRouter.push(this.permission_routes[k])
+              }
+            }
+          }
+        }
+      }
+      this.beforeRouter = [...new Set(this.beforeRouter.concat(this.arr))]
+      console.log(this.beforeRouter, 'beforeRouter')
     }
   }
 }

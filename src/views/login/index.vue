@@ -36,6 +36,7 @@
 <script>
 // import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin';
+import * as permission from '@/api/datax-user.js'
 
 export default {
   name: 'Login',
@@ -140,17 +141,31 @@ export default {
       this.$store
         .dispatch('user/login', this.loginForm)
         .then(() => {
+          this.getUserPer()
+        })
+        .catch(() => {
+          this.loading = false;
+          this.errorMes = true;
+        });
+    },
+    // 获取当前用户权限
+    getUserPer() {
+      permission.getPermission().then(res => {
+        console.log(res)
+        if (res === []) {
+          this.$store.dispatch('user/logout')
+        } else {
+          sessionStorage.setItem('permission', JSON.stringify(res))
           this.$router.push({
             path: this.redirect || '/',
             query: this.otherQuery
           });
           this.loading = false;
           this.errorMes = false;
-        })
-        .catch(() => {
-          this.loading = false;
-          this.errorMes = true;
-        });
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {

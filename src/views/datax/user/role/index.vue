@@ -52,6 +52,7 @@
             </el-button>
             <span
               v-show="row.status!='deleted'"
+              v-if="row.remark !== '管理员'"
               style="
                 width: 1px;
                 height: 12px;
@@ -60,7 +61,7 @@
                 display: inline-block;
               "
             />
-            <el-button type="text" @click="showMenu(row)">
+            <el-button v-if="row.remark !== '管理员'" type="text" @click="showMenu(row)">
               权限
             </el-button>
             <span
