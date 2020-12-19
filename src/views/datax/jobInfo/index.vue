@@ -110,8 +110,8 @@
           <div class="list">
             <ul>
               <li
-                v-for="item in List"
-                :key="item.id"
+                v-for="(item, index) in List"
+                :key="index"
                 :class="[selectedId === item.id ? 'list-highlight' : '']"
                 @click="getJobDetail(item)"
               >
@@ -144,14 +144,14 @@
         </el-tab-pane>
 
         <el-tab-pane
-          v-for="item in $store.state.taskAdmin.taskDetailList"
-          :key="item.content.id"
+          v-for="(item, index) in $store.state.taskAdmin.taskDetailList"
+          :key="index"
           :label="item.title"
           :name="item.content.id + ''"
         >
           <JobDetail
             v-if="item.content.jobType !== 'VJOB'"
-            :job-info="item.content"
+            :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
           />
@@ -352,6 +352,8 @@ export default {
 
     JobTabClick(ele) {
       this.jobType = ele.name;
+      const t = this.List.filter(item => item.id === parseInt(this.jobDetailIdx))
+      this.$store.commit('SET_JOB_INFO', t[0])
     },
 
     clearJobTab(name) {
@@ -459,7 +461,6 @@ export default {
     },
 
     getJobDetail(data) {
-      // console.log(data);
       this.$store.commit('SET_JOB_INFO', data)
       this.selectedId = data.id
       const a = {};
