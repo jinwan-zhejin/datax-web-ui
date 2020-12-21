@@ -1,5 +1,6 @@
 <template>
   <div class="job_detail">
+    <!-- {{jobInfo}} -->
     <div class="header">
       <div
         class="header_action"
@@ -902,7 +903,7 @@
               :rows="3"
             />
             <span v-else class="info-detail">{{
-              dashOrValue(writerFormQuality.rdbmsWriter.postSql)
+              dashOrValue(hasVal(writerFormQuality.rdbmsWriter, 'postSql'))
             }}</span>
           </el-form-item>
         </el-form>
@@ -1670,8 +1671,12 @@ export default {
 
     hasVal() {
       return (res, item) => {
-        if (res.hasOwnProperty(item)) {
-          return res[item]
+        if (res) {
+          if (res.hasOwnProperty(item)) {
+            return res[item]
+          } else {
+            return ''
+          }
         } else {
           return ''
         }

@@ -318,9 +318,10 @@ export default {
         this.dataSource === 'oracle' ||
         this.dataSource === 'sqlserver'
       ) {
-        this.getSchema();
+        this.getSchema()
+      } else {
+        this.getTables('rdbmsReader')
       }
-      this.getTables('rdbmsReader');
     },
     'readerForm.rule': function(oldVal, newVal) {
       console.log(newVal);
@@ -375,7 +376,6 @@ export default {
           this.dataSource = item.datasource;
         }
       })
-      this.getTables('rdbmsReader')
       this.getSchema()
       this.getTableColumns()
     }
@@ -489,10 +489,13 @@ export default {
         this.schemaList = response;
         if (!this.$store.state.taskAdmin.readerIsEdit) {
           this.readerForm.tableSchema = this.schemaList[0]
+          this.$store.commit('SET_READER_SCHEMA', this.readerForm.tableSchema)
         }
+        this.getTables('rdbmsReader')
       }).catch(error => {
         console.log(error);
         this.readerForm.tableSchema = ''
+        this.$store.commit('SET_READER_SCHEMA', '')
       })
     },
     // schema 切换
@@ -520,9 +523,16 @@ export default {
     getTableColumns() {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
-        tableName: this.readerForm.tableName,
-        tableSchema: this.readerForm.tableSchema
-      };
+        tableName: this.readerForm.tableName
+      }
+      if (
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
+      ) {
+        obj.tableSchema = this.readerForm.tableSchema
+      }
       dsQueryApi
         .getColumns(obj)
         .then(response => {
