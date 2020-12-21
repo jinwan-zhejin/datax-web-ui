@@ -19,8 +19,8 @@
           @change="rDsChange"
         >
           <el-option
-            v-for="item in $store.state.taskAdmin.dataSourceList"
-            :key="item.id"
+            v-for="(item, index) in $store.state.taskAdmin.dataSourceList"
+            :key="index"
             :label="item.datasourceName"
             :value="item.id"
           />
@@ -55,14 +55,14 @@
           @change="schemaChange"
         >
           <el-option
-            v-for="item in schemaList"
-            :key="item"
+            v-for="(item, index) in schemaList"
+            :key="index"
             :label="item"
             :value="item"
           />
         </el-select>
         <span v-show="!$store.state.taskAdmin.readerAllowEdit">
-          {{ dashOrValue($store.state.taskAdmin.readerSchema) }}
+          {{ dashOrValue(readerForm.tableSchema) }}
         </span>
       </el-form-item>
       <el-form-item label="数据库表名：" prop="tableName">
@@ -82,7 +82,7 @@
           />
         </el-select>
         <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue($store.state.taskAdmin.readerTableName)
+          dashOrValue(readerForm.tableName)
         }}</span>
       </el-form-item>
       <el-form-item label="添加规则字段：">
@@ -143,8 +143,8 @@
                   class="ruleName"
                 >
                   <el-option
-                    v-for="item in nameList"
-                    :key="item.code"
+                    v-for="(item, index) in nameList"
+                    :key="index"
                     :label="item.name"
                     :value="item.code"
                   />
@@ -252,14 +252,16 @@ export default {
         size: 200,
         ascs: 'datasource_name'
       },
-      datasourceId: '',
-      datasourceName: '',
       arr: [],
       tableData1: [],
+      /** 数据源List */
       rDsList: [],
+      /** 表格List */
       rTbList: [],
       schemaList: [],
+      /** 表项List */
       rColumnList: [],
+      /** 规则List */
       nameList: [],
       loading: false,
       active: 1,
@@ -269,8 +271,8 @@ export default {
       dataSource: '',
       readerForm: {
         datasourceId: '',
-        tableName: '',
-        columns: [],
+        tableName: '', // 选中的表名
+        columns: [], // 选中表项
         where: '',
         querySql: '',
         checkAll: false,
@@ -300,6 +302,14 @@ export default {
       }
     };
   },
+  computed: {
+    jobInfo() {
+      return this.$store.state.taskAdmin.jobInfo.jobParam
+    },
+    jobParam() {
+      return JSON.parse(this.$store.state.taskAdmin.jobInfo.jobParam)
+    }
+  },
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
       if (
@@ -308,9 +318,10 @@ export default {
         this.dataSource === 'oracle' ||
         this.dataSource === 'sqlserver'
       ) {
-        this.getSchema();
+        this.getSchema()
+      } else {
+        this.getTables('rdbmsReader')
       }
-      this.getTables('rdbmsReader');
     },
     'readerForm.rule': function(oldVal, newVal) {
       console.log(newVal);
@@ -338,17 +349,24 @@ export default {
       this.rColumnList = [];
       this.readerForm.columns = [];
       this.getColumns('reader');
+    },
+
+    'readerForm.columns'(val) {
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
     }
   },
   created() {
     this.readerForm.datasourceId = this.$store.state.taskAdmin.readerIsEdit
-      ? this.$store.state.taskAdmin.readerDataSourceID
+      ? this.jobParam.readerDatasourceId
       : ''
     this.readerForm.tableName = this.$store.state.taskAdmin.readerIsEdit
-      ? this.$store.state.taskAdmin.readerTableName
+      ? this.jobParam.readerTables[0]
       : ''
     this.readerForm.tableSchema = this.$store.state.taskAdmin.readerIsEdit
-      ? this.$store.state.taskAdmin.readerSchema
+      ? this.jobParam.readerSchema
+      : ''
+    this.readerForm.columns = this.$store.state.taskAdmin.readerIsEdit
+      ? this.jobParam.readerColumns
       : ''
     this.getJdbcDs();
     this.getNameList();
@@ -357,10 +375,7 @@ export default {
         if (item.id === this.readerForm.datasourceId) {
           this.dataSource = item.datasource;
         }
-      });
-    }
-    if (this.$store.state.taskAdmin.readerIsEdit) {
-      this.getTables('rdbmsReader')
+      })
       this.getSchema()
       this.getTableColumns()
     }
@@ -453,7 +468,10 @@ export default {
           .getTables(obj)
           .then(response => {
             this.rTbList = response;
-            this.readerForm.tableName = this.rTbList[0];
+            if (!this.$store.state.taskAdmin.readerIsEdit) {
+              this.readerForm.tableName = this.rTbList[0]
+            }
+            this.$store.commit('SET_READER_TABLENAME', this.readerForm.tableName)
           })
           .catch(error => {
             console.log(error);
@@ -469,17 +487,26 @@ export default {
       };
       dsQueryApi.getTableSchema(obj).then(response => {
         this.schemaList = response;
-      });
+        if (!this.$store.state.taskAdmin.readerIsEdit) {
+          this.readerForm.tableSchema = this.schemaList[0]
+          this.$store.commit('SET_READER_SCHEMA', this.readerForm.tableSchema)
+        }
+        this.getTables('rdbmsReader')
+      }).catch(error => {
+        console.log(error);
+        this.readerForm.tableSchema = ''
+        this.$store.commit('SET_READER_SCHEMA', '')
+      })
     },
     // schema 切换
     schemaChange(e) {
       this.readerForm.tableSchema = e;
+      this.$store.commit('SET_READER_SCHEMA', e)
       // 获取可用表
       this.getTables('rdbmsReader');
     },
     // reader 数据源切换
     rDsChange(e) {
-      this.datasourceId = e;
       this.$store.commit('SET_READER_DATASOURCE_ID', e);
       this.rDsList = this.$store.state.taskAdmin.dataSourceList;
       // 清空
@@ -488,7 +515,6 @@ export default {
       this.rDsList.find(item => {
         if (item.id === e) {
           this.dataSource = item.datasource;
-          this.datasourceName = item.datasourceName;
         }
       });
       Bus.dataSourceId = e;
@@ -498,14 +524,24 @@ export default {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
         tableName: this.readerForm.tableName
-      };
+      }
+      if (
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
+      ) {
+        obj.tableSchema = this.readerForm.tableSchema
+      }
       dsQueryApi
         .getColumns(obj)
         .then(response => {
           this.rColumnList = response;
-          this.readerForm.columns = response;
-          this.readerForm.checkAll = true;
-          this.readerForm.isIndeterminate = false;
+          if (this.$store.state.taskAdmin.readerIsEdit) {
+            this.readerForm.columns = this.jobParam.readerColumns
+          } else {
+            this.readerForm.columns = response
+          }
           this.$store.commit('SET_READER_COLUMNS', response);
         })
         .catch(error => {
@@ -514,7 +550,9 @@ export default {
           this.readerForm.columns = [];
           this.readerForm.checkAll = false;
           this.readerForm.isIndeterminate = true;
+          this.$store.commit('SET_READER_COLUMNS', [])
         });
+      
     },
     // 获取规则名称
     getNameList() {

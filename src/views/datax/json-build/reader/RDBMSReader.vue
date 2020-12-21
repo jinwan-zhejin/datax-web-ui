@@ -171,7 +171,7 @@ export default {
   },
   computed: {
     dataSourceCompute() {
-      if (this.$store.state.taskAdmin.tabType === 'NORMAL') {
+      if (this.$store.state.taskAdmin.tabType === 'NORMAL' || this.$store.state.taskAdmin.tabType === '') {
         return this.$store.state.taskAdmin.dataSourceList;
       } else if (this.$store.state.taskAdmin.tabType === 'IMPORT') {
         return this.$store.state.taskAdmin.dataSourceList.filter(item => {

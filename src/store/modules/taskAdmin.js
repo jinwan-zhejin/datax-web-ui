@@ -34,10 +34,6 @@ const state = {
 
   dataSourceList: [], // 数据库源
 
-  readerDataSourceID: '', //
-
-  writerDataSourceID: '',
-
   taskList: [], // 任务列表
 
   taskDetailList: [], // 任务详情列表
@@ -46,17 +42,29 @@ const state = {
 
   jobParam: '', // 创建任务的jobparam
 
+  // ===========================================
+
+  readerDataSourceID: '', //
+
+  writerDataSourceID: '',
+
   readerColumns: [], // 所有reader字段
 
   writerColumns: [], // 所有writer	字段
+
+  selectReaderColumn: [], // 已选中reader字段
+
+  selectWriterColumn: [], // 已选中writer字段
 
   readerTableName: '', // reader表
 
   writerTableName: '', // writer表
 
-  selectReaderColumn: [], // 已选中reader字段
+  readerSchema: '', // reader Schema
 
-  selectWriterColumn: [], // 已选中writer字段
+  writerSchema: '', // writer Schema
+
+  // ==========================================
 
   readerAllowEdit: true, // reader启用编辑
 
@@ -66,25 +74,9 @@ const state = {
 
   jobRule: [], // 规则
 
-  readerSchema: '', // reader Schema
-
-  writerSchema: '', // writer Schema
-
   jobInfo: {}, // 任务信息
 
-  readerIsEdit: true, // true编辑，false更新
-
-  writerPath: '',
-
-  writerDefaultFS: '',
-
-  writerFileName: '',
-
-  writerFileType: '',
-
-  writerWriteMode: '',
-
-  writerFieldDelimiter: ''
+  readerIsEdit: true // true编辑，false更新
 }
 
 const mutations = {
@@ -202,7 +194,7 @@ const mutations = {
   },
 
   SET_JOB_INFO: (state, jobInfo) => {
-    state.jobInfo = JSON.parse(JSON.stringify(jobInfo))
+    state.jobInfo = jobInfo
   },
 
   SET_READER_ISEDIT: (state, isEdit) => {
@@ -237,6 +229,7 @@ const actions = {
         a.name = firstElement.jobDesc;
         a.content = firstElement;
         commit('ADD_TASKDETAIL', a);
+        commit('SET_JOB_INFO', response.content.data[0])
         commit('SET_TASKDETAIL_ID', a.content.id + '');
       }
     })

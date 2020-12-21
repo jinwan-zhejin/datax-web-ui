@@ -1,6 +1,7 @@
 <template>
   <div class="Management">
     <div class="lt">
+      <!-- {{jobDetailIdx}} -->
       <div class="top">
         <el-row>
           <el-col :span="12">
@@ -110,9 +111,9 @@
           <div class="list">
             <ul>
               <li
-                v-for="item in List"
-                :key="item.id"
-                :class="[selectedId === item.id ? 'list-highlight' : '']"
+                v-for="(item, index) in List"
+                :key="index"
+                :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
                 @click="getJobDetail(item)"
               >
                 <svg-icon :icon-class="item.jobType" />
@@ -151,7 +152,7 @@
         >
           <JobDetail
             v-if="item.content.jobType !== 'VJOB'"
-            :job-info="item.content"
+            :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
           />
@@ -289,8 +290,7 @@ export default {
       jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
-      projectIds: '',
-      selectedId: undefined // list选中项
+      projectIds: ''
     };
   },
   computed: {
@@ -327,19 +327,28 @@ export default {
     console.log(this.$store.state);
   },
   methods: {
-    removeJobTab(name) {
-      const removeIndex = _.findIndex(
-        this.$store.state.taskAdmin.taskDetailList,
-        ele => ele.content.id === name
-      );
-      if (this.jobDetailIdx === name) {
+    /**
+     * @description: tab关闭逻辑
+     */
+    removeJobTab(targetId) {
+      const targetIdInt = parseInt(targetId)
+      console.log(this.$store.state.taskAdmin.taskDetailList)
+      const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
+        ele => ele.content.id === targetIdInt
+      )
+      console.log(removeIndex)
+      if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
-          (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
-            ?.id ||
+          (
+            this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
+              ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-              ?.id) + '';
+              ?.id
+          ) + ''
+        console.log('jobDetailIdx: ', this.jobDetailIdx);
       }
-      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name) !== -1) {
+      // 关闭的是[新增任务tab]，非新增任务tab id = content.id
+      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(targetId) !== -1) {
         this.jobType = '';
         this.$store.commit('SET_TAB_TYPE', '');
       } else {
@@ -352,6 +361,8 @@ export default {
 
     JobTabClick(ele) {
       this.jobType = ele.name;
+      const t = this.List.filter(item => item.id === parseInt(this.jobDetailIdx))
+      this.$store.commit('SET_JOB_INFO', t[0])
     },
 
     clearJobTab(name) {
@@ -459,9 +470,8 @@ export default {
     },
 
     getJobDetail(data) {
-      // console.log(data);
       this.$store.commit('SET_JOB_INFO', data)
-      this.selectedId = data.id
+      this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {};
       a.title = data.jobDesc;
       a.name = data.jobDesc;

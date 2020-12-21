@@ -96,6 +96,7 @@ export default {
         arr.push(obj)
       })
       this.$store.commit('SET_TABLEDATA', arr)
+      // console.log(this.$store.state.taskAdmin.tableData);
       console.log(this.tableData);
     }
 
