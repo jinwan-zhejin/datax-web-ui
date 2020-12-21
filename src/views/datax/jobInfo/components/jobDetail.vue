@@ -700,6 +700,9 @@
         >保存更改</el-button>
       </h3>
       <div class="part-container">
+        <!-- {{ this.$store.state.taskAdmin.tabType }}
+        <br>
+        {{ this.$store.state.taskAdmin.dataSourceList }} -->
         <quality-reader v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityReader" />
         <reader v-else ref="reader" />
       </div>
