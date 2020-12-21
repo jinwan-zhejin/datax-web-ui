@@ -19,12 +19,12 @@
             </el-select>
           </el-col>
           <el-col :span="12">
-            <i class="el-icon-location-outline" />
-            <i class="el-icon-coin" />
-            <el-dropdown @command="createNewJob">
-              <i class="el-icon-folder-add" />
+            <i class="el-icon-location-outline top-icon" />
+            <i class="el-icon-coin top-icon" />
+            <el-dropdown trigger="click" @command="createNewJob">
+              <i class="el-icon-folder-add top-icon" />
               <el-dropdown-menu
-                style="max-height: calc(100vh - 180px); overflow: auto;"
+                style="max-height: calc(100vh - 200px); overflow: auto;"
               >
                 <el-dropdown-item command="NORMAL">
                   <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
@@ -107,22 +107,25 @@
             class="input_serach"
             prefix-icon="el-icon-search"
             placeholder="任务名称/ID/代码"
+            clearable
           />
-          <div class="list">
-            <ul>
-              <li
-                v-for="(item, index) in List"
-                :key="index"
-                :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
-                @click="getJobDetail(item)"
-              >
-                <svg-icon :icon-class="item.jobType" />
-                <a style="color: rgba(102, 102, 102, 1)">
-                  {{ item.jobDesc }}
-                </a>
-              </li>
-            </ul>
-          </div>
+          <el-scrollbar>
+            <div class="list">
+              <ul>
+                <li
+                  v-for="(item, index) in filterList"
+                  :key="index"
+                  :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
+                  @click="getJobDetail(item)"
+                >
+                  <svg-icon :icon-class="item.jobType" />
+                  <a style="color: rgba(102, 102, 102, 1)">
+                    {{ item.jobDesc }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </el-scrollbar>
         </div>
       </div>
     </div>
@@ -301,6 +304,17 @@ export default {
 
     taskDetailID() {
       return this.$store.state.taskAdmin.taskDetailID;
+    },
+
+    filterList() {
+      return this.List.filter(item => {
+        if (item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1) {
+          return true
+        }
+        if (this.search === item.id.toString()) {
+          return true
+        }
+      })
     }
   },
   watch: {
@@ -678,7 +692,7 @@ export default {
     // min-height: 660px;
     // max-height: 700px;
     // overflow: scroll;
-    overflow: hidden;
+    // overflow: hidden;
     padding: 10px;
     // background: #f0f0f2;
     background: #fff;
@@ -710,29 +724,28 @@ export default {
 
     .bottom {
       height: 100%;
-
+      overflow-x: hidden;
       .body {
         border-top: 1px solid #f8f8f8;
-
-        .list {
-          overflow: auto;
-          max-height: calc(100vh - 240px);
-          ul {
-            padding: 0px;
-
-            li {
-              height: 24px;
-              font-size: 15px;
-              line-height: 24px;
-              // background-color: rgb(218, 243, 253);
-              text-align: left;
-              list-style: none;
-              text-indent: 1rem;
-              margin: 5px 0px;
-              cursor: pointer;
-            }
-            li:hover {
-              background-color: #DAF3FD;
+        .el-scrollbar {
+          height: calc(100vh - 240px);
+          .list {
+            ul {
+              padding: 0px;
+              li {
+                height: 24px;
+                font-size: 15px;
+                line-height: 24px;
+                // background-color: rgb(218, 243, 253);
+                text-align: left;
+                list-style: none;
+                text-indent: 1rem;
+                margin: 5px 0px;
+                cursor: pointer;
+              }
+              li:hover {
+                background-color: #DAF3FD;
+              }
             }
           }
         }
@@ -808,5 +821,11 @@ export default {
 }
 .list-highlight {
   background: #DAF3FD;
+}
+.top-icon:hover {
+  color: #3d5eff;
+}
+::v-deep .el-scrollbar__wrap {
+  overflow-x: hidden !important;
 }
 </style>
