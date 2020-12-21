@@ -49,7 +49,7 @@
           <div class="card-panel-text">
             {{ item }}
           </div>
-          <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="1000" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>

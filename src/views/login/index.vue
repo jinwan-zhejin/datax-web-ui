@@ -155,7 +155,7 @@ export default {
         if (res === []) {
           this.$store.dispatch('user/logout')
         } else {
-          sessionStorage.setItem('permission', JSON.stringify(res))
+          localStorage.setItem('permission', JSON.stringify(res))
           this.$router.push({
             path: this.redirect || '/',
             query: this.otherQuery

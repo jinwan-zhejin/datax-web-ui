@@ -9,3 +9,10 @@ export function chartInfo(data) {
     data
   })
 }
+
+export function getKPI() {
+  return request({
+    url: '/api/getRunReport',
+    method: 'get'
+  })
+}
