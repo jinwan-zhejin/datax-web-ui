@@ -282,16 +282,39 @@
           :percentage="transformPercentage"
         />
       </el-dialog> -->
-
       <el-dialog title="查看转换结果" :visible.sync="dialogVisible" width="60%">
-        <el-input
-          v-model="sqlScript"
-          class="codesql"
-          type="textarea"
-          :autosize="{ minRows: 7, maxRows: 15}"
-          placeholder="转换结果"
-          readonly
-        />
+        <div class="dialogBody">
+          <el-row class="result-op" style="margin: 5px 0; position: absolute; right: 40px; z-index: 2020;">
+            <el-col class="result-options">
+              <el-tooltip placement="top" content="复制脚本">
+                <el-button
+                  v-clipboard:error="onError"
+                  v-clipboard:copy="sqlScript"
+                  v-clipboard:success="onCopy"
+                  style="padding: 5px; font-size: 16px;"
+                  type="text"
+                  icon="el-icon-document-copy"
+                />
+              </el-tooltip>
+              <el-tooltip placement="top" content="导出脚本">
+                <el-button
+                  style="padding: 5px; font-size: 16px;"
+                  type="text"
+                  icon="el-icon-download"
+                  @click="onExportScript"
+                />
+              </el-tooltip>
+            </el-col>
+          </el-row>
+          <el-input
+            v-model="sqlScript"
+            class="codesql"
+            type="textarea"
+            :autosize="{ minRows: 7, maxRows: 15}"
+            placeholder="转换结果"
+            readonly
+          />
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -594,6 +617,37 @@ export default {
       this.form = JSON.parse(JSON.stringify(this.formCopy))
       this.showProgressbar = false
       this.isLoading = false
+    },
+    /**
+     * @description: 复制结果脚本到剪贴板
+     */
+    // 复制成功
+    onCopy(e) {
+      this.$message({
+        message: '复制成功！',
+        type: 'success'
+      })
+    },
+    // 复制失败
+    onError(e) {
+      this.$message({
+        message: '复制失败！',
+        type: 'error'
+      })
+    },
+    /**
+     * @description: 脚本导出
+     */
+    onExportScript() {
+      const fileBlob = new Blob([this.sqlScript])
+      const downloadElement = document.createElement('a')
+      const href = window.URL.createObjectURL(fileBlob)
+      downloadElement.href = href
+      downloadElement.download = '导出脚本' + '.txt'
+      document.body.appendChild(downloadElement)
+      downloadElement.click()
+      document.body.removeChild(downloadElement)
+      window.URL.revokeObjectURL(href)
     }
   }
 };
@@ -775,8 +829,34 @@ export default {
 
   .codesql {
     font-size: 11pt;
-    /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
-    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif; */
+    // font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
+    // DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    >>> .el-textarea__inner {
+      font-family: PingFangHK-Medium, PingFangHK;
+    }
+  }
+
+  >>> .el-dialog__body {
+    padding-top: 10px;
+  }
+
+  .result-options {
+    .el-tooltip {
+      background: #e6e6e6;
+    }
+    .el-tooltip:hover {
+      background: #DAF3FD;
+    }
+  }
+  .result-op {
+    display: none;
+  }
+
+  .dialogBody:hover {
+    .result-op {
+      display: inline;
+      transition: width 0.15s linear;
+    }
   }
 }
 </style>
