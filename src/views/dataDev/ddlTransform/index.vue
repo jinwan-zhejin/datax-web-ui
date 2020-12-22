@@ -273,7 +273,8 @@ import {
   getTableSchema,
   getTableListWithComment,
   getTableList,
-  getTableColumns
+  getTableColumns,
+  db2hive
 } from '@/api/metadata-query';
 
 export default {
@@ -464,6 +465,10 @@ export default {
       // this.showProgressbar = false
       // this.transformPercentage = 0
       console.log('this.form', this.form)
+      db2hive(this.form).then(res => {
+        console.log('ddl ressssssssss', res)
+      })
+
     },
     getProjectList() {
       jobProjectApi.list(this.listQuery).then((response) => {

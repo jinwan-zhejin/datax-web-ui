@@ -98,3 +98,13 @@ export function getDbMetadata(params) {
     params
   })
 }
+
+// 获取某个schema下的所有元数据
+export function db2hive(params) {
+  console.log(params)
+  return request({
+    url: '/api/metadata/dbToHive',
+    method: 'post',
+    data: params
+  })
+}
