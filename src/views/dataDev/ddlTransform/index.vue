@@ -4,86 +4,87 @@
       <el-card style="height: 64px">
         <div class="left">DDL构建</div>
       </el-card>
-      <el-card style="height: 660px; margin-top: 10px">
-        <el-form
-          ref="form"
-          :model="form"
-          label-width="200px"
-          style="margin-top: 15px"
-        >
-          <el-form-item label="所属项目名称">
-            <el-select
-              v-model="form.projectId"
-              style="width: 85%"
-              placeholder="请选择待项目名称"
-              @change="onProjectChange"
+      <el-card style="height: calc(100vh - 170px); margin-top: 10px">
+        <el-row>
+          <el-col :span="18" :offset="3">
+            <el-form
+              ref="form"
+              :model="form"
+              label-width="200px"
+              style="margin-top: 15px;"
             >
-              <el-option
-                v-for="item in projectlist"
-                :key="item.id"
-                :value="item.id"
-                :label="item.name"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="待转换数据源">
-            <el-select
-              v-model="form.datasource"
-              style="width: 85%"
-              placeholder="请选择待转换数据源"
-              @change="onDSChange"
-            >
-              <el-option
-                v-for="item in datasourcelist"
-                :key="item.id"
-                :value="item.id"
-                :label="item.datasourceName"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="待转换数据库/Schema">
-            <el-select
-              v-model="form.schema"
-              style="width: 85%"
-              placeholder="请选择待转换数据库/Schema"
-              @change="onSchemaChange"
-            >
-              <el-option
-                v-for="item in schemalist"
-                :key="item"
-                :value="item"
-                :label="item"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="目标SQL类型">
-            <el-radio-group v-model="form.targetSQL">
-              <el-radio label="Hive" />
-              <el-radio label="Impala" />
-              <el-radio label="Kudu" />
-            </el-radio-group>
-          </el-form-item>
+              <el-form-item label="所属项目名称">
+                <el-select
+                  v-model="form.projectId"
+                  placeholder="请选择待项目名称"
+                  @change="onProjectChange"
+                >
+                  <el-option
+                    v-for="item in projectlist"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="待转换数据源">
+                <el-select
+                  v-model="form.datasource"
+                  placeholder="请选择待转换数据源"
+                  @change="onDSChange"
+                >
+                  <el-option
+                    v-for="item in datasourcelist"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.datasourceName"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="待转换数据库/Schema">
+                <el-select
+                  v-model="form.schema"
+                  placeholder="请选择待转换数据库/Schema"
+                  @change="onSchemaChange"
+                >
+                  <el-option
+                    v-for="item in schemalist"
+                    :key="item"
+                    :value="item"
+                    :label="item"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="目标SQL类型">
+                <el-radio-group v-model="form.targetSQL">
+                  <el-radio label="Hive" />
+                  <el-radio label="Impala" />
+                  <el-radio label="Kudu" />
+                </el-radio-group>
+              </el-form-item>
 
-          <el-form-item>
-            <el-button
-              style="margin-left: 30%"
-              type="primary"
-              size="small"
-              @click="onTransform"
-            >开始转换</el-button>
-            <el-button
-              type="primary"
-              size="small"
-              @click="showTransformedSQL"
-            >查看转换结果</el-button>
-          </el-form-item>
-          <el-progress
-            v-if="showProgressbar"
-            ref="transformProgress"
-            style="width: 80%; margin-left: 10%"
-            :percentage="transformPercentage"
-          />
-        </el-form>
+              <el-form-item>
+                <el-button
+                  style="margin-left: 30%"
+                  type="primary"
+                  size="small"
+                  @click="onTransform"
+                >开始转换</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="showTransformedSQL"
+                >查看转换结果</el-button>
+              </el-form-item>
+              <el-progress
+                v-if="showProgressbar"
+                ref="transformProgress"
+                style="width: 80%; margin-left: 10%"
+                :percentage="transformPercentage"
+              />
+            </el-form>
+          </el-col>
+        </el-row>
       </el-card>
 
       <el-dialog title="查看转换结果" :visible.sync="dialogVisible" width="60%">
@@ -191,8 +192,8 @@ export default {
           this.transformPercentage = Math.round(((k + 1) / len) * 100);
         }
         console.log(this.sqlScript);
-      } else if (targetSQL == 'Impala') {
-      } else if (targetSQL == 'Kudu') {
+      } else if (targetSQL === 'Impala') {
+      } else if (targetSQL === 'Kudu') {
       } else {
         this.$notify({
           title: '警告',
@@ -297,6 +298,11 @@ export default {
             color: #fff;
             background-color: #3d5fff;
           }
+        }
+      }
+      .el-form {
+        >>> .el-select {
+          width: 100% !important;
         }
       }
     }
