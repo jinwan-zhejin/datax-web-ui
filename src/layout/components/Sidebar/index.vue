@@ -18,9 +18,36 @@
           </template>
           <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
         </el-menu-item>
-        <sidebar-item v-for="route in beforeRouter" :key="route.path" :item="route" :base-path="route.path" />
+        <div v-for="item in userRouter" :key="item.menuId">
+          <router-link :to="returnPath(item.path)">
+            <el-submenu v-if="item.children" :index="item.menuId + ''">
+              <template slot="title">
+                <svg-icon style="fontSize: 20px;text-align: center;" :icon-class="item.icon" />
+                <span>{{ item.title }}</span>
+              </template>
+              <div :v-if="item.children !== null">
+                <el-menu-item-group v-for="i in item.children" :key="i.menuId">
+                  <router-link :to="returnPath(i.path)">
+                    <el-menu-item :index="i.path">
+                      <template slot="title">
+                        <svg-icon style="fontSize: 20px;text-align: center;" :icon-class="i.icon" />
+                        <span>{{ i.meta.title }}</span>
+                      </template>
+                    </el-menu-item>
+                  </router-link>
+                </el-menu-item-group>
+              </div>
+            </el-submenu>
+            <el-menu-item v-else :index="item.path">
+              <svg-icon style="fontSize: 20px;text-align: center;" :icon-class="item.icon" />
+              <span>{{ item.title }}</span>
+            </el-menu-item>
+          </router-link>
+        </div>
+        <!-- <sidebar-item v-for="route in beforeRouter" :key="route.path" :item="route" :base-path="route.path" /> -->
       </el-menu>
     </el-scrollbar>
+
   </div>
 </template>
 
@@ -65,7 +92,8 @@ export default {
     return {
       userRouter: [],
       beforeRouter: [],
-      arr: []
+      arr: [],
+      children: []
     }
   },
   created() {
@@ -73,10 +101,18 @@ export default {
       console.log(this.$route, ',.....................')
       this.getAnalysis()
     }
-    console.log(JSON.parse(sessionStorage.getItem('permission')), 'session')
-    this.showUserPer()
+    this.userRouter = JSON.parse(localStorage.getItem('permission'))
+    console.log(this.userRouter, 'session')
+    // this.showUserPer()
   },
   methods: {
+    returnPath(path) {
+      if (path) {
+        return path
+      } else {
+        return ''
+      }
+    },
     getAnalysis() {
       window.location = 'http://192.168.3.60:9000/login?username=admin&password=123'
       setTimeout(() => {
@@ -111,6 +147,36 @@ export default {
         }
       }
       this.beforeRouter = [...new Set(this.beforeRouter.concat(this.arr))]
+      for (let i = 0; i < this.beforeRouter.length; i++) {
+        for (let j = 0; j < this.userRouter.length; j++) {
+          if (this.beforeRouter[i].meta.title.replace(/\s*/g, '') === this.userRouter[j].title.replace(/\s*/g, '')) {
+            if (this.userRouter[j].children && this.beforeRouter[i].children) {
+              // for (let n = 0; n < this.beforeRouter[i].children.length; n++) {
+              //   if (this.beforeRouter[i].children[n].meta) {
+              //     for (let m = 0; m < this.userRouter[j].children.length; m++) {
+              //       if (this.beforeRouter[i].children[n].meta.title.replace(/\s*/g, '') === this.userRouter[j].children[m].title.replace(/\s*/g, '')) {
+              //         this.children.push(this.beforeRouter[i].children[n])
+              //         continue
+              //       }
+              //     }
+              //     if (this.children.length > 0) {
+              //       this.beforeRouter[i].children = this.children
+              //     }
+              //   }
+              // }
+              for (let n = 0; n < this.userRouter[j].children.length; n++) {
+                for (let m = 0; m < this.beforeRouter[j].children.length; m++) {
+                  if (this.beforeRouter[i].children[m].meta) {
+                    if (this.beforeRouter[i].children[m].meta.title.replace(/\s*/g, '') === this.userRouter[j].children[n].title.replace(/\s*/g, '')) {
+                      break
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       console.log(this.beforeRouter, 'beforeRouter')
     }
   }

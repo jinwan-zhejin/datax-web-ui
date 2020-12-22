@@ -194,7 +194,7 @@ const mutations = {
   },
 
   SET_JOB_INFO: (state, jobInfo) => {
-    state.jobInfo = JSON.parse(JSON.stringify(jobInfo))
+    state.jobInfo = jobInfo
   },
 
   SET_READER_ISEDIT: (state, isEdit) => {
@@ -229,6 +229,7 @@ const actions = {
         a.name = firstElement.jobDesc;
         a.content = firstElement;
         commit('ADD_TASKDETAIL', a);
+        commit('SET_JOB_INFO', response.content.data[0])
         commit('SET_TASKDETAIL_ID', a.content.id + '');
       }
     })

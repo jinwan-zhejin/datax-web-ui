@@ -1,6 +1,7 @@
 <template>
   <div class="Management">
     <div class="lt">
+      <!-- {{jobDetailIdx}} -->
       <div class="top">
         <el-row>
           <el-col :span="12">
@@ -18,12 +19,12 @@
             </el-select>
           </el-col>
           <el-col :span="12">
-            <i class="el-icon-location-outline" />
-            <i class="el-icon-coin" />
-            <el-dropdown @command="createNewJob">
-              <i class="el-icon-folder-add" />
+            <i class="el-icon-location-outline top-icon" />
+            <i class="el-icon-coin top-icon" />
+            <el-dropdown trigger="click" @command="createNewJob">
+              <i class="el-icon-folder-add top-icon" />
               <el-dropdown-menu
-                style="max-height: calc(100vh - 180px); overflow: auto;"
+                style="max-height: calc(100vh - 200px); overflow: auto;"
               >
                 <el-dropdown-item command="NORMAL">
                   <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
@@ -106,22 +107,25 @@
             class="input_serach"
             prefix-icon="el-icon-search"
             placeholder="任务名称/ID/代码"
+            clearable
           />
-          <div class="list">
-            <ul>
-              <li
-                v-for="(item, index) in List"
-                :key="index"
-                :class="[selectedId === item.id ? 'list-highlight' : '']"
-                @click="getJobDetail(item)"
-              >
-                <svg-icon :icon-class="item.jobType" />
-                <a style="color: rgba(102, 102, 102, 1)">
-                  {{ item.jobDesc }}
-                </a>
-              </li>
-            </ul>
-          </div>
+          <el-scrollbar>
+            <div class="list">
+              <ul>
+                <li
+                  v-for="(item, index) in filterList"
+                  :key="index"
+                  :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
+                  @click="getJobDetail(item)"
+                >
+                  <svg-icon :icon-class="item.jobType" />
+                  <a style="color: rgba(102, 102, 102, 1)">
+                    {{ item.jobDesc }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </el-scrollbar>
         </div>
       </div>
     </div>
@@ -144,8 +148,8 @@
         </el-tab-pane>
 
         <el-tab-pane
-          v-for="(item, index) in $store.state.taskAdmin.taskDetailList"
-          :key="index"
+          v-for="item in $store.state.taskAdmin.taskDetailList"
+          :key="item.content.id"
           :label="item.title"
           :name="item.content.id + ''"
         >
@@ -289,8 +293,7 @@ export default {
       jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
-      projectIds: '',
-      selectedId: undefined // list选中项
+      projectIds: ''
     };
   },
   computed: {
@@ -301,6 +304,17 @@ export default {
 
     taskDetailID() {
       return this.$store.state.taskAdmin.taskDetailID;
+    },
+
+    filterList() {
+      return this.List.filter(item => {
+        if (item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1) {
+          return true
+        }
+        if (this.search === item.id.toString()) {
+          return true
+        }
+      })
     }
   },
   watch: {
@@ -327,19 +341,28 @@ export default {
     console.log(this.$store.state);
   },
   methods: {
-    removeJobTab(name) {
-      const removeIndex = _.findIndex(
-        this.$store.state.taskAdmin.taskDetailList,
-        ele => ele.content.id === name
-      );
-      if (this.jobDetailIdx === name) {
+    /**
+     * @description: tab关闭逻辑
+     */
+    removeJobTab(targetId) {
+      const targetIdInt = parseInt(targetId)
+      console.log(this.$store.state.taskAdmin.taskDetailList)
+      const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
+        ele => ele.content.id === targetIdInt
+      )
+      console.log(removeIndex)
+      if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
-          (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
-            ?.id ||
+          (
+            this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
+              ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-              ?.id) + '';
+              ?.id
+          ) + ''
+        console.log('jobDetailIdx: ', this.jobDetailIdx);
       }
-      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(name) !== -1) {
+      // 关闭的是[新增任务tab]，非新增任务tab id = content.id
+      if (this.$store.state.taskAdmin.tabTypeArr.indexOf(targetId) !== -1) {
         this.jobType = '';
         this.$store.commit('SET_TAB_TYPE', '');
       } else {
@@ -462,7 +485,7 @@ export default {
 
     getJobDetail(data) {
       this.$store.commit('SET_JOB_INFO', data)
-      this.selectedId = data.id
+      this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {};
       a.title = data.jobDesc;
       a.name = data.jobDesc;
@@ -669,7 +692,7 @@ export default {
     // min-height: 660px;
     // max-height: 700px;
     // overflow: scroll;
-    overflow: hidden;
+    // overflow: hidden;
     padding: 10px;
     // background: #f0f0f2;
     background: #fff;
@@ -701,29 +724,28 @@ export default {
 
     .bottom {
       height: 100%;
-
+      overflow-x: hidden;
       .body {
         border-top: 1px solid #f8f8f8;
-
-        .list {
-          overflow: auto;
-          max-height: calc(100vh - 240px);
-          ul {
-            padding: 0px;
-
-            li {
-              height: 24px;
-              font-size: 15px;
-              line-height: 24px;
-              // background-color: rgb(218, 243, 253);
-              text-align: left;
-              list-style: none;
-              text-indent: 1rem;
-              margin: 5px 0px;
-              cursor: pointer;
-            }
-            li:hover {
-              background-color: #DAF3FD;
+        .el-scrollbar {
+          height: calc(100vh - 240px);
+          .list {
+            ul {
+              padding: 0px;
+              li {
+                height: 24px;
+                font-size: 15px;
+                line-height: 24px;
+                // background-color: rgb(218, 243, 253);
+                text-align: left;
+                list-style: none;
+                text-indent: 1rem;
+                margin: 5px 0px;
+                cursor: pointer;
+              }
+              li:hover {
+                background-color: #DAF3FD;
+              }
             }
           }
         }
@@ -799,5 +821,11 @@ export default {
 }
 .list-highlight {
   background: #DAF3FD;
+}
+.top-icon:hover {
+  color: #3d5eff;
+}
+::v-deep .el-scrollbar__wrap {
+  overflow-x: hidden !important;
 }
 </style>

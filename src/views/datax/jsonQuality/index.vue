@@ -718,11 +718,11 @@ export default {
     },
     // 构建json
     buildJson() {
-      const readerData = this.$refs.reader.getData();
-      const writeData = this.$refs.writer.getData();
-      const readerColumns = this.$refs.mapper.getLColumns();
-      const writerColumns = this.$refs.mapper.getRColumns();
-      const transformer = this.$refs.mapper.getRules();
+      const readerData = this.$refs.reader.getData()
+      const writeData = this.$refs.writer.getData()
+      const readerColumns = this.$refs.mapper.getLColumns()
+      const writerColumns = this.$refs.mapper.getRColumns()
+      const transformer = this.$refs.mapper.getRules()
       const hiveReader = {
         readerPath: readerData.path,
         readerDefaultFS: readerData.defaultFS,
