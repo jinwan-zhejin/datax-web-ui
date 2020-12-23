@@ -7,7 +7,7 @@
     <div v-if="isLoading" v-loading="loading" class="Loading" />
 
     <el-row v-else :gutter="20">
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>成功</span>
@@ -16,13 +16,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="successCount" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="successCount" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#67c23a"
+                type="dashboard"
+                :percentage="parseInt((successCount * 100 / KPI.itemTask).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>失败</span>
@@ -31,13 +41,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="failCount" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="failCount" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#f56c6c"
+                type="dashboard"
+                :percentage="parseInt((failCount * 100 / KPI.itemTask).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>正在执行</span>
@@ -46,13 +66,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#f56c6c"
+                type="dashboard"
+                :percentage="parseInt((runningCount * 100 / KPI.itemTask).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>数据源连接数</span>
@@ -61,13 +91,22 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="KPI.connectDataSource" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="KPI.connectDataSource" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                type="dashboard"
+                :percentage="parseInt((KPI.connectDataSource * 100 / KPI.itemDataSource).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>质量规则数</span>
@@ -82,7 +121,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>通用规则数</span>
@@ -97,7 +136,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>个性化规则数</span>
@@ -112,7 +151,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>规则统计</span>
@@ -124,11 +163,11 @@
             <!-- <span>
               <count-to :start-val="0" :end-val="KPI.usedRule.length" :duration="3200" class="card-panel-num" />
             </span> -->
-            <vechart style="width: 200px;height: 100px;" :data="KPI.usedRule" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.usedRule" />
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>表</span>
@@ -143,7 +182,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>数据库</span>
@@ -158,7 +197,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目数据源</span>
@@ -173,7 +212,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目总数</span>
@@ -188,7 +227,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目用户总数</span>
@@ -203,7 +242,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目任务总数</span>
@@ -218,7 +257,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目任务分布统计</span>
@@ -230,11 +269,11 @@
             <!-- <span>
               <count-to :start-val="0" :end-val="KPI.itemTaskDistribution[2].num" :duration="3200" class="card-panel-num" />
             </span> -->
-            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskDistribution" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.itemTaskDistribution" />
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目任务运行状态分布</span>
@@ -243,11 +282,11 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskRunStateDistribution" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.itemTaskRunStateDistribution" />
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>项目任务类型分布</span>
@@ -256,11 +295,11 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskTypeDistribution" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.itemTaskTypeDistribution" />
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>接口总数</span>
@@ -275,7 +314,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>未审核接口总数</span>
@@ -284,13 +323,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="KPI.approvingInterface" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="KPI.approvingInterface" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#e6a23c"
+                type="dashboard"
+                :percentage="parseInt((KPI.approvingInterface * 100 / KPI.interfaceNum).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>拒绝接口数</span>
@@ -299,13 +348,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="KPI.rejectInterface" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="KPI.rejectInterface" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#f56c6c"
+                type="dashboard"
+                :percentage="parseInt((KPI.rejectInterface * 100 / KPI.interfaceNum).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>审核通过接口总数</span>
@@ -314,13 +373,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
-              <count-to :start-val="0" :end-val="KPI.passInterface" :duration="3200" class="card-panel-num" />
-            </span>
+            <el-col :span="12">
+              <span>
+                <count-to :start-val="0" :end-val="KPI.passInterface" :duration="3200" class="card-panel-num" />
+              </span>
+            </el-col>
+            <el-col :span="12">
+              <el-progress
+                :width="100"
+                color="#67c23a"
+                type="dashboard"
+                :percentage="parseInt((KPI.passInterface * 100 / KPI.interfaceNum).toFixed(0))"
+              />
+            </el-col>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>任务类型分布统计</span>
@@ -332,11 +401,11 @@
             <!-- <span>
               <count-to :start-val="0" :end-val="KPI.taskTypeDistribution[0].num" :duration="3200" class="card-panel-num" />
             </span> -->
-            <vechart style="width: 200px;height: 100px;" :data="KPI.taskTypeDistribution" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.taskTypeDistribution" />
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="8" :md="8" :lg="6" :xl="6">
         <div class="grid-content bg-purple">
           <div class="title">
             <span>任务统计分布(按照执行器)</span>
@@ -345,7 +414,7 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <vechart style="width: 200px;height: 100px;" :data="KPI.taskExecutorDistribution" />
+            <vechart style="width: 100%;height: 100px;" :data="KPI.taskExecutorDistribution" />
           </div>
         </div>
       </el-col>
