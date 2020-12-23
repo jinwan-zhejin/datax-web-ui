@@ -91,10 +91,18 @@ export function getAllName() {
 
 // 获取某个schema下的所有元数据
 export function getDbMetadata(params) {
-  console.log(params)
   return request({
     url: '/api/metadata/import',
     method: 'post',
     params
+  })
+}
+
+// 获取某个schema下的所有元数据
+export function db2hive(data) {
+  return request({
+    url: '/api/metadata/dbToHive',
+    method: 'post',
+    data
   })
 }
