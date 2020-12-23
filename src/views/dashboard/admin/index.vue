@@ -115,15 +115,16 @@
       <el-col :span="6">
         <div class="grid-content bg-purple">
           <div class="title">
-            <span>规则统计数</span>
+            <span>规则统计</span>
             <el-tooltip class="item" effect="dark" content="对于已经应用到质量规则任务中的规则统计数量" placement="top-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
+            <!-- <span>
               <count-to :start-val="0" :end-val="KPI.usedRule.length" :duration="3200" class="card-panel-num" />
-            </span>
+            </span> -->
+            <vechart style="width: 200px;height: 100px;" :data="KPI.usedRule" />
           </div>
         </div>
       </el-col>
@@ -226,9 +227,36 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
+            <!-- <span>
               <count-to :start-val="0" :end-val="KPI.itemTaskDistribution[2].num" :duration="3200" class="card-panel-num" />
-            </span>
+            </span> -->
+            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskDistribution" />
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="title">
+            <span>项目任务运行状态分布</span>
+            <el-tooltip class="item" effect="dark" content="项目任务运行状态分布" placement="top-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </div>
+          <div class="content">
+            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskRunStateDistribution" />
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="title">
+            <span>项目任务类型分布</span>
+            <el-tooltip class="item" effect="dark" content="项目任务类型分布" placement="top-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </div>
+          <div class="content">
+            <vechart style="width: 200px;height: 100px;" :data="KPI.itemTaskTypeDistribution" />
           </div>
         </div>
       </el-col>
@@ -301,9 +329,23 @@
             </el-tooltip>
           </div>
           <div class="content">
-            <span>
+            <!-- <span>
               <count-to :start-val="0" :end-val="KPI.taskTypeDistribution[0].num" :duration="3200" class="card-panel-num" />
-            </span>
+            </span> -->
+            <vechart style="width: 200px;height: 100px;" :data="KPI.taskTypeDistribution" />
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="title">
+            <span>任务统计分布(按照执行器)</span>
+            <el-tooltip class="item" effect="dark" content="任务按照执行器统计分布" placement="top-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </div>
+          <div class="content">
+            <vechart style="width: 200px;height: 100px;" :data="KPI.taskExecutorDistribution" />
           </div>
         </div>
       </el-col>
@@ -349,6 +391,7 @@
 // import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
+import vechart from './components/vEchart'
 // import RaddarChart from './components/RaddarChart'
 // import PieChart from './components/PieChart'
 // import BarChart from './components/BarChart'
@@ -372,7 +415,8 @@ export default {
     // GithubCorner,
     PanelGroup,
     LineChart,
-    CountTo
+    CountTo,
+    vechart
     // RaddarChart,
     // PieChart,
     // BarChart,
@@ -474,7 +518,7 @@ export default {
   }
   .grid-content {
     border-radius: 4px;
-    height: 160px;
+    height: 200px;
     padding: 20px;
     margin-top: 20px;
     overflow: hidden;
