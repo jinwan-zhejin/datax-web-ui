@@ -34,9 +34,9 @@
               "
               class="yuan"
             />
-
             {{ statusList.find(t => t.value === scope.row.triggerCode).label }}
-          </span></template>
+          </span>
+        </template>
       </el-table-column>
       <el-table-column label="调度备注" align="center">
         <template slot-scope="scope">
@@ -83,6 +83,10 @@
           >
             <i class="el-icon-search" />日志查看
           </el-link>
+          <el-divider
+            v-if="row.handleCode === 0 && row.triggerCode === 200"
+            direction="vertical"
+          />
           <el-button
             v-show="row.handleCode === 0 && row.triggerCode === 200"
             type="primary"
@@ -261,6 +265,9 @@ export default {
             this.logLoading = false;
           });
       }
+    },
+    test(info) {
+      console.log(info);
     }
   }
 };

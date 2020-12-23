@@ -106,3 +106,38 @@ export function getDataSourceDetail(id) {
   })
 }
 
+/**
+ * @description: 获取任务执行结果
+ * @param {object} params
+ *  parameter: {
+ *    taskId: 1,
+ *    current: 1,
+ *    size: 10
+ *  }
+ * @return {*}
+ */
+export function getTaskResult(params) {
+  return request({
+    url: '/api/job/jobResult',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * @description: 导出执行结果为excel
+ * @param {object} params
+ *  parameter: {
+ *    taskId: 1,
+ *  }
+ * @return {*}
+ */
+export function exportTaskResult(params) {
+  return request({
+    url: '/api/job/excel',
+    method: 'get',
+    responseType: 'blob',
+    params
+  })
+}
+

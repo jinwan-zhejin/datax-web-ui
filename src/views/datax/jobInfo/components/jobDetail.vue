@@ -10,6 +10,10 @@
         <i class="el-icon-video-play" />
         <span>执行一次</span>
       </div>
+      <div class="header_action" @click="handlerViewResult(temp)">
+        <i class="el-icon-search" />
+        <span>查看结果</span>
+      </div>
       <div class="header_action" @click="handlerViewLog(temp)">
         <i class="el-icon-s-order" />
         <span>查询日志</span>
@@ -1200,6 +1204,14 @@
     >
       <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
+
+    <el-dialog
+      width="75%"
+      title="结果查看"
+      :visible.sync="resultView"
+    >
+      <job-result :id="jobId" ref="jobResult" />
+    </el-dialog>
   </div>
 </template>
 
@@ -1224,6 +1236,7 @@ import qualityWriter from '../../jsonQuality/writer';
 import mapper from '@/views/datax/json-build/mapper';
 import { isJSON } from '@/utils/validate';
 import jobLog from './jobLog';
+import jobResult from './jobResult'
 import { getTableSchema } from '@/api/metadata-query';
 
 import {
@@ -1248,6 +1261,7 @@ export default {
     PowershellEditor,
     Cron,
     jobLog,
+    jobResult,
     reader,
     writer,
     qualityReader,
@@ -1669,8 +1683,9 @@ export default {
           value: 'nonConflict',
           label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
         }
-      ]
-    };
+      ],
+      resultView: false // 结果查看
+    }
   },
 
   computed: {
@@ -1907,13 +1922,20 @@ export default {
       });
     },
 
+    handlerViewResult(temp) {
+      // console.log(temp);
+      this.resultView = true
+      this.jobId = temp.id
+      this.$refs.jobResult?.fetchData()
+    },
+
     // 查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
       this.$store.commit('SET_LOGVIEW_TYPE', 0);
       this.logview = true;
       this.jobId = temp.id;
-      this.$refs.jobLog?.fetchData();
+      this.$refs.jobLog?.fetchData()
     },
 
     // 删除

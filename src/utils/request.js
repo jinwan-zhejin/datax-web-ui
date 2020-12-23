@@ -73,6 +73,10 @@ service.interceptors.response.use(
           console.log(err)
         })
       }
+      // responseType为blob时没有code
+      if (!res.hasOwnProperty('code')) {
+        return res
+      }
       return Promise.reject(new Error(res || 'Error'))
     } else {
       const { data } = response
