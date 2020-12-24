@@ -87,8 +87,9 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" />
+              <el-col>
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
+                <pie-chart :chart-data="transformArrPieChart(KPI.taskTypeDistribution)" />
               </el-col>
             </el-card>
           </el-col>
@@ -100,8 +101,22 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" />
+              <el-col>
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
+                <pie-chart :chart-data="transformArrPieChart(KPI.taskExecutorDistribution)" />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :span="24">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>任务结果统计</span>
+                <el-tooltip class="item" effect="dark" content="成功失败统计" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col>
+                <line-chart :chart-data="lineChartData" />
               </el-col>
             </el-card>
           </el-col>
@@ -112,7 +127,7 @@
           <span>项目</span>
         </div>
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目数据源</span>
@@ -127,7 +142,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目总数</span>
@@ -142,7 +157,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目用户总数</span>
@@ -157,7 +172,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务总数</span>
@@ -172,7 +187,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务分布统计</span>
@@ -181,11 +196,27 @@
                 </el-tooltip>
               </div>
               <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskDistribution" />
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskDistribution" /> -->
+                <pie-chart :chart-data="transformArrPieChart(KPI.itemTaskDistribution)" />
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>项目任务类型分布</span>
+                <el-tooltip class="item" effect="dark" content="项目任务类型分布" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col v-if="!isLoading">
+                <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" />
+                <!-- <bar-chart :chart-data="KPI.itemTaskTypeDistribution" /> -->
+              </el-col>
+            </el-card>
+            <!-- {{ KPI.itemTaskTypeDistribution }} -->
+          </el-col>
+          <el-col :span="24">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务运行状态分布</span>
@@ -197,19 +228,7 @@
                 <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskRunStateDistribution" />
               </el-col>
             </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>项目任务类型分布</span>
-                <el-tooltip class="item" effect="dark" content="项目任务类型分布" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" />
-              </el-col>
-            </el-card>
+            <!-- {{ KPI.itemTaskRunStateDistribution }} -->
           </el-col>
         </el-row>
       </el-card>
@@ -430,37 +449,25 @@
       </el-card>
     </div>
 
-    <el-card style="margin-top: 20px; background: transparent;">
-      <div slot="header" class="clearfix">
-        <span style="font-size: 28px;">曲线统计</span>
-        <el-tooltip class="item" style="float: right;" effect="dark" content="成功失败统计" placement="top-start">
-          <i class="el-icon-info" />
-        </el-tooltip>
-      </div>
-      <el-card>
-        <line-chart :chart-data="lineChartData" />
-      </el-card>
-    </el-card>
-
-    <el-row :gutter="32">
-      <!--<el-col :xs="24" :sm="24" :lg="8">
+    <!-- <el-row :gutter="32">
+      <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
           <raddar-chart />
         </div>
-      </el-col>-->
-      <!--<el-col :xs="24" :sm="24" :lg="8">
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
           <pie-chart />
         </div>
-      </el-col>-->
-      <!--<el-col :xs="24" :sm="24" :lg="8">
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
           <bar-chart />
         </div>
-      </el-col>-->
-    </el-row>
+      </el-col>
+    </el-row> -->
 
-    <!--<el-row :gutter="8">
+    <!-- <el-row :gutter="8">
       <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
         <transaction-table />
       </el-col>
@@ -470,21 +477,21 @@
       <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
         <box-card />
       </el-col>
-    </el-row>-->
+    </el-row> -->
   </div>
 </template>
 
 <script>
 // import GithubCorner from '@/components/GithubCorner'
-import PanelGroup from './components/PanelGroup'
+// import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import vechart from './components/vEchart'
-// import RaddarChart from './components/RaddarChart'
-// import PieChart from './components/PieChart'
-// import BarChart from './components/BarChart'
+import RaddarChart from './components/RaddarChart'
+import PieChart from './components/PieChart'
+import BarChart from './components/BarChart'
 // import TransactionTable from './components/TransactionTable'
 // import TodoList from './components/TodoList'
-// import BoxCard from './components/BoxCard'
+import BoxCard from './components/BoxCard'
 import * as dashborad from '@/api/dashborad'
 import CountTo from 'vue-count-to'
 
@@ -500,13 +507,13 @@ export default {
   name: 'DashboardAdmin',
   components: {
     // GithubCorner,
-    PanelGroup,
+    // PanelGroup,
     LineChart,
     CountTo,
-    vechart
+    vechart,
     // RaddarChart,
-    // PieChart,
-    // BarChart,
+    PieChart,
+    BarChart,
     // TransactionTable,
     // TodoList,
     // BoxCard
@@ -519,6 +526,23 @@ export default {
       failCount: '',
       successCount: '',
       isLoading: true
+    }
+  },
+  computed: {
+    transformArrPieChart() {
+      return arr => {
+        const temp = []
+        if (arr) {
+          arr.forEach(ele => {
+            temp.push({
+              name: ele.type || ele.name || '未知选项',
+              value: ele.num
+            })
+          })
+          return temp
+        }
+        return temp
+      }
     }
   },
   created() {
