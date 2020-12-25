@@ -78,12 +78,12 @@ export default {
         if (arr) {
           this.extractType(arr).forEach(ele => {
             const t = this.arr.filter(item => {
-              const m = item.type || '未知类型'
+              const m = item.type || '未知项'
               return m === ele
             })
             t.forEach(men => {
               temp.push({
-                
+
               })
             })
           })

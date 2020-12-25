@@ -535,7 +535,7 @@ export default {
         if (arr) {
           arr.forEach(ele => {
             temp.push({
-              name: ele.type || ele.name || '未知选项',
+              name: ele.type || ele.name || '未知项',
               value: ele.num
             })
           })
@@ -543,7 +543,24 @@ export default {
         }
         return temp
       }
-    }
+    },
+    transformArrBarChart() {
+      return arr => {
+        const temp = []
+        if (arr) {
+          arr.forEach(ele => {
+            // null => '未知'
+            for (var i in ele) {
+              if (ele[i] === null) {
+                ele.splice(i, 1, '未知项')
+              }
+            }
+          })
+          return temp
+        }
+        return temp
+      }
+    },
   },
   created() {
     this.chartInfo()
