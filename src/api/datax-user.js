@@ -47,3 +47,14 @@ export function getPermission() {
     method: 'get'
   })
 }
+
+/**
+ * @description: 查询所有用户
+ * @return {*}
+ */
+export function getAllUser() {
+  return request({
+    url: '/api/user/all',
+    method: 'get'
+  })
+}
