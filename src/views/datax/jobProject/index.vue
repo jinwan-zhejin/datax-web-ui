@@ -61,14 +61,20 @@
       </el-table>
       <pagination v-show="total > 0" :total="total" style="float: right" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
     </div>
+    <!-- 添加/编辑 -->
     <el-dialog :visible.sync="dialogFormVisible" width="500px">
-      <p slot="title" class="dialog_title">{{ textMap[dialogStatus] }}</p>
+      <p slot="title" class="dialog_title">{{ textMap[dialogStatus] }}项目管理</p>
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px">
         <el-form-item label="项目名称" prop="name">
           <el-input v-model="temp.name" placeholder="项目名称" style="width: 99%" />
         </el-form-item>
         <el-form-item label="项目描述" prop="description">
           <el-input v-model="temp.description" placeholder="项目描述" style="width: 99%" />
+        </el-form-item>
+        <el-form-item v-if="dialogStatus === 'update'" label="用户" prop="userIds">
+          <el-select v-model="temp.userIds" multiple style="width: 100%;">
+            <el-option v-for="(item, index) in users" :key="index" :label="item.username" :value="item.id" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -112,6 +118,8 @@ import * as jobProjectApi from '@/api/datax-job-project';
 import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination';
 // import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import { translaterMaster } from '@/utils/dictionary'
+import { getAllUser } from '@/api/datax-user'
 
 export default {
   name: 'JobProject',
@@ -150,29 +158,39 @@ export default {
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '+添加'
+        create: '添加'
       },
       rules: {
         name: [{
           required: true,
-          message: 'this is required',
+          message: translaterMaster('this is require'),
           trigger: 'blur'
         }],
         description: [{
           required: true,
-          message: 'this is required',
+          message: translaterMaster('this is require'),
           trigger: 'blur'
+        }],
+        userIds: [{
+          required: true,
+          message: translaterMaster('this is require'),
+          trigger: 'change'
         }]
       },
       temp: {
         id: undefined,
         name: '',
-        description: ''
+        description: '',
+        userIds: []
       },
-      visible: true
+      visible: true,
+      users: [] // 用户列表
     };
   },
   created() {
+    getAllUser().then(response => {
+      this.users = response
+    })
     this.fetchData();
   },
   methods: {
@@ -194,7 +212,8 @@ export default {
       this.temp = {
         id: undefined,
         name: '',
-        description: ''
+        description: '',
+        userIds: []
       };
     },
     handleCreate() {
@@ -208,7 +227,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          jobProjectApi.created(this.temp).then(() => {
+          jobProjectApi.created(this.temp).then((response) => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({

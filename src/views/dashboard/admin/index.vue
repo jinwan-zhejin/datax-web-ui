@@ -79,7 +79,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>任务类型分布统计</span>
@@ -93,7 +93,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>任务统计分布(按照执行器)</span>
@@ -107,7 +107,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>任务结果统计</span>
@@ -188,7 +188,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="10" :lg="7" :xl="7">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务分布统计</span>
@@ -202,7 +202,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
+          <el-col :xs="24" :sm="24" :md="14" :lg="7" :xl="7">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务类型分布</span>
@@ -216,7 +216,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24" :sm="24" :md="24" :lg="10" :xl="10">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务运行状态分布</span>
