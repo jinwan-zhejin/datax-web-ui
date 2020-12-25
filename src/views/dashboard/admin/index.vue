@@ -56,7 +56,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>正在执行</span>
@@ -119,6 +119,7 @@
                 <line-chart :chart-data="lineChartData" />
               </el-col>
             </el-card>
+            <!-- {{ lineChartData }} -->
           </el-col>
         </el-row>
       </el-card>
@@ -210,11 +211,10 @@
                 </el-tooltip>
               </div>
               <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" />
-                <!-- <bar-chart :chart-data="KPI.itemTaskTypeDistribution" /> -->
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" /> -->
+                <bar-chart :chart-data="transformArrBarChart(KPI.itemTaskTypeDistribution)" />
               </el-col>
             </el-card>
-            <!-- {{ KPI.itemTaskTypeDistribution }} -->
           </el-col>
           <el-col :span="24">
             <el-card shadow="hover">
@@ -225,7 +225,8 @@
                 </el-tooltip>
               </div>
               <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskRunStateDistribution" />
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskRunStateDistribution" /> -->
+                <line-chart :chart-data="transformArrBarChart2(KPI.itemTaskRunStateDistribution)" />
               </el-col>
             </el-card>
             <!-- {{ KPI.itemTaskRunStateDistribution }} -->
@@ -237,7 +238,7 @@
           <span>数据源</span>
         </div>
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>数据源连接数</span>
@@ -296,7 +297,7 @@
           <span>规则</span>
         </div>
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>通用规则数</span>
@@ -311,7 +312,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>质量规则数</span>
@@ -326,7 +327,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>个性化规则数</span>
@@ -350,9 +351,11 @@
                 </el-tooltip>
               </div>
               <el-col v-if="!isLoading">
-                <vechart style="width: 100%;height: 120px;" :data="KPI.usedRule" />
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.usedRule" /> -->
+                <pie-chart :chart-data="transformArrPieChart2(KPI.usedRule)" />
               </el-col>
             </el-card>
+            <!-- {{ KPI.usedRule }} -->
           </el-col>
         </el-row>
       </el-card>
@@ -513,7 +516,7 @@ export default {
     vechart,
     // RaddarChart,
     PieChart,
-    BarChart,
+    BarChart
     // TransactionTable,
     // TodoList,
     // BoxCard
@@ -529,6 +532,7 @@ export default {
     }
   },
   computed: {
+    // name、value对应
     transformArrPieChart() {
       return arr => {
         const temp = []
@@ -544,23 +548,95 @@ export default {
         return temp
       }
     },
-    transformArrBarChart() {
+    transformArrPieChart2() {
       return arr => {
         const temp = []
         if (arr) {
           arr.forEach(ele => {
-            // null => '未知'
-            for (var i in ele) {
-              if (ele[i] === null) {
-                ele.splice(i, 1, '未知项')
-              }
-            }
+            temp.push({
+              name: ele.ruleCode || '未知项',
+              value: ele.num
+            })
           })
           return temp
         }
         return temp
       }
     },
+    // 提取X轴，Y轴，按格式处理数据
+    transformArrBarChart() {
+      return arr => {
+        const temp = []
+        const tempX = [] // type
+        const tempY = [] // name
+        if (arr) {
+          arr.forEach(ele => {
+            // null => '未知'
+            for (var i in ele) {
+              if (ele[i] === null) {
+                ele[i] = '未知项'
+              }
+            }
+            if (tempX.indexOf(ele.type) <= -1) {
+              tempX.push(ele.type)
+            }
+            if (tempY.indexOf(ele.name) <= -1) {
+              tempY.push(ele.name)
+            }
+          })
+        }
+        if (tempX) {
+          tempY.forEach(ty => {
+            var tyArrData = []
+            tempX.forEach(tx => {
+              const k = arr.filter(item => {
+                return (item.type === tx && item.name === ty)
+              })
+              if (k.length > 0) {
+                tyArrData.push(k[0].num)
+              } else {
+                tyArrData.push(0)
+              }
+            })
+            temp.push({
+              xArr: tempX,
+              name: ty,
+              type: 'bar',
+              stack: 'vistors',
+              barWidth: '60%',
+              data: tyArrData
+            })
+          })
+          return temp
+        }
+      }
+    },
+    transformArrBarChart2() {
+      return arr => {
+        const temp = {}
+        const tempX = []
+        const tempY = []
+        const tempZ = []
+        if (arr) {
+          arr.forEach(ele => {
+            // null => '未知'
+            for (var i in ele) {
+              if (ele[i] === null) {
+                ele[i] = '未知项'
+              }
+            }
+            tempX.push(ele.date)
+            tempY.push(ele.name)
+            tempZ.push(ele.num)
+          })
+          temp.failData = []
+          temp.successData = tempZ
+          temp.dayList = tempX
+          temp.projName = tempY
+          return temp
+        }
+      }
+    }
   },
   created() {
     this.chartInfo()

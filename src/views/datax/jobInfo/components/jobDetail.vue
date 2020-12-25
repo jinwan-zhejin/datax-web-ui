@@ -10,7 +10,7 @@
         <i class="el-icon-video-play" />
         <span>执行一次</span>
       </div>
-      <div class="header_action" @click="handlerViewResult(temp)">
+      <div v-if="jobType === 'DQCJOB'" class="header_action" @click="handlerViewResult(temp)">
         <i class="el-icon-search" />
         <span>查看结果</span>
       </div>
