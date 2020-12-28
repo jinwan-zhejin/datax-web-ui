@@ -10,10 +10,9 @@
           <span>项目</span>
         </div>
         <el-row :gutter="20">
-          
           <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push({ name: 'jobProject' })">
                 <span>项目总数</span>
                 <el-tooltip class="item" effect="dark" content="所用项目总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -71,7 +70,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="10" :lg="7" :xl="7">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务分布统计</span>
@@ -85,7 +84,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="14" :lg="7" :xl="7">
+          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务类型分布</span>
@@ -99,7 +98,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="10" :xl="10">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务运行状态分布</span>
@@ -136,9 +135,10 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(KPI.connectDataSource, KPI.itemDataSource)"
                   :width="100"
                   type="dashboard"
-                  :percentage="parseInt((KPI.connectDataSource * 100 / KPI.itemDataSource).toFixed(0))"
+                  :percentage="toPercentNum(KPI.connectDataSource, KPI.itemDataSource)"
                 />
               </el-col>
             </el-card>
@@ -195,10 +195,11 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(successCount, KPI.itemTask)"
                   :width="100"
                   color="#67c23a"
                   type="dashboard"
-                  :percentage="parseInt((successCount * 100 / KPI.itemTask).toFixed(0))"
+                  :percentage="toPercentNum(successCount, KPI.itemTask)"
                 />
               </el-col>
             </el-card>
@@ -218,10 +219,11 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(failCount, KPI.itemTask)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="parseInt((failCount * 100 / KPI.itemTask).toFixed(0))"
+                  :percentage="toPercentNum(failCount, KPI.itemTask)"
                 />
               </el-col>
             </el-card>
@@ -241,17 +243,18 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(runningCount, KPI.itemTask)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="parseInt((runningCount * 100 / KPI.itemTask).toFixed(0))"
+                  :percentage="toPercentNum(runningCount, KPI.itemTask)"
                 />
               </el-col>
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push('/datax/job/jobInfo')">
                 <span>任务类型分布统计</span>
                 <el-tooltip class="item" effect="dark" content="所有项目任务按类别统计数量" placement="top-start">
                   <i class="el-icon-info" />
@@ -301,7 +304,7 @@
         <el-row :gutter="20">
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push({ name: 'general' })">
                 <span>通用规则数</span>
                 <el-tooltip class="item" effect="dark" content="通用规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -316,7 +319,7 @@
           </el-col>
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push({ name: 'dqNotify' })">
                 <span>质量规则数</span>
                 <el-tooltip class="item" effect="dark" content="质量规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -331,7 +334,7 @@
           </el-col>
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push({ name: 'individuation' })">
                 <span>个性化规则数</span>
                 <el-tooltip class="item" effect="dark" content="个性化规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -368,7 +371,7 @@
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
             <el-card shadow="hover">
-              <div slot="header" class="clearfix">
+              <div slot="header" class="clearfix click" @click="$router.push('/data/list')">
                 <span>接口总数</span>
                 <el-tooltip class="item" effect="dark" content="接口列表里的接口总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -396,10 +399,11 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(KPI.passInterface, KPI.interfaceNum)"
                   :width="100"
                   color="#67c23a"
                   type="dashboard"
-                  :percentage="parseInt((KPI.passInterface * 100 / KPI.interfaceNum).toFixed(0))"
+                  :percentage="toPercentNum(KPI.passInterface, KPI.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -419,10 +423,11 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(KPI.approvingInterface, KPI.interfaceNum)"
                   :width="100"
                   color="#e6a23c"
                   type="dashboard"
-                  :percentage="parseInt((KPI.approvingInterface * 100 / KPI.interfaceNum).toFixed(0))"
+                  :percentage="toPercentNum(KPI.approvingInterface, KPI.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -442,10 +447,11 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
+                  v-if="toPercentNum(KPI.rejectInterface, KPI.interfaceNum)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="parseInt((KPI.rejectInterface * 100 / KPI.interfaceNum).toFixed(0))"
+                  :percentage="toPercentNum(KPI.rejectInterface, KPI.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -527,9 +533,9 @@ export default {
     return {
       lineChartData: lineChartData.chartInfo,
       KPI: '',
-      runningCount: '',
-      failCount: '',
-      successCount: '',
+      runningCount: 0,
+      failCount: 0,
+      successCount: 0,
       isLoading: true
     }
   },
@@ -637,6 +643,12 @@ export default {
           temp.projName = tempY
           return temp
         }
+      }
+    },
+    toPercentNum() {
+      // 分子 分母
+      return (nu, de) => {
+        return parseInt((nu * 100 / de).toFixed(0))
       }
     }
   },
@@ -772,7 +784,8 @@ export default {
             }
             .clearfix {
               .el-tooltip {
-                float: right; padding: 3px 0
+                float: right;
+                padding: 3px 0
               }
             }
             .el-col > span {
@@ -787,6 +800,10 @@ export default {
       margin-top: 20px;
     }
   }
+}
+
+.click:hover {
+  cursor: pointer;
 }
 
 @media (max-width:1024px) {

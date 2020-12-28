@@ -77,3 +77,20 @@ export function getInfoById(id) {
     method: 'get'
   })
 }
+
+/**
+ * @description: 删除项目下的成员
+ * @param {object} data
+ *  parameter: {
+ *    id: 0,
+ *    userIds: [1,2,3]
+ *  }
+ * @return {*}
+ */
+export function deleteUserProject(data) {
+  return request({
+    url: `/api/jobProject/deleteUser`,
+    method: 'post',
+    data
+  })
+}

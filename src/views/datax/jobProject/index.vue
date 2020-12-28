@@ -20,7 +20,31 @@
     </div>
 
     <div class="main">
-      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
+      <el-row>
+        <el-col v-for="(item, index) in list" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
+          <project-card :content="item">
+            <div slot="options">
+              <el-row style="margin: 7px 0; font-size: 14px;">
+                <el-col style="text-align: center;">
+                  <el-button type="text" @click="handleShowMember(item)">成员管理</el-button>
+                  <el-divider direction="vertical" />
+                  <el-button type="text" @click="handleUpdate(item)">编辑</el-button>
+                  <el-divider direction="vertical" />
+                  <el-button
+                    v-if="item.status !== 'deleted'"
+                    type="text"
+                    style="color: #fe4646"
+                    @click="handleDelete(item)"
+                  >删除</el-button>
+                  <el-divider direction="vertical" />
+                  <el-button type="text" @click="handleDataSource(item)">数据源管理</el-button>
+                </el-col>
+              </el-row>
+            </div>
+          </project-card>
+        </el-col>
+      </el-row>
+      <!-- <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" :header-cell-style="{ background: '#FAFAFC' }" fit highlight-current-row>
         <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope"><span>{{ scope.$index + 1 }}</span></template>
         </el-table-column>
@@ -33,39 +57,19 @@
         <el-table-column label="所属用户" width="160" align="left">
           <template slot-scope="scope">{{ scope.row.userName }} </template>
         </el-table-column>
-        <el-table-column label="用户" width="130" align="left">
-          <template slot-scope="scope">
-            <span v-for="(item, index) in scope.row.userIds" :key="index">
-              {{ index === 0 ? '' : ', ' }}{{ getNameById(item) }}
-            </span>
-          </template>
-        </el-table-column>
         <el-table-column label="创建时间" width="160" align="left">
           <template slot-scope="scope">{{ scope.row.createTime }}</template>
         </el-table-column>
         <el-table-column label="操作" align="center" width=" 230" class-name="small-padding fixed-width">
           <template slot-scope="{ row }">
             <a style="color: #3d5fff; margin: 0px 6px" @click="handleUpdate(row)">编辑</a>
-            <span
-              style="                width: 1px;
-                height: 12px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
-            />
+            <el-divider direction="vertical" />
             <a v-if="row.status !== 'deleted'" style="color: #fe4646; margin: 0px 6px" @click="handleDelete(row)">删除</a>
-            <span
-              style="
-                width: 1px;
-                height: 12px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
-            />
+            <el-divider direction="vertical" />
             <a style="color: #3d5fff; margin: 0px 6px" @click="handleDataSource(row)">数据源管理</a>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
       <pagination v-show="total > 0" :total="total" style="float: right" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" layout="total, prev, pager, next, sizes" @pagination="fetchData" />
     </div>
     <!-- 添加/编辑 -->
@@ -117,6 +121,8 @@
         <el-button type="goon" size="small" @click="dialogDataSource = false">完 成</el-button>
       </span>
     </el-dialog>
+    <!-- 成员 -->
+    <member :show="memberShow" :project-id="temp.id" @close="memberShow=false" />
   </div>
 </template>
 
@@ -126,12 +132,16 @@ import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination';
 // import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import { translaterMaster } from '@/utils/dictionary'
-import { getAllUser } from '@/api/datax-user'
+import { getAllUser, getAllUserProject } from '@/api/datax-user'
+import ProjectCard from './components/projectCard'
+import Member from './components/member'
 
 export default {
   name: 'JobProject',
   components: {
-    Pagination
+    Pagination,
+    ProjectCard,
+    Member
   },
   directives: {
     waves
@@ -191,7 +201,8 @@ export default {
         userIds: []
       },
       visible: true,
-      users: [] // 用户列表
+      users: [], // 用户列表
+      memberShow: false
     };
   },
   computed: {
@@ -199,7 +210,7 @@ export default {
     getNameById() {
       return id => {
         const temp = this.users.filter(item => item.id === id)
-        return temp.username
+        return temp[0]?.username
       }
     }
   },
@@ -323,6 +334,10 @@ export default {
           })
         })
       })
+    },
+    handleShowMember(item) {
+      this.temp = item
+      this.memberShow = true
     }
   }
 };

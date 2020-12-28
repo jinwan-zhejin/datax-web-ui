@@ -75,8 +75,8 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions(arr) {
-      this.chart.setOption({
+    setOptions(arr = []) {
+      const option = {
         tooltip: {
           trigger: 'item',
           // formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -95,12 +95,15 @@ export default {
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: this.chartData,
+            data: arr,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }
         ]
-      })
+      }
+      if (this.chart) {
+        this.chart.setOption(option)
+      }
     }
   }
 }

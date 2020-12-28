@@ -83,13 +83,13 @@ export const constantRoutes = [
         component: () => import('@/views/dashboard/admin/index'),
         name: 'Dashboard',
         meta: { title: '运行报表', icon: 'dashboard', affix: true }
-      },
-      {
-        path: 'dataUsage',
-        component: () => import('@/views/dashboard/admin/index'),
-        name: 'dataUsage',
-        meta: { title: '数据访问量统计', icon: 'fenxi_1', affix: true }
       }
+      // {
+      //   path: 'dataUsage',
+      //   component: () => import('@/views/dashboard/admin/index'),
+      //   name: 'dataUsage',
+      //   meta: { title: '数据访问量统计', icon: 'fenxi_1', affix: true }
+      // }
     ]
   }
 ]
