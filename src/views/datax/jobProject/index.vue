@@ -33,6 +33,13 @@
         <el-table-column label="所属用户" width="160" align="left">
           <template slot-scope="scope">{{ scope.row.userName }} </template>
         </el-table-column>
+        <el-table-column label="用户" width="130" align="left">
+          <template slot-scope="scope">
+            <span v-for="(item, index) in scope.row.userIds" :key="index">
+              {{ index === 0 ? '' : ', ' }}{{ getNameById(item) }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" width="160" align="left">
           <template slot-scope="scope">{{ scope.row.createTime }}</template>
         </el-table-column>
@@ -172,7 +179,7 @@ export default {
           trigger: 'blur'
         }],
         userIds: [{
-          required: true,
+          required: false,
           message: translaterMaster('this is require'),
           trigger: 'change'
         }]
@@ -186,6 +193,15 @@ export default {
       visible: true,
       users: [] // 用户列表
     };
+  },
+  computed: {
+    // 在用户列表通过id找username
+    getNameById() {
+      return id => {
+        const temp = this.users.filter(item => item.id === id)
+        return temp.username
+      }
+    }
   },
   created() {
     getAllUser().then(response => {
@@ -241,8 +257,12 @@ export default {
       });
     },
     handleUpdate(row) {
-      console.log(row)
-      this.temp = Object.assign({}, row); // copy obj
+      jobProjectApi.getInfoById(row.id).then(response => {
+        // console.log(response);
+        this.temp = Object.assign({}, response)
+      })
+      // console.log(row)
+      // this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -260,14 +280,20 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           jobProjectApi.updated(tempData).then(() => {
-            this.fetchData();
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: '成功',
-              message: '编辑成功',
-              type: 'success',
-              duration: 2000
-            });
+            jobProjectApi.addUser({
+              id: this.temp.id,
+              userIds: this.temp.userIds
+            }).then(response => {
+              console.log(response);
+              this.fetchData();
+              this.dialogFormVisible = false;
+              this.$notify({
+                title: '成功',
+                message: '编辑成功',
+                type: 'success',
+                duration: 2000
+              });
+            })
           });
         }
       });
