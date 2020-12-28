@@ -7,142 +7,10 @@
     <div v-loading="isLoading" class="statistics">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>任务</span>
-        </div>
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>成功</span>
-                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col :span="12">
-                <span>
-                  <count-to :start-val="0" :end-val="successCount" :duration="3200" class="card-panel-num" />
-                </span>
-              </el-col>
-              <el-col :span="12">
-                <el-progress
-                  :width="100"
-                  color="#67c23a"
-                  type="dashboard"
-                  :percentage="parseInt((successCount * 100 / KPI.itemTask).toFixed(0))"
-                />
-              </el-col>
-            </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>失败</span>
-                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col :span="12">
-                <span>
-                  <count-to :start-val="0" :end-val="failCount" :duration="3200" class="card-panel-num" />
-                </span>
-              </el-col>
-              <el-col :span="12">
-                <el-progress
-                  :width="100"
-                  color="#f56c6c"
-                  type="dashboard"
-                  :percentage="parseInt((failCount * 100 / KPI.itemTask).toFixed(0))"
-                />
-              </el-col>
-            </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>正在执行</span>
-                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col :span="12">
-                <span>
-                  <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
-                </span>
-              </el-col>
-              <el-col :span="12">
-                <el-progress
-                  :width="100"
-                  color="#f56c6c"
-                  type="dashboard"
-                  :percentage="parseInt((runningCount * 100 / KPI.itemTask).toFixed(0))"
-                />
-              </el-col>
-            </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>任务类型分布统计</span>
-                <el-tooltip class="item" effect="dark" content="所有项目任务按类别统计数量" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col>
-                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(KPI.taskTypeDistribution)" />
-              </el-col>
-            </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>任务统计分布(按照执行器)</span>
-                <el-tooltip class="item" effect="dark" content="任务按照执行器统计分布" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col>
-                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(KPI.taskExecutorDistribution)" />
-              </el-col>
-            </el-card>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>任务结果统计</span>
-                <el-tooltip class="item" effect="dark" content="成功失败统计" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col>
-                <line-chart :chart-data="lineChartData" />
-              </el-col>
-            </el-card>
-            <!-- {{ lineChartData }} -->
-          </el-col>
-        </el-row>
-      </el-card>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
           <span>项目</span>
         </div>
         <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix">
-                <span>项目数据源</span>
-                <el-tooltip class="item" effect="dark" content="所有项目数据源总数" placement="top-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </div>
-              <el-col>
-                <span>
-                  <count-to :start-val="0" :end-val="KPI.itemDataSource" :duration="3200" class="card-panel-num" />
-                </span>
-              </el-col>
-            </el-card>
-          </el-col>
+          
           <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
@@ -154,6 +22,21 @@
               <el-col>
                 <span>
                   <count-to :start-val="0" :end-val="KPI.item" :duration="3200" class="card-panel-num" />
+                </span>
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>项目数据源</span>
+                <el-tooltip class="item" effect="dark" content="所有项目数据源总数" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col>
+                <span>
+                  <count-to :start-val="0" :end-val="KPI.itemDataSource" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -292,6 +175,125 @@
           </el-col>
         </el-row>
       </el-card>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span>任务</span>
+        </div>
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>成功</span>
+                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col :span="12">
+                <span>
+                  <count-to :start-val="0" :end-val="successCount" :duration="3200" class="card-panel-num" />
+                </span>
+              </el-col>
+              <el-col :span="12">
+                <el-progress
+                  :width="100"
+                  color="#67c23a"
+                  type="dashboard"
+                  :percentage="parseInt((successCount * 100 / KPI.itemTask).toFixed(0))"
+                />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>失败</span>
+                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col :span="12">
+                <span>
+                  <count-to :start-val="0" :end-val="failCount" :duration="3200" class="card-panel-num" />
+                </span>
+              </el-col>
+              <el-col :span="12">
+                <el-progress
+                  :width="100"
+                  color="#f56c6c"
+                  type="dashboard"
+                  :percentage="parseInt((failCount * 100 / KPI.itemTask).toFixed(0))"
+                />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>正在执行</span>
+                <el-tooltip class="item" effect="dark" content="指标说明" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col :span="12">
+                <span>
+                  <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
+                </span>
+              </el-col>
+              <el-col :span="12">
+                <el-progress
+                  :width="100"
+                  color="#f56c6c"
+                  type="dashboard"
+                  :percentage="parseInt((runningCount * 100 / KPI.itemTask).toFixed(0))"
+                />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>任务类型分布统计</span>
+                <el-tooltip class="item" effect="dark" content="所有项目任务按类别统计数量" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col>
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
+                <pie-chart :chart-data="transformArrPieChart(KPI.taskTypeDistribution)" />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>任务统计分布(按照执行器)</span>
+                <el-tooltip class="item" effect="dark" content="任务按照执行器统计分布" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col>
+                <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
+                <pie-chart :chart-data="transformArrPieChart(KPI.taskExecutorDistribution)" />
+              </el-col>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+            <el-card shadow="hover">
+              <div slot="header" class="clearfix">
+                <span>任务结果统计</span>
+                <el-tooltip class="item" effect="dark" content="成功失败统计" placement="top-start">
+                  <i class="el-icon-info" />
+                </el-tooltip>
+              </div>
+              <el-col>
+                <line-chart :chart-data="lineChartData" />
+              </el-col>
+            </el-card>
+            <!-- {{ lineChartData }} -->
+          </el-col>
+        </el-row>
+      </el-card>
+
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>规则</span>
@@ -758,14 +760,14 @@ export default {
         padding-bottom: 0;
       }
       .clearfix > span {
-        font-size: 28px;
+        font-size: 24px;
       }
       .el-row {
         .el-col {
           .el-card {
             margin: 10px 0;
             .clearfix > span {
-              font-size: 24px;
+              font-size: 16px;
               color: #9298A5;
             }
             .clearfix {
