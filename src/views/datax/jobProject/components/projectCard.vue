@@ -2,15 +2,19 @@
  * @Date: 2020-12-28 15:04:59
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 10:55:12
+ * @LastEditTime: 2020-12-29 14:55:30
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\projectCard.vue
  * @Description: 项目卡片
 -->
 <template>
   <el-card shadow="never" class="box-card" :body-style="{ padding: '0px' }">
     <div slot="header" class="clearfix">
-      <span class="title">项目: </span>
-      <span>{{ content.name }}</span>
+      <!-- <span class="title">项目: </span> -->
+      <el-avatar style="float: left;">{{ content.name[0].toUpperCase() }}</el-avatar>
+      <div style="height: 40px; float: left; line-height: 40px; font-size: 20px; margin-left: 10px;">{{ content.name }}</div>
+      <div style="line-height: 40px; float: right;">
+        <slot name="top" />
+      </div>
     </div>
     <el-form class="forms">
       <el-form-item label="项目描述" :label-width="labelWidth" :label-position="'left'">
@@ -28,7 +32,7 @@
 </template>
 
 <script>
-import { getAllUser, getAllUserProject } from '@/api/datax-user'
+import { getAllUser } from '@/api/datax-user'
 
 export default {
   name: 'ProjectCard',

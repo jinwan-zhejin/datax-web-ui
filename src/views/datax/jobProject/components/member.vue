@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 17:11:49
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 11:50:02
+ * @LastEditTime: 2020-12-29 15:06:02
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\member.vue
  * @Description: 成员管理
 -->
@@ -110,12 +110,10 @@ export default {
     }
   },
   created() {
-    console.log(222);
     this.getUserList()
     this.getUserListProject()
   },
   mounted() {
-    console.log(333);
   },
   methods: {
     /**
@@ -235,7 +233,7 @@ export default {
 }
 
 >>> .el-dialog__footer {
-  border-top: 1px solid #e6ebf5;
+  border-top: 1px solid #f3f3f3;
 }
 
 .el-table {

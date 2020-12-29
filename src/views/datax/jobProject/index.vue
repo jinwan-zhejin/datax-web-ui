@@ -23,23 +23,59 @@
       <el-row>
         <el-col v-for="(item, index) in list" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
           <project-card :content="item">
-            <div slot="options">
+            <!-- <div slot="options">
               <el-row style="margin: 7px 0; font-size: 14px;">
                 <el-col style="text-align: center;">
-                  <el-button type="text" @click="handleShowMember(item)">成员管理</el-button>
+                  <el-tooltip placement="top" content="编辑">
+                    <el-button type="text" icon="el-icon-edit" @click="handleUpdate(item)" />
+                  </el-tooltip>
                   <el-divider direction="vertical" />
-                  <el-button type="text" @click="handleUpdate(item)">编辑</el-button>
+                  <el-tooltip placement="top" content="删除">
+                    <el-button
+                      v-if="item.status !== 'deleted'"
+                      type="text"
+                      icon="el-icon-delete"
+                      style="color: #fe4646"
+                      @click="handleDelete(item)"
+                    />
+                  </el-tooltip>
                   <el-divider direction="vertical" />
-                  <el-button
-                    v-if="item.status !== 'deleted'"
-                    type="text"
-                    style="color: #fe4646"
-                    @click="handleDelete(item)"
-                  >删除</el-button>
+                  <el-tooltip placement="top" content="成员管理">
+                    <el-button type="text" icon="el-icon-user" @click="handleShowMember(item)" />
+                  </el-tooltip>
                   <el-divider direction="vertical" />
-                  <el-button type="text" @click="handleDataSource(item)">数据源管理</el-button>
+                  <el-tooltip placement="top" content="数据源管理">
+                    <el-button type="text" icon="el-icon-coin" @click="handleDataSource(item)" />
+                  </el-tooltip>
                 </el-col>
               </el-row>
+            </div> -->
+            <div slot="top">
+              <el-tooltip placement="left" content="操作" @click.native.stop>
+                <el-dropdown trigger="click" @click.native.stop>
+                  <span class="el-dropdown-link">
+                    <el-button type="text" icon="el-icon-more" />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native.stop="handleUpdate(item)">
+                      <el-button type="text" icon="el-icon-edit" />编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item v-if="item.status !== 'deleted'" @click.native.stop="handleDelete(item)">
+                      <el-button
+                        type="text"
+                        icon="el-icon-delete"
+                        style="color: #fe4646"
+                      />删除
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native.stop="handleShowMember(item)">
+                      <el-button type="text" icon="el-icon-user" />成员管理
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native.stop="handleDataSource(item)">
+                      <el-button type="text" icon="el-icon-coin" />数据源管理
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-tooltip>
             </div>
           </project-card>
         </el-col>
@@ -81,11 +117,6 @@
         </el-form-item>
         <el-form-item label="项目描述" prop="description">
           <el-input v-model="temp.description" placeholder="项目描述" style="width: 99%" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus === 'update'" label="用户" prop="userIds">
-          <el-select v-model="temp.userIds" multiple style="width: 100%;">
-            <el-option v-for="(item, index) in users" :key="index" :label="item.username" :value="item.id" />
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -187,11 +218,6 @@ export default {
           required: true,
           message: translaterMaster('this is require'),
           trigger: 'blur'
-        }],
-        userIds: [{
-          required: false,
-          message: translaterMaster('this is require'),
-          trigger: 'change'
         }]
       },
       temp: {
@@ -291,20 +317,14 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           jobProjectApi.updated(tempData).then(() => {
-            jobProjectApi.addUser({
-              id: this.temp.id,
-              userIds: this.temp.userIds
-            }).then(response => {
-              console.log(response);
-              this.fetchData();
-              this.dialogFormVisible = false;
-              this.$notify({
-                title: '成功',
-                message: '编辑成功',
-                type: 'success',
-                duration: 2000
-              });
-            })
+            this.fetchData();
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: '成功',
+              message: '编辑成功',
+              type: 'success',
+              duration: 2000
+            });
           });
         }
       });
