@@ -2,16 +2,16 @@
  * @Date: 2020-12-28 15:04:59
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 14:55:30
+ * @LastEditTime: 2020-12-29 17:44:05
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\projectCard.vue
  * @Description: 项目卡片
 -->
 <template>
-  <el-card shadow="never" class="box-card" :body-style="{ padding: '0px' }">
+  <el-card shadow="hover" class="box-card" :body-style="{ padding: '0px' }">
     <div slot="header" class="clearfix">
       <!-- <span class="title">项目: </span> -->
       <el-avatar style="float: left;">{{ content.name[0].toUpperCase() }}</el-avatar>
-      <div style="height: 40px; float: left; line-height: 40px; font-size: 20px; margin-left: 10px;">{{ content.name }}</div>
+      <div style="height: 40px; float: left; line-height: 40px; font-size: 18px; font-weight: bold; margin-left: 10px; color: #3d5eff;">{{ content.name }}</div>
       <div style="line-height: 40px; float: right;">
         <slot name="top" />
       </div>
@@ -66,8 +66,8 @@ export default {
 
 <style lang="scss" scoped>
 .box-card {
-  z-index: 2020;
-  border-radius: 0 !important;
+  // z-index: 2020;
+  // border-radius: 0 !important;
   >>> .el-card__header {
     border: 0 !important;
   }
@@ -78,11 +78,11 @@ export default {
     margin: 7px;
   }
 }
-.box-card:hover {
-  position: relative;
-  z-index: 2021;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1)
-}
+// .box-card:hover {
+//   position: relative;
+//   z-index: 2021;
+//   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1)
+// }
 .forms {
   .el-form-item {
     margin-bottom: 0px !important;

@@ -2,17 +2,19 @@
  * @Date: 2020-12-28 17:11:49
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 15:06:02
+ * @LastEditTime: 2020-12-29 17:56:05
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\member.vue
  * @Description: 成员管理
 -->
 <template>
   <el-dialog :visible="show" title="成员管理" @close="$emit('close')">
-    <el-row style="margin-bottom: 15px;">
-      <el-col style="text-align: right;">
-        <el-input v-model="username" style="width: 200px;" placeholder="成员名搜索" clearable>
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" style="margin-bottom: 15px;">
+        <el-input v-model="username" style="width: 100%;" placeholder="成员名搜索" clearable>
           <el-button slot="append" @click="getUserListProject">搜索</el-button>
         </el-input>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" style="margin-bottom: 15px;">
         <el-button :disabled="!usersData" type="primary" size="small" icon="el-icon-s-custom" @click="addMember = true">管理成员组成</el-button>
       </el-col>
     </el-row>

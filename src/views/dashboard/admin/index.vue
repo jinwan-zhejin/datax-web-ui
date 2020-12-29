@@ -11,8 +11,8 @@
         </div>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push({ name: 'jobProject' })">
+            <el-card shadow="hover" class="click" @click.native="$router.push({ name: 'jobProject' })">
+              <div slot="header" class="clearfix">
                 <span>项目总数</span>
                 <el-tooltip class="item" effect="dark" content="所用项目总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -253,8 +253,8 @@
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push('/datax/job/jobInfo')">
+            <el-card shadow="hover" class="click" @click.native="$router.push('/datax/job/jobInfo')">
+              <div slot="header" class="clearfix">
                 <span>任务类型分布统计</span>
                 <el-tooltip class="item" effect="dark" content="所有项目任务按类别统计数量" placement="top-start">
                   <i class="el-icon-info" />
@@ -303,8 +303,8 @@
         </div>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push({ name: 'general' })">
+            <el-card shadow="hover" class="click" @click.native="$router.push({ name: 'general' })">
+              <div slot="header" class="clearfix">
                 <span>通用规则数</span>
                 <el-tooltip class="item" effect="dark" content="通用规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -318,8 +318,8 @@
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push({ name: 'dqNotify' })">
+            <el-card shadow="hover" class="click" @click.native="$router.push({ name: 'dqNotify' })">
+              <div slot="header" class="clearfix">
                 <span>质量规则数</span>
                 <el-tooltip class="item" effect="dark" content="质量规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -333,8 +333,8 @@
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push({ name: 'individuation' })">
+            <el-card shadow="hover" class="click" @click.native="$router.push({ name: 'individuation' })">
+              <div slot="header" class="clearfix">
                 <span>个性化规则数</span>
                 <el-tooltip class="item" effect="dark" content="个性化规则总数" placement="top-start">
                   <i class="el-icon-info" />
@@ -370,8 +370,8 @@
         </div>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-            <el-card shadow="hover">
-              <div slot="header" class="clearfix click" @click="$router.push('/data/list')">
+            <el-card shadow="hover" class="click" @click.native="$router.push('/data/list')">
+              <div slot="header" class="clearfix">
                 <span>接口总数</span>
                 <el-tooltip class="item" effect="dark" content="接口列表里的接口总数" placement="top-start">
                   <i class="el-icon-info" />
