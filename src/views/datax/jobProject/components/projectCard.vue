@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 15:04:59
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 17:44:05
+ * @LastEditTime: 2020-12-29 18:37:47
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\projectCard.vue
  * @Description: 项目卡片
 -->
@@ -21,7 +21,7 @@
         <span class="texts">{{ content.description }}</span>
       </el-form-item>
       <el-form-item label="所属用户" :label-width="labelWidth" :label-position="'left'">
-        <span class="texts">{{ getNameById(content.userId) }}</span>
+        <span class="texts">{{ content.userName }}</span>
       </el-form-item>
     </el-form>
     <slot name="options" />
@@ -32,13 +32,15 @@
 </template>
 
 <script>
-import { getAllUser } from '@/api/datax-user'
-
 export default {
   name: 'ProjectCard',
   props: {
     content: {
       type: Object,
+      required: true
+    },
+    allUsers: {
+      type: Array,
       required: true
     }
   },
@@ -48,18 +50,8 @@ export default {
       users: []
     }
   },
-  computed: {
-    getNameById() {
-      return id => {
-        const temp = this.users.filter(item => item.id === id)
-        return temp[0]?.username
-      }
-    }
-  },
   created() {
-    getAllUser().then(response => {
-      this.users = response
-    })
+    this.users = this.allUsers
   }
 }
 </script>

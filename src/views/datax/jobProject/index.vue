@@ -52,7 +52,7 @@
           :xl="6"
           style="margin-bottom: 20px;"
         >
-          <project-card :content="item" style="cursor: pointer;">
+          <project-card :all-users="users" :content="item" style="cursor: pointer;">
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>
                 <el-dropdown trigger="click" @click.native.stop>
@@ -238,9 +238,10 @@ import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination';
 // import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import { translaterMaster } from '@/utils/dictionary';
-import { getAllUser, getAllUserProject } from '@/api/datax-user';
+import { getAllUser } from '@/api/datax-user';
 import ProjectCard from './components/projectCard';
-import Member from './components/member';
+import Member from './components/member'
+import { objList } from '@/utils/sortArr'
 
 export default {
   name: 'JobProject',
@@ -333,9 +334,7 @@ export default {
         const { total } = response;
         this.total = total;
         this.list = records;
-        this.list = this.list.sort((a, b) => {
-          return (a.name > b.name) - (a.name < b.name)
-        })
+        this.list = objList(this.list, 'name')
         this.listLoading = false;
       });
     },
