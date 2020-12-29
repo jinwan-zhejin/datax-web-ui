@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 17:11:49
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-28 18:57:42
+ * @LastEditTime: 2020-12-29 11:50:02
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\member.vue
  * @Description: 成员管理
 -->
@@ -11,25 +11,24 @@
     <el-row style="margin-bottom: 15px;">
       <el-col style="text-align: right;">
         <el-input v-model="username" style="width: 200px;" placeholder="成员名搜索" clearable>
-          <el-button slot="append" icon="el-icon-search" @click="getUserListProject" />
+          <el-button slot="append" @click="getUserListProject">搜索</el-button>
         </el-input>
-        <el-button type="primary" size="small" icon="el-icon-plus">添加新成员</el-button>
+        <el-button :disabled="!usersData" type="primary" size="small" icon="el-icon-s-custom" @click="addMember = true">管理成员组成</el-button>
       </el-col>
     </el-row>
-    <el-table :data="projectUsers" :header-cell-style="{ background: '#FAFAFC' }" style="border: 1px solid #dfe6ec; border-radius: 4px;">
-      <el-table-column label="id" prop="id" />
-      <el-table-column label="用户名" prop="username" />
-      <el-table-column label="角色">
+    <el-table
+      :data="projectUsers"
+      :header-cell-style="{ background: '#FAFAFC' }"
+      style="border: 1px solid #dfe6ec; border-radius: 4px;"
+      height="calc(100vh - 452px)"
+    >
+      <el-table-column label="id" prop="id" align="center" />
+      <el-table-column label="用户名" prop="username" align="center" />
+      <el-table-column label="角色" align="center">
         <template slot-scope="scope">
           <span v-for="(item, index) in scope.row.roleName" :key="index">
             {{ index === 0 ? '' : ', ' }}{{ item }}
           </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" style="color: #fe4646;" @click="onDelMember(scope.row)">移除</el-button>
-          <!-- <el-divider direction="vertical" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -43,8 +42,22 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog :visible.sync="memberManage" title="添加成员" append-to-body>
-      <el-transfer v-model="value" :data="data"></el-transfer>
+    <el-dialog :visible.sync="addMember" title="管理成员组成" append-to-body width="558px">
+      <el-transfer
+        v-model="selectedUsers"
+        :data="usersData"
+        :titles="['可选成员','已选成员']"
+        filter-placeholder="请输入成员名"
+        filterable
+      >
+        <el-button slot="left-footer" class="transfer-footer" type="text" @click="handleSelectAll">添加所有成员</el-button>
+        <el-button slot="right-footer" class="transfer-footer" type="text" @click="handleClear">清空成员列表</el-button>
+      </el-transfer>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" plain :disabled="compareTwoArr" @click="reduceList">还 原</el-button>
+        <el-button size="small" @click="onCancel">取 消</el-button>
+        <el-button v-loading="isLoading" size="small" type="primary" @click="onManageMember">确 定</el-button>
+      </span>
     </el-dialog>
   </el-dialog>
 </template>
@@ -67,15 +80,28 @@ export default {
   },
   data() {
     return {
-      // 成员列表
-      users: [],
-      // 项目成员列表
+      /** 所有成员列表,用于穿梭框 */
+      usersData: [],
+      /** 已选择成员 */
+      selectedUsers: [],
+      selectedUsersBackup: [],
+      /** 项目成员列表 */
       projectUsers: [],
       username: '',
       current: 1,
       size: 10,
       total: 0,
-      memberManage: true
+      /** 添加成员 */
+      addMember: false,
+      /** 移除成员 */
+      delMember: false,
+      isLoading: false
+    }
+  },
+  computed: {
+    compareTwoArr() {
+      return this.selectedUsers.every(item => this.selectedUsersBackup.includes(item)) &&
+      this.selectedUsers.length === this.selectedUsersBackup.length
     }
   },
   watch: {
@@ -84,15 +110,32 @@ export default {
     }
   },
   created() {
+    console.log(222);
     this.getUserList()
     this.getUserListProject()
   },
+  mounted() {
+    console.log(333);
+  },
   methods: {
+    /**
+     * @description: 获取所有成员
+     */
     getUserList() {
       getAllUser().then(response => {
-        this.users = response
+        this.usersData = []
+        response.forEach((ele, index) => {
+          this.usersData.push({
+            label: ele.username,
+            key: ele.id,
+            disabled: false
+          })
+        })
       })
     },
+    /**
+     * @description: 获取该项目所包含的成员
+     */
     getUserListProject() {
       getAllUserProject({
         projectId: this.projectId,
@@ -100,12 +143,17 @@ export default {
         size: this.size,
         username: this.username
       }).then(response => {
-        console.log(response);
         this.projectUsers = response.records
+        this.selectedUsers = []
+        this.projectUsers.forEach(ele => {
+          this.selectedUsers.push(ele.id)
+        })
+        this.selectedUsersBackup = this.selectedUsers
         this.total = response.total
       }).catch(error => {
         console.log(error)
         this.projectUsers = []
+        this.selectedUsers = []
         this.total = 0
       })
     },
@@ -120,13 +168,80 @@ export default {
       console.log(`当前 ${this.current} `)
       this.getUserListProject()
     },
-    onDelMember(row) {
-
+    /**
+     * @description: 管理成员变更
+     */
+    onManageMember() {
+      this.isLoading = true
+      jobProjectApi.addUser({
+        id: this.projectId,
+        userIds: this.selectedUsers
+      }).then(response => {
+        this.isLoading = false
+        this.addMember = false
+        this.getUserListProject()
+        this.$notify({
+          title: '成功',
+          message: response,
+          type: 'success'
+        })
+      }).catch(error => {
+        console.log(error)
+        this.isLoading = false
+        this.$notify({
+          title: '错误',
+          message: '成员变更失败',
+          type: 'error'
+        })
+      })
+    },
+    onCancel() {
+      this.addMember = false
+      setTimeout(() => {
+        this.reduceList()
+      }, 500)
+    },
+    reduceList() {
+      this.selectedUsers = []
+      this.projectUsers.forEach(ele => {
+        this.selectedUsers.push(ele.id)
+      })
+    },
+    handleClear() {
+      this.selectedUsers = []
+    },
+    handleSelectAll() {
+      this.selectedUsers = []
+      this.usersData.forEach(ele => {
+        this.selectedUsers.push(ele.key)
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.transfer-footer {
+  margin-left: 20px;
+  padding: 6px 5px;
+}
+.el-transfer {
+  >>> .el-transfer__buttons {
+    width: 117px !important;
+    .el-button {
+      margin: 5px 0;
+    }
+  }
+}
 
+>>> .el-dialog__footer {
+  border-top: 1px solid #e6ebf5;
+}
+
+.el-table {
+  >>> .gutter {
+    background: #fafafc;
+    border-bottom: 1px solid #dfe6ec;
+  }
+}
 </style>

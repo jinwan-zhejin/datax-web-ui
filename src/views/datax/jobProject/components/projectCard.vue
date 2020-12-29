@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 15:04:59
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-28 17:47:15
+ * @LastEditTime: 2020-12-29 10:55:12
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\projectCard.vue
  * @Description: 项目卡片
 -->
