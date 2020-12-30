@@ -1,35 +1,80 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card ">
         <div class="text item">
           <div class="left">日志管理</div>
-          <div class="right">
-            <el-input v-model="listQuery.jobId" class="filter-item" placeholder="输入任务ID" style="width: 200px" clearable />
-            <el-select v-model="listQuery.jobGroup" class="filter-item" placeholder="执行器" style="width: 200px">
-              <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-            </el-select>
-            <el-select v-model="listQuery.logStatus" class="filter-item" placeholder="类型" style="width: 200px">
-              <el-option v-for="item in logStatusList" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-            <el-button class="filter-item" type="goon" size="small" icon="el-icon-search" @click="fetchData">
-              搜索
-            </el-button>
-            <el-button class="filter-item" type="goon" size="small" icon="el-icon-delete" @click="handlerDelete">
-              清除记录
-            </el-button>
-          </div>
+          <el-col class="left-description">
+            管理任务执行打印的日志。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
+      <el-form
+        class="search-bar"
+        label-position="right"
+        label-width="auto"
+        :inline="true"
+      >
+        <el-form-item label="任务ID：">
+          <el-input
+            v-model="listQuery.jobId"
+            clearable
+            size="small"
+            placeholder="任务ID"
+          />
+        </el-form-item>
+        <el-form-item label="执行器：">
+          <el-select v-model="listQuery.jobGroup" placeholder="执行器">
+            <el-option
+              v-for="item in executorList"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="结果类型：">
+          <el-select v-model="listQuery.logStatus" placeholder="类型">
+            <el-option
+              v-for="item in logStatusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            @click="fetchData"
+          >搜 索</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form
+        class="action-bar"
+        label-position="right"
+        label-width="auto"
+        :inline="true"
+      >
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-delete"
+            @click="handlerDelete"
+          >清除记录</el-button>
+        </el-form-item>
+      </el-form>
       <el-table
         v-loading="listLoading"
         :data="list"
         element-loading-text="Loading"
         fit
         highlight-current-row
-        :header-cell-style="{background:'#fafafc'}"
+        :header-cell-style="{ background: '#fafafc', color: '#666666' }"
       >
         <!-- height="calc(100vh - 385px)" -->
         <el-table-column align="center" label="任务ID" width="80">
@@ -43,18 +88,16 @@
         </el-table-column>
         <el-table-column label="调度结果" align="center" width="100">
           <template slot-scope="scope">
-            <span :style="`color:${scope.row.triggerCode==500?'red':''}`">
-              {{ statusList.find(t => t.value === scope.row.triggerCode).label }}
+            <span :style="`color:${scope.row.triggerCode == 500 ? 'red' : ''}`">
+              {{
+                statusList.find(t => t.value === scope.row.triggerCode).label
+              }}
             </span>
           </template>
         </el-table-column>
         <el-table-column label="调度备注" align="center">
           <template slot-scope="scope">
-            <el-popover
-              placement="bottom"
-              width="400"
-              trigger="click"
-            >
+            <el-popover placement="bottom" width="400" trigger="click">
               <h5 v-html="triggerMsg(scope.row.triggerMsg)" />
               <el-button slot="reference" type="text">查看</el-button>
             </el-popover>
@@ -65,28 +108,31 @@
         </el-table-column>
         <el-table-column label="执行结果" align="center">
           <template slot-scope="scope">
-            <span :style="`color:${scope.row.handleCode==500?'red':''}`">
+            <span :style="`color:${scope.row.handleCode == 500 ? 'red' : ''}`">
               {{ statusList.find(t => t.value === scope.row.handleCode).label }}
             </span>
           </template>
         </el-table-column>
         <el-table-column label="执行备注" align="center">
           <template slot-scope="scope">
-            <el-popover
-              placement="bottom"
-              width="400"
-              trigger="click"
-            >
+            <el-popover placement="bottom" width="400" trigger="click">
               <h5 v-html="handleMsg(scope.row.handleMsg)" />
               <el-button slot="reference" type="text">查看</el-button>
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="300">
-          <template slot-scope="{row}">
-            <el-button v-show="row.executorAddress" type="text" @click="handleViewJobLog(row)">日志查看</el-button>
+          <template slot-scope="{ row }">
+            <el-button
+              v-show="row.executorAddress"
+              type="text"
+              @click="handleViewJobLog(row)"
+            >日志查看</el-button>
             <span
-              v-show="row.executorAddress && (row.handleCode===0 && row.triggerCode===200)"
+              v-show="
+                row.executorAddress &&
+                  (row.handleCode === 0 && row.triggerCode === 200)
+              "
               style="
                 width: 1px;
                 height: 12px;
@@ -95,25 +141,38 @@
                 display: inline-block;
               "
             />
-            <el-button v-show="row.handleCode===0 && row.triggerCode===200" type="text" @click="killRunningJob(row)">
+            <el-button
+              v-show="row.handleCode === 0 && row.triggerCode === 200"
+              type="text"
+              @click="killRunningJob(row)"
+            >
               终止任务
             </el-button>
           </template>
         </el-table-column>
       </el-table>
       <pagination
-        v-show="total>0"
+        v-show="total > 0"
         :total="total"
-        style="float: right"
+        style="float: right; margin: 0;"
         :page.sync="listQuery.current"
         :limit.sync="listQuery.size"
         @pagination="fetchData"
       />
-
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="40%">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="center" label-width="100px">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      width="40%"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="center"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="14" :offset="5">
             <el-form-item label="执行器">
@@ -131,8 +190,17 @@
         <el-row>
           <el-col :span="14" :offset="5">
             <el-form-item label="清除数据">
-              <el-select v-model="temp.deleteType" placeholder="请选择清除数据时段" style="width: 100%">
-                <el-option v-for="item in deleteTypeList" :key="item.value" :label="item.label" :value="item.value" />
+              <el-select
+                v-model="temp.deleteType"
+                placeholder="请选择清除数据时段"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in deleteTypeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -164,11 +232,11 @@
 </template>
 
 <script>
-import * as log from '@/api/datax-job-log'
-import * as job from '@/api/datax-job-info'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { translaterMaster } from '@/utils/dictionary'
+import * as log from '@/api/datax-job-log';
+import * as job from '@/api/datax-job-info';
+import waves from '@/directive/waves'; // waves directive
+import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
+import { translaterMaster } from '@/utils/dictionary';
 
 export default {
   name: 'JobLog',
@@ -180,8 +248,8 @@ export default {
         published: 'success',
         draft: 'gray',
         deleted: 'danger'
-      }
-      return statusMap[status]
+      };
+      return statusMap[status];
     }
   },
   data() {
@@ -248,7 +316,7 @@ export default {
       logShow: false,
       // 日志显示加载中效果
       logLoading: false
-    }
+    };
   },
   computed: {
     /**
@@ -256,18 +324,25 @@ export default {
      */
     triggerMsg() {
       return resource => {
-        const items = resource.split('<br>')
+        const items = resource.split('<br>');
         items.forEach(element => {
           if (element.indexOf('</span>') > -1 || element === '') {
-            return
+            return;
           } else {
-            var temp = element.split('：')
+            var temp = element.split('：');
             // console.log();
-            resource = resource.replace(element, '<span style="color:#999999;">' + translaterMaster(temp[0]) + '</span>：<span style="color:#333333;">' + temp[1] + '</span>')
+            resource = resource.replace(
+              element,
+              '<span style="color:#999999;">' +
+                translaterMaster(temp[0]) +
+                '</span>：<span style="color:#333333;">' +
+                temp[1] +
+                '</span>'
+            );
           }
         });
-        return resource
-      }
+        return resource;
+      };
     },
     /**
      * @description: 执行备注 格式化+翻译
@@ -275,249 +350,259 @@ export default {
     handleMsg() {
       return resource => {
         if (resource === null) {
-          return '无'
+          return '无';
         } else if (resource.indexOf('{') <= -1) {
-          return resource
+          return resource;
         } else {
-          var temp = ''
-          const reg = /^[A-Z]+$/
-          var temp1 = resource.split('{')
-          var temp1Array = temp1[0].split('')
+          var temp = '';
+          const reg = /^[A-Z]+$/;
+          var temp1 = resource.split('{');
+          var temp1Array = temp1[0].split('');
           for (var i = 0; i < temp1Array.length; i++) {
             if (reg.test(temp1Array[i])) {
-              temp1Array[i] = '_' + temp1Array[i]
+              temp1Array[i] = '_' + temp1Array[i];
             }
           }
-          temp1Array = temp1Array.join('')
-          temp += `<span style="color:#666666;font-size:16px;">${translaterMaster(temp1Array)}</span><br>{<br>`
-          var temp2 = temp1[1].substring(0, temp1[1].length - 1)
-          var temp21 = temp2.split(', ')
+          temp1Array = temp1Array.join('');
+          temp += `<span style="color:#666666;font-size:16px;">${translaterMaster(
+            temp1Array
+          )}</span><br>{<br>`;
+          var temp2 = temp1[1].substring(0, temp1[1].length - 1);
+          var temp21 = temp2.split(', ');
           for (i = 0; i < temp21.length; i++) {
-            var temp22 = temp21[i].split('=')[0]
-            var temp2Array = temp22.split('')
+            var temp22 = temp21[i].split('=')[0];
+            var temp2Array = temp22.split('');
             for (var k = 0; k < temp2Array.length; k++) {
               if (reg.test(temp2Array[k])) {
-                temp2Array[k] = '_' + temp2Array[k]
+                temp2Array[k] = '_' + temp2Array[k];
               }
             }
-            temp2Array = temp2Array.join('')
-            temp += `&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999;">${translaterMaster(temp2Array)}：</span><span style="color:#333333;">${temp21[i].split('=')[1]}</span><br>`
+            temp2Array = temp2Array.join('');
+            temp += `&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999;">${translaterMaster(
+              temp2Array
+            )}：</span><span style="color:#333333;">${
+              temp21[i].split('=')[1]
+            }</span><br>`;
           }
-          temp += `}`
+          temp += `}`;
           // console.log(temp);
-          return temp
+          return temp;
         }
-      }
+      };
     }
   },
   created() {
-    this.fetchData()
-    this.getExecutor()
+    this.fetchData();
+    this.getExecutor();
   },
   methods: {
     fetchData() {
-      this.listLoading = true
-      const param = Object.assign({}, this.listQuery)
-      const urlJobId = this.$route.query.jobId
+      this.listLoading = true;
+      const param = Object.assign({}, this.listQuery);
+      const urlJobId = this.$route.query.jobId;
       if (urlJobId > 0 && !param.jobId) {
-        param.jobId = urlJobId
+        param.jobId = urlJobId;
       } else if (!urlJobId && !param.jobId) {
-        param.jobId = 0
+        param.jobId = 0;
       }
       log.getList(param).then(response => {
-        const { content } = response
-        this.total = content.recordsTotal
-        this.list = content.data
+        const { content } = response;
+        this.total = content.recordsTotal;
+        this.list = content.data;
         console.log(this.list);
-        this.listLoading = false
-      })
+        this.listLoading = false;
+      });
     },
     getExecutor() {
       job.getExecutorList().then(response => {
-        const { content } = response
-        this.executorList = content
-        const defaultParam = { id: 0, title: '执行器 - 全部' }
-        this.executorList.unshift(defaultParam)
-        this.listQuery.jobGroup = this.executorList[0].id
-      })
+        const { content } = response;
+        this.executorList = content;
+        const defaultParam = { id: 0, title: '执行器 - 全部' };
+        this.executorList.unshift(defaultParam);
+        this.listQuery.jobGroup = this.executorList[0].id;
+      });
     },
     handlerDelete() {
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.dialogStatus = 'create';
+      this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+        this.$refs['dataForm'].clearValidate();
+      });
     },
     deleteLog() {
-      log.clearLog(this.temp.jobGroup, this.temp.jobId, this.temp.deleteType).then(response => {
-        this.fetchData()
-        this.dialogFormVisible = false
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-      })
+      log
+        .clearLog(this.temp.jobGroup, this.temp.jobId, this.temp.deleteType)
+        .then(response => {
+          this.fetchData();
+          this.dialogFormVisible = false;
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          });
+        });
       // const index = this.list.indexOf(row)
     },
     // 查看日志
     handleViewJobLog(row) {
       // const str = location.href.split('#')[0]
       // window.open(`${str}#/ router的name `)
-      this.dialogVisible = true
+      this.dialogVisible = true;
 
-      this.jobLogQuery.executorAddress = row.executorAddress
-      this.jobLogQuery.id = row.id
-      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime)
+      this.jobLogQuery.executorAddress = row.executorAddress;
+      this.jobLogQuery.id = row.id;
+      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime);
       if (this.logShow === false) {
-        this.logShow = true
+        this.logShow = true;
       }
       // window.open(`#/data/log?executorAddress=${this.jobLogQuery.executorAddress}&triggerTime=${this.jobLogQuery.triggerTime}&id=${this.jobLogQuery.id}&fromLineNum=${this.jobLogQuery.fromLineNum}`)
-      this.loadLog()
+      this.loadLog();
     },
     // 获取日志
     loadLog() {
-      this.logLoading = true
+      this.logLoading = true;
       if (this.$store.state.taskAdmin.logViewType === 0) {
-        log.viewJobLog(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
-          this.jobLogQuery.fromLineNum).then(response => {
-          // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-          if (response.content.logContent === '\n') {
-            // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
-            // 重新加载
-            // setTimeout(() => {
-            //   this.loadLog()
-            // }, 2000);
-          } else {
-            this.logContent = response.content.logContent
-          }
-          this.logLoading = false
-        })
+        log
+          .viewJobLog(
+            this.jobLogQuery.executorAddress,
+            this.jobLogQuery.triggerTime,
+            this.jobLogQuery.id,
+            this.jobLogQuery.fromLineNum
+          )
+          .then(response => {
+            // 判断是否是 '\n'，如果是表示显示完成，不重新加载
+            if (response.content.logContent === '\n') {
+              // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
+              // 重新加载
+              // setTimeout(() => {
+              //   this.loadLog()
+              // }, 2000);
+            } else {
+              this.logContent = response.content.logContent;
+            }
+            this.logLoading = false;
+          });
       } else if (this.$store.state.taskAdmin.logViewType === 1) {
-        log.viewJobLogVirtual(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
-          this.jobLogQuery.fromLineNum).then(response => {
-          // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-          if (response.content.logContent === '\n') {
-            // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
-            // 重新加载
-            // setTimeout(() => {
-            //   this.loadLog()
-            // }, 2000);
-          } else {
-            this.logContent = response.content.logContent
-          }
-          this.logLoading = false
-        })
+        log
+          .viewJobLogVirtual(
+            this.jobLogQuery.executorAddress,
+            this.jobLogQuery.triggerTime,
+            this.jobLogQuery.id,
+            this.jobLogQuery.fromLineNum
+          )
+          .then(response => {
+            // 判断是否是 '\n'，如果是表示显示完成，不重新加载
+            if (response.content.logContent === '\n') {
+              // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
+              // 重新加载
+              // setTimeout(() => {
+              //   this.loadLog()
+              // }, 2000);
+            } else {
+              this.logContent = response.content.logContent;
+            }
+            this.logLoading = false;
+          });
       }
     },
     killRunningJob(row) {
       log.killJob(row).then(response => {
-        this.fetchData()
-        this.dialogFormVisible = false
+        this.fetchData();
+        this.dialogFormVisible = false;
         this.$notify({
           title: 'Success',
           message: 'Kill Successfully',
           type: 'success',
           duration: 2000
-        })
-      })
+        });
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.app-container {
+  padding: 0;
+  .head-container {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 0px;
+    .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
+      .left {
+        float: left;
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        margin-left: 24px;
+      }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
+      }
+    }
+  }
+  .main {
+    padding: 24px;
+    background-color: #fff;
+    overflow: hidden;
+    margin: 20px 20px 0 20px;
+    .search-bar {
+      background: #ffffff;
+
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
+      }
     }
   }
 }
-</script>
-
-<style lang="scss">
-  .app-container {
-    .filter-container {
-      overflow: hidden;
-      background-color: #ffffff;
-      padding: 0px;
-      .el-card {
-        .left {
-          float: left;
-          font-size: 24px;
-          font-family: PingFangHK-Medium, PingFangHK;
-          font-weight: 500;
-          color: #333333;
-          margin-left: 24px;
-        }
-        .right {
-          float: right;
-          margin-right: 20px;
-          .filter-item {
-            display: inline-table;
-          }
-          .el-input {
-            overflow: hidden;
-            .el-input__inner {
-              float: left;
-              width: 200px;
-              height: 32px;
-              line-height: 32px;
-              padding-right: 15px;
-            }
-            .el-input-group__append {
-              float: left;
-              width: 60px;
-              padding: 0px 15px;
-              text-align: center;
-              color: #fff;
-              background-color: #3d5fff;
-            }
-          }
-          .el-select {
-            overflow: hidden;
-            .el-input__inner {
-              float: left;
-              width: 200px;
-              height: 32px;
-              line-height: 32px;
-              padding-right: 15px;
-            }
-          }
-        }
-      }
-    }
-    .main {
-      background-color: #fff;
-      overflow: hidden;
-      margin-top: 10px;
-    }
+.log-container {
+  margin-bottom: 20px;
+  background: #f5f5f5;
+  width: 100%;
+  height: 400px;
+  overflow: scroll;
+  pre {
+    display: block;
+    padding: 10px;
+    margin: 0 0 10.5px;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #334851;
+    background-color: #f5f5f5;
+    // border: 1px solid #ccd1d3;
+    border-radius: 1px;
   }
-  .log-container {
-    margin-bottom: 20px;
-    background: #f5f5f5;
-    width: 100%;
-    height: 400px;
-    overflow: scroll;
-    pre {
-      display: block;
-      padding: 10px;
-      margin: 0 0 10.5px;
-      word-break: break-all;
-      word-wrap: break-word;
-      color: #334851;
-      background-color: #f5f5f5;
-      // border: 1px solid #ccd1d3;
-      border-radius: 1px;
-    }
+}
+.el-table {
+  >>> th {
+    background: #fafafc;
   }
-  .el-table {
-    >>>th {
-      background: #fafafc;
-    }
+}
+.el-form {
+  >>> .el-form-item__label {
+    font-size: 16px;
+    font-family: PingFangHK-Medium, PingFangHK;
+    font-weight: 500;
   }
-  .el-form {
-    >>>.el-form-item__label {
-      font-size: 16px;
-      font-family: PingFangHK-Medium, PingFangHK;
-      font-weight: 500;
-    }
+}
+>>> .el-dialog__footer {
+  border-top: 1px solid #f3f3f3;
+  padding: 20px;
+}
+.el-select {
+  >>> .el-input .el-input__inner {
+    text-overflow: ellipsis;
   }
-  .el-select {
-    >>>.el-input .el-input__inner {
-      text-overflow: ellipsis;
-    }
-  }
+}
 </style>

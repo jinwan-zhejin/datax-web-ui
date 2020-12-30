@@ -1,25 +1,34 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
           <div class="left">执行器管理</div>
-          <div class="right">
-            <el-button class="filter-item" type="goon" size="small" icon="el-icon-plus" @click="handleCreate">
-              创建执行器
-            </el-button>
-          </div>
+          <el-col class="left-description">
+            管理执行器增、删、配置。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
+      <el-form label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate"
+          >创建执行器</el-button>
+        </el-form-item>
+      </el-form>
+
       <el-table
         v-loading="listLoading"
         :data="list"
         element-loading-text="Loading"
         fit
         highlight-current-row
-        :header-cell-style="{background:'#fafafc'}"
+        :header-cell-style="{background:'#fafafc', color: '#666666'}"
       >
         <!-- height="calc(100vh - 310px)" -->
         <el-table-column label="排序" width="50" align="center">
@@ -42,23 +51,21 @@
             <el-button type="text" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <span
-              v-show="row.status!='deleted'"
-              style="
-                width: 1px;
-                height: 12px;
-                margin: 0 5px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
-            />
+            <el-divider direction="vertical" />
             <el-button v-if="row.status!='deleted'" style="color: #fe4646;" type="text" @click="handleDelete(row)">
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="total>0" style="float: right;" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="fetchData" />
+      <pagination
+        v-show="total>0"
+        style="float: right; margin-top: 0;"
+        :total="total"
+        :page.sync="listQuery.current"
+        :limit.sync="listQuery.size"
+        @pagination="fetchData"
+      />
     </div>
 
     <el-dialog :title="translaterMaster(textMap[dialogStatus])" :visible.sync="dialogFormVisible" width="40%">
@@ -314,13 +321,20 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
+
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
+      border: 0 !important;
+      border-radius: 0;
+
       .left {
         float: left;
         font-size: 24px;
@@ -329,34 +343,21 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-             width: 60px;
-             padding: 0px 15px;
-             text-align: center;
-             color: #fff;
-             background-color: #3d5fff;
-          }
-        }
+
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000A6;
+        margin: 15px 24px;
       }
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
   }
 }
 .el-table {

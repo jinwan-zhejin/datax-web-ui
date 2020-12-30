@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 17:11:49
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 18:32:51
+ * @LastEditTime: 2020-12-30 11:19:24
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\member.vue
  * @Description: 成员管理
 -->
@@ -236,6 +236,7 @@ export default {
 
 >>> .el-dialog__footer {
   border-top: 1px solid #f3f3f3;
+  padding: 20px;
 }
 
 .el-table {

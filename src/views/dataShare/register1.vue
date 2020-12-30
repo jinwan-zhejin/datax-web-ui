@@ -1,9 +1,12 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-card class="box-card" style="height: 65px;">
+    <div class="head-container">
+      <el-card class="box-card">
         <div class="text item">
           <div class="left">接口注册</div>
+          <el-col class="left-description">
+            接口注册流程。
+          </el-col>
         </div>
       </el-card>
     </div>
@@ -728,13 +731,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
       .left {
         float: left;
         font-size: 24px;
@@ -743,34 +750,20 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-             width: 60px;
-             padding: 0px 15px;
-             text-align: center;
-             color: #fff;
-             background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
   }
 
   .el-steps {
@@ -780,7 +773,7 @@ export default {
   }
   .el-tabs {
     .el-tab-pane {
-      height: calc(100vh - 448px);
+      height: calc(100vh - 499px);
       overflow-y: auto;
       .el-form .el-form-item__label {
         color: #666666;

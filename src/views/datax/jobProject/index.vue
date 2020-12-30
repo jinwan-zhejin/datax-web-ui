@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
           <div class="left">项目管理</div>
@@ -29,7 +29,7 @@
           >搜 索</el-button>
         </el-form-item>
       </el-form>
-      <el-row :gutter="20">
+      <el-row :gutter="20" style="margin-top: 20px;">
         <el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6" style="margin-bottom: 20px;">
           <el-card
             shadow="hover"
@@ -55,7 +55,7 @@
           <project-card :all-users="users" :content="item" style="cursor: pointer;">
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>
-                <el-dropdown trigger="click" @click.native.stop>
+                <el-dropdown trigger="click" placement="bottom-end" @click.native.stop>
                   <span class="el-dropdown-link">
                     <el-button type="text" icon="el-icon-more" />
                   </span>
@@ -117,14 +117,13 @@
         </el-table-column>
       </el-table> -->
       <el-row>
-        <el-col style="background: #ffffff;">
+        <el-col style="background: #ffffff; padding-bottom: 24px;">
           <pagination
             v-show="total > 0"
             :total="total"
             style="float: right; margin-top: 0;"
             :page.sync="listQuery.pageNo"
             :limit.sync="listQuery.pageSize"
-            layout="total, prev, pager, next, sizes"
             @pagination="fetchData"
           />
         </el-col>
@@ -163,7 +162,6 @@
         </el-button>
         <el-button
           size="small"
-          class="dialog_ok_btn"
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >
@@ -443,18 +441,20 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  padding: 5px 0;
-  .filter-container {
+  padding: 0;
+
+  .head-container {
     overflow: hidden;
-    // line-height: 56px;
     background-color: #ffffff;
     padding: 0px;
 
-    // border-radius: 5px 5px 0px 0px;
-    // box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
+      border: 0 !important;
+      border-radius: 0;
+
       .left {
         float: left;
         font-size: 24px;
@@ -464,125 +464,30 @@ export default {
         margin-left: 24px;
       }
 
-      .right {
-        float: right;
-        margin-right: 20px;
-
-        .el-input {
-          overflow: hidden;
-
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-
-          .el-input-group__append {
-            float: left;
-            width: 60px;
-            padding: 0px 15px;
-            text-align: center;
-            color: #fff;
-            background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000A6;
+        margin: 15px 24px;
       }
     }
   }
 
   .main {
-    padding: 0 20px;
-    // background-color: #fff;
     background-color: transparent;
     overflow: hidden;
-    margin-top: 20px;
-  }
+    margin: 20px 20px 0 20px;
 
-  .topSelect {
-    overflow: hidden;
-    height: 40px;
-    line-height: 40px;
+    .search-bar {
+      padding: 24px 24px 0;
+      background: #ffffff;
 
-    .el-input {
-      .el-input__inner {
-        height: 32px;
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
       }
-
-      .el-button {
-        .el-button--default {
-          color: #ffffff;
-        }
-      }
-    }
-  }
-
-  .el-tabs {
-    margin-top: 20px;
-
-    .el-tab-pane {
-      ul {
-        overflow: hidden;
-
-        li {
-          list-style: none;
-          float: left;
-          width: 12.5%;
-
-          a {
-            text-align: center;
-
-            img {
-              display: block;
-              margin: 0 auto;
-              margin-top: 10px;
-              width: 64px;
-            }
-
-            p {
-              height: 40px;
-              font-size: 14px;
-              font-family: PingFangHK-Regular, PingFangHK;
-              font-weight: 400;
-              color: #333333;
-              line-height: 20px;
-              margin-top: 10px;
-            }
-          }
-
-          p {
-            font-size: 16px;
-            margin-top: 20px;
-          }
-        }
-
-        li:hover {
-          background-color: #e9e9f5 !important;
-        }
-
-        li:active {
-          background-color: #c4cfff;
-        }
-
-        li:visited {
-          background-color: #c4cfff;
-        }
-      }
-    }
-  }
-
-  .set {
-    p {
-      font-size: 18px;
-      margin: 20px 0px 16px 0;
-      font-family: PingFangHK-Medium, PingFangHK;
-    }
-
-    .bgcForm {
-      background-color: #f5f6fa;
-      padding: 24px 16px;
-      overflow: hidden;
     }
   }
 
@@ -590,12 +495,13 @@ export default {
     border-radius: 8px;
 
     .el-dialog__header {
-      font-size: 24px;
 
-      .p_tit {
-        font-size: 16px;
-        color: #cccccc;
-        margin-top: 20px;
+      .dialog_title {
+        font-size: 24px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        font-weight: 500;
+        color: #333333;
+        line-height: 33px;
       }
     }
 
@@ -608,32 +514,12 @@ export default {
         padding-right: 25px;
       }
     }
-
-    .el-dialog__footer {
-      border-top: 1px solid #f3f3f3;
-      padding: 20px;
-    }
   }
-}
 
-.dialog_title {
-  font-size: 24px;
-  font-family: PingFangHK-Medium, PingFangHK;
-  font-weight: 500;
-  color: #333333;
-  line-height: 33px;
-}
-
-.dialog_ok_btn {
-  background: #3d5fff;
-}
-
-.left-description {
-  float: left;
-  font-size: 14px;
-  font-family: PingFangHK-Medium, PingFangHK;
-  color: #000000A6;
-  margin: 15px 24px;
+  >>> .el-dialog__footer {
+    border-top: 1px solid #f3f3f3;
+    padding: 20px;
+  }
 }
 
 .new-project {
@@ -651,14 +537,5 @@ export default {
     color: #3d5eff;
   }
 }
-.search-bar {
-  margin-bottom: 20px;
-  padding: 24px 24px 0;
-  background: #ffffff;
-  .el-form-item__label {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 42px;
-  }
-}
+
 </style>
