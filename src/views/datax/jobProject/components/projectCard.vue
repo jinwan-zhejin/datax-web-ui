@@ -18,7 +18,9 @@
     </div>
     <el-form class="forms">
       <el-form-item label="项目描述" :label-width="labelWidth" :label-position="'left'">
-        <span class="texts">{{ content.description }}</span>
+        <el-tooltip :content="content.description" placement="top">
+          <span class="texts">{{ content.description }}</span>
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="所属用户" :label-width="labelWidth" :label-position="'left'">
         <span class="texts">{{ content.userName }}</span>
@@ -86,6 +88,9 @@ export default {
   }
   >>> .el-form-item__content {
     line-height: 30px !important;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
   .texts {
     color: #333333;
