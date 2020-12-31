@@ -587,7 +587,7 @@ export const asyncRoutes = [
         meta: { title: '角色管理', icon: 'jiaoseguanli' }
       },
       {
-        path: 'menu',
+        path: 'permission',
         name: 'Menu',
         component: () => import('@/views/datax/user/menu/index'),
         meta: { title: '权限管理', icon: 'chuangjianyingyong' }
