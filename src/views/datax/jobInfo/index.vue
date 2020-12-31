@@ -251,6 +251,8 @@ import _ from 'lodash';
 
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 
+import { objList } from '@/utils/sortArr'
+
 export default {
   name: '',
   components: {
@@ -277,7 +279,7 @@ export default {
       ],
       tabIndex: 1,
       /** el-select选项 */
-      options: '',
+      options: [],
       /** el-select激活项 */
       selectValue: '',
       search: '',
@@ -539,6 +541,7 @@ export default {
         const { total } = response;
         this.total = total;
         this.options = records;
+        this.options = objList(this.options, 'name')
         this.selectValue = this.options[0].id;
         this.fetchJobs(this.selectValue);
 

@@ -1,23 +1,34 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-card class="box-card" style="height: 65px;">
+    <div class="head-container">
+      <el-card class="box-card">
         <div class="text item">
           <div class="left">调用共享接口</div>
-          <div class="right">
-            <el-input v-model="form.address" placeholder="请输入接口地址" class="filter-item" style="width: 376px;">
-              <el-select slot="prepend" v-model="form.select" class="filter-item" style="margin: 0px; padding: 0px;" placeholder="请选择">
-                <el-option label="post" value="post" />
-                <el-option label="get" value="get" />
-              </el-select>
-              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px;" @click="call">搜索</el-button>
-            </el-input>
-          </div>
+          <el-col class="left-description">
+            测试调用接口。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
-      <el-radio-group v-show="isBtn" v-model="radio1" style="margin: 12px 0;" size="small">
+      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item label="接口：">
+          <el-input v-model="form.address" placeholder="接口地址" style="width: 100%; margin-top: 6px;" class="input-with-select">
+            <el-select slot="prepend" v-model="form.select" placeholder="请求方式" style="width: 110px;">
+              <el-option label="post" value="post" />
+              <el-option label="get" value="get" />
+            </el-select>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="call"
+          >搜 索</el-button>
+        </el-form-item>
+      </el-form>
+      <el-radio-group v-show="isBtn" v-model="radio1" style="margin-bottom: 10px;" size="small">
         <el-radio-button type="goon" label="formData" />
         <el-radio-button type="goon" label="params" />
       </el-radio-group>
@@ -75,7 +86,7 @@
       <el-table
         v-show="isSuccess"
         :data="callValue"
-        :header-cell-style="{ background: '#FAFAFC' }"
+        :header-cell-style="{ background: '#FAFAFC', color: '#666666' }"
         style="width: 100%;"
       >
         <!-- height="calc(100vh - 198px)" -->
@@ -102,16 +113,9 @@
         >
           <template v-slot:default="{ row }">
             <!-- <el-button @click="deleteKeyValue(row)" /> -->
-            <a class="a1" @click="addKeyValue">添加</a>
-            <span
-              style="
-                width: 1px;
-                height: 12px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
-            />
-            <a class="a2" @click="deleteKeyValue(row)">删除</a>
+            <el-button type="text" @click="addKeyValue">添加</el-button>
+            <el-divider direction="vertical" />
+            <el-button type="text" style="color: #fe4646;" @click="deleteKeyValue(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -250,13 +254,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
       .left {
         float: left;
         font-size: 24px;
@@ -265,72 +273,35 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__prepend {
-            float: left;
-            width: 100px;
-            height: 32px;
-            .el-select {
-              .el-input {
-                .el-input__inner {
-                  width: 75px;
-                  padding: 0;
-                }
-              }
-            }
-          }
-          .el-input-group__append {
-            float: left;
-            width: 60px;
-            padding: 0px 15px;
-            text-align: center;
-            color: #fff;
-            background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
-  .formTop {
-    position: absolute;
-    float: right;
-    right: 24px;
-    top: 24px;
-  }
   .main {
-    background-color: transparent;
-    // background-color: #fff;
+    padding: 24px;
+    background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
+    .search-bar {
+      background: #ffffff;
+
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
+      }
+      >>> .el-form-item__content {
+        line-height: 42px;
+      }
+    }
     .el-table {
-      // border-top: 1px solid #e0e0e0;
-      // border-left: 1px solid #e0e0e0;
-      // border-right: 1px solid #e0e0e0;
       th {
         background: #FAFAFC;
-      }
-      a {
-        color: cornflowerblue;
-      }
-      .a1:hover {
-        color: rgb(54, 105, 182)
-      }
-      .a2 {
-        color: #fe4646;
-      }
-      .a2:hover {
-        color: rgb(218, 85, 85);
       }
     }
   }

@@ -61,8 +61,8 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ failData, successData, dayList } = {}) {
-      this.chart.setOption({
+    setOptions({ failData, successData, dayList, projName } = {}) {
+      const t = {
         xAxis: {
           data: dayList,
           boundaryGap: false,
@@ -90,10 +90,11 @@ export default {
           }
         },
         legend: {
-          data: ['失败', '成功']
+          data: []
         },
         series: [{
-          name: '失败', itemStyle: {
+          name: '失败',
+          itemStyle: {
             normal: {
               color: '#FF005A',
               lineStyle: {
@@ -128,7 +129,17 @@ export default {
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
         }]
-      })
+      }
+      if (failData.length <= 0) {
+        t.tooltip.formatter = function(params) {
+          return `日期: ${params[0].axisValue}<br>
+          项目: ${dayList.indexOf(params[0].axisValue) > -1 ? projName[dayList.indexOf(params[0].axisValue)] : '未知项'}<br>
+          任务数: ${params[0].data}`
+        }
+      } else {
+        t.legend.data = ['失败', '成功']
+      }
+      this.chart.setOption(t)
     }
   }
 }

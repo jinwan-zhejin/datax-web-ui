@@ -1,26 +1,49 @@
 <template>
   <div class="app-container">
     <!-- 接口注册 -->
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
           <div class="left">接口列表</div>
-          <div class="right">
-            <el-input v-model="interName" size="medium" placeholder="请输入接口名称" class="filter-item" style="width: 268px;">
-              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" @click="getAllData">搜索</el-button>
-            </el-input>
-            <el-button class="filter-item" style="margin-left: 30px" type="goon" size="small" @click="gotoInterface">接口注册</el-button>
-          </div>
+          <el-col class="left-description">
+            管理接口增、删、注册。
+          </el-col>
         </div>
       </el-card>
     </div>
     <!-- 表格 -->
     <div class="main">
+      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item label="接口名称：">
+          <el-input
+            v-model="interName"
+            clearable
+            size="small"
+            placeholder="接口名称"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            @click="getAllData"
+          >搜 索</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="gotoInterface"
+          >接口注册</el-button>
+        </el-form-item>
+      </el-form>
       <el-table
         :data="tableData"
-        :header-cell-style="{background:'#fafafc'}"
+        :header-cell-style="{background:'#fafafc', color: '#666666'}"
       >
-        <!-- height="calc(100vh - 254px)" -->
         <el-table-column
           type="index"
           label="序号"
@@ -76,10 +99,10 @@
       <el-pagination
         background
         :current-page="pageNum"
-        style="float: right;"
+        style="float: right; margin: 0;"
         :page-size="pageSize"
         :page-sizes="[30, 60, 90]"
-        layout="total, prev, pager, next, sizes"
+        layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -180,13 +203,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
       .left {
         float: left;
         font-size: 24px;
@@ -195,27 +222,12 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-            width: 60px;
-            padding: 0px 15px;
-            text-align: center;
-            color: #fff;
-            background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
@@ -227,9 +239,19 @@ export default {
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
+    .search-bar {
+      background: #ffffff;
+
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
+      }
+    }
     .el-pagination {
       background-color: #fff;
       margin-top: 30px;

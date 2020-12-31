@@ -1,42 +1,53 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
           <div class="left">用户管理</div>
-          <div class="right">
-            <el-input v-model="listQuery.username" size="medium" class="filter-item" placeholder="用户名" style="width: 268px;" clearable>
-              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" type="goon" @click="fetchData">
-                搜索
-              </el-button>
-            </el-input>
-            <el-button
-              class="filter-item"
-              type="goon"
-              size="small"
-              icon="el-icon-plus"
-              @click="handleCreate"
-            >
-              添加
-            </el-button>
-            <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-              reviewer
-            </el-checkbox> -->
-          </div>
+          <el-col class="left-description">
+            管理系统用户增、删、改、查，编辑用户角色。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
+      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item label="用户名：">
+          <el-input
+            v-model="listQuery.username"
+            clearable
+            size="small"
+            placeholder="用户名"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            @click="fetchData"
+          >搜 索</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate"
+          >添 加</el-button>
+        </el-form-item>
+      </el-form>
       <el-table
         v-loading="listLoading"
         :data="list"
         element-loading-text="Loading"
         fit
         highlight-current-row
-        :header-cell-style="{background:'#fafafc'}"
+        :header-cell-style="{background:'#fafafc', color: '#666666'}"
       >
         <!-- height="calc(100vh - 310px)" -->
-        <el-table-column align="center" label="序号" width="95">
+        <el-table-column label="序号" align="center" width="95">
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
         <el-table-column label="用户名" align="center">
@@ -52,16 +63,7 @@
             <el-button type="text" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <span
-              v-show="row.status!='deleted'"
-              style="
-                width: 1px;
-                height: 12px;
-                margin: 0 5px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
-            />
+            <el-divider direction="vertical" />
             <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="open(row)">
               删除
             </el-button>
@@ -70,7 +72,7 @@
       </el-table>
       <pagination
         v-show="total>0"
-        style="float: right;"
+        style="float: right; margin-top: 0;"
         :total="total"
         :page.sync="listQuery.current"
         :limit.sync="listQuery.size"
@@ -78,7 +80,7 @@
       />
     </div>
 
-    <el-dialog width="40%" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog width="40%" :title="textMap[dialogStatus] +'用户'" :visible.sync="dialogFormVisible">
       <el-row>
         <el-col :span="18" :offset="3">
           <el-form
@@ -86,15 +88,15 @@
             :rules="rules"
             :model="temp"
             label-position="right"
-            label-width="100px"
+            label-width="80px"
           >
             <el-form-item label="用户名" prop="username">
               <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
             </el-form-item>
-            <el-form-item label="密  码">
+            <el-form-item label="密  码" prop="password">
               <el-input v-model="temp.password" type="password" placeholder="请输入密码" />
             </el-form-item>
-            <el-form-item label="角色" prop="role">
+            <el-form-item label="角色" prop="roleIdList">
               <el-select v-model="temp.roleIdList" multiple class="filter-item" placeholder="角色类型" style="width: 100%;">
                 <el-option v-for="item in roles" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
               </el-select>
@@ -162,11 +164,13 @@ export default {
         create: '新增'
       },
       rules: {
-        username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }]
+        username: [{ required: true, message: translaterMaster('username is require'), trigger: 'blur' }],
+        password: [{ required: true, message: translaterMaster('password is require'), trigger: 'blur', validator: validatePassword }],
+        roleIdList: [{ required: true, message: translaterMaster('role is require'), trigger: 'blur' }]
       },
       temp: {
         id: undefined,
-        role: '',
+        roleIdList: '',
         username: '',
         password: '',
         permission: ''
@@ -283,11 +287,18 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
+
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
+      border: 0 !important;
+      border-radius: 0;
+
       .left {
         float: left;
         font-size: 24px;
@@ -296,38 +307,38 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .filter-item {
-          display: inline-table;
-        }
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-             width: 60px;
-             padding: 0px 15px;
-             text-align: center;
-             color: #fff;
-             background-color: #3d5fff;
-          }
-        }
+
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000A6;
+        margin: 15px 24px;
       }
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
+
+    .search-bar {
+      background: #ffffff;
+
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
+      }
+    }
   }
+
+  >>> .el-dialog__footer {
+    border-top: 1px solid #f3f3f3;
+    padding: 20px;
+  }
+
   .el-table {
     >>>th {
       background: #fafafc;

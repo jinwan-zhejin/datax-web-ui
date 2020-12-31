@@ -1,23 +1,38 @@
 <template>
   <div class="app-container">
     <!-- 标题 -->
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
           <div class="left">注册审批</div>
-          <div class="right">
-            <el-input v-model="interName" size="medium" class="filter-item" style="width: 268px;" placeholder="请输入内容" clearable>
-              <el-button slot="append" class="filter-item" style="margin: 0px; padding: 8.5px 0px" @click="search">搜索</el-button>
-            </el-input>
-          </div>
+          <el-col class="left-description">
+            管理接口注册申请的审批。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
+      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item label="接口名称：">
+          <el-input
+            v-model="interName"
+            clearable
+            size="small"
+            placeholder="接口名称"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            @click="search"
+          >搜 索</el-button>
+        </el-form-item>
+      </el-form>
       <!-- 菜单栏 -->
       <div class="Menu">
         <!-- 切换按钮 -->
-        <div class="btn" style="line-height: 40px;height: 40px;">
+        <div class="btn">
           <el-radio-group v-model="radio" size="small">
             <el-radio-button label="待审批" />
             <el-radio-button label="已同意" />
@@ -43,7 +58,7 @@
         <el-table
           v-show="wait"
           :data="tabelList"
-          :header-cell-style="{background:'#fafafc'}"
+          :header-cell-style="{background:'#fafafc', color: '#666666'}"
         >
           <!-- height="calc(100vh - 290px)" -->
           <el-table-column
@@ -55,13 +70,13 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            align="left"
+            align="center"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
             width="350"
-            align="left"
+            align="center"
           />
           <!-- <el-table-column
             prop="telephone"
@@ -75,17 +90,17 @@
             prop="createTime"
             label="注册时间"
             width="170"
-            align="left"
+            align="center"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
             width="170"
-            align="left"
+            align="center"
           />
           <el-table-column
             label="操作栏"
-            align="left"
+            align="center"
             width="120"
           >
             <template v-slot:default="{ row }">
@@ -482,13 +497,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
     .el-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
       .left {
         float: left;
         font-size: 24px;
@@ -497,79 +516,40 @@ export default {
         color: #333333;
         margin-left: 24px;
       }
-      .right {
-        float: right;
-        margin-right: 20px;
-        .filter-item {
-          display: inline-table;
-        }
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-             width: 60px;
-             padding: 0px 15px;
-             text-align: center;
-             color: #fff;
-             background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
+    .search-bar {
+      background: #ffffff;
+
+      >>> .el-form-item__label {
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 42px;
+      }
+    }
     .Menu {
       width: 100%;
-      margin: 12px auto;
-      height: 40px;
-      line-height: 40px;
       padding-bottom: 5px;
-      padding-left: 14px;
-      // margin-bottom: 24px;
       .btn {
         float: left;
-        margin-top: 0px;
-        // .el-button {
-        //   background: cornflowerblue;
-        // }
-        .el-radio-group {
-          height: 30px;
-          // .el-radio-button {
-          //   .el-radio-button__inner {
-          //     border-radius: 20px;
-          //     border: none;
-          //     background-color: initial;
-          //   }
-          //   .el-radio-button__inner:active {
-          //     background-color: #409EFF;
-          //     color: #ffffff;
-          //   }
-          // }
-          // .is-active {
-          //   background-color: #409EFF;
-          //   border-radius: 20px;
-          //   color: #ffffff;
-          // }
-        }
+        margin-bottom: 10px;
       }
     }
     .tabel {
       width: 100%;
       background-color: #fff;
-      // border-radius: 4px;
-      // border-left: 1px solid #E0E0E0;
-      // border-right: 1px solid #E0E0E0;
-      // border-top: 1px solid #E0E0E0;
     }
   }
   .el-dialog {
@@ -581,5 +561,9 @@ export default {
   ::v-deep .el-dialog {
     border-radius: 8px;
   }
+  >>> .el-dialog__footer {
+  border-top: 1px solid #f3f3f3;
+  padding: 20px;
+}
 }
 </style>

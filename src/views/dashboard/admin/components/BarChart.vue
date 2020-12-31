@@ -22,7 +22,7 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '350px'
     },
     autoResize: {
       type: Boolean,
@@ -39,54 +39,22 @@ export default {
     }
   },
   computed: {
-    // 提取type
-    extractType() {
+    // 提取 X轴
+    extractX() {
       return arr => {
-        const temp = []
         if (arr) {
-          arr.forEach(ele => {
-            const t = ele.type || '未知类型'
-            if (temp.indexOf(t) <= -1) {
-              temp.push(t)
-            }
-          })
-          return temp
+          return arr[0].xArr
         }
-        return temp
       }
     },
-    // 提取name
-    extractName() {
+    transform() {
       return arr => {
-        const temp = []
         if (arr) {
-          arr.forEach(ele => {
-            const t = ele.name || '未知项目'
-            if (temp.indexOf(t) <= -1) {
-              temp.push(t)
-            }
+          const t = JSON.parse(JSON.stringify(arr))
+          t.forEach(ele => {
+            ele['animationDuration'] = animationDuration
           })
-          return temp
-        }
-        return temp
-      }
-    },
-    // 根据type分类然后根据name分类
-    transformArr() {
-      return arr => {
-        const temp = []
-        if (arr) {
-          this.extractType(arr).forEach(ele => {
-            const t = this.arr.filter(item => {
-              const m = item.type || '未知类型'
-              return m === ele
-            })
-            t.forEach(men => {
-              temp.push({
-                
-              })
-            })
-          })
+          return t
         }
       }
     }
@@ -133,7 +101,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: this.extractType(arr),
+          data: this.extractX(arr),
           axisTick: {
             alignWithLabel: true
           }
@@ -144,28 +112,29 @@ export default {
             show: false
           }
         }],
-        series: [{
-          name: 'pageA',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageB',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }]
+        // series: [{
+        //   name: 'pageA',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [79, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }, {
+        //   name: 'pageB',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [80, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }, {
+        //   name: 'pageC',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [30, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }]
+        series: this.transform(arr)
       })
     }
   }

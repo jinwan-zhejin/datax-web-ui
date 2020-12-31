@@ -47,3 +47,33 @@ export function getPermission() {
     method: 'get'
   })
 }
+
+/**
+ * @description: 查询所有用户
+ * @return {*}
+ */
+export function getAllUser() {
+  return request({
+    url: '/api/user/all',
+    method: 'get'
+  })
+}
+
+/**
+ * @description: 查询项目下所有用户
+ * @param {object} params
+ *  parameter: {
+ *    projectId: 1,
+ *    current: 1,
+ *    size: 10,
+ *    username: ''
+ *  }
+ * @return {*}
+ */
+export function getAllUserProject(params) {
+  return request({
+    url: '/api/user/project/userList',
+    method: 'get',
+    params
+  })
+}
