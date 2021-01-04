@@ -1,119 +1,114 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
-          <div class="left1">菜单管理</div>
+          <div class="left">菜单管理</div>
+          <el-col class="left-description">
+            管理权限路由。
+          </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
-      <div class="menu">
-        <div class="top">
+      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
           <el-button-group>
-            <el-button type="primary" @click="showForm">添加</el-button>
-            <el-button type="primary" @click="showEdit">编辑</el-button>
-            <el-button type="primary" @click="confirm">删除</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus" @click="showForm">添加</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" @click="showEdit">编辑</el-button>
+            <el-button type="primary" size="small" icon="el-icon-delete" @click="confirm">删除</el-button>
           </el-button-group>
-        </div>
-        <div class="main1">
+        </el-form-item>
+      </el-form>
+      <div class="menu">
+        <div class="main-body">
           <div class="left">
-            <el-tree
-              :data="tree"
-              highlight-current
-              accordion
-              :props="defaultProps"
-              @node-click="handleNodeClick"
-            />
+            <el-scrollbar>
+              <el-tree
+                :data="tree"
+                highlight-current
+                accordion
+                :props="defaultProps"
+                @node-click="handleNodeClick"
+              />
+            </el-scrollbar>
           </div>
           <div class="right">
             <!-- 查看表单 -->
-            <el-form
-              v-show="isView"
-              ref="form"
-              disabled
-              :model="viewForm"
-              :rules="rules"
-              label-width="100px"
-              class="demo-form"
-            >
-              <el-form-item>
-                <span
-                  style="margin-left: 200px; font-size: 20px; font-weight: 700"
-                >查看</span>
-              </el-form-item>
-              <el-form-item label="菜单名称:" prop="name">
-                <el-input v-model="viewForm.name" />
-              </el-form-item>
-              <el-form-item label="菜单标识:" prop="code">
-                <el-input v-model="viewForm.code" />
-              </el-form-item>
-              <el-form-item label="菜单地址:" prop="url">
-                <el-input v-model="viewForm.url" />
-              </el-form-item>
-            </el-form>
-            <!-- 添加表单 -->
-            <el-form
-              v-show="isAdd"
-              ref="form"
-              :model="form"
-              :rules="rules"
-              label-width="100px"
-              class="demo-form"
-            >
-              <el-form-item>
-                <span
-                  style="margin-left: 200px; font-size: 20px; font-weight: 700"
-                >添加</span>
-              </el-form-item>
-              <el-form-item label="菜单名称:" prop="name">
-                <el-input v-model="form.name" />
-              </el-form-item>
-              <el-form-item label="菜单标识:" prop="code">
-                <el-input v-model="form.code" />
-              </el-form-item>
-              <el-form-item label="菜单地址:" prop="url">
-                <el-input v-model="form.url" />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="addMenu">保存</el-button>
-                <el-button
-                  type="primary"
-                  @click="reset('form')"
-                >重置</el-button>
-              </el-form-item>
-            </el-form>
-            <!-- 编辑表单 -->
-            <el-form
-              v-show="isEdit"
-              ref="editForm"
-              :model="editForm"
-              :rules="rules"
-              label-width="100px"
-              class="demo-form"
-            >
-              <el-form-item>
-                <span
-                  style="margin-left: 200px; font-size: 20px; font-weight: 700"
-                >编辑</span>
-              </el-form-item>
-              <el-form-item label="菜单名称:" prop="name">
-                <el-input v-model="editForm.name" />
-              </el-form-item>
-              <el-form-item label="菜单标识:" prop="code">
-                <el-input v-model="editForm.code" />
-              </el-form-item>
-              <el-form-item label="菜单地址:" prop="url">
-                <el-input v-model="editForm.url" />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="editMenu">保存</el-button>
-                <el-button
-                  type="primary"
-                  @click="reset('editForm')"
-                >重置</el-button>
-              </el-form-item>
-            </el-form>
+            <el-col style="text-align: center;font-size: 20px; font-weight: 700; margin: 20px 0;">
+              <span v-if="isView">查看</span>
+              <span v-if="isAdd">添加</span>
+              <span v-if="isEdit">编辑</span>
+            </el-col>
+            <el-col :span="18" :offset="2">
+              <el-form
+                v-show="isView"
+                ref="form"
+                disabled
+                :model="viewForm"
+                :rules="rules"
+                label-width="100px"
+                class="demo-form"
+              >
+                <el-form-item label="菜单名称:" prop="name">
+                  <el-input v-model="viewForm.name" />
+                </el-form-item>
+                <el-form-item label="菜单标识:" prop="code">
+                  <el-input v-model="viewForm.code" />
+                </el-form-item>
+                <el-form-item label="菜单地址:" prop="url">
+                  <el-input v-model="viewForm.url" />
+                </el-form-item>
+              </el-form>
+              <!-- 添加表单 -->
+              <el-form
+                v-show="isAdd"
+                ref="form"
+                :model="form"
+                :rules="rules"
+                label-width="100px"
+                class="demo-form"
+              >
+                <el-form-item label="菜单名称:" prop="name">
+                  <el-input v-model="form.name" />
+                </el-form-item>
+                <el-form-item label="菜单标识:" prop="code">
+                  <el-input v-model="form.code" />
+                </el-form-item>
+                <el-form-item label="菜单地址:" prop="url">
+                  <el-input v-model="form.url" />
+                </el-form-item>
+              </el-form>
+              <!-- 编辑表单 -->
+              <el-form
+                v-show="isEdit"
+                ref="editForm"
+                :model="editForm"
+                :rules="rules"
+                label-width="100px"
+                class="demo-form"
+              >
+                <el-form-item label="菜单名称:" prop="name">
+                  <el-input v-model="editForm.name" />
+                </el-form-item>
+                <el-form-item label="菜单标识:" prop="code">
+                  <el-input v-model="editForm.code" />
+                </el-form-item>
+                <el-form-item label="菜单地址:" prop="url">
+                  <el-input v-model="editForm.url" />
+                </el-form-item>
+              </el-form>
+              <el-col style="text-align: center;">
+                <template v-if="isAdd">
+                  <el-button type="primary" size="small" @click="addMenu">保存</el-button>
+                  <el-button type="primary" size="small" @click="reset('form')">重置</el-button>
+                </template>
+                <template v-if="isEdit">
+                  <el-button type="primary" size="small" @click="editMenu">保存</el-button>
+                  <el-button type="primary" size="small" @click="reset('editForm')">重置</el-button>
+                </template>
+              </el-col>
+            </el-col>
           </div>
         </div>
       </div>
@@ -315,85 +310,68 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
     background-color: #ffffff;
     padding: 0px;
     .el-card {
-      .left1 {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
+      .left {
         float: left;
         font-size: 24px;
         font-family: PingFangHK-Medium, PingFangHK;
         font-weight: 500;
         color: #333333;
         margin-left: 24px;
-        padding-bottom: 20px;
       }
-      .right1 {
-        display: none;
-        float: right;
-        margin-right: 20px;
-        .filter-item {
-          display: inline-table;
-        }
-        .el-input {
-          overflow: hidden;
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-          .el-input-group__append {
-            float: left;
-            width: 60px;
-            padding: 0px 15px;
-            text-align: center;
-            color: #fff;
-            background-color: #3d5fff;
-          }
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
     .menu {
       width: 100%;
       height: 100%;
       background-color: #fff;
       // padding-bottom: 300px;
-      .top {
-        width: 100%;
-        height: 80px;
-        line-height: 80px;
-        background-color: #fff;
-        text-align: left;
-        padding: 20px 0px;
-        .el-button-group {
-          margin-left: 20px;
-        }
-      }
-      .main1 {
+      .main-body {
         overflow: hidden;
         height: 100%;
         .left {
-          width: 20%;
+          width: 25%;
           float: left;
           padding: 10px;
+          border-right: 1px solid #DCDFE6;
+          overflow-x: hidden;
+          .el-scrollbar {
+            height: calc(100vh - 310px);
+            >>> .el-scrollbar__wrap {
+              overflow-x: hidden;
+            }
+          }
         }
         .right {
           width: 75%;
           float: right;
+          padding: 10px;
           .el-form {
-            text-align: left;
+            text-align: center;
             .el-input {
-              width: 500px;
+              width: 100%;
             }
           }
         }
