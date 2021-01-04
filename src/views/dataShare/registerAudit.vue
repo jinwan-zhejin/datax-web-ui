@@ -25,8 +25,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="search"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <!-- 菜单栏 -->
@@ -57,6 +63,62 @@
         <!-- 待审核 -->
         <el-table
           v-show="wait"
+          :data="tabelList"
+          :header-cell-style="{background:'#fafafc', color: '#666666'}"
+        >
+          <!-- height="calc(100vh - 290px)" -->
+          <el-table-column
+            fixed
+            type="index"
+            label="序号"
+            width="80"
+            align="center"
+          />
+          <el-table-column
+            prop="interName"
+            label="接口名称"
+            align="center"
+          />
+          <el-table-column
+            prop="interRemark"
+            label="接口描述"
+            width="350"
+            align="center"
+          />
+          <!-- <el-table-column
+            prop="telephone"
+            label="联系方式">
+          </el-table-column>
+          <el-table-column
+            prop="departmentName"
+            label="申请部门">
+          </el-table-column> -->
+          <el-table-column
+            prop="createTime"
+            label="注册时间"
+            width="170"
+            align="center"
+          />
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="170"
+            align="center"
+          />
+          <el-table-column
+            label="操作"
+            align="center"
+            width="120"
+            fixed="right"
+          >
+            <template v-slot:default="{ row }">
+              <a style="color:#3d5eff;" href="#" @click="isShowBatch(row)">审核</a>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 已同意 -->
+        <el-table
+          v-show="agree"
           :data="tabelList"
           :header-cell-style="{background:'#fafafc', color: '#666666'}"
         >
@@ -99,62 +161,8 @@
             align="center"
           />
           <el-table-column
-            label="操作栏"
+            label="操作"
             align="center"
-            width="120"
-          >
-            <template v-slot:default="{ row }">
-              <a style="color:#3d5eff;" href="#" @click="isShowBatch(row)">审核</a>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!-- 已同意 -->
-        <el-table
-          v-show="agree"
-          :data="tabelList"
-          :header-cell-style="{background:'#fafafc'}"
-        >
-          <!-- height="calc(100vh - 290px)" -->
-          <el-table-column
-            type="index"
-            label="序号"
-            width="80"
-            align="center"
-          />
-          <el-table-column
-            prop="interName"
-            label="接口名称"
-            align="left"
-          />
-          <el-table-column
-            prop="interRemark"
-            label="接口描述"
-            width="350"
-            align="left"
-          />
-          <!-- <el-table-column
-            prop="telephone"
-            label="联系方式">
-          </el-table-column>
-          <el-table-column
-            prop="departmentName"
-            label="申请部门">
-          </el-table-column> -->
-          <el-table-column
-            prop="createTime"
-            label="注册时间"
-            width="170"
-            align="left"
-          />
-          <el-table-column
-            prop="updateTime"
-            label="更新时间"
-            width="170"
-            align="left"
-          />
-          <el-table-column
-            label="操作栏"
-            align="left"
             width="120"
           >
             <template v-slot:default="{ row }">
@@ -166,7 +174,7 @@
         <el-table
           v-show="dismiss"
           :data="tabelList"
-          :header-cell-style="{background:'#fafafc'}"
+          :header-cell-style="{background:'#fafafc', color: '#666666'}"
         >
           <!-- height="calc(100vh - 290px)" -->
           <el-table-column
@@ -178,13 +186,13 @@
           <el-table-column
             prop="interName"
             label="接口名称"
-            align="left"
+            align="center"
           />
           <el-table-column
             prop="interRemark"
             label="接口描述"
             width="350"
-            align="left"
+            align="center"
           />
           <!-- <el-table-column
             prop="telephone"
@@ -198,17 +206,17 @@
             prop="createTime"
             label="注册时间"
             width="170"
-            align="left"
+            align="center"
           />
           <el-table-column
             prop="updateTime"
             label="更新时间"
             width="170"
-            align="left"
+            align="center"
           />
           <el-table-column
-            label="操作栏"
-            align="left"
+            label="操作"
+            align="center"
             width="120"
           >
             <template v-slot:default="{ row }">
@@ -492,6 +500,13 @@ export default {
           }
         }
       })
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.interName = ''
+      this.search()
     }
   }
 }

@@ -24,8 +24,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="fetchData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
@@ -46,8 +52,7 @@
         highlight-current-row
         :header-cell-style="{background:'#fafafc'}"
       >
-        <!-- height="calc(100vh - 310px)" -->
-        <el-table-column align="center" label="序号" width="95">
+        <el-table-column fixed align="center" label="序号" width="95">
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
         <el-table-column label="角色名" align="center" prop="roleName" />
@@ -56,34 +61,22 @@
             <span>{{ scope }}</span>
           </template> -->
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
             <el-button type="text" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <span
+            <el-divider
               v-show="row.status!='deleted'"
               v-if="row.remark !== '管理员'"
-              style="
-                width: 1px;
-                height: 12px;
-                margin: 0 5px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
+              direction="vertical"
             />
             <el-button v-if="row.remark !== '管理员'" type="text" @click="showMenu(row)">
               权限
             </el-button>
-            <span
+            <el-divider
               v-show="row.status!='deleted'"
-              style="
-                width: 1px;
-                height: 12px;
-                margin: 0 5px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
+              direction="vertical"
             />
             <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="open(row)">
               删除
@@ -525,6 +518,13 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.roleName = ''
+      this.fetchData()
     }
   }
 }

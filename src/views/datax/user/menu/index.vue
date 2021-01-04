@@ -30,7 +30,31 @@
                 accordion
                 :props="defaultProps"
                 @node-click="handleNodeClick"
-              />
+              >
+                <!-- <span slot-scope="{ node, data }" class="custom-tree-node">
+                  <span>{{ node.label }}</span>
+                  <span>
+                    <el-dropdown trigger="click" placement="right">
+                      <el-button type="text" size="mini" icon="el-icon-more" @click.native.stop />
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item @click.native.stop="">
+                          <i class="el-icon-edit" style="color: #3d5eff;" /> 编辑
+                        </el-dropdown-item>
+                        <el-dropdown-item @click.native.stop="">
+                          <el-popconfirm
+                            placement="right"
+                            title="这是一段内容确定删除吗？"
+                          >
+                            <span slot="reference">
+                              <i class="el-icon-delete" style="color: #fe4646;" /> 删除
+                            </span>
+                          </el-popconfirm>
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </span>
+                </span> -->
+              </el-tree>
             </el-scrollbar>
           </div>
           <div class="right">
@@ -184,6 +208,9 @@ export default {
     this.getMenuList()
   },
   methods: {
+    test(info) {
+      console.log(info)
+    },
     handleNodeClick(data) {
       console.log(data)
       this.selectObj = data
@@ -361,6 +388,16 @@ export default {
             height: calc(100vh - 310px);
             >>> .el-scrollbar__wrap {
               overflow-x: hidden;
+            }
+            .el-tree {
+              .custom-tree-node {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 14px;
+                padding-right: 16px;
+              }
             }
           }
         }

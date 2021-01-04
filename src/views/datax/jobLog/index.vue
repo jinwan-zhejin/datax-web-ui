@@ -49,8 +49,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="fetchData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-form
@@ -77,7 +83,7 @@
         :header-cell-style="{ background: '#fafafc', color: '#666666' }"
       >
         <!-- height="calc(100vh - 385px)" -->
-        <el-table-column align="center" label="任务ID" width="80">
+        <el-table-column fixed align="center" label="任务ID" width="80">
           <template slot-scope="scope">{{ scope.row.jobId }}</template>
         </el-table-column>
         <el-table-column align="center" label="任务描述">
@@ -121,25 +127,19 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="300">
+        <el-table-column fixed="right" label="操作" align="center" width="300">
           <template slot-scope="{ row }">
             <el-button
               v-show="row.executorAddress"
               type="text"
               @click="handleViewJobLog(row)"
             >日志查看</el-button>
-            <span
+            <el-divider
               v-show="
                 row.executorAddress &&
                   (row.handleCode === 0 && row.triggerCode === 200)
               "
-              style="
-                width: 1px;
-                height: 12px;
-                margin: 0 5px;
-                background: #e6e6e8;
-                display: inline-block;
-              "
+              direction="vertical"
             />
             <el-button
               v-show="row.handleCode === 0 && row.triggerCode === 200"
@@ -517,6 +517,15 @@ export default {
           duration: 2000
         });
       });
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.listQuery.jobId = ''
+      this.listQuery.jobGroup = this.executorList[0].id
+      this.listQuery.logStatus = this.logStatusList[0].value
+      this.fetchData()
     }
   }
 };

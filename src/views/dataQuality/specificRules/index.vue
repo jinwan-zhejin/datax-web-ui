@@ -1,106 +1,134 @@
 <template>
-  <div class="individuation">
+  <div class="app-container">
     <!-- <el-radio-group v-model="radio1">
       <el-radio-button type="goon" size="small" label="其他入参集" />
     </el-radio-group> -->
-    <div class="top">
-      <span class="titSpan">个性化规则</span>
-      <el-button type="goon" size="small" @click="showAdd"><i class="el-icon-plus" style="marginRight:8px;" />新建个性化规则</el-button>
-      <span class="line" />
-      <span>
-        类型:
-        <el-select v-model="selectValue" style="marginLeft: 8px;" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </span>
-      <!-- <el-input v-model="search" style="width:30%;margin: 0px 20px" prefix-icon="el-icon-search" palceholder="请输入入参名称或入参编码进行搜索" />
-      <el-button class="search" type="goon" size="small" @click="Search">查询</el-button> -->
-      <el-input v-model="search" clearable placeholder="请输入关键字进行搜索" style="width: 268px;marginLeft: 24px;" class="filter-item">
-        <el-button slot="append" v-waves size="small" style="margin: 0px;padding: 8px 0px;backgroundColor: #3D5FFF" class="filter-item" type="goon" @click="Search">搜索</el-button>
-      </el-input>
-      <!-- <el-button class="reset" size="small" plain @click="reSet">重置</el-button> -->
+    <div class="head-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">个性化规则</div>
+          <el-col class="left-description">
+            管理个性化规则。
+          </el-col>
+        </div>
+      </el-card>
     </div>
-    <!-- 表格 -->
-    <el-table
-      :data="tableData"
-      :header-cell-style="{ background: '#FAFAFC' }"
-      style="width: 100%"
-    >
-      <el-table-column
-        type="index"
-        align="center"
-        label="序号"
-        width="80"
-      />
-      <el-table-column
-        prop="name"
-        align="left"
-        label="入参名称"
-        width="300"
-      />
-      <el-table-column
-        prop="code"
-        align="left"
-        label="入参编码"
-        width="300"
-      />
-      <el-table-column
-        prop="joinType"
-        align="left"
-        label="入参类型"
-        width="150"
-      >
-        <template v-slot:default="row">
-          {{ showType(row.row) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="left"
-        wdith="100"
-        label="入参表达式"
-      >
-        <template v-slot:default="row">
-          <a style="color: #3D5FFF;" @click="view(row)"><i class="el-icon-search" style="marginRight: 8px;" />查看</a>
-          <!-- <el-tag size="medium" style="cursor: pointer;" effect="dark" @click="view(row)">查看</el-tag> -->
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="left"
-        label="操作栏"
-        wdith="60"
-      >
-        <template v-slot:default="row">
-          <!-- <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
-          <el-tag style="cursor: pointer;" size="medium" effect="dark" @click="open(row)">删除</el-tag> -->
-          <a style="color: #3D5FFF;" @click="showEdit(row)">编辑</a>
-          <span
-            style="width: 1px;
-              height: 12px;
-              background: #e6e6e8;
-              display: inline-block;
-              margin: 0px 8px;
-            "
+    <div class="main">
+      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item label="入参类型：">
+          <el-select v-model="selectValue" placeholder="请选择入参类型">
+            <el-option
+              v-for="(item, index) in options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入参名称：">
+          <el-input
+            v-model="search"
+            clearable
+            size="small"
+            placeholder="入参名称"
           />
-          <a style="color: #FE4646;" @click="open(row)">删除</a>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <el-pagination
-      background
-      :current-page="pageNum"
-      :page-sizes="[50, 100, 150, 200]"
-      :page-size="pageSize"
-      layout="total, prev, pager, next, sizes"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-search"
+            @click="Search"
+          >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="showAdd"
+          >新建个性化规则</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- 表格 -->
+      <el-table
+        :data="tableData"
+        :header-cell-style="{ background: '#FAFAFC', color: '#666666' }"
+      >
+        <el-table-column
+          fixed
+          type="index"
+          align="center"
+          label="序号"
+          width="80"
+        />
+        <el-table-column
+          prop="name"
+          align="center"
+          label="入参名称"
+          width="300"
+        />
+        <el-table-column
+          prop="code"
+          align="center"
+          label="入参编码"
+          width="300"
+        />
+        <el-table-column
+          prop="joinType"
+          align="center"
+          label="入参类型"
+          width="150"
+        >
+          <template v-slot:default="row">
+            {{ showType(row.row) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          width="100"
+          label="入参表达式"
+        >
+          <template v-slot:default="row">
+            <a style="color: #3D5FFF;" @click="view(row)"><i class="el-icon-search" style="marginRight: 8px;" />查看</a>
+          <!-- <el-tag size="medium" style="cursor: pointer;" effect="dark" @click="view(row)">查看</el-tag> -->
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+          width="120"
+          fixed="right"
+        >
+          <template v-slot:default="row">
+            <!-- <el-tag style="marginRight: 100px;cursor: pointer;" size="medium" effect="dark" @click="showEdit(row)">编辑</el-tag>
+          <el-tag style="cursor: pointer;" size="medium" effect="dark" @click="open(row)">删除</el-tag> -->
+            <a style="color: #3D5FFF;" @click="showEdit(row)">编辑</a>
+            <el-divider direction="vertical" />
+            <a style="color: #FE4646;" @click="open(row)">删除</a>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        background
+        :current-page="pageNum"
+        :page-sizes="[50, 100, 150, 200]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+
     <!-- 新增对话框 -->
     <el-dialog
       title="新增入参"
@@ -479,70 +507,63 @@ export default {
     reSet() {
       this.search = ''
       this.selectValue = ''
+      this.Search()
     }
   }
 }
 </script>
 
-<style lang="scss">
-  .individuation {
-    margin: 24px;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    .top {
-      height: 84px;
-      line-height: 84px;
+<style lang="scss" scoped>
+  .app-container {
+    padding: 0;
+    .head-container {
       overflow: hidden;
-      text-align: right;
-      position: relative;
-      @media screen and (max-width:600px) {
-        .search {
-          display: none;
+      background-color: #ffffff;
+      padding: 0px;
+      .el-card {
+        box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+        border: 0 !important;
+        border-radius: 0;
+        .left {
+          float: left;
+          font-size: 24px;
+          font-family: PingFangHK-Medium, PingFangHK;
+          font-weight: 500;
+          color: #333333;
+          margin-left: 24px;
         }
-        .reset {
-          display: none;
-        }
-      }
-      .line {
-        width: 1px;
-        height: 16px;
-        margin: 0px 24px;
-      }
-      .titSpan {
-        position: absolute;
-        left: 24px;
-        top: 50%;
-        font-size: 24px;
-        font-family: PingFangHK-Medium, PingFangHK;
-        font-weight: 500;
-        color: #333333;
-        transform: translateY(-50%);
-      }
-      .el-input {
-        margin-right: 24px;
-        .el-input-group__append {
-          background-color: #3D5FFF;
-          color: #fff;
-        }
-      }
-    }
-    .el-table {
-      .el-table-column {
-        .el-tag {
-          cursor: pointer;
-        }
-        a {
+        .left-description {
+          float: left;
           font-size: 14px;
-          font-family: PingFangHK-Regular, PingFangHK;
-          font-weight: 400;
-          color: #3D5FFF;
+          font-family: PingFangHK-Medium, PingFangHK;
+          color: #000000a6;
+          margin: 15px 24px;
         }
       }
     }
-    .el-pagination {
-      float: right;
-      padding: 20px;
+    .main {
+      padding: 24px;
+      background-color: #fff;
+      overflow: hidden;
+      margin: 20px 20px 0 20px;
+      .search-bar {
+        background: #ffffff;
+
+        >>> .el-form-item__label {
+          font-weight: normal;
+          font-size: 15px;
+          line-height: 42px;
+        }
+      }
+      .el-table {
+        >>> .el-table__fixed-right-patch {
+          background-color: #fafafc !important;
+        }
+      }
+      .el-pagination {
+        float: right;
+        padding: 20px;
+      }
     }
     .el-dialog {
       border-radius: 8px;

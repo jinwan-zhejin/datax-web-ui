@@ -3,7 +3,7 @@
     <div class="head-container">
       <el-card class="box-card">
         <div class="text item">
-          <div class="left">调用共享接口</div>
+          <div class="left">接口调用</div>
           <el-col class="left-description">
             测试调用接口。
           </el-col>
@@ -24,8 +24,14 @@
           <el-button
             type="primary"
             size="small"
+            icon="el-icon-search"
             @click="call"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-radio-group v-show="isBtn" v-model="radio1" style="margin-bottom: 10px;" size="small">
@@ -87,7 +93,6 @@
         v-show="isSuccess"
         :data="callValue"
         :header-cell-style="{ background: '#FAFAFC', color: '#666666' }"
-        style="width: 100%;"
       >
         <!-- height="calc(100vh - 198px)" -->
         <el-table-column
@@ -249,6 +254,14 @@ export default {
           }
         )
       }
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.form.select = ''
+      this.form.address = ''
+      this.call()
     }
   }
 }

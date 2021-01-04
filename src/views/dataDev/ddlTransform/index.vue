@@ -1,322 +1,335 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-card style="height: 64px">
-        <div class="left">DDL构建</div>
-      </el-card>
-      <el-card style=" margin-top: 10px">
-        <el-row>
-          <el-col style="text-align: center;">
-            <el-button size="small" type="primary" icon="el-icon-plus" @click="newTransform">新的构建</el-button>
+    <div class="head-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">DDL构建</div>
+          <el-col class="left-description">
+            DDL构建。
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="18" :offset="3">
-            <el-form
-              ref="form"
-              :model="form"
-              :rules="rules"
-              label-width="200px"
-              style="margin-top: 15px;"
-            >
-              <el-form-item label="所属项目名称:" prop="projectId">
-                <el-select
-                  v-model="form.projectId"
-                  placeholder="请选择待项目名称"
-                  @change="onProjectChange"
-                >
-                  <el-option
-                    v-for="item in projectlist"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.name"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="待转换数据源:" prop="datasourceId">
-                <el-select
-                  v-model="form.datasourceId"
-                  placeholder="请选择待转换数据源"
-                  @change="onDSChange"
-                >
-                  <el-option
-                    v-for="(item, index) in datasourcelist"
-                    :key="index"
-                    :value="item.id"
-                    :label="item.datasourceName"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="待转换数据库/Schema:" prop="schema">
-                <el-select
-                  v-model="form.schema"
-                  placeholder="请选择待转换数据库/Schema"
-                  @change="onSchemaChange"
-                >
-                  <el-option
-                    v-for="(item, index) in schemalist"
-                    :key="index"
-                    :value="item"
-                    :label="item"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="目标SQL类型:">
-                <el-radio-group v-model="form.targetSQL">
-                  <el-radio :label="1">Hive</el-radio>
-                  <el-radio :label="2">Impala</el-radio>
-                  <el-radio :label="3">Kudu</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="版本:">
-                <el-select v-model="form.targetVersion" placeholder="请选择版本" style="width: 35%;">
-                  <el-option
-                    v-for="(item, index) in hiveVersion"
-                    :key="index"
-                    :value="item.hive"
-                  >{{ item.cdh }} ({{ item.hive }})</el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="是否临时表:">
-                <el-radio-group v-model="form.temporary">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="是否外部表:">
-                <el-radio-group v-model="form.external">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
+        </div>
+      </el-card>
+    </div>
+    <div class="main">
+      <el-form class="action-bar" style="border-bottom: 1px solid #DCDFE6;" label-position="right" label-width="auto" :inline="true">
+        <el-form-item>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="newTransform"
+          >新的构建</el-button>
+        </el-form-item>
+      </el-form>
+      <el-row>
+        <el-col :span="18" :offset="3">
+          <el-form
+            ref="form"
+            :model="form"
+            :rules="rules"
+            label-width="200px"
+            style="margin: 15px 0; height: calc(100vh - 367px); overflow-y: auto;"
+          >
+            <el-form-item label="所属项目名称:" prop="projectId">
+              <el-select
+                v-model="form.projectId"
+                placeholder="请选择待项目名称"
+                @change="onProjectChange"
+              >
+                <el-option
+                  v-for="item in projectlist"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.name"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="待转换数据源:" prop="datasourceId">
+              <el-select
+                v-model="form.datasourceId"
+                placeholder="请选择待转换数据源"
+                @change="onDSChange"
+              >
+                <el-option
+                  v-for="(item, index) in datasourcelist"
+                  :key="index"
+                  :value="item.id"
+                  :label="item.datasourceName"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="待转换数据库/Schema:" prop="schema">
+              <el-select
+                v-model="form.schema"
+                placeholder="请选择待转换数据库/Schema"
+                @change="onSchemaChange"
+              >
+                <el-option
+                  v-for="(item, index) in schemalist"
+                  :key="index"
+                  :value="item"
+                  :label="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="目标SQL类型:">
+              <el-radio-group v-model="form.targetSQL">
+                <el-radio :label="1">Hive</el-radio>
+                <el-radio :label="2">Impala</el-radio>
+                <el-radio :label="3">Kudu</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="版本:">
+              <el-select v-model="form.targetVersion" placeholder="请选择版本" style="width: 35%;">
+                <el-option
+                  v-for="(item, index) in hiveVersion"
+                  :key="index"
+                  :value="item.hive"
+                >{{ item.cdh }} ({{ item.hive }})</el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="是否临时表:">
+              <el-radio-group v-model="form.temporary">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="是否外部表:">
+              <el-radio-group v-model="form.external">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
 
-              <el-form-item v-if="form.targetSQL === 1" label="是否添加删除语句:">
-                <el-radio-group v-model="form.dropAdded">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="数据库名称:">
-                <el-radio-group v-model="form.dbNameType">
-                  <el-radio label="source">与数据源相同</el-radio>
-                  <el-radio label="udf">自定义</el-radio>
-                </el-radio-group>
-                <el-input v-if="form.dbNameType =='udf'" v-model="form.dbNamePattern" style="width: 35%; margin-left: 20px;" />
-                <el-tooltip class="item" effect="dark" content="自定义数据库名格式,字符串中的%s会被源库名替换" placement="top">
-                  <i class="el-icon-info" style="margin-left: 10px;" />
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="表名:">
-                <el-radio-group v-model="form.tableNameType">
-                  <el-radio label="source">与数据源相同</el-radio>
-                  <el-radio label="udf">自定义</el-radio>
-                </el-radio-group>
-                <el-input v-if="form.tableNameType =='udf'" v-model="form.tableNamePattern_o" style="width: 35%; margin-left: 20px;">
-                  <template slot="prepend">%s</template>
-                </el-input>
-                <el-tooltip class="item" effect="dark" content="自定义表名格式,字符串中的%s会被源表名替换" placement="top">
-                  <i class="el-icon-info" style="margin-left: 10px;" />
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="分区字段:">
-                <el-radio-group v-model="form.partitionKey">
-                  <el-radio label="random">随机选取</el-radio>
-                  <el-radio label="randomDate">随机选取DATE类型字段</el-radio>
-                  <el-radio label="none">无</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="分桶字段:">
-                <el-radio-group v-model="form.bucketKey">
-                  <el-radio label="primarykey">主键</el-radio>
-                  <el-radio label="random">随机选取</el-radio>
-                  <el-radio label="none">无</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none'" label="分桶数:">
-                <el-input-number
-                  v-model="form.bucketNum"
-                  :min="2"
-                  :max="30"
-                  style="width: 35%;"
-                  size="small"
-                />
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none'" label="分桶排序字段:">
-                <el-radio-group v-model="form.bucketSortKey">
-                  <el-radio label="date">时间字段</el-radio>
-                  <el-radio label="random">随机选取</el-radio>
-                  <el-radio label="none">无</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none' && form.bucketSortKey != 'none'">
-                <el-radio-group v-model="form.bucketSortOrder">
-                  <el-radio label="desc">降序</el-radio>
-                  <el-radio label="asc">升序</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="格式控制:">
-                <el-radio-group v-model="form.rowformat">
-                  <el-radio label="DELIMITED">DELIMITED</el-radio>
-                  <el-radio label="SERDE">SERDE</el-radio>
-                  <el-radio label="none">无</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1 && form.rowformat == 'DELIMITED'" label="">
-                <el-form label-width="110px" label-position="left">
-                  <el-form-item>
-                    <span slot="label">
-                      <el-checkbox v-model="lineTermChecked">行分隔符</el-checkbox>
-                    </span>
-                    <el-input
-                      v-if="lineTermChecked"
-                      v-model="form.rowformatLineTerm"
-                      style="line-height: 54px;"
-                    />
-                  </el-form-item>
-                </el-form>
-                <el-form label-width="110px" label-position="left">
-                  <el-form-item>
-                    <span slot="label">
-                      <el-checkbox v-model="fieldTermChecked">列分隔符</el-checkbox>
-                    </span>
-                    <el-input
-                      v-if="fieldTermChecked"
-                      v-model="form.fieldTerm"
-                      style="line-height: 54px;"
-                    />
-                  </el-form-item>
-                </el-form>
-                <el-form label-width="155px" label-position="left">
-                  <el-form-item>
-                    <span slot="label">
-                      <el-checkbox v-model="collectionTermChecked">Collection分隔符</el-checkbox>
-                    </span>
-                    <el-input
-                      v-if="collectionTermChecked"
-                      v-model="form.rowformatCollectTerm"
-                      style="line-height: 54px;"
-                    />
-                  </el-form-item>
-                </el-form>
-                <el-form label-width="160px" label-position="left">
-                  <el-form-item>
-                    <span slot="label">
-                      <el-checkbox v-model="mapKeyTermChecked">MapKey分隔符号</el-checkbox>
-                    </span>
-                    <el-input
-                      v-if="mapKeyTermChecked"
-                      v-model="form.rowformatMapKeyTerm"
-                      style="line-height: 54px;"
-                    />
-                  </el-form-item>
-                </el-form>
-                <el-form label-width="140px" label-position="left">
-                  <el-form-item>
-                    <span slot="label">
-                      <el-checkbox v-model="nullDefinedAsChecked">空值替换字符</el-checkbox>
-                    </span>
-                    <el-input
-                      v-if="nullDefinedAsChecked"
-                      v-model="form.rowformatNullDefinndAs"
-                      style="line-height: 54px;"
-                    />
-                  </el-form-item>
-                </el-form>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1 && form.rowformat == 'SERDE'" label="SERDE名称:">
-                <el-input v-model="form.rowformatSerdeName" placeholder="SERDE名称" />
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="存储文件类型:">
-                <el-select
-                  v-model="form.storedAs"
-                  placeholder="存储文件类型"
-                >
-                  <el-option
-                    v-for="item in storedAslist"
-                    :key="item"
-                    :value="item"
-                    :label="item"
+            <el-form-item v-if="form.targetSQL === 1" label="是否添加删除语句:">
+              <el-radio-group v-model="form.dropAdded">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="数据库名称:">
+              <el-radio-group v-model="form.dbNameType">
+                <el-radio label="source">与数据源相同</el-radio>
+                <el-radio label="udf">自定义</el-radio>
+              </el-radio-group>
+              <el-input v-if="form.dbNameType =='udf'" v-model="form.dbNamePattern" style="width: 35%; margin-left: 20px;" />
+              <el-tooltip class="item" effect="dark" content="自定义数据库名格式,字符串中的%s会被源库名替换" placement="top">
+                <i class="el-icon-info" style="margin-left: 10px;" />
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="表名:">
+              <el-radio-group v-model="form.tableNameType">
+                <el-radio label="source">与数据源相同</el-radio>
+                <el-radio label="udf">自定义</el-radio>
+              </el-radio-group>
+              <el-input v-if="form.tableNameType =='udf'" v-model="form.tableNamePattern_o" style="width: 35%; margin-left: 20px;">
+                <template slot="prepend">%s</template>
+              </el-input>
+              <el-tooltip class="item" effect="dark" content="自定义表名格式,字符串中的%s会被源表名替换" placement="top">
+                <i class="el-icon-info" style="margin-left: 10px;" />
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="分区字段:">
+              <el-radio-group v-model="form.partitionKey">
+                <el-radio label="random">随机选取</el-radio>
+                <el-radio label="randomDate">随机选取DATE类型字段</el-radio>
+                <el-radio label="none">无</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="分桶字段:">
+              <el-radio-group v-model="form.bucketKey">
+                <el-radio label="primarykey">主键</el-radio>
+                <el-radio label="random">随机选取</el-radio>
+                <el-radio label="none">无</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none'" label="分桶数:">
+              <el-input-number
+                v-model="form.bucketNum"
+                :min="2"
+                :max="30"
+                style="width: 35%;"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none'" label="分桶排序字段:">
+              <el-radio-group v-model="form.bucketSortKey">
+                <el-radio label="date">时间字段</el-radio>
+                <el-radio label="random">随机选取</el-radio>
+                <el-radio label="none">无</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1 && form.bucketKey != 'none' && form.bucketSortKey != 'none'">
+              <el-radio-group v-model="form.bucketSortOrder">
+                <el-radio label="desc">降序</el-radio>
+                <el-radio label="asc">升序</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="格式控制:">
+              <el-radio-group v-model="form.rowformat">
+                <el-radio label="DELIMITED">DELIMITED</el-radio>
+                <el-radio label="SERDE">SERDE</el-radio>
+                <el-radio label="none">无</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1 && form.rowformat == 'DELIMITED'" label="">
+              <el-form label-width="110px" label-position="left">
+                <el-form-item>
+                  <span slot="label">
+                    <el-checkbox v-model="lineTermChecked">行分隔符</el-checkbox>
+                  </span>
+                  <el-input
+                    v-if="lineTermChecked"
+                    v-model="form.rowformatLineTerm"
+                    style="line-height: 54px;"
                   />
-                </el-select>
-              </el-form-item>
-              <el-form-item v-if="form.targetSQL === 1" label="存储位置:">
-                <el-input v-model="form.location" placeholder="存储位置" />
-              </el-form-item>
-              <el-col :span="18" :offset="3">
-                <el-progress
-                  v-if="showProgressbar"
-                  ref="transformProgress"
-                  :color="progressColor"
-                  :format="progressFormat"
-                  style="margin: 20px 0;"
-                  :percentage="transformPercentage"
+                </el-form-item>
+              </el-form>
+              <el-form label-width="110px" label-position="left">
+                <el-form-item>
+                  <span slot="label">
+                    <el-checkbox v-model="fieldTermChecked">列分隔符</el-checkbox>
+                  </span>
+                  <el-input
+                    v-if="fieldTermChecked"
+                    v-model="form.fieldTerm"
+                    style="line-height: 54px;"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form label-width="155px" label-position="left">
+                <el-form-item>
+                  <span slot="label">
+                    <el-checkbox v-model="collectionTermChecked">Collection分隔符</el-checkbox>
+                  </span>
+                  <el-input
+                    v-if="collectionTermChecked"
+                    v-model="form.rowformatCollectTerm"
+                    style="line-height: 54px;"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form label-width="160px" label-position="left">
+                <el-form-item>
+                  <span slot="label">
+                    <el-checkbox v-model="mapKeyTermChecked">MapKey分隔符号</el-checkbox>
+                  </span>
+                  <el-input
+                    v-if="mapKeyTermChecked"
+                    v-model="form.rowformatMapKeyTerm"
+                    style="line-height: 54px;"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form label-width="140px" label-position="left">
+                <el-form-item>
+                  <span slot="label">
+                    <el-checkbox v-model="nullDefinedAsChecked">空值替换字符</el-checkbox>
+                  </span>
+                  <el-input
+                    v-if="nullDefinedAsChecked"
+                    v-model="form.rowformatNullDefinndAs"
+                    style="line-height: 54px;"
+                  />
+                </el-form-item>
+              </el-form>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1 && form.rowformat == 'SERDE'" label="SERDE名称:">
+              <el-input v-model="form.rowformatSerdeName" placeholder="SERDE名称" />
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="存储文件类型:">
+              <el-select
+                v-model="form.storedAs"
+                placeholder="存储文件类型"
+              >
+                <el-option
+                  v-for="item in storedAslist"
+                  :key="item"
+                  :value="item"
+                  :label="item"
                 />
-              </el-col>
-              <el-col :span="12" :offset="6">
-                <el-col :span="12" style="text-align: center;">
-                  <el-button
-                    v-loading="isLoading"
-                    :disabled="showProgressbar"
-                    type="primary"
-                    size="small"
-                    @click="onTransform('form')"
-                  >开始转换</el-button>
-                </el-col>
-                <el-col :span="12" style="text-align: center;">
-                  <el-button
-                    v-loading="isLoading"
-                    :disabled="!showProgressbar"
-                    type="primary"
-                    size="small"
-                    @click="showTransformedSQL"
-                  >查看转换结果</el-button>
-                </el-col>
-              </el-col>
-            </el-form>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="form.targetSQL === 1" label="存储位置:">
+              <el-input v-model="form.location" placeholder="存储位置" />
+            </el-form-item>
+            <el-col :span="18" :offset="3">
+              <el-progress
+                v-if="showProgressbar"
+                ref="transformProgress"
+                :color="progressColor"
+                :format="progressFormat"
+                style="margin: 20px 0;"
+                :percentage="transformPercentage"
+              />
+            </el-col>
+          </el-form>
+        </el-col>
+      </el-row>
+      <el-col style="padding-top: 15px; border-top: 1px solid #dcdfe6;">
+        <el-col :span="12" :offset="6">
+          <el-col :span="12" style="text-align: center;">
+            <el-button
+              v-loading="isLoading"
+              :disabled="showProgressbar"
+              type="primary"
+              size="small"
+              @click="onTransform('form')"
+            >开始转换</el-button>
           </el-col>
-        </el-row>
-      </el-card>
-      <!-- <el-dialog title="转换进度" :visible.sync="showProgressbar" width="50%">
+          <el-col :span="12" style="text-align: center;">
+            <el-button
+              v-loading="isLoading"
+              :disabled="!showProgressbar"
+              type="primary"
+              size="small"
+              @click="showTransformedSQL"
+            >查看转换结果</el-button>
+          </el-col>
+        </el-col>
+      </el-col>
+    </div>
+    <!-- <el-dialog title="转换进度" :visible.sync="showProgressbar" width="50%">
         <el-progress
           style="width: 80%; margin-left: 10%"
           :percentage="transformPercentage"
         />
       </el-dialog> -->
-      <el-dialog title="查看转换结果" :visible.sync="dialogVisible" width="60%">
-        <div class="dialogBody">
-          <el-row class="result-op" style="margin: 5px 0; position: absolute; right: 40px; z-index: 2020;">
-            <el-col class="result-options">
-              <el-tooltip placement="top" content="复制脚本">
-                <el-button
-                  v-clipboard:error="onError"
-                  v-clipboard:copy="sqlScript"
-                  v-clipboard:success="onCopy"
-                  style="padding: 5px; font-size: 16px;"
-                  type="text"
-                  icon="el-icon-document-copy"
-                />
-              </el-tooltip>
-              <el-tooltip placement="top" content="导出脚本">
-                <el-button
-                  style="padding: 5px; font-size: 16px;"
-                  type="text"
-                  icon="el-icon-download"
-                  @click="onExportScript"
-                />
-              </el-tooltip>
-            </el-col>
-          </el-row>
-          <el-input
-            v-model="sqlScript"
-            class="codesql"
-            type="textarea"
-            :autosize="{ minRows: 7, maxRows: 15}"
-            placeholder="转换结果"
-            readonly
-          />
-        </div>
-      </el-dialog>
-    </div>
+    <el-dialog title="查看转换结果" :visible.sync="dialogVisible" width="60%">
+      <div class="dialogBody">
+        <el-row class="result-op" style="margin: 5px 0; position: absolute; right: 40px; z-index: 2020;">
+          <el-col class="result-options">
+            <el-tooltip placement="top" content="复制脚本">
+              <el-button
+                v-clipboard:error="onError"
+                v-clipboard:copy="sqlScript"
+                v-clipboard:success="onCopy"
+                style="padding: 5px; font-size: 16px;"
+                type="text"
+                icon="el-icon-document-copy"
+              />
+            </el-tooltip>
+            <el-tooltip placement="top" content="导出脚本">
+              <el-button
+                style="padding: 5px; font-size: 16px;"
+                type="text"
+                icon="el-icon-download"
+                @click="onExportScript"
+              />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-input
+          v-model="sqlScript"
+          class="codesql"
+          type="textarea"
+          :autosize="{ minRows: 7, maxRows: 15}"
+          placeholder="转换结果"
+          readonly
+        />
+      </div>
+    </el-dialog>
+  </div>
   </div>
 </template>
 
@@ -655,61 +668,39 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
-  .filter-container {
+  padding: 0;
+  .head-container {
     overflow: hidden;
-    // line-height: 56px;
     background-color: #ffffff;
     padding: 0px;
-
-    // border-radius: 5px 5px 0px 0px;
-    // box-shadow:0 2px 12px 0 rgba(0,0,0,.3);
-    .el-card {
+    .box-card {
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
+      border: 0 !important;
+      border-radius: 0;
       .left {
         float: left;
+        width: 120px;
         font-size: 24px;
         font-family: PingFangHK-Medium, PingFangHK;
         font-weight: 500;
         color: #333333;
         margin-left: 24px;
       }
-
-      .right {
-        float: right;
-        margin-right: 20px;
-
-        .el-input {
-          overflow: hidden;
-
-          .el-input__inner {
-            float: left;
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
-            padding-right: 15px;
-          }
-
-          .el-input-group__append {
-            float: left;
-            width: 60px;
-            padding: 0px 15px;
-            text-align: center;
-            color: #fff;
-            background-color: #3d5fff;
-          }
-        }
-      }
-      .el-form {
-        >>> .el-select {
-          width: 100% !important;
-        }
+      .left-description {
+        float: left;
+        font-size: 14px;
+        font-family: PingFangHK-Medium, PingFangHK;
+        color: #000000a6;
+        margin: 15px 24px;
       }
     }
   }
 
   .main {
+    padding: 24px;
     background-color: #fff;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 20px 20px 0 20px;
   }
 
   .topSelect {

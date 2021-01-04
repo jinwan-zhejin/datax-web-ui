@@ -26,8 +26,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="getAllData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
@@ -45,6 +51,7 @@
         :header-cell-style="{background:'#fafafc', color: '#666666'}"
       >
         <el-table-column
+          fixed
           type="index"
           label="序号"
           align="center"
@@ -52,19 +59,20 @@
         />
         <el-table-column
           prop="interName"
-          align="left"
+          align="center"
           label="接口名称"
           width="280"
         />
         <el-table-column
           prop="interRemark"
           label="接口描述"
-          align="left"
+          align="center"
           width="400"
         />
         <el-table-column
           prop="interState"
           label="状态"
+          align="center"
           width="250"
         >
           <template v-slot:default="{ row }">
@@ -87,8 +95,9 @@
         width="100">
       </el-table-column> -->
         <el-table-column
+          fixed="right"
           label="操作"
-          align="left"
+          align="center"
         >
           <template v-slot:default="{ row }">
             <a style="color: #3d5eff;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>
@@ -198,6 +207,13 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.interName = ''
+      this.getAllData()
     }
   }
 }

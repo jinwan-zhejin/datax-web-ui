@@ -24,8 +24,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="fetchData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
@@ -47,7 +53,7 @@
         :header-cell-style="{background:'#fafafc', color: '#666666'}"
       >
         <!-- height="calc(100vh - 310px)" -->
-        <el-table-column label="序号" align="center" width="95">
+        <el-table-column fixed label="序号" align="center" width="95">
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
         <el-table-column label="用户名" align="center">
@@ -58,7 +64,7 @@
             <span v-for="item in scope.row.roleName" :key="item">{{ item }}</br></span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
             <el-button type="text" @click="handleUpdate(row)">
               编辑
@@ -280,6 +286,13 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.listQuery.username = ''
+      this.fetchData()
     }
   }
 }

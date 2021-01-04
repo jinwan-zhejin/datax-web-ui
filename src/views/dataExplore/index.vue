@@ -25,8 +25,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="getAllData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-row :gutter="20" style="margin-top: 20px;" :loading="listLoading">
@@ -577,6 +583,13 @@ export default {
             message: '已取消删除'
           });
         });
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.search = ''
+      this.getAllData()
     }
   }
 };

@@ -25,8 +25,14 @@
           <el-button
             size="small"
             type="primary"
+            icon="el-icon-search"
             @click="fetchData"
           >搜 索</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-refresh"
+            @click="reSet"
+          >重 置</el-button>
         </el-form-item>
       </el-form>
       <el-row :gutter="20" style="margin-top: 20px;">
@@ -436,6 +442,13 @@ export default {
     handleShowMember(item) {
       this.temp = item;
       this.memberShow = true;
+    },
+    /**
+     * @description: 重置
+     */
+    reSet() {
+      this.listQuery.searchVal = ''
+      this.fetchData()
     }
   }
 };
