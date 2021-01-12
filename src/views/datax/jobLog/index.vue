@@ -127,7 +127,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="300">
+        <el-table-column fixed="right" label="操作" align="center" min-width="300">
           <template slot-scope="{ row }">
             <el-button
               v-show="row.executorAddress"

@@ -4,7 +4,7 @@
 
     <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
 
-    <div v-loading="isLoading" class="statistics">
+    <div class="statistics">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>项目</span>
@@ -20,7 +20,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.item" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataObjectStatistics.item" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -35,7 +35,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.itemDataSource" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataObjectStatistics.itemDataSource" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -50,7 +50,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.itemUser" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataObjectStatistics.itemUser" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -65,7 +65,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.itemTask" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataObjectStatistics.itemTask" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -78,9 +78,9 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
+              <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(KPI.itemTaskDistribution)" />
+                <pie-chart :chart-data="transformArrPieChart(dataObjectDistribute.itemTaskDistribution)" />
               </el-col>
             </el-card>
           </el-col>
@@ -92,9 +92,9 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
+              <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" /> -->
-                <bar-chart :chart-data="transformArrBarChart(KPI.itemTaskTypeDistribution)" />
+                <bar-chart :chart-data="transformArrBarChart(dataObjectType.itemTaskTypeDistribution)" />
               </el-col>
             </el-card>
           </el-col>
@@ -106,9 +106,9 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
+              <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskRunStateDistribution" /> -->
-                <line-chart :chart-data="transformArrBarChart2(KPI.itemTaskRunStateDistribution)" />
+                <line-chart :chart-data="transformArrBarChart2(dataObjectRun.itemTaskRunStateDistribution)" />
               </el-col>
             </el-card>
             <!-- {{ KPI.itemTaskRunStateDistribution }} -->
@@ -130,15 +130,15 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.connectDataSource" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataSourceStatistics.connectDataSource" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(KPI.connectDataSource, KPI.itemDataSource)"
+                  v-if="toPercentNum(dataSourceStatistics.connectDataSource, dataObjectStatistics.itemDataSource)"
                   :width="100"
                   type="dashboard"
-                  :percentage="toPercentNum(KPI.connectDataSource, KPI.itemDataSource)"
+                  :percentage="toPercentNum(dataSourceStatistics.connectDataSource, dataObjectStatistics.itemDataSource)"
                 />
               </el-col>
             </el-card>
@@ -153,7 +153,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.database" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataSourceStatistics.database" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -168,7 +168,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.table" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataSourceStatistics.table" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -190,16 +190,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="successCount" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataTaskStatistics.triggerCountSucTotal" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(successCount, KPI.itemTask)"
+                  v-if="toPercentNum(dataTaskStatistics.triggerCountSucTotal, dataObjectStatistics.itemTask)"
                   :width="100"
                   color="#67c23a"
                   type="dashboard"
-                  :percentage="toPercentNum(successCount, KPI.itemTask)"
+                  :percentage="toPercentNum(dataTaskStatistics.triggerCountSucTotal, dataObjectStatistics.itemTask)"
                 />
               </el-col>
             </el-card>
@@ -214,16 +214,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="failCount" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataTaskStatistics.triggerCountFailTotal" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(failCount, KPI.itemTask)"
+                  v-if="toPercentNum(dataTaskStatistics.triggerCountFailTotal, dataObjectStatistics.itemTask)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="toPercentNum(failCount, KPI.itemTask)"
+                  :percentage="toPercentNum(dataTaskStatistics.triggerCountFailTotal, dataObjectStatistics.itemTask)"
                 />
               </el-col>
             </el-card>
@@ -238,16 +238,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="runningCount" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataTaskStatistics.triggerCountRunningTotal" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(runningCount, KPI.itemTask)"
+                  v-if="toPercentNum(dataTaskStatistics.triggerCountRunningTotal, dataObjectStatistics.itemTask)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="toPercentNum(runningCount, KPI.itemTask)"
+                  :percentage="toPercentNum(dataTaskStatistics.triggerCountRunningTotal, dataObjectStatistics.itemTask)"
                 />
               </el-col>
             </el-card>
@@ -262,7 +262,7 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(KPI.taskTypeDistribution)" />
+                <pie-chart :chart-data="transformArrPieChart(dataTaskDistribute.taskTypeDistribution)" />
               </el-col>
             </el-card>
           </el-col>
@@ -276,7 +276,7 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(KPI.taskExecutorDistribution)" />
+                <pie-chart :chart-data="transformArrPieChart(dataTaskDistributeE.taskExecutorDistribution)" />
               </el-col>
             </el-card>
           </el-col>
@@ -289,10 +289,9 @@
                 </el-tooltip>
               </div>
               <el-col>
-                <line-chart :chart-data="lineChartData" />
+                <line-chart :chart-data="dataTaskResult" />
               </el-col>
             </el-card>
-            <!-- {{ lineChartData }} -->
           </el-col>
         </el-row>
       </el-card>
@@ -312,7 +311,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.generalRule" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataRuleStatistics.generalRule" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -327,7 +326,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.configedRule" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataRuleStatistics.configedRule" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -342,7 +341,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.personalRule" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataRuleStatistics.personalRule" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -355,9 +354,9 @@
                   <i class="el-icon-info" />
                 </el-tooltip>
               </div>
-              <el-col v-if="!isLoading">
+              <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.usedRule" /> -->
-                <pie-chart :chart-data="transformArrPieChart2(KPI.usedRule)" />
+                <pie-chart :chart-data="transformArrPieChart2(dataRuleChart.usedRule)" />
               </el-col>
             </el-card>
             <!-- {{ KPI.usedRule }} -->
@@ -379,7 +378,7 @@
               </div>
               <el-col>
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.interfaceNum" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataApiStatistics.interfaceNum" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
             </el-card>
@@ -394,16 +393,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.passInterface" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataApiStatistics.passInterface" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(KPI.passInterface, KPI.interfaceNum)"
+                  v-if="toPercentNum(dataApiStatistics.passInterface, dataApiStatistics.interfaceNum)"
                   :width="100"
                   color="#67c23a"
                   type="dashboard"
-                  :percentage="toPercentNum(KPI.passInterface, KPI.interfaceNum)"
+                  :percentage="toPercentNum(dataApiStatistics.passInterface, dataApiStatistics.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -418,16 +417,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.approvingInterface" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataApiStatistics.approvingInterface" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(KPI.approvingInterface, KPI.interfaceNum)"
+                  v-if="toPercentNum(dataApiStatistics.approvingInterface, dataApiStatistics.interfaceNum)"
                   :width="100"
                   color="#e6a23c"
                   type="dashboard"
-                  :percentage="toPercentNum(KPI.approvingInterface, KPI.interfaceNum)"
+                  :percentage="toPercentNum(dataApiStatistics.approvingInterface, dataApiStatistics.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -442,16 +441,16 @@
               </div>
               <el-col :span="12">
                 <span>
-                  <count-to :start-val="0" :end-val="KPI.rejectInterface" :duration="3200" class="card-panel-num" />
+                  <count-to :start-val="0" :end-val="dataApiStatistics.rejectInterface" :duration="3200" class="card-panel-num" />
                 </span>
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  v-if="toPercentNum(KPI.rejectInterface, KPI.interfaceNum)"
+                  v-if="toPercentNum(dataApiStatistics.rejectInterface, dataApiStatistics.interfaceNum)"
                   :width="100"
                   color="#f56c6c"
                   type="dashboard"
-                  :percentage="toPercentNum(KPI.rejectInterface, KPI.interfaceNum)"
+                  :percentage="toPercentNum(dataApiStatistics.rejectInterface, dataApiStatistics.interfaceNum)"
                 />
               </el-col>
             </el-card>
@@ -497,12 +496,12 @@
 // import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import vechart from './components/vEchart'
-import RaddarChart from './components/RaddarChart'
+// import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import BarChart from './components/BarChart'
 // import TransactionTable from './components/TransactionTable'
 // import TodoList from './components/TodoList'
-import BoxCard from './components/BoxCard'
+// import BoxCard from './components/BoxCard'
 import * as dashborad from '@/api/dashborad'
 import CountTo from 'vue-count-to'
 
@@ -521,7 +520,7 @@ export default {
     // PanelGroup,
     LineChart,
     CountTo,
-    vechart,
+    // vechart,
     // RaddarChart,
     PieChart,
     BarChart
@@ -536,7 +535,29 @@ export default {
       runningCount: 0,
       failCount: 0,
       successCount: 0,
-      isLoading: true
+      isLoading: true,
+      /** 项目 */
+      objectIsLoading: true,
+      dataObjectStatistics: {},
+      dataObjectDistribute: {},
+      dataObjectType: {},
+      dataObjectRun: {},
+      /** 数据源 */
+      sourceIsLoading: true,
+      dataSourceStatistics: {},
+      /** 任务 */
+      taskIsLoading: true,
+      dataTaskStatistics: {},
+      dataTaskDistribute: {},
+      dataTaskDistributeE: {},
+      dataTaskResult: {},
+      /** 规则 */
+      ruleIsLoading: true,
+      dataRuleStatistics: {},
+      dataRuleChart: {},
+      /** 接口 */
+      apiIsLoading: true,
+      dataApiStatistics: {}
     }
   },
   computed: {
@@ -653,37 +674,125 @@ export default {
     }
   },
   created() {
-    this.chartInfo()
-    this.getDataKPI()
+    // this.chartInfo()
+    // this.getDataKPI()
+    this.getObjectStatistics()
+    this.getObjectDistribute()
+    this.getObjectType()
+    this.getObjectRun()
+    this.getSourceStatistics()
+    this.getTaskStatistics()
+    this.getTaskDistribute()
+    this.getTaskDistributeE()
+    this.getTaskResult()
+    this.getRuleStatistics()
+    this.getRuleChart()
+    this.getApiStatistics()
   },
   methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
-    },
-    getDataKPI() {
-      dashborad.getKPI().then(res => {
-        console.log(res)
-        if (res.code === 200) {
-          localStorage.setItem('AllDataKPI', JSON.stringify(res.content))
-          this.KPI = res.content
-          this.isLoading = false
-        }
-      }).catch(err => {
-        console.log(err)
+    // handleSetLineChartData(type) {
+    //   this.lineChartData = lineChartData[type]
+    // },
+    // getDataKPI() {
+    //   dashborad.getKPI().then(res => {
+    //     console.log(res)
+    //     if (res.code === 200) {
+    //       localStorage.setItem('AllDataKPI', JSON.stringify(res.content))
+    //       this.KPI = res.content
+    //       this.isLoading = false
+    //     }
+    //   }).catch(err => {
+    //     console.log(err)
+    //   })
+    // },
+    // chartInfo() {
+    //   dashborad.chartInfo().then(response => {
+    //     console.log(response)
+    //     const { content } = response
+    //     this.lineChartData.successData = content.triggerDayCountSucList
+    //     this.lineChartData.failData = content.triggerDayCountFailList
+    //     this.lineChartData.dayList = content.triggerDayList
+    //     localStorage.setItem('countSucTotal', content.triggerCountSucTotal)
+    //     localStorage.setItem('countRunningTotal', content.triggerCountRunningTotal)
+    //     localStorage.setItem('countFailTotal', content.triggerCountFailTotal)
+    //     this.successCount = content.triggerCountSucTotal
+    //     this.failCount = content.triggerCountFailTotal
+    //     this.runningCount = content.triggerCountRunningTotal
+    //   })
+    // },
+    /**
+     * @description: 项目
+     */
+    getObjectStatistics() {
+      dashborad.getObjectStatistics().then(response => {
+        this.dataObjectStatistics = response.content
       })
     },
-    chartInfo() {
-      dashborad.chartInfo().then(response => {
-        const { content } = response
-        this.lineChartData.successData = content.triggerDayCountSucList
-        this.lineChartData.failData = content.triggerDayCountFailList
-        this.lineChartData.dayList = content.triggerDayList
-        localStorage.setItem('countSucTotal', content.triggerCountSucTotal)
-        localStorage.setItem('countRunningTotal', content.triggerCountRunningTotal)
-        localStorage.setItem('countFailTotal', content.triggerCountFailTotal)
-        this.successCount = content.triggerCountSucTotal
-        this.failCount = content.triggerCountFailTotal
-        this.runningCount = content.triggerCountRunningTotal
+    getObjectDistribute() {
+      dashborad.getObjectDistribute().then(response => {
+        this.dataObjectDistribute = response.content
+      })
+    },
+    getObjectType() {
+      dashborad.getObjectType().then(response => {
+        this.dataObjectType = response.content
+      })
+    },
+    getObjectRun() {
+      dashborad.getObjectRun().then(response => {
+        this.dataObjectRun = response.content
+      })
+    },
+    /**
+     * @description: 数据源
+     */
+    getSourceStatistics() {
+      dashborad.getSourceStatistics().then(response => {
+        this.dataSourceStatistics = response.content
+      })
+    },
+    /**
+     * @description: 任务
+     */
+    getTaskStatistics() {
+      dashborad.getTaskStatistics().then(response => {
+        this.dataTaskStatistics = response.content
+      })
+    },
+    getTaskDistribute() {
+      dashborad.getTaskDistribute().then(response => {
+        this.dataTaskDistribute = response.content
+      })
+    },
+    getTaskDistributeE() {
+      dashborad.getTaskDistributeE().then(response => {
+        this.dataTaskDistributeE = response.content
+      })
+    },
+    getTaskResult() {
+      dashborad.getTaskResult().then(response => {
+        this.dataTaskResult = response.content
+        this.$set(this.dataTaskResult, 'successData', this.dataTaskResult.triggerDayCountSucList)
+        this.$set(this.dataTaskResult, 'failData', this.dataTaskResult.triggerDayCountFailList)
+        this.$set(this.dataTaskResult, 'dayList', this.dataTaskResult.triggerDayList)
+        console.log(this.dataTaskResult);
+      })
+    },
+    /** 规则 */
+    getRuleStatistics() {
+      dashborad.getRuleStatistics().then(response => {
+        this.dataRuleStatistics = response.content
+      })
+    },
+    getRuleChart() {
+      dashborad.getRuleChart().then(response => {
+        this.dataRuleChart = response.content
+      })
+    },
+    /** 接口 */
+    getApiStatistics() {
+      dashborad.getApiStatistics().then(response => {
+        this.dataApiStatistics = response.content
       })
     }
   }

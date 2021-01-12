@@ -98,6 +98,7 @@
           fixed="right"
           label="操作"
           align="center"
+          min-width="120"
         >
           <template v-slot:default="{ row }">
             <a style="color: #3d5eff;cursor:pointer;" @click="gotoViewRegister(row)">查看详情</a>

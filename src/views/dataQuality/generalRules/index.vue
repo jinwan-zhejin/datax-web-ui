@@ -88,7 +88,7 @@
               showType(row.row)
             }}</a> </template>a
         </el-table-column>
-        <el-table-column fixed="right" align="center" width="120" label="操作">
+        <el-table-column fixed="right" align="center" min-width="120" label="操作">
           <template v-slot:default="row">
             <a style="color: #3D5FFF;" @click="showEdit(row)">编辑</a>
             <el-divider direction="vertical" />
