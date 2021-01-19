@@ -37,10 +37,12 @@ const actions = {
         const { data } = response.content
         const { roles } = response.content
         const { userId } = response.content
+        const { userName } = response.content
         commit('SET_TOKEN', data)
         localStorage.setItem('token', JSON.stringify(data))
         localStorage.setItem('roles', JSON.stringify(roles))
         localStorage.setItem('userId', JSON.stringify(userId))
+        localStorage.setItem('userName', JSON.stringify(userName))
         setToken(data)
         resolve()
       }).catch(error => {

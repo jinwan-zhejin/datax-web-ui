@@ -45,7 +45,11 @@ module.exports = {
         // target: 'http://192.168.3.66:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.72:8080', // 王雷
+<<<<<<< HEAD
         target: 'http://192.168.3.70:8083', // 刘向前
+=======
+        // target: 'http://192.168.3.70:8083', // 刘向前
+>>>>>>> 980b86a43b3fcd418cd2f7ce2e5cb587876f588c
         // target: 'http://192.168.3.74:7000', // 侯峰
         changeOrigin: true,
         pathRewrite: {
