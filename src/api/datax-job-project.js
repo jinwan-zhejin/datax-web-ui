@@ -4,7 +4,7 @@ import request from '@/utils/request'
 
 export function list(params) {
   return request({
-    url: '/api/jobProject',
+    url: '/api/jobProject/getJobProject',
     method: 'get',
     params
   })

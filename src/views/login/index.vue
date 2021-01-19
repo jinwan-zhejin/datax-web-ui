@@ -156,10 +156,24 @@ export default {
           this.$store.dispatch('user/logout')
         } else {
           localStorage.setItem('permission', JSON.stringify(res))
-          this.$router.push({
-            path: this.redirect || '/',
-            query: this.otherQuery
-          });
+          console.log(this.redirect, 'redirect')
+          // this.$router.push({
+          //   path: this.redirect || '/',
+          //   query: this.otherQuery
+          // });
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].menuId === 1) {
+              this.$router.push({
+                path: '/',
+                query: this.otherQuery
+              });
+            } else {
+              this.$router.push({
+                path: res[0].path,
+                query: this.otherQuery
+              });
+            }
+          }
           this.loading = false;
           this.errorMes = false;
         }

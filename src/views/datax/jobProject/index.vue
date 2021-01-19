@@ -58,7 +58,7 @@
           :xl="6"
           style="margin-bottom: 20px;"
         >
-          <project-card :all-users="users" :content="item" style="cursor: pointer;">
+          <project-card :all-users="users" :content="item" style="cursor: pointer;" @click.native="handleLink">
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>
                 <el-dropdown trigger="click" placement="bottom-end" @click.native.stop>
@@ -275,7 +275,8 @@ export default {
       listQuery: {
         pageNo: 1,
         pageSize: 10,
-        searchVal: ''
+        searchVal: '',
+        userId: ''
       },
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
@@ -332,6 +333,7 @@ export default {
   },
   methods: {
     fetchData() {
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       this.listLoading = true;
       jobProjectApi.list(this.listQuery).then(response => {
         const { records } = response;
@@ -373,6 +375,25 @@ export default {
           });
         }
       });
+    },
+    handleLink() {
+      console.log(JSON.parse(localStorage.getItem('permission')))
+      const myLeft = JSON.parse(localStorage.getItem('permission'))
+      const arr = []
+      for (let i = 0; i < myLeft.length; i++) {
+        if (myLeft[i].menuId !== 1 && myLeft[i].menuId !== 4) {
+          arr.push(myLeft[i])
+        }
+      }
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].path) {
+          window.open('#' + arr[0].path + '?level=2')
+        } else {
+          window.open('#' + arr[0].children[0].path + '?level=2')
+        }
+      }
+      console.log('#' + arr[0].path + '');
+      console.log(arr);
     },
     handleUpdate(row) {
       jobProjectApi.getInfoById(row.id).then(response => {

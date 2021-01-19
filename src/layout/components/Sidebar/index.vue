@@ -101,9 +101,37 @@ export default {
       console.log(this.$route, ',.....................')
       this.getAnalysis()
     }
-    this.userRouter = JSON.parse(localStorage.getItem('permission'))
+    console.log(this.$route, ',.....................')
+    if (this.$route.query.level === '2') {
+      sessionStorage.setItem('level', this.$route.query.level)
+    }
+
+    if (JSON.parse(localStorage.getItem('userId')) !== 1) {
+      if (sessionStorage.getItem('level') === '2') {
+        const myLeft = JSON.parse(localStorage.getItem('permission'))
+        const arr = []
+        for (let i = 0; i < myLeft.length; i++) {
+          if (myLeft[i].menuId !== 1 && myLeft[i].menuId !== 4) {
+            arr.push(myLeft[i])
+          }
+        }
+        this.userRouter = arr
+      } else {
+        const myLeft = JSON.parse(localStorage.getItem('permission'))
+        const arr = []
+        for (let i = 0; i < myLeft.length; i++) {
+          if (myLeft[i].menuId === 1 || myLeft[i].menuId === 4) {
+            arr.push(myLeft[i])
+          }
+        }
+        this.userRouter = arr
+        console.log(arr, '当前用户显示')
+      }
+    } else {
+      this.userRouter = JSON.parse(localStorage.getItem('permission'))
+    }
+
     console.log(this.userRouter, 'session')
-    // this.showUserPer()
   },
   methods: {
     returnPath(path) {

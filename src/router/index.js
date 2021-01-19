@@ -608,6 +608,20 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/personal',
+    component: Layout,
+    redirect: '/personal',
+    name: 'personal',
+    children: [
+      {
+        path: '',
+        name: 'Personal',
+        component: () => import('@/views/personal/index'),
+        meta: { title: '个人信息', icon: 'gerenxinxi' }
+      }
+    ]
+  },
 
   // 数据质量
 

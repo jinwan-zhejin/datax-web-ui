@@ -36,9 +36,11 @@ const actions = {
       login({ username: username.trim(), password: password, rememberMe: 1 }).then(response => {
         const { data } = response.content
         const { roles } = response.content
+        const { userId } = response.content
         commit('SET_TOKEN', data)
         localStorage.setItem('token', JSON.stringify(data))
         localStorage.setItem('roles', JSON.stringify(roles))
+        localStorage.setItem('userId', JSON.stringify(userId))
         setToken(data)
         resolve()
       }).catch(error => {
