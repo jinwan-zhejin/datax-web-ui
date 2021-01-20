@@ -1,42 +1,42 @@
 <template>
-  <div class="app-container">
-    <div class="head-container">
-      <el-card class="box-card">
-        <div class="text item">
-          <div class="left">个人信息</div>
-          <el-col class="left-description">
-            <!-- 管理项目的增、删、改、查，管理项目数据源配置以及成员配置。 -->
-          </el-col>
+  <div class="main">
+    <div class="left">
+      <div class="img">
+        <img src="../../../public/avatar.jpg" class="user-avatar">
+      </div>
+      <div class="userName">
+        <p>
+          {{ '尊敬的' + userName + ',您好' }}
+        </p>
+        <div class="desc">
+          您拥有的项目共有<span>{{ total }}</span>个
         </div>
-      </el-card>
+      </div>
     </div>
-    <div class="userInfo">
-      <el-card class="box-card">
-        <div class="text item">
-          <div class="workplace">
-            <div class="left">
-              <img src="../../../public/avatar.jpg" class="user-avatar">
-            </div>
-            <div class="right">
-              <p>
-                {{ '尊敬的' + userName + ',您好' }}
-              </p>
-              <div class="project">
+    <div class="right">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane :label="'项目(' + total + ')'" name="first">
+          <el-row :gutter="10">
+            <el-col v-for="i in item" :key="i.id" :span="6" @click.native="handleLink">
+              <div class="box">
                 <div class="title">
-                  您的项目数
-                  <br>
-                  <span>{{ total }}</span>
+                  <div class="radius">
+                    {{ i.name ? i.name.split('')[0] : '' }}
+                  </div>
+                  <span>{{ i.name }}</span>
+                </div>
+                <div class="body">
+                  <p>项目描述：{{ i.description }}</p>
+                  <div class="time">
+                    {{ i.note }}时间：{{ i.createTime }}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <!-- <el-col class="left-description">
-            下午好，天野远子，准备吃什么呢?
-          </el-col> -->
-        </div>
-      </el-card>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
     </div>
-    <div class="userBody" />
   </div>
 </template>
 
@@ -53,7 +53,10 @@ export default {
         searchVal: '',
         userId: ''
       },
-      total: ''
+      total: '',
+      activeName: 'first',
+      item: {},
+      res: {}
     }
   },
   created() {
@@ -66,111 +69,141 @@ export default {
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       this.listLoading = true;
       jobProjectApi.list(this.listQuery).then(response => {
+        console.log(response, 'response')
         const { total } = response;
+        const { records } = response;
+        this.res = response;
         this.total = total;
+        this.item = records;
       });
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
+    handleLink() {
+      console.log(JSON.parse(localStorage.getItem('permission')))
+      const myLeft = JSON.parse(localStorage.getItem('permission'))
+      const arr = []
+      for (let i = 0; i < myLeft.length; i++) {
+        if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {
+          arr.push(myLeft[i])
+        }
+      }
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].path) {
+          window.open('#' + arr[0].path + '?level=2')
+        } else {
+          window.open('#' + arr[0].children[0].path + '?level=2')
+        }
+      }
+      console.log('#' + arr[0].path + '');
+      console.log(arr);
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  padding: 0;
-
-  .head-container {
-    overflow: hidden;
-    background-color: #ffffff;
-    padding: 0px;
-
-    .el-card {
-      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
-      border: 0 !important;
-      border-radius: 0;
-
-      .left {
-        float: left;
-        font-size: 24px;
-        font-family: PingFangHK-Medium, PingFangHK;
-        font-weight: 500;
-        color: #333333;
-        margin-left: 24px;
-      }
-
-      .left-description {
-        float: left;
-        font-size: 14px;
-        font-family: PingFangHK-Medium, PingFangHK;
-        color: #000000A6;
-        margin: 15px 24px;
-      }
-    }
-  }
-
-  .userInfo {
-    overflow: hidden;
-    background-color: #ffffff;
-    padding: 0px;
-
-    .el-card {
-      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
-      border: 0 !important;
-      border-radius: 0;
-
-      .workplace {
-        padding: 20px;
-        overflow: hidden;
-        .left {
-          float: left;
-          img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-          }
-        }
-        .right {
-          line-height:100px;
-          overflow: hidden;
-          p {
-            width: 50%;
-            font-size: 30px;
-            text-indent: 2rem;
-            float: left;
-          }
-          .project {
-            float: right;
-            width: 200px;
-            height: 100px;
-            text-align: center;
-            // background-color: skyblue;
-            .title {
-              height: 50px;
-              line-height: 50px;
-              font-size: 24px;
-            }
-            span {
-              font-size: 40px;
-            }
-          }
-        }
-      }
-
-      .left-description {
-        float: left;
-        font-size: 14px;
-        font-family: PingFangHK-Medium, PingFangHK;
-        color: #000000A6;
-        margin: 15px 24px;
-      }
-    }
-
-  }
-  .userBody {
-    overflow: hidden;
-    padding: 0px;
-    height: 400px;
-    margin: 20px 20px 0px 20px;
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .left {
+    width: 30%;
+    min-height: 600px;
+    max-height: 100%;
+    margin: 24px 12px 0px 24px;
     background-color: #fff;
+    padding: 20px;
+    .img {
+      text-align: center;
+      margin-top: 20px;
+      img {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+      }
+    }
+    .userName {
+      p {
+        font-size: 24px;
+        text-align: center;
+        margin-top: 40px;
+        font-weight: 700;
+      }
+    }
+    .desc {
+      font-size: 20px;
+      text-align: center;
+      margin-top: 30px;
+    }
+  }
+  .right {
+    flex: 1;
+    min-height: 600px;
+    max-height: 100%;
+    margin: 24px 24px 0px 12px;
+    background-color: #fff;
+    padding: 24px;
+    .el-tabs {
+      .el-tab-pane {
+        font-size: 24px;
+        .el-row {
+          .el-col {
+            .box {
+              height: 200px;
+              padding: 16px 5px 5px 16px;
+              margin: 20px;
+              border: 1px solid #eee;
+              background-color: rgb(255, 244, 219);
+              .title {
+                height: 60px;
+                line-height: 60px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                .radius {
+                  width: 60px;
+                  height: 60px;
+                  float: left;
+                  text-align: center;
+                  background-color: rgb(25, 125, 172);
+                  border-radius: 50%;
+                  color: #fff;
+                }
+                span {
+                  color: rgb(104, 189, 223);
+                  margin-left: 10px;
+                  font-size: 17px;
+                }
+              }
+              .body {
+                margin-top: 40px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                // white-space: nowrap;
+                p {
+                  font-size: 16px;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
+                  margin-top: 3px;
+                }
+                .time {
+                  font-size: 14px;
+                  color: rgb(196, 196, 196);
+                  margin-top: 10px;
+                }
+              }
+            }
+            .box:hover {
+              box-shadow: 0px 0px 20px skyblue;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>

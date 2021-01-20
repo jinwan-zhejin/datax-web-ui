@@ -381,7 +381,7 @@ export default {
       const myLeft = JSON.parse(localStorage.getItem('permission'))
       const arr = []
       for (let i = 0; i < myLeft.length; i++) {
-        if (myLeft[i].menuId !== 1 && myLeft[i].menuId !== 4) {
+        if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {
           arr.push(myLeft[i])
         }
       }
