@@ -106,7 +106,7 @@ export default {
       sessionStorage.setItem('level', this.$route.query.level)
     }
 
-    if (JSON.parse(localStorage.getItem('userId')) !== 1) {
+    if (localStorage.getItem('userId') !== '1') {
       if (sessionStorage.getItem('level') === '2') {
         const myLeft = JSON.parse(localStorage.getItem('permission'))
         const arr = []
