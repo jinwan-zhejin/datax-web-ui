@@ -685,23 +685,23 @@ export default {
 .Management {
   display: flex;
   // min-height: 660px;
-  height: calc(100vh - 110px);
-  margin: 24px;
-  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  height: calc(100vh - 50px);
+  // margin: 24px;
+  // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  // border-radius: 8px;
 
   .lt {
-    width: 280px;
+    width: 360px;
     // min-height: 660px;
     // max-height: 700px;
     // overflow: scroll;
     // overflow: hidden;
     padding: 10px;
     // background: #f0f0f2;
-    background: #fff;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-right: 1px solid #f0eded;
+    background: #f7f9fb;
+    // border-top-left-radius: 8px;
+    // border-bottom-left-radius: 8px;
+    // border-right: 1px solid #f0eded;
 
     .top {
       height: 66px;
@@ -764,7 +764,7 @@ export default {
 
     .el-tabs {
       .el-tabs__content {
-        height: calc(100vh - 150px);
+        height: calc(100vh - 80px);
         overflow-y: auto;
         overflow-x: auto;
       }
