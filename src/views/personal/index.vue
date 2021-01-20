@@ -17,7 +17,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane :label="'项目(' + total + ')'" name="first">
           <el-row :gutter="10">
-            <el-col v-for="i in item" :key="i.id" :span="6" @click.native="handleLink">
+            <el-col v-for="i in item" :key="i.id" :span="12" @click.native="handleLink">
               <div class="box">
                 <div class="title">
                   <div class="radius">
@@ -151,11 +151,11 @@ export default {
         .el-row {
           .el-col {
             .box {
-              height: 200px;
+              height: 240px;
               padding: 16px 5px 5px 16px;
               margin: 20px;
               border: 1px solid #eee;
-              background-color: rgb(255, 244, 219);
+              // background-color: rgb(255, 244, 219);
               .title {
                 height: 60px;
                 line-height: 60px;
@@ -174,25 +174,25 @@ export default {
                 span {
                   color: rgb(104, 189, 223);
                   margin-left: 10px;
-                  font-size: 17px;
+                  font-size: 24px;
                 }
               }
               .body {
-                margin-top: 40px;
+                margin-top: 60px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 // white-space: nowrap;
                 p {
-                  font-size: 16px;
+                  font-size: 20px;
                   overflow: hidden;
                   text-overflow:ellipsis;
                   white-space: nowrap;
-                  margin-top: 3px;
+                  margin-top: 20px;
                 }
                 .time {
                   font-size: 14px;
                   color: rgb(196, 196, 196);
-                  margin-top: 10px;
+                  margin-top: 20px;
                 }
               }
             }
