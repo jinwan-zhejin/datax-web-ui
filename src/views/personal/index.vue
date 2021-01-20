@@ -108,9 +108,10 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  padding-bottom: 24px;
   .left {
     width: 30%;
-    min-height: 600px;
+    min-height: 800px;
     max-height: 100%;
     margin: 24px 12px 0px 24px;
     background-color: #fff;
@@ -140,7 +141,7 @@ export default {
   }
   .right {
     flex: 1;
-    min-height: 600px;
+    min-height: 800px;
     max-height: 100%;
     margin: 24px 24px 0px 12px;
     background-color: #fff;
