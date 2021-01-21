@@ -773,6 +773,18 @@ export default {
         overflow-y: auto;
         overflow-x: auto;
       }
+      .el-tabs__header {
+        height: 50px;
+        line-height: 50px;
+        .el-tabs__item {
+          height: 50px;
+          line-height: 50px;
+        }
+      }
+      // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+      //   height: 50px;
+      //   line-height: 50px;
+      // }
       .el-tab-pane {
         // padding: 10px;
         height: 100%;
@@ -782,7 +794,7 @@ export default {
         }
         .title_h3 {
           position: absolute;
-          font-size: 30px;
+          font-size: 24px;
           font-weight: 700;
           font-family: "楷体";
           left: 50px;
