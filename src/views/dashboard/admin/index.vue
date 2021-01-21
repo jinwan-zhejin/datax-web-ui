@@ -5,7 +5,7 @@
     <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
 
     <div class="statistics">
-      <el-card class="box-card">
+      <el-card shadow="never" class="box-card">
         <div slot="header" class="clearfix">
           <span>项目</span>
         </div>
@@ -115,7 +115,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card class="box-card">
+      <el-card shadow="never" class="box-card">
         <div slot="header" class="clearfix">
           <span>数据源</span>
         </div>
@@ -175,7 +175,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card class="box-card">
+      <el-card shadow="never" class="box-card">
         <div slot="header" class="clearfix">
           <span>任务</span>
         </div>
@@ -296,7 +296,7 @@
         </el-row>
       </el-card>
 
-      <el-card class="box-card">
+      <el-card shadow="never" class="box-card">
         <div slot="header" class="clearfix">
           <span>规则</span>
         </div>
@@ -363,7 +363,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card class="box-card">
+      <el-card shadow="never" class="box-card">
         <div slot="header" class="clearfix">
           <span>接口</span>
         </div>
@@ -495,7 +495,7 @@
 // import GithubCorner from '@/components/GithubCorner'
 // import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
-import vechart from './components/vEchart'
+// import vechart from './components/vEchart'
 // import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import BarChart from './components/BarChart'
@@ -801,7 +801,7 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 32px;
+  padding: 24px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
@@ -873,6 +873,7 @@ export default {
   }
   .statistics > .el-card {
     background: transparent;
+    border: 0 !important;
   }
   .statistics {
     .box-card {
