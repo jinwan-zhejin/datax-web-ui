@@ -144,7 +144,10 @@
           label="欢迎"
           name="欢迎"
         >
-          欢迎
+          <div class="title_h3">
+            一站式数据开发解决方案
+          </div>
+          <svg-icon style="width: 100%; height: 100%;" icon-class="fengdie" />
         </el-tab-pane>
 
         <el-tab-pane
@@ -287,7 +290,8 @@ export default {
       listQuery: {
         pageNo: 1,
         pageSize: 1000,
-        searchVal: ''
+        searchVal: '',
+        userId: ''
       },
       /** 任务类型 */
       jobType: 'SHOWDETAIL',
@@ -536,6 +540,7 @@ export default {
     },
 
     getItem(del) {
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then(response => {
         const { records } = response;
         const { total } = response;
@@ -771,8 +776,17 @@ export default {
       .el-tab-pane {
         // padding: 10px;
         height: 100%;
+        position: relative;
         .job_detail {
           height: 100%;
+        }
+        .title_h3 {
+          position: absolute;
+          font-size: 30px;
+          font-weight: 700;
+          font-family: "楷体";
+          left: 50px;
+          top: 130px;
         }
       }
     }

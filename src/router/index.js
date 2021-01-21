@@ -231,14 +231,14 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/job',
     name: 'job',
-    meta: { title: '任务管理', icon: 'icon_svg08' },
+    meta: { title: '数据开发', icon: 'icon_svg08' },
     children: [
 
       {
         path: 'jobInfo',
         name: 'JobInfo',
         component: () => import('@/views/datax/jobInfo/index'),
-        meta: { title: '任务管理', icon: 'icon_svg08' }
+        meta: { title: '数据研发', icon: 'icon_svg08' }
       },
       {
         path: 'jobInfo2',
@@ -307,7 +307,7 @@ export const asyncRoutes = [
         path: 'dataDev',
         component: () => import('@/views/dataDev/dataDev'),
         name: 'dataDev',
-        meta: { title: '数据开发', icon: 'icon_svg07', keepAlive: true }
+        meta: { title: '临时查询', icon: 'icon_svg07', keepAlive: true }
       },
       {
         path: 'ddlTransform',
@@ -386,7 +386,7 @@ export const asyncRoutes = [
         path: 'standardCheck',
         name: 'standardCheck',
         component: () => import('@/views/dataQuality/standardCheck/index'),
-        meta: { title: '规则审核', icon: 'shenhe' }
+        meta: { title: '规则审核', icon: 'shenchaguizeguanli' }
       },
       {
         path: 'appliedStandard',
