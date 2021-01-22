@@ -1,54 +1,60 @@
 <template>
   <div>
-    <el-form label-position="right" label-width="150px" :model="writerForm" :rules="rules">
-      <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select
-          v-model="datasourceId"
-          filterable
-          @change="wDsChange"
-        >
-          <!-- <el-option
-            v-for="item in wDsList"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          /> -->
-          <el-option
-            v-for="item in dataSourceCompute"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
-        <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
-          <el-option
-            v-for="item in schemaList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="数据库表名：" prop="tableName">
-        <el-select
-          v-model="fromTableName"
-          allow-create
-          default-first-option
-          filterable
-          :disabled="writerForm.ifCreateTable"
-          @change="wTbChange"
-        >
-          <el-option
-            v-for="item in wTbList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-        <el-input v-show="writerForm.ifCreateTable" v-model="writerForm.tableName" style="width: 200px;" :placeholder="readerForm.tableName" />
-      </el-form-item>
+    <el-form label-position="left" label-width="150px" :model="writerForm" :rules="rules">
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="数据库源：" prop="datasourceId">
+            <el-select
+              v-model="datasourceId"
+              filterable
+              @change="wDsChange"
+            >
+              <!-- <el-option
+                v-for="item in wDsList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              /> -->
+              <el-option
+                v-for="item in dataSourceCompute"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
+            <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
+              <el-option
+                v-for="item in schemaList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="数据库表名：" prop="tableName">
+            <el-select
+              v-model="fromTableName"
+              allow-create
+              default-first-option
+              filterable
+              :disabled="writerForm.ifCreateTable"
+              @change="wTbChange"
+            >
+              <el-option
+                v-for="item in wTbList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+            <el-input v-show="writerForm.ifCreateTable" v-model="writerForm.tableName" style="width: 200px;" :placeholder="readerForm.tableName" />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <div style="margin: 5px 0;" />
       <el-form-item label="字段：">
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>

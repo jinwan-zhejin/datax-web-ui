@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form
-      label-position="right"
+      label-position="left"
       label-width="120px"
       :model="readerForm"
       :rules="rules"
@@ -9,51 +9,57 @@
         $store.state.taskAdmin.readerAllowEdit ? '' : 'form-label-class'
       ]"
     >
-      <el-form-item label="数据库源：" prop="datasourceId">
-        <el-select
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerDataSourceID"
-          filterable
-          @change="rDsChange"
-        >
-          <el-option
-            v-for="(item, index) in dataSourceCompute"
-            :key="index"
-            :label="item.datasourceName"
-            :value="item.id"
-          />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue(
-            finder(
-              $store.state.taskAdmin.readerDataSourceID,
-              dataSourceCompute,
-              "id",
-              "datasourceName"
-            )
-          )
-        }}</span>
-      </el-form-item>
-      <el-form-item label="数据库表名：" prop="tableName">
-        <el-select
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="$store.state.taskAdmin.readerTableName"
-          allow-create
-          default-first-option
-          filterable
-          @change="rTbChange"
-        >
-          <el-option
-            v-for="(item, index) in rTbList"
-            :key="index"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue($store.state.taskAdmin.readerTableName)
-        }}</span>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="数据库源：" prop="datasourceId">
+            <el-select
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="$store.state.taskAdmin.readerDataSourceID"
+              filterable
+              @change="rDsChange"
+            >
+              <el-option
+                v-for="(item, index) in dataSourceCompute"
+                :key="index"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
+              dashOrValue(
+                finder(
+                  $store.state.taskAdmin.readerDataSourceID,
+                  dataSourceCompute,
+                  "id",
+                  "datasourceName"
+                )
+              )
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="数据库表名：" prop="tableName">
+            <el-select
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="$store.state.taskAdmin.readerTableName"
+              allow-create
+              default-first-option
+              filterable
+              @change="rTbChange"
+            >
+              <el-option
+                v-for="(item, index) in rTbList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
+              dashOrValue($store.state.taskAdmin.readerTableName)
+            }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="SQL语句：">
         <el-input
           v-show="$store.state.taskAdmin.readerAllowEdit"

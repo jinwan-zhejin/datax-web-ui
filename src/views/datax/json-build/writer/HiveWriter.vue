@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form label-position="right" label-width="120px" :model="writerForm" :rules="rules">
+    <el-form label-position="left" label-width="120px" :model="writerForm" :rules="rules">
       <el-form-item label="数据源：" prop="datasourceId">
         <el-select
           v-model="writerForm.datasourceId"
@@ -22,38 +22,36 @@
         </el-select>
       </el-form-item>
 
-     
-       
-          <el-form-item label="表：" prop="fromTableName">
-            <el-select
-              v-model="fromTableName"
-              :disabled="writerForm.ifCreateTable"
-              filterable
-              @change="wTbChange"
-            >
-              <el-option
-                v-for="item in wTbList"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-          </el-form-item>
-       
-        <!--<el-col :span="6">
+      <el-form-item label="表：" prop="fromTableName">
+        <el-select
+          v-model="fromTableName"
+          :disabled="writerForm.ifCreateTable"
+          filterable
+          @change="wTbChange"
+        >
+          <el-option
+            v-for="item in wTbList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+
+      <!--<el-col :span="6">
           <el-form-item>
             <el-button type="primary" :disabled="!this.fromTableName" @click="createTable()">一键生成目标表</el-button>
           </el-form-item>
         </el-col>-->
-     
+
       <el-form-item label="path：" prop="path">
-        <el-input v-model="writerForm.path" :autosize="{ minRows: 2, maxRows: 20}" type="textarea" placeholder="为与hive表关联，请填写hive表在hdfs上的存储路径"  />
+        <el-input v-model="writerForm.path" :autosize="{ minRows: 2, maxRows: 20}" type="textarea" placeholder="为与hive表关联，请填写hive表在hdfs上的存储路径" />
       </el-form-item>
       <el-form-item label="defaultFS：" prop="defaultFS">
-        <el-input v-model="writerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址"  />
+        <el-input v-model="writerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址" />
       </el-form-item>
       <el-form-item label="fileName：" prop="fileName">
-        <el-input v-model="writerForm.fileName" placeholder="HdfsWriter写入时的文件名"  />
+        <el-input v-model="writerForm.fileName" placeholder="HdfsWriter写入时的文件名" />
       </el-form-item>
       <el-form-item label="fileType：" prop="fileType">
         <el-select v-model="writerForm.fileType" placeholder="文件的类型">
@@ -66,7 +64,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="fieldDelimiter：" prop="fieldDelimiter">
-        <el-input v-model="writerForm.fieldDelimiter" placeholder="与创建表的分隔符一致"  />
+        <el-input v-model="writerForm.fieldDelimiter" placeholder="与创建表的分隔符一致" />
       </el-form-item>
       <el-form-item label="字段：">
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>

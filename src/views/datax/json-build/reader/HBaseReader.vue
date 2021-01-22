@@ -1,29 +1,35 @@
 <template>
   <div>
     <el-form label-position="left" label-width="105px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
-      <el-form-item label="数据源" prop="datasourceId">
-        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">
-          <!-- <el-option
-            v-for="item in rDsList"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          /> -->
-          <el-option
-            v-for="item in dataSourceCompute"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
-          />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.datasourceId, dataSourceCompute, 'id', 'datasourceName')) }}</span>
-      </el-form-item>
-      <el-form-item label="表" prop="tableName">
-        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.tableName" filterable @change="rTbChange">
-          <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.tableName) }}</span>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="数据源" prop="datasourceId">
+            <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">
+              <!-- <el-option
+                v-for="item in rDsList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              /> -->
+              <el-option
+                v-for="item in dataSourceCompute"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.datasourceId, dataSourceCompute, 'id', 'datasourceName')) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="表" prop="tableName">
+            <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.tableName" filterable @change="rTbChange">
+              <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.tableName) }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="mode" prop="mode">
         <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.mode" placeholder="读取hbase的模式">
           <el-option v-for="item in modeTypes" :key="item.value" :label="item.label" :value="item.value" />
