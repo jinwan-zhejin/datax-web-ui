@@ -4,7 +4,7 @@
       <!-- {{jobDetailIdx}} -->
       <div class="top">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="15">
             <el-select
               v-model="selectValue"
               placeholder="请选择"
@@ -18,7 +18,7 @@
               />
             </el-select>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="9">
             <i class="el-icon-location-outline top-icon" />
             <i class="el-icon-coin top-icon" />
             <el-dropdown trigger="click" @command="createNewJob">
@@ -147,7 +147,7 @@
           <div class="title_h3">
             一站式数据开发解决方案
           </div>
-          <svg-icon style="width: 100%; height: 100%;" icon-class="fengdie" />
+          <svg-icon style="width: 100%; height: 90%;margin-top: 25px" icon-class="fengdie" />
         </el-tab-pane>
 
         <el-tab-pane
@@ -797,8 +797,8 @@ export default {
           font-size: 24px;
           font-weight: 700;
           font-family: "楷体";
-          left: 50px;
-          top: 130px;
+          left: 24px;
+          top: 30px;
         }
       }
     }

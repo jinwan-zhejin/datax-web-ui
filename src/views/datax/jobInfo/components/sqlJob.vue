@@ -1,23 +1,18 @@
 <template>
   <div class="app-container">
+    <h1 style="font-size: 21px;
+    font-weight: 700;
+    margin-right: 10px;">添加 SQL任务</h1>
     <div class="main-content">
+
     <el-form
       ref="dataForm"
       :rules="rules"
       :model="temp"
-      label-position="right"
+      label-position="left"
       label-width="110px"
       class="input_from"
     >
-      <el-form-item label="任务类型：" prop="glueType">
-        {{ this.jobTypeLabel }}
-      </el-form-item>
-
-      <el-form-item label="执行器：" prop="jobGroup">
-        <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-        </el-select>
-      </el-form-item>
 
       <el-form-item label="任务名称：" prop="jobDesc">
         <el-input
@@ -26,6 +21,15 @@
           placeholder="请输入任务描述"
         />
       </el-form-item>
+      <el-form-item label="任务类型：" prop="glueType">
+         {{ this.jobTypeLabel }}
+       </el-form-item>
+      <el-form-item label="执行器：" prop="jobGroup">
+        <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+        </el-select>
+      </el-form-item>
+
       <el-dialog
         title="提示"
         :visible.sync="showCronBox"
@@ -47,7 +51,7 @@
           v-model="temp.jobCron"
           auto-complete="off"
           placeholder="请输入Cron表达式"
-          
+
         >
           <el-button
             v-if="!showCronBox"
@@ -835,8 +839,8 @@ export default {
 }
 
 .main-content {
-  width: 60%;
-  margin:0 auto;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .main-content >>> .el-select {
