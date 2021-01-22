@@ -774,11 +774,11 @@ export default {
         overflow-x: auto;
       }
       .el-tabs__header {
-        height: 50px;
-        line-height: 50px;
+        height: 32px;
+        line-height: 32px;
         .el-tabs__item {
-          height: 50px;
-          line-height: 50px;
+          height: 32px;
+          line-height: 32px;
         }
       }
       // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
