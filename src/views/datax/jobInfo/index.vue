@@ -5,7 +5,7 @@
       <div class="top">
         <el-row>
           <el-col :span="15">
-            <el-select
+            <!-- <el-select
               v-model="selectValue"
               placeholder="请选择"
               @change="fetchJobs"
@@ -16,7 +16,21 @@
                 :label="item.name"
                 :value="item.id"
               />
-            </el-select>
+            </el-select> -->
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link">
+                {{ typeof(selectValue) === 'number' ? '请选择' : selectValue }}<i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
+                <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
+              <span class="el-dropdown-link">
+                123
+              </span>
+              <el-dropdown-item v-for="item in options" :key="item.id" :command="item.name">{{ item.name }}</el-dropdown-item>
+            </el-dropdown-menu> -->
           </el-col>
           <el-col :span="9">
             <i class="el-icon-location-outline top-icon" />
@@ -681,6 +695,43 @@ export default {
       this.$store.commit('SET_TAB_TYPE', command);
       this.jobType = command;
       this.jobDetailIdx = command;
+    },
+
+    handleCommand(command) {
+      const commandId = command.split('/')[0]
+      const commandName = command.split('/')[1]
+      this.selectValue = commandName;
+      this.$store.commit('SET_PROJECT_ID', commandId);
+
+      // 获取任务列表
+      const listQuery = {
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        projectIds: commandId,
+        triggerStatus: -1,
+        jobDesc: '',
+        glueType: ''
+      };
+      this.projectIds = commandId;
+
+      job.getList(listQuery).then(response => {
+        const { content } = response;
+        this.List = content.data;
+      });
+
+      // 根据项目id获取数据源
+
+      const p = {
+        current: 1,
+        size: 200,
+        ascs: 'datasource_name',
+        projectId: commandId
+      };
+      jdbcDsList(p).then(response => {
+        const { records } = response;
+        this.$store.commit('SET_DATASOURCE', records);
+      });
     }
   }
 };
