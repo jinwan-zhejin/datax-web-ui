@@ -479,7 +479,7 @@ export default {
 
 .first_content {
   width: 80%;
-  margin: 0 auto;
+  margin-left: 30px;
 }
 
 .last_content {
