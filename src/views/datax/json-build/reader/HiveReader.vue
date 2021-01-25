@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form label-position="left" label-width="120px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
-      <el-row :gutter="20">
+      <el-row :gutter="30">
         <el-col :span="12">
           <el-form-item label="数据源：" prop="datasourceId">
             <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">

@@ -478,7 +478,7 @@ export default {
 }
 
 .first_content {
-  width: 80%;
+  width: 90%;
   margin-left: 30px;
 }
 

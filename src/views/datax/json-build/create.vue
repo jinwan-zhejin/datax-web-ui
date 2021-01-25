@@ -8,7 +8,7 @@
       class="elFrom"
     >
 
-      <el-row :gutter="20">
+      <el-row :gutter="30">
         <el-col :span="12">
           <el-form-item label="任务名称：" prop="jobDesc">
             <el-input
@@ -115,7 +115,6 @@
               v-model="temp.executorFailRetryCount"
               :min="0"
               :max="20"
-              size="small"
             />
           </el-form-item>
         </el-col>
@@ -125,7 +124,6 @@
               v-model="temp.executorTimeout"
               :min="0"
               :max="120"
-              size="small"
             />
           </el-form-item>
         </el-col>

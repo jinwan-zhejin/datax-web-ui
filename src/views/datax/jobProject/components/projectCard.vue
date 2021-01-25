@@ -22,7 +22,7 @@
           <span class="texts">{{ content.description }}</span>
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="所属用户" :label-width="labelWidth" :label-position="'left'">
+      <el-form-item :label="content.note + '用户'" :label-width="labelWidth" :label-position="'left'">
         <span class="texts">{{ content.userName }}</span>
       </el-form-item>
     </el-form>
