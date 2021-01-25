@@ -20,9 +20,9 @@ export function getKPI() {
 /**
  * @description: 项目 - 文字统计
  */
-export function getObjectStatistics() {
+export function getObjectStatistics(query) {
   return request({
-    url: '/api/getProjectCountReport',
+    url: `/api/getProjectCountReport?userId=${query}`,
     method: 'post'
   })
 }
@@ -30,9 +30,9 @@ export function getObjectStatistics() {
 /**
  * @description: 项目 - 分布统计
  */
-export function getObjectDistribute() {
+export function getObjectDistribute(query) {
   return request({
-    url: '/api/getItemTaskDistribution',
+    url: `/api/getItemTaskDistribution?userId=${query}`,
     method: 'post'
   })
 }
@@ -40,9 +40,9 @@ export function getObjectDistribute() {
 /**
  * @description: 项目 - 类型分布统计
  */
-export function getObjectType() {
+export function getObjectType(query) {
   return request({
-    url: '/api/getItemTaskTypeDistribution',
+    url: `/api/getItemTaskTypeDistribution?userId=${query}`,
     method: 'post'
   })
 }
@@ -50,9 +50,9 @@ export function getObjectType() {
 /**
  * @description: 项目 - 运行分布统计
  */
-export function getObjectRun() {
+export function getObjectRun(query) {
   return request({
-    url: '/api/getItemTaskRunStateDistribution',
+    url: `/api/getItemTaskRunStateDistribution?userId=${query}`,
     method: 'post'
   })
 }
@@ -60,9 +60,9 @@ export function getObjectRun() {
 /**
  * @description: 数据源 - 文字统计
  */
-export function getSourceStatistics() {
+export function getSourceStatistics(query) {
   return request({
-    url: '/api/getDataSourceReport',
+    url: `/api/getDataSourceReport?userId=${query}`,
     method: 'post'
   })
 }
@@ -80,9 +80,9 @@ export function getTaskStatistics() {
 /**
  * @description: 任务 - 分布统计
  */
-export function getTaskDistribute() {
+export function getTaskDistribute(query) {
   return request({
-    url: '/api/getTaskTypeDistribution',
+    url: `/api/getTaskTypeDistribution?userId=${query}`,
     method: 'post'
   })
 }
@@ -90,9 +90,9 @@ export function getTaskDistribute() {
 /**
  * @description: 任务 - 分布统计（按照执行器）
  */
-export function getTaskDistributeE() {
+export function getTaskDistributeE(query) {
   return request({
-    url: '/api/getTaskExecutorDistribution',
+    url: `/api/getTaskExecutorDistribution?userId=${query}`,
     method: 'post'
   })
 }
@@ -110,9 +110,9 @@ export function getTaskResult() {
 /**
  * @description: 规则 - 文字统计
  */
-export function getRuleStatistics() {
+export function getRuleStatistics(query) {
   return request({
-    url: '/api/getRuleReport',
+    url: `/api/getRuleReport?userId=${query}`,
     method: 'post'
   })
 }
@@ -120,9 +120,9 @@ export function getRuleStatistics() {
 /**
  * @description: 规则 - 图表统计
  */
-export function getRuleChart() {
+export function getRuleChart(query) {
   return request({
-    url: '/api/getUsedRule',
+    url: `/api/getUsedRule?userId=${query}`,
     method: 'post'
   })
 }

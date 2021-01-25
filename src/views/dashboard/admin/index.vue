@@ -70,7 +70,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务分布统计</span>
@@ -84,7 +84,7 @@
               </el-col>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-card shadow="hover">
               <div slot="header" class="clearfix">
                 <span>项目任务类型分布</span>
@@ -676,17 +676,19 @@ export default {
   created() {
     // this.chartInfo()
     // this.getDataKPI()
-    this.getObjectStatistics()
-    this.getObjectDistribute()
-    this.getObjectType()
-    this.getObjectRun()
-    this.getSourceStatistics()
+    console.log(typeof parseInt(localStorage.getItem('userId')))
+    const uid = parseInt(localStorage.getItem('userId'));
+    this.getObjectStatistics(uid)
+    this.getObjectDistribute(uid)
+    this.getObjectType(uid)
+    this.getObjectRun(uid)
+    this.getSourceStatistics(uid)
     this.getTaskStatistics()
-    this.getTaskDistribute()
-    this.getTaskDistributeE()
+    this.getTaskDistribute(uid)
+    this.getTaskDistributeE(uid)
     this.getTaskResult()
-    this.getRuleStatistics()
-    this.getRuleChart()
+    this.getRuleStatistics(uid)
+    this.getRuleChart(uid)
     this.getApiStatistics()
   },
   methods: {
@@ -723,31 +725,31 @@ export default {
     /**
      * @description: 项目
      */
-    getObjectStatistics() {
-      dashborad.getObjectStatistics().then(response => {
+    getObjectStatistics(query) {
+      dashborad.getObjectStatistics(query).then(response => {
         this.dataObjectStatistics = response.content
       })
     },
-    getObjectDistribute() {
-      dashborad.getObjectDistribute().then(response => {
+    getObjectDistribute(query) {
+      dashborad.getObjectDistribute(query).then(response => {
         this.dataObjectDistribute = response.content
       })
     },
-    getObjectType() {
-      dashborad.getObjectType().then(response => {
+    getObjectType(query) {
+      dashborad.getObjectType(query).then(response => {
         this.dataObjectType = response.content
       })
     },
-    getObjectRun() {
-      dashborad.getObjectRun().then(response => {
+    getObjectRun(query) {
+      dashborad.getObjectRun(query).then(response => {
         this.dataObjectRun = response.content
       })
     },
     /**
      * @description: 数据源
      */
-    getSourceStatistics() {
-      dashborad.getSourceStatistics().then(response => {
+    getSourceStatistics(query) {
+      dashborad.getSourceStatistics(query).then(response => {
         this.dataSourceStatistics = response.content
       })
     },
@@ -759,13 +761,13 @@ export default {
         this.dataTaskStatistics = response.content
       })
     },
-    getTaskDistribute() {
-      dashborad.getTaskDistribute().then(response => {
+    getTaskDistribute(query) {
+      dashborad.getTaskDistribute(query).then(response => {
         this.dataTaskDistribute = response.content
       })
     },
-    getTaskDistributeE() {
-      dashborad.getTaskDistributeE().then(response => {
+    getTaskDistributeE(query) {
+      dashborad.getTaskDistributeE(query).then(response => {
         this.dataTaskDistributeE = response.content
       })
     },
@@ -779,13 +781,13 @@ export default {
       })
     },
     /** 规则 */
-    getRuleStatistics() {
-      dashborad.getRuleStatistics().then(response => {
+    getRuleStatistics(query) {
+      dashborad.getRuleStatistics(query).then(response => {
         this.dataRuleStatistics = response.content
       })
     },
-    getRuleChart() {
-      dashborad.getRuleChart().then(response => {
+    getRuleChart(query) {
+      dashborad.getRuleChart(query).then(response => {
         this.dataRuleChart = response.content
       })
     },

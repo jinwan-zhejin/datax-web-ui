@@ -22,7 +22,7 @@
         </el-select>
       </el-form-item>
 
-      <el-row :gutter="20">
+      <el-row :gutter="30">
         <el-col :span="8">
           <el-form-item label="表" prop="fromTableName">
             <el-select

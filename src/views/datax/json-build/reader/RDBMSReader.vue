@@ -9,7 +9,7 @@
         $store.state.taskAdmin.readerAllowEdit ? '' : 'form-label-class'
       ]"
     >
-      <el-row :gutter="20">
+      <el-row :gutter="30">
         <el-col :span="12">
           <el-form-item label="数据库源" prop="datasourceId">
             <el-select
