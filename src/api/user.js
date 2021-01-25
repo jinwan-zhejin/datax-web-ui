@@ -21,3 +21,12 @@ export function logout() {
     method: 'post'
   })
 }
+
+// 修改密码
+export function updatePsw(params) {
+  return request({
+    url: '/api/user/updatePassWorld',
+    method: 'post',
+    params
+  })
+}

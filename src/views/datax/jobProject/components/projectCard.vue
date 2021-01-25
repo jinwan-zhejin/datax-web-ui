@@ -10,7 +10,7 @@
   <el-card shadow="hover" class="box-card" :body-style="{ padding: '0px' }">
     <div slot="header" class="clearfix">
       <!-- <span class="title">项目: </span> -->
-      <el-avatar style="float: left;">{{ content.name[0].toUpperCase() }}</el-avatar>
+      <el-avatar style="float: left;background-color: #3972e6">{{ content.name[0].toUpperCase() }}</el-avatar>
       <div style="height: 40px; float: left; line-height: 40px; font-size: 18px; font-weight: bold; margin-left: 10px; color: #3d5eff;">{{ content.name }}</div>
       <div style="line-height: 40px; float: right;">
         <slot name="top" />

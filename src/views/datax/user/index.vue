@@ -73,6 +73,10 @@
             <el-button v-if="row.status!=='deleted'" style="color: #fe4646;" type="text" @click="open(row)">
               删除
             </el-button>
+            <el-divider direction="vertical" />
+            <el-button type="text" @click="resetPsw(row)">
+              重置密码
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,7 +103,7 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="temp.username" style="width: 100%;" placeholder="用户名" />
             </el-form-item>
-            <el-form-item label="密  码" prop="password">
+            <el-form-item v-if="dialogStatus === 'create'" label="密  码" prop="password">
               <el-input v-model="temp.password" type="password" placeholder="请输入密码" />
             </el-form-item>
             <el-form-item label="角色" prop="roleIdList">
@@ -199,6 +203,21 @@ export default {
         console.log(err)
       })
     },
+    // 重置密码
+    resetPsw(row) {
+      this.$confirm('此操作将会重置该用户密码，是否重置?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消重置'
+        })
+      })
+    },
     fetchData() {
       this.listLoading = true
       user.getList1({
@@ -274,7 +293,7 @@ export default {
       })
     },
     open(row) {
-      this.$confirm('此操作将会删除该角色，是否确认?', '提示', {
+      this.$confirm('此操作将会删除该用户，是否确认?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
