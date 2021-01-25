@@ -1,17 +1,18 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" >
     <div class="build-container">
-      <div style="width:100%;border-bottom:1px solid rgba(240, 240, 242, 1);margin-bottom:20px;padding:20px 0;">
+      <!-- <div style="width:100%;border-bottom:1px solid rgba(240, 240, 242, 1);margin-bottom:20px;padding:20px 0;"> -->
+        <h1 style="    font-size: 21px; font-weight: 700; margin: 28px 3%;">基础信息</h1>
         <div style="width:80%;margin:0 auto;">
-          <el-steps :active="active" align-center>
+          <!-- <el-steps :active="active" align-center>
             <el-step title="新建任务" description="">1</el-step>
             <el-step title="构建reader" description="">2</el-step>
             <el-step title="构建writer" description="">3</el-step>
             <el-step title="字段映射" description="">4</el-step>
             <el-step title="构建" description="">5</el-step>
-          </el-steps>
+          </el-steps> -->
         </div>
-      </div>
+      <!-- </div> -->
 
       <div class="main_content">
         <div v-show="active===1" class="step0 first_content">
@@ -478,8 +479,8 @@ export default {
 }
 
 .first_content {
-  width: 80%;
-  margin-left: 30px;
+  width: 94%;
+  margin-left: 3%;
 }
 
 .last_content {

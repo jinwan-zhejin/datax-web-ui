@@ -1,5 +1,5 @@
 <template>
-  <div class="Management">
+  <div class="Management" >
     <div class="lt">
       <!-- {{jobDetailIdx}} -->
       <div class="top">
@@ -18,7 +18,7 @@
               />
             </el-select> -->
             <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link">
+              <span>
                 {{ typeof(selectValue) === 'number' ? '请选择' : selectValue }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
@@ -754,14 +754,15 @@ export default {
     // overflow: hidden;
     padding: 10px;
     // background: #f0f0f2;
-    background: #f7f9fb;
+    background: #fff;
+    // background: #f7f9fb;
     // border-top-left-radius: 8px;
     // border-bottom-left-radius: 8px;
     // border-right: 1px solid #f0eded;
 
     .top {
-      height: 66px;
-      line-height: 60px;
+      height: 42px;
+      line-height: 34px;
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
@@ -823,6 +824,7 @@ export default {
         height: calc(100vh - 80px);
         overflow-y: auto;
         overflow-x: auto;
+        background-color: #f7f9fb;
       }
       .el-tabs__header {
         height: 32px;
@@ -905,6 +907,9 @@ export default {
 .top-icon:hover {
   color: #3d5eff;
 }
+
+
+
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }
