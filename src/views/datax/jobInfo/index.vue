@@ -832,7 +832,12 @@ export default {
         .el-tabs__item {
           height: 32px;
           line-height: 32px;
-        }
+        };
+      }
+
+      .el-tabs__item.is-active {
+        background-color: #f6f9fb;
+        border-bottom-color: darkgray;
       }
       // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
       //   height: 50px;
