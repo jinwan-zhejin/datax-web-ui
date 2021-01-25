@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form
-      label-position="left"
+      label-position="top"
       label-width="120px"
       :model="readerForm"
       :rules="rules"
@@ -11,7 +11,7 @@
     >
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="数据库源：" prop="datasourceId">
+          <el-form-item label="数据库源" prop="datasourceId">
             <el-select
               v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="$store.state.taskAdmin.readerDataSourceID"
@@ -38,7 +38,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="数据库表名：" prop="tableName">
+          <el-form-item label="数据库表名" prop="tableName">
             <el-select
               v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="$store.state.taskAdmin.readerTableName"
@@ -59,8 +59,7 @@
             }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-form-item label="SQL语句：">
+        <!-- <el-form-item label="SQL语句">
         <el-input
           v-show="$store.state.taskAdmin.readerAllowEdit"
           v-model="readerForm.querySql"
@@ -79,47 +78,53 @@
         <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
           dashOrValue(readerForm.querySql)
         }}</span>
-      </el-form-item>
-      <el-form-item label="切分字段：">
-        <el-input
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="readerForm.splitPk"
-          placeholder="切分主键"
-        />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue(readerForm.splitPk)
-        }}</span>
-      </el-form-item>
-      <el-form-item label="表所有字段：">
-        <el-checkbox
-          v-model="readerForm.checkAll"
-          :disabled="!$store.state.taskAdmin.readerAllowEdit"
-          :indeterminate="readerForm.isIndeterminate"
-          @change="rHandleCheckAllChange"
-        >全选
-        </el-checkbox>
-        <div style="margin: 15px 0;" />
-        <el-checkbox-group
-          v-model="$store.state.taskAdmin.selectReaderColumn"
-          :disabled="!$store.state.taskAdmin.readerAllowEdit"
-          @change="rHandleCheckedChange"
-        >
-          <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
-            c
-          }}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="where条件：" prop="where">
-        <el-input
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="readerForm.where"
-          placeholder="where条件，不需要再加where"
-          type="textarea"
-        />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue(readerForm.where)
-        }}</span>
-      </el-form-item>
+      </el-form-item> -->
+        <el-col>
+          <el-form-item label="表所有字段">
+            <el-checkbox
+              v-model="readerForm.checkAll"
+              :disabled="!$store.state.taskAdmin.readerAllowEdit"
+              :indeterminate="readerForm.isIndeterminate"
+              @change="rHandleCheckAllChange"
+            >全选
+            </el-checkbox>
+            <div style="margin: 15px 0;" />
+            <el-checkbox-group
+              v-model="$store.state.taskAdmin.selectReaderColumn"
+              :disabled="!$store.state.taskAdmin.readerAllowEdit"
+              @change="rHandleCheckedChange"
+            >
+              <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
+                c
+              }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="切分字段">
+            <el-input
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="readerForm.splitPk"
+              placeholder="切分主键"
+            />
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
+              dashOrValue(readerForm.splitPk)
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="过滤条件" prop="where">
+            <el-input
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="readerForm.where"
+              placeholder="过滤条件，不需要再加where"
+            />
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
+              dashOrValue(readerForm.where)
+            }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 </template>
@@ -344,10 +349,12 @@ export default {
 <style lang="scss" scoped>
 .form-label-class {
   >>> .el-form-item__label {
-    font-weight: 500;
-    color: #999999;
     font-family: PingFangHK-Regular, PingFangHK;
   }
+}
+.el-form {
+  background: white;
+  padding: 20px;
 }
 .ruleName >>> .el-tag {
   display: inline-block;

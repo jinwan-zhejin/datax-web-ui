@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form label-position="left" label-width="115px" :model="writerForm" :rules="rules">
+    <el-form label-position="top" label-width="120px" :model="writerForm" :rules="rules">
       <el-form-item label="数据源" prop="datasourceId">
         <el-select
           v-model="writerForm.datasourceId"
@@ -242,3 +242,14 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.form-label-class {
+  >>> .el-form-item__label {
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
+}
+.el-form {
+  background: white;
+  padding: 20px;
+}
+</style>

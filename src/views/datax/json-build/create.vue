@@ -10,132 +10,137 @@
     >
       <el-row :gutter="20">
         <el-card shadow="never">
-        <el-col :span="12">
-          <el-form-item label="任务名称" prop="jobDesc">
-            <el-input
-              v-model="temp.jobDesc"
-              size="medium"
-              placeholder="请输入任务名称"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="执行器" prop="jobGroup">
-            <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-              <el-option
-                v-for="item in executorList"
-                :key="item.id"
-                :label="item.title"
-                :value="item.id"
+          <el-col :span="12">
+            <el-form-item label="任务名称" prop="jobDesc">
+              <el-input
+                v-model="temp.jobDesc"
+                size="medium"
+                placeholder="请输入任务名称"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="12">
+            <el-form-item label="描述（新增）" prop="jobGroup">
+              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+                <el-option
+                  v-for="item in executorList"
+                  :key="item.id"
+                  :label="item.title"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+          <el-col :span="12">
+            <el-form-item label="描述（新增）" prop="jobGroup">
+              <el-input v-model="temp.description" placeholder="描述" />
+            </el-form-item>
+          </el-col>
         </el-card>
-        <h1 style="font-size: 21px; font-weight: 700; margin: 28px 1%;">调度策略</h1>
-        <el-card shadow="never" style="margin-top: 3%">
-        <el-col :span="12">
-          <el-form-item label="路由策略" prop="executorRouteStrategy">
-            <el-select
-              v-model="temp.executorRouteStrategy"
-              placeholder="请选择路由策略"
-            >
-              <el-option
-                v-for="item in routeStrategies"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+        <!-- <h1 style="font-size: 21px; font-weight: 700; margin: 28px 4%;">调度策略<el-button type="text" icon="el-icon-down" @click="showStrategy = !showStrategy">{{ showStrategy ? '展开' : '折叠'}}</el-button></h1> -->
+        <el-card v-show="showStrategy" shadow="never" style="margin-top: 3%">
+          <el-col :span="12">
+            <el-form-item label="路由策略" prop="executorRouteStrategy">
+              <el-select
+                v-model="temp.executorRouteStrategy"
+                placeholder="请选择路由策略"
+              >
+                <el-option
+                  v-for="item in routeStrategies"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+              <el-select
+                v-model="temp.executorBlockStrategy"
+                placeholder="请选择阻塞处理策略"
+              >
+                <el-option
+                  v-for="item in blockStrategies"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="下级任务">
+              <el-select
+                v-model="temp.childJobIdArr"
+                multiple
+                placeholder="子任务"
+                value-key="id"
+              >
+                <el-option
+                  v-for="item in jobIdList"
+                  :key="item.id"
+                  :label="item.jobDesc"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="调度时间" prop="jobCron">
+              <el-input
+                v-model="temp.jobCron"
+                auto-complete="off"
+                placeholder="请输入Cron表达式"
+              >
+                <el-button
+                  v-if="!showCronBox"
+                  slot="append"
+                  icon="el-icon-turn-off"
+                  title="打开图形配置"
+                  @click="showCronBox = true"
+                />
+                <el-button
+                  v-else
+                  slot="append"
+                  icon="el-icon-open"
+                  title="关闭图形配置"
+                  @click="showCronBox = false"
+                />
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="报警邮件">
+              <el-input
+                v-model="temp.alarmEmail"
+                placeholder="请输入报警邮件，多个用逗号分隔"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-            <el-select
-              v-model="temp.executorBlockStrategy"
-              placeholder="请选择阻塞处理策略"
-            >
-              <el-option
-                v-for="item in blockStrategies"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="失败重试">
+              <el-input-number
+                v-model="temp.executorFailRetryCount"
+                :min="0"
+                :max="20"
+                size="small"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="下级任务">
-            <el-select
-              v-model="temp.childJobIdArr"
-              multiple
-              placeholder="子任务"
-              value-key="id"
-            >
-              <el-option
-                v-for="item in jobIdList"
-                :key="item.id"
-                :label="item.jobDesc"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="调度时间" prop="jobCron">
-            <el-input
-              v-model="temp.jobCron"
-              auto-complete="off"
-              placeholder="请输入Cron表达式"
-            >
-              <el-button
-                v-if="!showCronBox"
-                slot="append"
-                icon="el-icon-turn-off"
-                title="打开图形配置"
-                @click="showCronBox = true"
-              />
-              <el-button
-                v-else
-                slot="append"
-                icon="el-icon-open"
-                title="关闭图形配置"
-                @click="showCronBox = false"
-              />
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="报警邮件">
-            <el-input
-              v-model="temp.alarmEmail"
-              placeholder="请输入报警邮件，多个用逗号分隔"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="失败重试">
-            <el-input-number
-              v-model="temp.executorFailRetryCount"
-              :min="0"
-              :max="20"
-              size="small"
-            />
-            <span style="margin-left: 10px">次</span>
-          </el-form-item>
+              <span style="margin-left: 10px">次</span>
+            </el-form-item>
 
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="超时时间">
-            <el-input-number
-              v-model="temp.executorTimeout"
-              :min="0"
-              :max="120"
-              size="small"
-            />
-            <span style="margin-left: 10px">分</span>
-          </el-form-item>
-        </el-col>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="超时时间">
+              <el-input-number
+                v-model="temp.executorTimeout"
+                :min="0"
+                :max="120"
+                size="small"
+              />
+              <span style="margin-left: 10px">分</span>
+            </el-form-item>
+          </el-col>
         </el-card>
       </el-row>
       <!-- <el-form-item label="任务名称：" prop="jobDesc">
@@ -201,21 +206,6 @@
         </el-select>
       </el-form-item>
 
-      <el-dialog
-        title="提示"
-        :visible.sync="showCronBox"
-        width="60%"
-        append-to-body
-      >
-        <cron v-model="temp.jobCron" />
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="showCronBox = false">关闭</el-button>
-          <el-button
-            type="primary"
-            @click="showCronBox = false"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
       <el-form-item label="Cron：" prop="jobCron">
         <el-input
           v-model="temp.jobCron"
@@ -265,6 +255,21 @@
       </el-form-item> -->
     </el-form>
     <!-- <json-editor v-if="temp.glueType" ref="jsonEditor" v-model="inputJson" /> -->
+    <el-dialog
+      title="提示"
+      :visible.sync="showCronBox"
+      width="60%"
+      append-to-body
+    >
+      <cron v-model="temp.jobCron" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showCronBox = false">关闭</el-button>
+        <el-button
+          type="primary"
+          @click="showCronBox = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -371,7 +376,8 @@ export default {
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
-      ]
+      ],
+      showStrategy: false
     };
   },
 
@@ -380,12 +386,22 @@ export default {
     this.getJobProject();
     this.getJobIdList();
     this.getDataSourceList();
+    // 默认值
+    this.$set(this.temp, 'executorRouteStrategy', this.routeStrategies.length > 0 ? this.routeStrategies[0].value : '')
+    this.$set(this.temp, 'executorBlockStrategy', this.blockStrategies.length > 0 ? this.blockStrategies[0].value : '')
+    this.$set(this.temp, 'executorFailRetryCount', 1)
+    this.$set(this.temp, 'executorTimeout', 1)
+    this.$set(this.temp, 'jobCron', '* * * ? * * *')
   },
   methods: {
+    /**
+     * @description: 获取执行器列表
+     */
     getExecutor() {
       job.getExecutorList().then((response) => {
         const { content } = response;
         this.executorList = content;
+        this.$set(this.temp, 'jobGroup', this.executorList.length > 0 ? this.executorList[0].id : '')
       });
     },
 
@@ -394,14 +410,23 @@ export default {
         this.jobProjectList = response;
       });
     },
-
+    /**
+     * @description: 获取子任务列表
+     */
     getJobIdList() {
       job.getJobIdList().then((response) => {
         const { content } = response;
         this.jobIdList = content;
+        const t = []
+        if (this.jobIdList.length > 0) {
+          t.push(this.jobIdList[0].id)
+        }
+        this.$set(this.temp, 'childJobIdArr', t)
       });
     },
-
+    /**
+     * @description: 获取数据源列表
+     */
     getDataSourceList() {
       datasourceApi.getDataSourceList().then((response) => {
         this.dataSourceList = response;
@@ -455,6 +480,5 @@ export default {
     -webkit-transition: 0.3s;
     transition: 0.3s;
 }
-
 
 </style>
