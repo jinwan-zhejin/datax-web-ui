@@ -3,130 +3,138 @@
     <el-form
       ref="dataForm"
       :model="temp"
-      label-position="left"
+      label-position="top"
       label-width="120px"
       class="elFrom"
+      size="medium"
     >
+      <el-row :gutter="20">
+        <el-card shadow="never">
+          <el-col :span="12">
+            <el-form-item label="任务名称" prop="jobDesc">
+              <el-input
+                v-model="temp.jobDesc"
+                size="medium"
+                placeholder="请输入任务名称"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="执行器" prop="jobGroup">
+              <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+                <el-option
+                  v-for="item in executorList"
+                  :key="item.id"
+                  :label="item.title"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-card>
+        <h1 style="font-size: 21px; font-weight: 700; margin: 28px 1%;">调度策略</h1>
+        <el-card shadow="never" style="margin-top: 3%">
+          <el-col :span="12">
+            <el-form-item label="路由策略" prop="executorRouteStrategy">
+              <el-select
+                v-model="temp.executorRouteStrategy"
+                placeholder="请选择路由策略"
+              >
+                <el-option
+                  v-for="item in routeStrategies"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+              <el-select
+                v-model="temp.executorBlockStrategy"
+                placeholder="请选择阻塞处理策略"
+              >
+                <el-option
+                  v-for="item in blockStrategies"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="下级任务">
+              <el-select
+                v-model="temp.childJobIdArr"
+                multiple
+                placeholder="子任务"
+                value-key="id"
+              >
+                <el-option
+                  v-for="item in jobIdList"
+                  :key="item.id"
+                  :label="item.jobDesc"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="调度时间" prop="jobCron">
+              <el-input
+                v-model="temp.jobCron"
+                auto-complete="off"
+                placeholder="请输入Cron表达式"
+              >
+                <el-button
+                  v-if="!showCronBox"
+                  slot="append"
+                  icon="el-icon-turn-off"
+                  title="打开图形配置"
+                  @click="showCronBox = true"
+                />
+                <el-button
+                  v-else
+                  slot="append"
+                  icon="el-icon-open"
+                  title="关闭图形配置"
+                  @click="showCronBox = false"
+                />
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="报警邮件">
+              <el-input
+                v-model="temp.alarmEmail"
+                placeholder="请输入报警邮件，多个用逗号分隔"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="失败重试">
+              <el-input-number
+                v-model="temp.executorFailRetryCount"
+                :min="0"
+                :max="20"
+              />
+              <span style="margin-left: 10px">次</span>
+            </el-form-item>
 
-      <el-row :gutter="30">
-        <el-col :span="12">
-          <el-form-item label="任务名称：" prop="jobDesc">
-            <el-input
-              v-model="temp.jobDesc"
-              size="medium"
-              placeholder="请输入任务名称"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="执行器：" prop="jobGroup">
-            <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-              <el-option
-                v-for="item in executorList"
-                :key="item.id"
-                :label="item.title"
-                :value="item.id"
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="超时时间">
+              <el-input-number
+                v-model="temp.executorTimeout"
+                :min="0"
+                :max="120"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="路由策略：" prop="executorRouteStrategy">
-            <el-select
-              v-model="temp.executorRouteStrategy"
-              placeholder="请选择路由策略"
-            >
-              <el-option
-                v-for="item in routeStrategies"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="阻塞处理：" prop="executorBlockStrategy">
-            <el-select
-              v-model="temp.executorBlockStrategy"
-              placeholder="请选择阻塞处理策略"
-            >
-              <el-option
-                v-for="item in blockStrategies"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="子任务：">
-            <el-select
-              v-model="temp.childJobIdArr"
-              multiple
-              placeholder="子任务"
-              value-key="id"
-            >
-              <el-option
-                v-for="item in jobIdList"
-                :key="item.id"
-                :label="item.jobDesc"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="Cron：" prop="jobCron">
-            <el-input
-              v-model="temp.jobCron"
-              auto-complete="off"
-              placeholder="请输入Cron表达式"
-            >
-              <el-button
-                v-if="!showCronBox"
-                slot="append"
-                icon="el-icon-turn-off"
-                title="打开图形配置"
-                @click="showCronBox = true"
-              />
-              <el-button
-                v-else
-                slot="append"
-                icon="el-icon-open"
-                title="关闭图形配置"
-                @click="showCronBox = false"
-              />
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="报警邮件：">
-            <el-input
-              v-model="temp.alarmEmail"
-              placeholder="请输入报警邮件，多个用逗号分隔"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="失败重试次数：">
-            <el-input-number
-              v-model="temp.executorFailRetryCount"
-              :min="0"
-              :max="20"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="超时时间(分)：">
-            <el-input-number
-              v-model="temp.executorTimeout"
-              :min="0"
-              :max="120"
-            />
-          </el-form-item>
-        </el-col>
+              <span style="margin-left: 10px">分</span>
+            </el-form-item>
+          </el-col>
+        </el-card>
       </el-row>
       <!-- <el-form-item label="任务名称：" prop="jobDesc">
         <el-input
@@ -432,8 +440,18 @@ export default {
 </script>
 
 <style scoped>
-.elFrom >>> .el-input--suffix .el-input__inner {
+/* .elFrom >>> .el-input--suffix .el-input__inner {
   padding-right: 100px;
+} */
+
+.el-card {
+    border-radius: 0px;
+    border: 0px solid #e6ebf5;
+    background-color: #fff;
+    overflow: hidden;
+    color: #303133;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
 }
 
 </style>

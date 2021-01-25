@@ -8,15 +8,15 @@
         @click="handlerExecute(temp)"
       >
         <i class="el-icon-video-play" />
-        <span>执行一次</span>
+        <span style="font-size: 13px;">执行</span>
       </div>
       <div v-if="jobType === 'DQCJOB'" class="header_action" @click="handlerViewResult(temp)">
         <i class="el-icon-search" />
-        <span>查看结果</span>
+        <span style="font-size: 13px;">查看结果</span>
       </div>
       <div class="header_action" @click="handlerViewLog(temp)">
         <i class="el-icon-s-order" />
-        <span>查询日志</span>
+        <span style="font-size: 13px;">日志</span>
       </div>
       <div class="header_action">
         <el-popover placement="bottom" width="500" @show="loadById(temp)">
@@ -31,7 +31,7 @@
           </el-table>
           <div slot="reference" style="float: left">
             <i class="el-icon-s-tools" />
-            <span>注册节点</span>
+            <span style="font-size: 13px;">注册节点</span>
           </div>
         </el-popover>
       </div>
@@ -45,14 +45,14 @@
           <h5 v-html="triggerNextTimes" />
           <div slot="reference" style="float: left">
             <i class="el-icon-message-solid" />
-            <span>下次触发时间</span>
+            <span style="font-size: 13px;">下次触发</span>
           </div>
         </el-popover>
       </div>
 
       <div class="header_action" @click="handlerDelete(temp)">
         <i class="el-icon-delete-solid" />
-        <span>删除</span>
+        <span style="font-size: 13px;">删除</span>
       </div>
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
@@ -2319,8 +2319,8 @@ export default {
 <style scoped>
 .header {
   overflow: hidden;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(215, 215, 215, 1);
 }
 
 .header_action {

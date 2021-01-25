@@ -197,7 +197,7 @@ import * as executor from '@/api/datax-executor'
 import * as job from '@/api/datax-job-info'
 import waves from '@/directive/waves' // waves directive
 import Cron from '@/components/Cron'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+// import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import JsonEditor from '@/components/JsonEditor'
 import ShellEditor from '@/components/ShellEditor'
 import PythonEditor from '@/components/PythonEditor'
@@ -208,7 +208,7 @@ import { isJSON } from '@/utils/validate'
 
 export default {
   name: 'SimpleJob',
-  components: { Pagination, JsonEditor, ShellEditor, PythonEditor, PowershellEditor, Cron },
+  components: { JsonEditor, ShellEditor, PythonEditor, PowershellEditor, Cron },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -381,7 +381,7 @@ export default {
     this.getExecutor()
     this.getJobIdList()
     this.getJobProject()
-    this.getDataSourceList(),
+    this.getDataSourceList()
     console.log(this.jobType)
     this.temp.glueType = this.jobType
   },
