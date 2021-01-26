@@ -85,6 +85,7 @@
                       <el-button type="text" icon="el-icon-user" />成员管理
                     </el-dropdown-item>
                     <el-dropdown-item
+                      v-show="item.note === '创建'"
                       @click.native.stop="handleDataSource(item)"
                     >
                       <el-button type="text" icon="el-icon-coin" />数据源管理

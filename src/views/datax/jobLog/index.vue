@@ -17,12 +17,12 @@
         label-width="auto"
         :inline="true"
       >
-        <el-form-item label="任务ID：">
+        <el-form-item label="任务名称：">
           <el-input
-            v-model="listQuery.jobId"
+            v-model="listQuery.jobName"
             clearable
             size="small"
-            placeholder="任务ID"
+            placeholder="任务名称"
           />
         </el-form-item>
         <el-form-item label="执行器：">
@@ -83,13 +83,10 @@
         :header-cell-style="{ background: '#fafafc', color: '#666666' }"
       >
         <!-- height="calc(100vh - 385px)" -->
-        <el-table-column fixed align="center" label="任务ID" width="80">
-          <template slot-scope="scope">{{ scope.row.jobId }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="任务描述">
+        <el-table-column align="center" label="任务名称" width="200">
           <template slot-scope="scope">{{ scope.row.jobDesc }}</template>
         </el-table-column>
-        <el-table-column label="调度时间" align="center">
+        <el-table-column label="调度时间" align="center" width="200">
           <template slot-scope="scope">{{ scope.row.triggerTime }}</template>
         </el-table-column>
         <el-table-column label="调度结果" align="center" width="100">
@@ -109,7 +106,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="执行时间" align="center">
+        <el-table-column label="执行时间" align="center" width="200">
           <template slot-scope="scope">{{ scope.row.handleTime }}</template>
         </el-table-column>
         <el-table-column label="执行结果" align="center">
@@ -127,7 +124,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" min-width="300">
+        <el-table-column label="操作" align="center" min-width="200">
           <template slot-scope="{ row }">
             <el-button
               v-show="row.executorAddress"
@@ -263,8 +260,10 @@ export default {
         size: 10,
         jobGroup: 0,
         jobId: '',
+        jobName: '',
         logStatus: -1,
-        filterTime: ''
+        filterTime: '',
+        userId: ''
       },
       dialogPluginVisible: false,
       pluginData: [],
@@ -399,6 +398,13 @@ export default {
     fetchData() {
       this.listLoading = true;
       const param = Object.assign({}, this.listQuery);
+      if (localStorage.getItem('userId') === '1') {
+        console.log(localStorage.getItem('userId'))
+        param.userId = 0
+      } else {
+        console.log('2')
+        param.userId = parseInt(localStorage.getItem('userId'))
+      }
       const urlJobId = this.$route.query.jobId;
       if (urlJobId > 0 && !param.jobId) {
         param.jobId = urlJobId;
@@ -522,7 +528,7 @@ export default {
      * @description: 重置
      */
     reSet() {
-      this.listQuery.jobId = ''
+      this.listQuery.jobName = ''
       this.listQuery.jobGroup = this.executorList[0].id
       this.listQuery.logStatus = this.logStatusList[0].value
       this.fetchData()
