@@ -1560,12 +1560,12 @@ export default {
       handler(val) {
         if (val && this.HiveForm.master && this.HiveForm.serverPort) {
           if (this.HiveForm.jdbcUrl.split('//')[1].split(':')[1].split('/')) {
-            this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.HiveForm.serverPort + '/' + val
+            this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] + ':' + this.HiveForm.serverPort + '/' + val
           } else {
             this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
           }
         } else if (!val && this.HiveForm.master && this.HiveForm.serverPort) {
-          this.HiveForm.jdbcUrl = 'jdbc:' + this.selectType.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort
+          this.HiveForm.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '://' + this.HiveForm.master + ':' + this.HiveForm.serverPort
         }
       },
       deep: true
@@ -2617,7 +2617,7 @@ export default {
     }
 
     .el-dialog {
-        border-radius: 8px;
+        border-radius: 4px;
 
         .el-dialog__header {
             font-size: 24px;
@@ -2633,6 +2633,7 @@ export default {
             padding: 10px 40px;
 
             .bgcForm {
+              padding-top: 8px;
                 .el-form {
                     overflow: hidden;
                     border-radius: 6px;
@@ -2640,7 +2641,7 @@ export default {
                     margin: 0px auto;
 
                     .el-form-item {
-                        margin-bottom: 0px;
+                        margin-bottom: 8px;
                     }
                 }
             }

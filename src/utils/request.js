@@ -87,7 +87,7 @@ service.interceptors.response.use(
       if (res.code === -1 && res.hasOwnProperty('msg')) {
         Notification.error({
           title: '错误',
-          message: '未知错误，请联系管理员'
+          message: res.msg
         });
       }
 
