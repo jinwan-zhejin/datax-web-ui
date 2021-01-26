@@ -60,21 +60,39 @@
             <el-input v-show="writerForm.ifCreateTable" v-model="writerForm.tableName" style="width: 200px;" :placeholder="readerForm.tableName" />
           </el-form-item>
         </el-col>
+        <el-col>
+          <el-form-item label="字段">
+            <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
+            <div style="margin: 15px 0;" />
+            <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
+              <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType !== 'IMPORT'">
+          <el-form-item label="前置SQL">
+            <el-input v-model="writerForm.preSql" placeholder="前置SQL在insert之前执行" />
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType !== 'IMPORT'">
+          <el-form-item label="后置SQL">
+            <el-input v-model="writerForm.postSql" placeholder="多个SQL用;分隔" />
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'">
+          <el-form-item label="新增分区">
+            <el-radio-group v-model="writerForm.partition">
+              <el-radio :label="0">分区</el-radio>
+              <el-radio :label="1">非分区</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
+          <el-form-item label="分区字段">
+            <el-select v-model="writerForm.partitionText" />
+          </el-form-item>
+        </el-col>
       </el-row>
-      <div style="margin: 5px 0;" />
-      <el-form-item label="字段">
-        <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
-        <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
-          <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="前置SQL">
-        <el-input v-model="writerForm.preSql" placeholder="前置SQL在insert之前执行" />
-      </el-form-item>
-      <el-form-item label="后置SQL">
-        <el-input v-model="writerForm.postSql" placeholder="多个SQL用;分隔" />
-      </el-form-item>
     </el-form>
   </div>
 </template>

@@ -17,6 +17,7 @@
       <div class="main_content">
         <!-- {{ $store.state.taskAdmin.selectReaderColumn }}<br>
         {{ $store.state.taskAdmin.selectWriterColumn }}<br> -->
+        <!-- {{ $store.state.taskAdmin.tabType }} -->
         <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">基础信息</h1>
         <Create ref="create" :fjson="configJson" />
         <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">源表配置</h1>
@@ -538,5 +539,11 @@ export default {
 .last_content {
   width: 90%;
   margin: 0 auto;
+}
+</style>
+
+<style lang="scss" scoped>
+::v-deep .el-form-item__label {
+  font-size: 15px !important;
 }
 </style>
