@@ -34,7 +34,7 @@
             <span style="display:block;" @click="showPsw">修改密码</span>
           </el-dropdown-item>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">退&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出</span>
+            <span style="display:block;" @click="logout">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

@@ -59,6 +59,7 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
+      console.log(this.chartData, 'this.chartData')
       this.setOptions(this.chartData)
     },
     setOptions({ failData, successData, dayList, projName } = {}) {
@@ -130,14 +131,16 @@ export default {
           animationEasing: 'quadraticOut'
         }]
       }
-      if (failData.length <= 0) {
-        t.tooltip.formatter = function(params) {
-          return `日期: ${params[0].axisValue}<br>
-          项目: ${dayList.indexOf(params[0].axisValue) > -1 ? projName[dayList.indexOf(params[0].axisValue)] : '未知项'}<br>
-          任务数: ${params[0].data}`
+      if (failData) {
+        if (failData.length <= 0) {
+          t.tooltip.formatter = function(params) {
+            return `日期: ${params[0].axisValue}<br>
+            项目: ${dayList.indexOf(params[0].axisValue) > -1 ? projName[dayList.indexOf(params[0].axisValue)] : '未知项'}<br>
+            任务数: ${params[0].data}`
+          }
+        } else {
+          t.legend.data = ['失败', '成功']
         }
-      } else {
-        t.legend.data = ['失败', '成功']
       }
       this.chart.setOption(t)
     }

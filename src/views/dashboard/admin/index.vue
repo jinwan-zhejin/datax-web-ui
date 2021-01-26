@@ -80,7 +80,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(dataObjectDistribute.itemTaskDistribution)" />
+                <pie-chart v-if="dataObjectDistribute.itemTaskDistribution" :chart-data="transformArrPieChart(dataObjectDistribute.itemTaskDistribution)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
           </el-col>
@@ -94,7 +98,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" /> -->
-                <bar-chart :chart-data="transformArrBarChart(dataObjectType.itemTaskTypeDistribution)" />
+                <bar-chart v-if="dataObjectType.itemTaskTypeDistribution" :chart-data="transformArrBarChart(dataObjectType.itemTaskTypeDistribution)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
           </el-col>
@@ -262,7 +270,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(dataTaskDistribute.taskTypeDistribution)" />
+                <pie-chart v-if="dataTaskDistribute.taskTypeDistribution" :chart-data="transformArrPieChart(dataTaskDistribute.taskTypeDistribution)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
           </el-col>
@@ -276,7 +288,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
-                <pie-chart :chart-data="transformArrPieChart(dataTaskDistributeE.taskExecutorDistribution)" />
+                <pie-chart v-if="dataTaskDistributeE.taskExecutorDistribution" :chart-data="transformArrPieChart(dataTaskDistributeE.taskExecutorDistribution)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
           </el-col>
@@ -356,7 +372,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.usedRule" /> -->
-                <pie-chart :chart-data="transformArrPieChart2(dataRuleChart.usedRule)" />
+                <pie-chart v-if="dataRuleChart.usedRule" :chart-data="transformArrPieChart2(dataRuleChart.usedRule)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 25%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
             <!-- {{ KPI.usedRule }} -->
@@ -803,7 +823,6 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 24px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
@@ -890,6 +909,8 @@ export default {
         .el-col {
           .el-card {
             margin: 10px 0;
+            border: none;
+            border-radius: 0px;
             .clearfix > span {
               font-size: 16px;
               color: #9298A5;

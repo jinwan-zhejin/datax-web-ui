@@ -210,7 +210,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(row)
+        user.resetPsw({
+          userId: row.id
+        }).then((res) => {
+          console.log(res)
+          if (res.code === '200') {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       }).catch(() => {
         this.$message({
           type: 'info',

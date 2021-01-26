@@ -77,3 +77,12 @@ export function getAllUserProject(params) {
     params
   })
 }
+
+// 重置密码
+export function resetPsw(params) {
+  return request({
+    url: '/api/user/resetPwd',
+    method: 'post',
+    params
+  })
+}
