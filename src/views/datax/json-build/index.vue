@@ -2,20 +2,30 @@
   <div class="app-container">
     <div class="build-container">
       <!-- <div style="width:100%;border-bottom:1px solid rgba(240, 240, 242, 1);margin-bottom:20px;padding:20px 0;"> -->
-      <h1 style="    font-size: 21px; font-weight: 700; margin: 28px 3%;">基础信息</h1>
-      <div style="width:80%;margin:0 auto;">
-        <!-- <el-steps :active="active" align-center>
+      <!-- <h1 style="font-size: 21px; font-weight: 700; margin: 28px 3%;">基础信息</h1>
+        <div style="width:80%;margin:0 auto;"> -->
+      <!-- <el-steps :active="active" align-center>
             <el-step title="新建任务" description="">1</el-step>
             <el-step title="构建reader" description="">2</el-step>
             <el-step title="构建writer" description="">3</el-step>
             <el-step title="字段映射" description="">4</el-step>
             <el-step title="构建" description="">5</el-step>
           </el-steps> -->
-      </div>
+      <!-- </div> -->
       <!-- </div> -->
 
       <div class="main_content">
-        <div v-show="active===1" class="step0 first_content">
+        <!-- {{ $store.state.taskAdmin.selectReaderColumn }}<br>
+        {{ $store.state.taskAdmin.selectWriterColumn }}<br> -->
+        <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">基础信息</h1>
+        <Create ref="create" :fjson="configJson" />
+        <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">源表配置</h1>
+        <Reader ref="reader" />
+        <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">目标表配置</h1>
+        <Writer ref="writer" />
+        <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">字段映射</h1>
+        <Mapper ref="mapper" />
+        <!-- <div v-show="active===1" class="step0 first_content">
           <Create ref="create" :fjson="configJson" />
         </div>
         <div v-show="active===2" class="step1 first_content">
@@ -161,13 +171,14 @@
             </div>
           </div>
 
-        </div>
+        </div> -->
       </div>
 
-      <div style="width:200px;float:right;">
-        <el-button size="small" :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button>
-        <el-button size="small" type="primary" style="margin-top: 12px;margin-bottom: 12px;background:rgba(61, 95, 255, 1);" @click="next">{{ active === 5 ?'提交':'下一步' }}</el-button>
-      </div>
+      <el-col style="margin: 20px 0; text-align: center;">
+        <!-- <el-button size="small" :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button> -->
+        <el-button size="small" style="margin: 0 10px;" @click="cancel">取消</el-button>
+        <el-button size="small" style="margin: 0 10px;" type="primary" @click="next">提交</el-button>
+      </el-col>
 
     </div>
   </div>
@@ -181,9 +192,9 @@ import Pagination from '@/components/Pagination'
 import JsonEditor from '@/components/JsonEditor'
 import Reader from './reader'
 import Writer from './writer'
-import clip from '@/utils/clipboard'
 import Mapper from './mapper'
 import Create from './create'
+import clip from '@/utils/clipboard'
 
 export default {
   name: 'JsonBuild',
@@ -270,72 +281,82 @@ export default {
   watch: {
     datasourceID1(newval) {
       this.$store.state.taskAdmin.dataSourceList.forEach(element => {
-        if (newval == element.id) {
+        if (newval === element.id) {
           this.datasourceName1 = element.datasourceName
         }
-      });
+      })
     },
 
     datasourceID2(newval) {
       this.$store.state.taskAdmin.dataSourceList.forEach(element => {
-        if (newval == element.id) {
+        if (newval === element.id) {
           this.datasourceName2 = element.datasourceName
         }
-      });
+      })
+    },
+
+    '$store.state.taskAdmin.selectReaderColumn'(val) {
+      this.goCreateMap()
+    },
+    '$store.state.taskAdmin.selectWriterColumn'(val) {
+      this.goCreateMap()
     }
   },
   methods: {
     next() {
-      const fromColumnList = this.$refs.reader.getData().columns
-      const toColumnsList = this.$refs.writer.getData().columns
-      // const fromTableName = this.$refs.reader.getData().tableName
-      // 第一步 reader 判断是否已选字段
-      if (this.active === 2) {
-        // 实现第一步骤读取的表和字段直接带到第二步骤
-        // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
-        // 取子组件的数据
-        // console.info(this.$refs.reader.getData())
-        this.active++
-      } else {
-        // 将第一步和第二步得到的字段名字发送到第三步
-        if (this.active === 3) {
-          this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
-          this.$refs.mapper.sendRuleSettings()
-        }
-        if (this.active === 4) {
-          const readerColumns = this.$refs.mapper.getLColumns()
-          const writerColumns = this.$refs.mapper.getRColumns()
-          var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
-          for (var i = 0; i < tmps.length - 1; i++) {
-            if (tmps[i] === tmps[i + 1]) {
-              this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
-              throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
-            }
-          }
-          var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
-          for (i = 0; i < tmps1.length - 1; i++) {
-            if (tmps1[i] === tmps1[i + 1]) {
-              this.$message(
-                '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-              )
-              throw new Error(
-                '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-              )
-            }
-          }
-          this.buildJson();
-        }
-        if (this.active === 5) {
-          this.$refs.create.createTask()
-        } else {
-          this.active++
-        }
-      }
+      // const fromColumnList = this.$refs.reader.getData().columns
+      // const toColumnsList = this.$refs.writer.getData().columns
+      // // const fromTableName = this.$refs.reader.getData().tableName
+      // // 第一步 reader 判断是否已选字段
+      // if (this.active === 2) {
+      //   // 实现第一步骤读取的表和字段直接带到第二步骤
+      //   // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
+      //   // 取子组件的数据
+      //   // console.info(this.$refs.reader.getData())
+      //   this.active++
+      // } else {
+      //   // 将第一步和第二步得到的字段名字发送到第三步
+      //   if (this.active === 3) {
+      //     this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
+      //     this.$refs.mapper.sendRuleSettings()
+      //   }
+      //   if (this.active === 4) {
+      //     const readerColumns = this.$refs.mapper.getLColumns()
+      //     const writerColumns = this.$refs.mapper.getRColumns()
+      //     var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
+      //     for (var i = 0; i < tmps.length - 1; i++) {
+      //       if (tmps[i] === tmps[i + 1]) {
+      //         this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
+      //         throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
+      //       }
+      //     }
+      //     var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
+      //     for (i = 0; i < tmps1.length - 1; i++) {
+      //       if (tmps1[i] === tmps1[i + 1]) {
+      //         this.$message(
+      //           '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+      //         )
+      //         throw new Error(
+      //           '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+      //         )
+      //       }
+      //     }
+      //     this.buildJson();
+      //   }
+      //   if (this.active === 5) {
+      this.$refs.create.createTask()
+      // } else {
+      //   this.active++
+      // }
+      // }
     },
     last() {
       if (this.active > 1) {
         this.active--
       }
+    },
+    cancel() {
+      this.$emit('cancel')
     },
     // 构建json
     buildJson() {
@@ -438,6 +459,36 @@ export default {
       this.temp.jobDesc = this.getReaderData().tableName
       this.$refs.jobTemplateSelectDrawer.closeDrawer()
       this.jobTemplate = val.id + '(' + val.jobDesc + ')'
+    },
+    /**
+     * @description: 字段映射
+     */
+    goCreateMap() {
+      const fromColumnList = this.$refs.reader.getData().columns
+      const toColumnsList = this.$refs.writer.getData().columns
+      this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
+      this.$refs.mapper.sendRuleSettings()
+      const readerColumns = this.$refs.mapper.getLColumns()
+      const writerColumns = this.$refs.mapper.getRColumns()
+      var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
+      for (var i = 0; i < tmps.length - 1; i++) {
+        if (tmps[i] === tmps[i + 1]) {
+          this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
+          throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
+        }
+      }
+      var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
+      for (i = 0; i < tmps1.length - 1; i++) {
+        if (tmps1[i] === tmps1[i + 1]) {
+          this.$message(
+            '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+          )
+          throw new Error(
+            '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+          )
+        }
+      }
+      this.buildJson();
     }
   }
 }
@@ -467,6 +518,7 @@ export default {
 }
 .app-container {
   padding: 0;
+  overflow: hidden;
 }
 .main_content {
   /* width: 60%; */

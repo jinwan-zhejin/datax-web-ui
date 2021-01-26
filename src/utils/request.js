@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox, Message, Notification } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -77,6 +77,20 @@ service.interceptors.response.use(
       if (!res.hasOwnProperty('code')) {
         return res
       }
+
+      if (res.code === 500 && res.hasOwnProperty('msg')) {
+        Notification.error({
+          title: '错误',
+          message: res.msg
+        });
+      }
+      if (res.code === -1 && res.hasOwnProperty('msg')) {
+        Notification.error({
+          title: '错误',
+          message: '未知错误，请联系管理员'
+        });
+      }
+
       return Promise.reject(new Error(res || 'Error'))
     } else {
       const { data } = response

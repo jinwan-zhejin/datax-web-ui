@@ -1739,13 +1739,15 @@ export default {
     reorganizeChildJob() {
       var tmp = '-';
       if (this.temp.childJobId) {
-        this.temp.childJobId.forEach(ele => {
-          if (tmp === '-') {
-            tmp = ele.jobDesc;
-          } else {
-            tmp += ', '.concat(ele.jobDesc);
-          }
-        });
+        if (typeof this.temp.childJobId !== 'string') {
+          this.temp.childJobId.forEach(ele => {
+            if (tmp === '-') {
+              tmp = ele.jobDesc;
+            } else {
+              tmp += ', '.concat(ele.jobDesc);
+            }
+          })
+        }
       }
       return tmp;
     },

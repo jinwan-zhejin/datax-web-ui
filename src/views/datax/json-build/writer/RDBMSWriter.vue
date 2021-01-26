@@ -1,9 +1,15 @@
 <template>
   <div>
-    <el-form label-position="left" label-width="150px" :model="writerForm" :rules="rules">
-      <el-row :gutter="30">
+    <el-form
+      label-position="top"
+      label-width="120px"
+      :model="writerForm"
+      :rules="rules"
+      class="form-label-class"
+    >
+      <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="数据库源：" prop="datasourceId">
+          <el-form-item label="数据源" prop="datasourceId">
             <el-select
               v-model="datasourceId"
               filterable
@@ -35,7 +41,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="数据库表名：" prop="tableName">
+          <el-form-item label="数据库表名" prop="tableName">
             <el-select
               v-model="fromTableName"
               allow-create
@@ -56,18 +62,18 @@
         </el-col>
       </el-row>
       <div style="margin: 5px 0;" />
-      <el-form-item label="字段：">
+      <el-form-item label="字段">
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
         <div style="margin: 15px 0;" />
         <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
           <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="前置sql语句：">
-        <el-input v-model="writerForm.preSql" placeholder="前置sql在insert之前执行" type="textarea" :rows="3" />
+      <el-form-item label="前置SQL">
+        <el-input v-model="writerForm.preSql" placeholder="前置SQL在insert之前执行" />
       </el-form-item>
-      <el-form-item label="postSql：">
-        <el-input v-model="writerForm.postSql" placeholder="多个用;分隔" type="textarea" :rows="3" />
+      <el-form-item label="后置SQL">
+        <el-input v-model="writerForm.postSql" placeholder="多个SQL用;分隔" />
       </el-form-item>
     </el-form>
   </div>
@@ -135,6 +141,9 @@ export default {
         this.getSchema()
       }
       this.getTables('rdbmsWriter')
+    },
+    'writerForm.columns'(val) {
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     }
   },
   created() {
@@ -224,11 +233,13 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value);
     },
     getData() {
       if (Bus.dataSourceId) {
@@ -259,3 +270,14 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.form-label-class {
+  >>> .el-form-item__label {
+    font-family: PingFangHK-Regular, PingFangHK;
+  }
+}
+.el-form {
+  background: white;
+  padding: 20px;
+}
+</style>

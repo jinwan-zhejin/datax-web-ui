@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-form label-position="left" label-width="120px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
-      <el-row :gutter="30">
+    <el-form label-position="top" label-width="120px" :model="readerForm" :rules="rules" :class="[$store.state.taskAdmin.readerAllowEdit?'':'form-label-class']">
+      <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="数据源：" prop="datasourceId">
+          <el-form-item label="数据源" prop="datasourceId">
             <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.datasourceId" filterable @change="rDsChange">
               <!-- <el-option
                 v-for="item in rDsList"
@@ -22,50 +22,62 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="表：" prop="tableName">
+          <el-form-item label="数据库表名" prop="tableName">
             <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.tableName" filterable @change="rTbChange">
               <el-option v-for="item in rTbList" :key="item" :label="item" :value="item" />
             </el-select>
             <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.tableName) }}</span>
           </el-form-item>
         </el-col>
+        <el-col>
+          <el-form-item label="文件路径" prop="path">
+            <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.path" placeholder="要读取的文件路径，如果要读取多个文件，可以使用正则表达式'*'" />
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.path) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="默认FS" prop="defaultFS">
+            <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址" />
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.defaultFS) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="文件类型" prop="fileType">
+            <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.fileType" placeholder="文件的类型">
+              <el-option v-for="item in fileTypes" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.fileType, fileTypes, 'value', 'label')) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="字段分隔符" prop="fieldDelimiter">
+            <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.fieldDelimiter" placeholder="读取的字段分隔符" />
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.fieldDelimiter) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="跳过表头">
+            <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.skipHeader" placeholder="是否跳过表头">
+              <el-option v-for="item in skipHeaderTypes" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.skipHeader, skipHeaderTypes, 'value', 'label')) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="字段">
+            <el-checkbox
+              v-model="readerForm.checkAll"
+              :disabled="!$store.state.taskAdmin.readerAllowEdit"
+              :indeterminate="readerForm.isIndeterminate"
+              @change="rHandleCheckAllChange"
+            >全选</el-checkbox>
+            <div style="margin: 15px 0;" />
+            <el-checkbox-group v-model="readerForm.columns" :disabled="!$store.state.taskAdmin.readerAllowEdit" @change="rHandleCheckedChange">
+              <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-col>
       </el-row>
-      <el-form-item label="path：" prop="path">
-        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.path" :autosize="{ minRows: 2, maxRows: 20}" type="textarea" placeholder="要读取的文件路径，如果要读取多个文件，可以使用正则表达式'*'" />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.path) }}</span>
-      </el-form-item>
-      <el-form-item label="defaultFS：" prop="defaultFS">
-        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.defaultFS" placeholder="Hadoop hdfs文件系统namenode节点地址" />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.defaultFS) }}</span>
-      </el-form-item>
-      <el-form-item label="fileType：" prop="fileType">
-        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.fileType" placeholder="文件的类型">
-          <el-option v-for="item in fileTypes" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.fileType, fileTypes, 'value', 'label')) }}</span>
-      </el-form-item>
-      <el-form-item label="fieldDelimiter：" prop="fieldDelimiter">
-        <el-input v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.fieldDelimiter" placeholder="读取的字段分隔符" />
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(readerForm.fieldDelimiter) }}</span>
-      </el-form-item>
-      <el-form-item label="skipHeader：">
-        <el-select v-show="$store.state.taskAdmin.readerAllowEdit" v-model="readerForm.skipHeader" placeholder="是否跳过表头">
-          <el-option v-for="item in skipHeaderTypes" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ dashOrValue(finder(readerForm.skipHeader, skipHeaderTypes, 'value', 'label')) }}</span>
-      </el-form-item>
-      <el-form-item label="字段：">
-        <el-checkbox
-          v-model="readerForm.checkAll"
-          :disabled="!$store.state.taskAdmin.readerAllowEdit"
-          :indeterminate="readerForm.isIndeterminate"
-          @change="rHandleCheckAllChange"
-        >全选</el-checkbox>
-        <div style="margin: 15px 0;" />
-        <el-checkbox-group v-model="readerForm.columns" :disabled="!$store.state.taskAdmin.readerAllowEdit" @change="rHandleCheckedChange">
-          <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -257,9 +269,11 @@ export default {
 <style lang="scss" scoped>
 .form-label-class {
   >>>.el-form-item__label {
-    font-weight: 500;
-    color: #999999;
     font-family: PingFangHK-Regular, PingFangHK;
   }
+}
+.el-form {
+  background: white;
+  padding: 20px;
 }
 </style>

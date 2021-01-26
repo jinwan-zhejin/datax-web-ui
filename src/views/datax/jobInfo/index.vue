@@ -19,7 +19,7 @@
             </el-select> -->
             <el-dropdown @command="handleCommand">
               <span>
-                {{ typeof(selectValue) === 'number' ? '请选择' : selectValue }}<i class="el-icon-arrow-down el-icon--right" />
+                {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
                 <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
@@ -201,7 +201,7 @@
             "
             class="rg"
           >
-            <JsonBuild />
+            <JsonBuild @cancel="closeCreate" />
           </div>
 
           <div v-if="jobType === 'SQLJOB'" class="rg">
@@ -335,6 +335,18 @@ export default {
           return true
         }
       })
+    },
+
+    dropdownText() {
+      if (this.selectValue !== '' && this.selectValue !== null && this.selectValue !== undefined) {
+        if (typeof this.selectValue === 'number') {
+          return this.options.filter(item => item.id === this.selectValue)[0].name
+        } else {
+          return this.selectValue
+        }
+      } else {
+        return '请选择'
+      }
     }
   },
   watch: {
@@ -732,6 +744,15 @@ export default {
         const { records } = response;
         this.$store.commit('SET_DATASOURCE', records);
       });
+    },
+    closeCreate() {
+      this.jobType = ''
+      this.$store.commit('SET_TAB_TYPE', '')
+      if (this.$store.state.taskAdmin.taskDetailList.length <= 0) {
+        this.jobDetailIdx = '欢迎'
+      } else {
+        this.jobDetailIdx = this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
+      }
     }
   }
 };
@@ -754,8 +775,8 @@ export default {
     // overflow: hidden;
     padding: 10px;
     // background: #f0f0f2;
-    background: #fff;
-    // background: #f7f9fb;
+    // background: #fff;
+    background: #f8f8fa;
     // border-top-left-radius: 8px;
     // border-bottom-left-radius: 8px;
     // border-right: 1px solid #f0eded;
@@ -793,9 +814,9 @@ export default {
             ul {
               padding: 0px;
               li {
-                height: 24px;
+                height: 32px;
                 font-size: 15px;
-                line-height: 24px;
+                line-height: 32px;
                 // background-color: rgb(218, 243, 253);
                 text-align: left;
                 list-style: none;
@@ -824,7 +845,7 @@ export default {
         height: calc(100vh - 80px);
         overflow-y: auto;
         overflow-x: auto;
-        background-color: #f7f9fb;
+        // background-color: #f7f9fb;
       }
       .el-tabs__header {
         height: 32px;
@@ -836,8 +857,8 @@ export default {
       }
 
       .el-tabs__item.is-active {
-        background-color: #f6f9fb;
-        border-bottom-color: darkgray;
+        background-color: #ffffff;
+        border-bottom-color:  #3d5eff;
       }
       // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
       //   height: 50px;
@@ -876,7 +897,7 @@ export default {
 
 <style scoped>
 .el-bar-tab >>> .el-tabs__nav-scroll {
-  background: rgb(240, 240, 242);
+  background: #f8f8fa;
 }
 
 .el-bar-tab >>> .el-tabs__content {
@@ -912,8 +933,6 @@ export default {
 .top-icon:hover {
   color: #3d5eff;
 }
-
-
 
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
