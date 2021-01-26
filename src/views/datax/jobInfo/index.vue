@@ -1,5 +1,5 @@
 <template>
-  <div class="Management" >
+  <div class="Management">
     <div class="lt">
       <!-- {{jobDetailIdx}} -->
       <div class="top">
@@ -130,12 +130,22 @@
                   v-for="(item, index) in filterList"
                   :key="index"
                   :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
+                  style="padding-right: 12px;"
                   @click="getJobDetail(item)"
                 >
                   <svg-icon :icon-class="item.jobType" />
                   <a style="color: rgba(102, 102, 102, 1)">
                     {{ item.jobDesc }}
                   </a>
+                  <el-tag
+                    v-if="item.hasOwnProperty('triggerStatus')"
+                    :type="item.triggerStatus === 1 ? 'success' : item.triggerStatus === 0 ? 'warning' : 'info'"
+                    effect="plain"
+                    size="mini"
+                    style="float: right; margin-top: 6px; padding-right: 20px;"
+                  >
+                    {{ item.triggerStatus === 1 ? '运行中' : item.triggerStatus === 0 ? '未运行' : '未知' }}
+                  </el-tag>
                 </li>
               </ul>
             </div>
@@ -809,7 +819,7 @@ export default {
       .body {
         border-top: 1px solid #f8f8f8;
         .el-scrollbar {
-          height: calc(100vh - 240px);
+          height: calc(100vh - 181px);
           .list {
             ul {
               padding: 0px;

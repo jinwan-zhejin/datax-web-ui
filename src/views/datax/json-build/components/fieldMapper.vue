@@ -7,7 +7,7 @@
     >
       <el-table-column
         label="数据源库"
-        width="180"
+        min-width="180"
       >
         <template slot-scope="scope">
           <el-select
@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column
         label="清洗规则"
-        width="180"
+        min-width="180"
       >
         <template slot-scope="scope">
           <el-select
@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column
         label="目标字段"
-        width="180"
+        min-width="180"
       >
         <template slot-scope="scope">
           <el-select
