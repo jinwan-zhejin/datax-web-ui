@@ -80,7 +80,7 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskDistribution" /> -->
-                <pie-chart v-if="dataObjectDistribute.itemTaskDistribution" :chart-data="transformArrPieChart(dataObjectDistribute.itemTaskDistribution)" />
+                <pie-chart v-if="dataObjectDistribute.itemTaskDistribution[0]" :chart-data="transformArrPieChart(dataObjectDistribute.itemTaskDistribution)" />
                 <div v-else style="width: 100%;height:350px;text-align:center;">
                   <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
                   <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
@@ -98,7 +98,7 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskTypeDistribution" /> -->
-                <bar-chart v-if="dataObjectType.itemTaskTypeDistribution" :chart-data="transformArrBarChart(dataObjectType.itemTaskTypeDistribution)" />
+                <bar-chart v-if="dataObjectType.itemTaskTypeDistribution[0]" :chart-data="transformArrBarChart(dataObjectType.itemTaskTypeDistribution)" />
                 <div v-else style="width: 100%;height:350px;text-align:center;">
                   <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
                   <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
@@ -116,7 +116,11 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.itemTaskRunStateDistribution" /> -->
-                <line-chart :chart-data="transformArrBarChart2(dataObjectRun.itemTaskRunStateDistribution)" />
+                <line-chart v-if="dataObjectRun.itemTaskRunStateDistribution[0]" :chart-data="transformArrBarChart2(dataObjectRun.itemTaskRunStateDistribution)" />
+                <div v-else style="width: 100%;height:350px;text-align:center;">
+                  <img class="noDataPic_parent" style="width: 25%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
+                </div>
               </el-col>
             </el-card>
             <!-- {{ KPI.itemTaskRunStateDistribution }} -->
@@ -270,9 +274,9 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskTypeDistribution" /> -->
-                <pie-chart v-if="dataTaskDistribute.taskTypeDistribution" :chart-data="transformArrPieChart(dataTaskDistribute.taskTypeDistribution)" />
+                <pie-chart v-if="dataTaskDistribute.taskTypeDistribution[0]" :chart-data="transformArrPieChart(dataTaskDistribute.taskTypeDistribution)" />
                 <div v-else style="width: 100%;height:350px;text-align:center;">
-                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <img class="noDataPic_parent" style="width: 100%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
                   <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
                 </div>
               </el-col>
@@ -288,9 +292,9 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.taskExecutorDistribution" /> -->
-                <pie-chart v-if="dataTaskDistributeE.taskExecutorDistribution" :chart-data="transformArrPieChart(dataTaskDistributeE.taskExecutorDistribution)" />
+                <pie-chart v-if="dataTaskDistributeE.taskExecutorDistribution[0]" :chart-data="transformArrPieChart(dataTaskDistributeE.taskExecutorDistribution)" />
                 <div v-else style="width: 100%;height:350px;text-align:center;">
-                  <img class="noDataPic_parent" style="width: 50%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
+                  <img class="noDataPic_parent" style="width: 100%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
                   <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
                 </div>
               </el-col>
@@ -372,7 +376,7 @@
               </div>
               <el-col>
                 <!-- <vechart style="width: 100%;height: 120px;" :data="KPI.usedRule" /> -->
-                <pie-chart v-if="dataRuleChart.usedRule" :chart-data="transformArrPieChart2(dataRuleChart.usedRule)" />
+                <pie-chart v-if="dataRuleChart.usedRule[0]" :chart-data="transformArrPieChart2(dataRuleChart.usedRule)" />
                 <div v-else style="width: 100%;height:350px;text-align:center;">
                   <img class="noDataPic_parent" style="width: 25%;height:50%;" src="@/assets/404_images/noDataPic.png" alt="暂无数据">
                   <p style="font-sizw: 24px;font-weight:700;margin-top:20px;">暂无数据</p>
