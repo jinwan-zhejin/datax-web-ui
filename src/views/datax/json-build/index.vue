@@ -15,6 +15,8 @@
       <!-- </div> -->
 
       <div class="main_content">
+        <!-- {{ $store.state.taskAdmin.selectReaderColumn }}<br>
+        {{ $store.state.taskAdmin.selectWriterColumn }}<br> -->
         <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">基础信息</h1>
         <Create ref="create" :fjson="configJson" />
         <h1 style="font-size: 21px; font-weight: 700; margin: 20px;">源表配置</h1>
@@ -172,10 +174,10 @@
         </div> -->
       </div>
 
-      <el-col style="margin: 20px 0;">
+      <el-col style="margin: 20px 0; text-align: center;">
         <!-- <el-button size="small" :disabled="active===1" style="margin-top: 12px;" @click="last">上一步</el-button> -->
-        <el-button size="small" style="float: right; margin: 0 10px;" type="primary" @click="next">提交</el-button>
-        <el-button size="small" style="float: right; margin: 0 10px;" @click="cancel">取消</el-button>
+        <el-button size="small" style="margin: 0 10px;" @click="cancel">取消</el-button>
+        <el-button size="small" style="margin: 0 10px;" type="primary" @click="next">提交</el-button>
       </el-col>
 
     </div>
@@ -273,14 +275,6 @@ export default {
 
     datasourceID2() {
       return this.$store.state.taskAdmin.writerDataSourceID
-    },
-
-    goCreateMap() {
-      if (this.$store.state.taskAdmin.selectReaderColumn.length > 0 && this.$store.state.taskAdmin.selectWriterColumn.length > 0) {
-        return true
-      } else {
-        return false
-      }
     }
   },
 
@@ -290,7 +284,7 @@ export default {
         if (newval === element.id) {
           this.datasourceName1 = element.datasourceName
         }
-      });
+      })
     },
 
     datasourceID2(newval) {
@@ -298,33 +292,14 @@ export default {
         if (newval === element.id) {
           this.datasourceName2 = element.datasourceName
         }
-      });
+      })
     },
 
-    goCreateMap(val) {
-      if (val) {
-        const readerColumns = this.$refs.mapper.getLColumns()
-        const writerColumns = this.$refs.mapper.getRColumns()
-        var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
-        for (var i = 0; i < tmps.length - 1; i++) {
-          if (tmps[i] === tmps[i + 1]) {
-            this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
-            throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
-          }
-        }
-        var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
-        for (i = 0; i < tmps1.length - 1; i++) {
-          if (tmps1[i] === tmps1[i + 1]) {
-            this.$message(
-              '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-            )
-            throw new Error(
-              '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-            )
-          }
-        }
-        this.buildJson();
-      }
+    '$store.state.taskAdmin.selectReaderColumn'(val) {
+      this.goCreateMap()
+    },
+    '$store.state.taskAdmin.selectWriterColumn'(val) {
+      this.goCreateMap()
     }
   },
   methods: {
@@ -484,6 +459,36 @@ export default {
       this.temp.jobDesc = this.getReaderData().tableName
       this.$refs.jobTemplateSelectDrawer.closeDrawer()
       this.jobTemplate = val.id + '(' + val.jobDesc + ')'
+    },
+    /**
+     * @description: 字段映射
+     */
+    goCreateMap() {
+      const fromColumnList = this.$refs.reader.getData().columns
+      const toColumnsList = this.$refs.writer.getData().columns
+      this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
+      this.$refs.mapper.sendRuleSettings()
+      const readerColumns = this.$refs.mapper.getLColumns()
+      const writerColumns = this.$refs.mapper.getRColumns()
+      var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
+      for (var i = 0; i < tmps.length - 1; i++) {
+        if (tmps[i] === tmps[i + 1]) {
+          this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
+          throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
+        }
+      }
+      var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
+      for (i = 0; i < tmps1.length - 1; i++) {
+        if (tmps1[i] === tmps1[i + 1]) {
+          this.$message(
+            '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+          )
+          throw new Error(
+            '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
+          )
+        }
+      }
+      this.buildJson();
     }
   }
 }

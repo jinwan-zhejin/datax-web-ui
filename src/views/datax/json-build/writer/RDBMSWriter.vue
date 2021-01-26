@@ -141,6 +141,9 @@ export default {
         this.getSchema()
       }
       this.getTables('rdbmsWriter')
+    },
+    'writerForm.columns'(val) {
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     }
   },
   created() {
@@ -230,11 +233,13 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value);
     },
     getData() {
       if (Bus.dataSourceId) {

@@ -19,7 +19,7 @@
             </el-select> -->
             <el-dropdown @command="handleCommand">
               <span>
-                {{ typeof(selectValue) === 'number' ? '请选择' : selectValue }}<i class="el-icon-arrow-down el-icon--right" />
+                {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
                 <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
@@ -335,6 +335,18 @@ export default {
           return true
         }
       })
+    },
+
+    dropdownText() {
+      if (this.selectValue !== '' && this.selectValue !== null && this.selectValue !== undefined) {
+        if (typeof this.selectValue === 'number') {
+          return this.options.filter(item => item.id === this.selectValue)[0].name
+        } else {
+          return this.selectValue
+        }
+      } else {
+        return '请选择'
+      }
     }
   },
   watch: {
@@ -764,7 +776,7 @@ export default {
     padding: 10px;
     // background: #f0f0f2;
     // background: #fff;
-    background: #fbfcfd;
+    background: #f8f8fa;
     // border-top-left-radius: 8px;
     // border-bottom-left-radius: 8px;
     // border-right: 1px solid #f0eded;
@@ -885,7 +897,7 @@ export default {
 
 <style scoped>
 .el-bar-tab >>> .el-tabs__nav-scroll {
-  background: #fbfcfd;
+  background: #f8f8fa;
 }
 
 .el-bar-tab >>> .el-tabs__content {
@@ -921,8 +933,6 @@ export default {
 .top-icon:hover {
   color: #3d5eff;
 }
-
-
 
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;

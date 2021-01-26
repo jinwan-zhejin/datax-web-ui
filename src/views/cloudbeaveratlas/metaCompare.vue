@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-21 17:49:07
+ * @LastEditTime: 2021-01-26 10:07:50
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\metaCompare.vue
  * @Description: 元数据比对 index
 -->
@@ -203,14 +203,15 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin: 24px 24px 35px 24px;
-  height: calc(100vh - 109px);
-  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  // margin: 24px 24px 35px 24px;
+  height: calc(100vh - 50px); // 100vh - 50px
+  // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  // border-radius: 8px;
   .el-container {
     height: 100%;
     // left
     .el-aside {
+      width: 360px !important;
       border-top-left-radius: 8px;
       border-bottom-left-radius: 8px;
       overflow-x: hidden;
@@ -237,7 +238,7 @@ export default {
           padding-right: 24px;
         }
         .el-scrollbar {
-          height: calc(100vh - 20rem);
+          height: calc(100vh - 20rem + 59px);
           .list {
             padding-right: 24px;
             ul {

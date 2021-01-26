@@ -40,6 +40,7 @@
       </el-table-column>
       <el-table-column
         label="目标字段"
+        width="180"
       >
         <template slot-scope="scope">
           <el-select

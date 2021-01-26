@@ -2,7 +2,7 @@
  * @Date: 2020-09-24 10:38:26
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-11-12 14:17:17
+ * @LastEditTime: 2021-01-26 10:04:17
  * @FilePath: \datax-web-ui\src\views\cloudbeaveratlas\index.vue
  * @Description: 元数据管理-apache atlas
 -->
@@ -10,7 +10,7 @@
 <template>
   <div ref="container" class="container">
     <el-container style="height: 100%;">
-      <el-aside v-show="asideShow" style="min-width: 200px; width: 23vw;">
+      <el-aside v-show="asideShow" style="width: 360px;">
         <div class="top-search">
           <label class="title-label">
             元数据管理
@@ -1113,10 +1113,10 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin: 24px 24px 35px 24px;
-  height: calc(100vh - 109px);
-  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  // margin: 24px 24px 35px 24px;
+  height: calc(100vh - 50px); // 100vh - 109px
+  // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  // border-radius: 8px;
   .el-container {
     .slider-bar {
       width: 13px;
@@ -1174,7 +1174,7 @@ export default {
         }
       }
       .el-scrollbar {
-        height: calc(100vh - 230px);
+        height: calc(100vh - 171px); // 100vh - 230px
         .el-collapse {
           padding-right: 20px;
           border: 0;

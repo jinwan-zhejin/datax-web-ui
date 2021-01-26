@@ -206,6 +206,9 @@ export default {
         this.getSchema();
       }
       this.getTables('rdbmsReader');
+    },
+    'readerForm.columns'(val) {
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
     }
   },
   mounted() {

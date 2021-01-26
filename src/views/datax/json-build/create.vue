@@ -20,7 +20,7 @@
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12">
-            <el-form-item label="描述（新增）" prop="jobGroup">
+            <el-form-item label="描述" prop="jobGroup">
               <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
                 <el-option
                   v-for="item in executorList"
@@ -32,13 +32,13 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="12">
-            <el-form-item label="描述（新增）" prop="jobGroup">
+            <el-form-item label="描述" prop="description">
               <el-input v-model="temp.description" placeholder="描述" />
             </el-form-item>
           </el-col>
         </el-card>
         <!-- <h1 style="font-size: 21px; font-weight: 700; margin: 28px 4%;">调度策略<el-button type="text" icon="el-icon-down" @click="showStrategy = !showStrategy">{{ showStrategy ? '展开' : '折叠'}}</el-button></h1> -->
-        <el-card v-show="showStrategy" shadow="never" style="margin-top: 3%">
+        <!-- <el-card shadow="never" style="margin-top: 3%">
           <el-col :span="12">
             <el-form-item label="路由策略" prop="executorRouteStrategy">
               <el-select
@@ -141,7 +141,7 @@
               <span style="margin-left: 10px">分</span>
             </el-form-item>
           </el-col>
-        </el-card>
+        </el-card> -->
       </el-row>
       <!-- <el-form-item label="任务名称：" prop="jobDesc">
         <el-input
@@ -255,7 +255,7 @@
       </el-form-item> -->
     </el-form>
     <!-- <json-editor v-if="temp.glueType" ref="jsonEditor" v-model="inputJson" /> -->
-    <el-dialog
+    <!-- <el-dialog
       title="提示"
       :visible.sync="showCronBox"
       width="60%"
@@ -269,7 +269,7 @@
           @click="showCronBox = false"
         >确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -417,11 +417,12 @@ export default {
       job.getJobIdList().then((response) => {
         const { content } = response;
         this.jobIdList = content;
-        const t = []
-        if (this.jobIdList.length > 0) {
-          t.push(this.jobIdList[0].id)
-        }
-        this.$set(this.temp, 'childJobIdArr', t)
+        // 默认子任务
+        // const t = []
+        // if (this.jobIdList.length > 0) {
+        //   t.push(this.jobIdList[0].id)
+        // }
+        // this.$set(this.temp, 'childJobIdArr', t)
       });
     },
     /**
@@ -449,7 +450,7 @@ export default {
       this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
       this.temp.jobParam = this.$store.state.taskAdmin.jobParam;
-      job.createJob(this.temp).then(() => {
+      job.createJob(this.temp).then(response => {
         this.$notify({
           title: 'Success',
           message: 'Created Successfully',
