@@ -26,7 +26,7 @@
           <el-menu
             class="el-menu-vertical-demo"
             :default-active="navActive"
-            style="position: fixed; top: 50%; transform: translateY(-50%); left: 20px;"
+            style="position: fixed; top: 50%; transform: translateY(-50%);"
           >
             <el-menu-item
               v-for="(item, index) in navList"
