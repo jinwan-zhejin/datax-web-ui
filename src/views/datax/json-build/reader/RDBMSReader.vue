@@ -100,7 +100,7 @@
             </el-checkbox-group>
           </el-form-item>
         </el-col>
-        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'" :span="24">
+        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'" :span="12">
           <el-form-item label="同步方式">
             <el-radio-group v-model="readerForm.syncType">
               <el-radio :label="0">每日增量</el-radio>
@@ -108,11 +108,11 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.syncType === 0" :span="12">
+        <!-- <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.syncType === 0" :span="12">
           <el-form-item label="重跑属性">
             <el-input v-model="readerForm.reRunProp" placeholder="重跑属性" />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.syncType === 0" :span="12">
           <el-form-item label="增量配置模式">
             <el-radio-group v-model="readerForm.incSetting">
@@ -123,7 +123,7 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.incSetting === 0 && readerForm.syncType === 0" :span="24">
           <el-form-item label="根据日期字段">
-            <el-input v-model="readerForm.incExtract" placeholder="使用标志数据变更的时间字段，如gmt_midified" /><span>生成每日增量抽取</span>
+            <el-select v-model="readerForm.incExtract" placeholder="使用标志数据变更的时间字段，如gmt_midified" />
           </el-form-item>
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.incSetting === 1 && readerForm.syncType === 0" :span="24">
