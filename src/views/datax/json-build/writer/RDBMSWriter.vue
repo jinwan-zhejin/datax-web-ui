@@ -61,7 +61,7 @@
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item label="字段">
+          <el-form-item label="表所有字段">
             <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;" />
             <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
@@ -80,7 +80,7 @@
           </el-form-item>
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'">
-          <el-form-item label="新增分区">
+          <el-form-item label="分区配置">
             <el-radio-group v-model="writerForm.partition">
               <el-radio :label="0">分区</el-radio>
               <el-radio :label="1">非分区</el-radio>
@@ -89,7 +89,7 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
           <el-form-item label="分区字段">
-            <el-select v-model="writerForm.partitionText" />
+            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段" />
           </el-form-item>
         </el-col>
       </el-row>
