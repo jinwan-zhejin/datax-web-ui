@@ -11,16 +11,6 @@
       </el-card>
     </div>
     <div class="main">
-      <!-- <el-form class="action-bar" style="border-bottom: 1px solid #DCDFE6;" label-position="right" label-width="auto" :inline="true">
-        <el-form-item>
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-plus"
-            @click="newTransform"
-          >新的构建</el-button>
-        </el-form-item>
-      </el-form> -->
       <el-container>
         <el-aside width="180px" style="background: transparent; height: calc(100vh - 200px);">
           <el-menu
@@ -40,7 +30,7 @@
         </el-aside>
         <el-container>
           <el-main>
-            <el-col :span="23">
+            <el-col :span="23" :offset="1">
               <el-form
                 ref="form"
                 :model="form"
@@ -50,7 +40,7 @@
               >
                 <el-row :gutter="40">
                   <el-col ref="source"><h1>{{ navList[0].name }}</h1></el-col>
-                  <el-col :span="12">
+                  <el-col v-if="false" :span="12">
                     <el-form-item label="所属项目名称" prop="projectId">
                       <el-select
                         v-model="form.projectId"
@@ -290,7 +280,7 @@
                       <el-input v-model="form.location" placeholder="存储位置" />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="18" :offset="3">
+                  <!-- <el-col :span="18" :offset="3">
                     <el-progress
                       v-if="showProgressbar"
                       ref="transformProgress"
@@ -299,7 +289,7 @@
                       style="margin: 20px 0;"
                       :percentage="transformPercentage"
                     />
-                  </el-col>
+                  </el-col> -->
                 </el-row>
               </el-form>
             </el-col>
@@ -307,25 +297,19 @@
           </el-main>
         </el-container>
       </el-container>
-      <el-col style="padding-top: 15px;">
-        <el-col :span="12" :offset="6">
-          <el-col :span="12" style="text-align: center;">
-            <el-button
-              v-loading="isLoading"
-              :disabled="showProgressbar"
-              type="primary"
-              @click="onTransform('form')"
-            >开始转换</el-button>
-          </el-col>
-          <el-col :span="12" style="text-align: center;">
-            <el-button
-              v-loading="isLoading"
-              :disabled="!showProgressbar"
-              type="primary"
-              @click="showTransformedSQL"
-            >查看转换结果</el-button>
-          </el-col>
-        </el-col>
+      <el-col style="padding-top: 15px; text-align: center;">
+        <el-button
+          v-loading="isLoading"
+          type="primary"
+          style="margin-right: 24px;"
+          @click="onTransform('form')"
+        >开始转换</el-button>
+        <el-button
+          v-loading="isLoading"
+          :disabled="!resultEnable"
+          type="primary"
+          @click="showTransformedSQL"
+        >查看转换结果</el-button>
       </el-col>
     </div>
     <!-- <el-dialog title="转换进度" :visible.sync="showProgressbar" width="50%">
@@ -368,7 +352,15 @@
         />
       </div>
     </el-dialog>
-  </div>
+    <el-dialog :visible="showProgressbar" :show-close="false">
+      <el-progress
+        ref="transformProgress"
+        :color="progressColor"
+        :format="progressFormat"
+        style="margin: 20px 0;"
+        :percentage="transformPercentage"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -378,8 +370,8 @@ import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import {
   getTableSchema,
   getTableListWithComment,
-  getTableList,
-  getTableColumns,
+  // getTableList,
+  // getTableColumns,
   db2hive
 } from '@/api/metadata-query';
 
@@ -476,6 +468,7 @@ export default {
       schemalist: [],
       tablelist: [],
       showProgressbar: false,
+      resultEnable: false,
       /** 进度log */
       sqlScript: '',
       mysql2hiveDataTypeMap: {
@@ -519,6 +512,9 @@ export default {
       if (val === 'source') {
         this.form.dbNamePattern = '%s'
       }
+    },
+    '$store.state.project.currentItem'(val) {
+      this.loadProject(val)
     }
   },
   mounted() {
@@ -526,12 +522,23 @@ export default {
   },
   created() {
     this.formCopy = JSON.parse(JSON.stringify(this.form))
-    this.getProjectList();
+    this.getProjectList()
+    this.loadProject(this.$store.state.project.currentItem)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
+    /**
+     * @description: 从vuex加载项目
+     */
+    loadProject(item) {
+      const firstD = item.indexOf('/')
+      this.form.projectId = firstD > -1 ? parseInt(item.substring(0, firstD)) : ''
+      if (this.form.projectId !== undefined && this.form.projectId !== '') {
+        this.onProjectChange(this.form.projectId)
+      }
+    },
     /**
      * @description: 开始转换
      */
@@ -614,10 +621,15 @@ export default {
                 this.sqlScript += (ele + '\n')
               })
               this.transformPercentage = 100
+              setTimeout(() => {
+                this.showProgressbar = false
+                this.resultEnable = true
+              }, 1000)
               this.isLoading = false
             })
           }
         } else {
+          this.resultEnable = false
           return false;
         }
       })
