@@ -374,13 +374,12 @@ export default {
 .header {
     overflow: hidden;
     // border-radius: 8px;
-    background: #f0f0f2;
+    background: #f6f9fb;
     display: flex;
-
+    height: calc(100vh - 50px);
     .aside {
-        width: 330px;
-        min-height: 500px;
-        // max-height: 700px;
+        width: 360px;
+        min-height: 600px;
         overflow: scroll;
         overflow-x: auto;
         padding: 10px;
@@ -399,7 +398,7 @@ export default {
 
             .dataTree {
                 // width: 400px;
-                background-color: #f0f0f2;
+                background-color: #f6f9fb;
 
                 .el-tree {
                     background: none;
@@ -411,7 +410,6 @@ export default {
     .tabs1 {
         flex: 1;
         overflow: auto;
-
         .el-tabs__header {
           margin: 0px;
           .el-tabs__nav-wrap {
@@ -422,13 +420,16 @@ export default {
         .el-tabs--border-card {
           box-shadow: none;
           border-left: none;
+          border-bottom: none;
         }
+        border-bottom: none;
     }
 }
 
 .header>>>.el-tabs--border-card {
   box-shadow: none;
   border: none;
+  border-bottom: none;
 }
 
 .header>>>.el-tabs__new-tab {
@@ -450,6 +451,7 @@ export default {
   font-size: 13px;
   box-shadow: none;
   border-left: none;
+  border-bottom: none;
 }
 
 .header>>>.el-tabs__new-tab {
@@ -459,6 +461,7 @@ export default {
 .el-tabs .el-tabs--top .el-tabs--border-card {
   box-shadow: none;
   border-right: none;
+  border-bottom: none;
 }
 
 .header>>>.is-active {

@@ -249,6 +249,7 @@ export default {
     .el-tabs {
         border-right: none;
         box-shadow: none;
+        border-bottom: none;
         .el-tab-pane {
             height: 400px;
         }
@@ -264,5 +265,8 @@ export default {
 
 .el-tabs--border-card>.el-tabs__content {
     padding: 0px;
+}
+.el-tabs--border-card>.el-tabs__header {
+    border-bottom: none;
 }
 </style>

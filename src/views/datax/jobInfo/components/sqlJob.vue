@@ -1,174 +1,175 @@
 <template>
   <div class="app-container">
-    <h1 style="font-size: 21px;
+    <h1
+      style="font-size: 21px;
     font-weight: 700;
-    margin-right: 10px;">添加 SQL任务</h1>
+    margin-right: 10px;"
+    >添加 SQL任务</h1>
     <div class="main-content">
 
-    <el-form
-      ref="dataForm"
-      :rules="rules"
-      :model="temp"
-      label-position="left"
-      label-width="110px"
-      class="input_from"
-    >
-
-      <el-form-item label="任务名称：" prop="jobDesc">
-        <el-input
-          v-model="temp.jobDesc"
-          size="medium"
-          placeholder="请输入任务描述"
-        />
-      </el-form-item>
-      <el-form-item label="任务类型：" prop="glueType">
-         {{ this.jobTypeLabel }}
-       </el-form-item>
-      <el-form-item label="执行器：" prop="jobGroup">
-        <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-          <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
-        </el-select>
-      </el-form-item>
-
-      <el-dialog
-        title="提示"
-        :visible.sync="showCronBox"
-        width="60%"
-        append-to-body
-        class='cron_window'
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="110px"
+        class="input_from"
       >
-        <cron v-model="temp.jobCron" />
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="showCronBox = false">关闭</el-button>
-          <el-button
-            type="primary"
-            @click="showCronBox = false"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
-      <el-form-item label="Cron：" prop="jobCron">
-        <el-input
-          v-model="temp.jobCron"
-          auto-complete="off"
-          placeholder="请输入Cron表达式"
 
+        <el-form-item label="任务名称：" prop="jobDesc">
+          <el-input
+            v-model="temp.jobDesc"
+            size="medium"
+            placeholder="请输入任务描述"
+          />
+        </el-form-item>
+        <el-form-item label="任务类型：" prop="glueType">
+          {{ this.jobTypeLabel }}
+        </el-form-item>
+        <el-form-item label="执行器：" prop="jobGroup">
+          <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
+            <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+          </el-select>
+        </el-form-item>
+
+        <el-dialog
+          title="提示"
+          :visible.sync="showCronBox"
+          width="60%"
+          append-to-body
+          class="cron_window"
         >
-          <el-button
-            v-if="!showCronBox"
-            slot="append"
-            icon="el-icon-turn-off"
-            title="打开图形配置"
-            @click="showCronBox = true"
-          />
-          <el-button
-            v-else
-            slot="append"
-            icon="el-icon-open"
-            title="关闭图形配置"
-            @click="showCronBox = false"
-          />
-        </el-input>
-      </el-form-item>
+          <cron v-model="temp.jobCron" />
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="showCronBox = false">关闭</el-button>
+            <el-button
+              type="primary"
+              @click="showCronBox = false"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-form-item label="Cron：" prop="jobCron">
+          <el-input
+            v-model="temp.jobCron"
+            auto-complete="off"
+            placeholder="请输入Cron表达式"
+          >
+            <el-button
+              v-if="!showCronBox"
+              slot="append"
+              icon="el-icon-turn-off"
+              title="打开图形配置"
+              @click="showCronBox = true"
+            />
+            <el-button
+              v-else
+              slot="append"
+              icon="el-icon-open"
+              title="关闭图形配置"
+              @click="showCronBox = false"
+            />
+          </el-input>
+        </el-form-item>
 
-      <el-form-item label="数据源连接：" prop="datasourceId">
-        <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
-          <el-option
-            v-for="item in blockStrategies"
-            :key="item.id"
-            :label="item.datasourceName"
-            :value="item.id"
+        <el-form-item label="数据源连接：" prop="datasourceId">
+          <el-select v-model="temp.datasourceId" placeholder="请选择数据源连接">
+            <el-option
+              v-for="item in blockStrategies"
+              :key="item.id"
+              :label="item.datasourceName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Schema：">
+          <el-select v-model="temp.schema" placeholder="请选择schema">
+            <el-option
+              v-for="item in schemaList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="报警邮件：">
+          <el-input
+            v-model="temp.alarmEmail"
+            placeholder="请输入报警邮件，多个用逗号分隔"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item label="Schema：">
-        <el-select v-model="temp.schema" placeholder="请选择schema">
-          <el-option
-            v-for="item in schemaList"
-            :key="item"
-            :label="item"
-            :value="item"
+        <el-form-item label="失败重试次数：">
+          <el-input-number
+            v-model="temp.executorFailRetryCount"
+            size="small"
+            :min="0"
+            :max="20"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item label="报警邮件：">
-        <el-input
-          v-model="temp.alarmEmail"
-          placeholder="请输入报警邮件，多个用逗号分隔"
-        />
-      </el-form-item>
+        <el-form-item label="子任务：">
+          <el-select
+            v-model="temp.childJobId"
+            multiple
+            placeholder="子任务"
+            value-key="id"
+          >
+            <el-option
+              v-for="item in jobIdList"
+              :key="item.id"
+              :label="item.jobDesc"
+              :value="item"
+            />
+          </el-select>
+        </el-form-item>
 
-      <el-form-item label="失败重试次数：">
-        <el-input-number
-          v-model="temp.executorFailRetryCount"
-          size="small"
-          :min="0"
-          :max="20"
-        />
-      </el-form-item>
+        <el-form-item label="SQL脚本：">
+          <el-radio v-model="radio" label="1">数据开发保存任务</el-radio>
+          <el-radio v-model="radio" label="2">本地导入</el-radio>
+          <el-radio v-model="radio" label="3">自定义</el-radio>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-if="radio === '1'"
+            v-model="temp.SQLScript"
+            placeholder="选择SQL脚本"
+          >
+            <el-option
+              v-for="item in timeFormatTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-upload
+            v-if="radio === '2'"
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+            :on-success="successFile"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </el-form-item>
 
-      <el-form-item label="子任务：">
-        <el-select
-          v-model="temp.childJobId"
-          multiple
-          placeholder="子任务"
-          value-key="id"
-        >
-          <el-option
-            v-for="item in jobIdList"
-            :key="item.id"
-            :label="item.jobDesc"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="SQL脚本：">
-        <el-radio v-model="radio" label="1">数据开发保存任务</el-radio>
-        <el-radio v-model="radio" label="2">本地导入</el-radio>
-        <el-radio v-model="radio" label="3">自定义</el-radio>
-      </el-form-item>
-      <el-form-item>
-        <el-select
-          v-if="radio === '1'"
-          v-model="temp.SQLScript"
-          placeholder="选择SQL脚本"
-        >
-          <el-option
-            v-for="item in timeFormatTypes"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-upload
-          v-if="radio === '2'"
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
-          multiple
-          :limit="3"
-          :on-exceed="handleExceed"
-          :file-list="fileList"
-          :on-success="successFile"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-      </el-form-item>
-
-      <el-form-item>
-        <div class="scriptJson">
-          <textarea
-            ref="mycode"
-            v-model="jsonContent"
-            class="codesql"
-          />
-        </div>
-      </el-form-item>
-    </el-form>
+        <el-form-item>
+          <div class="scriptJson">
+            <textarea
+              ref="mycode"
+              v-model="jsonContent"
+              class="codesql"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="from_btn">
       <el-button size="small" @click="dialogFormVisible = false"> 取消 </el-button>
@@ -851,8 +852,9 @@ export default {
 <style>
 .CodeMirror {
   border: 1px solid #d9d9d9;
+  border-left: none;
 }
 .CodeMirror-linenumbers {
-  background: rgba(240, 240, 242, 1);
+  background: rgb(255, 255, 255);
 }
 </style>
