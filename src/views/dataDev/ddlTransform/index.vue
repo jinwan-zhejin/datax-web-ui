@@ -22,11 +22,11 @@
         </el-form-item>
       </el-form> -->
       <el-container>
-        <el-aside width="150px" style="background: transparent; height: calc(100vh - 200px);">
+        <el-aside width="180px" style="background: transparent; height: calc(100vh - 200px);">
           <el-menu
             class="el-menu-vertical-demo"
             :default-active="navActive"
-            style="position: fixed; top: 50%; transform: translateY(-50%); left: 20px;"
+            style="position: fixed; top: 50%; transform: translateY(-50%); width: 160px; float: right;"
           >
             <el-menu-item
               v-for="(item, index) in navList"
@@ -40,7 +40,7 @@
         </el-aside>
         <el-container>
           <el-main>
-            <el-col :span="22">
+            <el-col :span="23">
               <el-form
                 ref="form"
                 :model="form"
@@ -51,7 +51,7 @@
                 <el-row :gutter="40">
                   <el-col ref="source"><h1>{{ navList[0].name }}</h1></el-col>
                   <el-col :span="12">
-                    <el-form-item v-show="false" label="所属项目名称" prop="projectId">
+                    <el-form-item label="所属项目名称" prop="projectId">
                       <el-select
                         v-model="form.projectId"
                         placeholder="请选择待项目名称"
@@ -904,11 +904,14 @@ export default {
     }
   }
   >>> .el-aside {
-    padding-left: 0px !important;
+    margin-right: 20px;
   }
   >>> .el-menu-item.is-active {
     font-weight: 550;
     font-size: 17px;
+  }
+  >>> .el-menu-item {
+    text-align: right;
   }
   >>> .el-menu {
     // border-right: 0;
