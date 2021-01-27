@@ -4,7 +4,7 @@
       <div class="top">
         <el-row>
           <el-col :span="16">
-            <el-select v-model="selectValue" placeholder="请选择" @change="selectMethod">
+            <el-select v-if="showInput" v-model="selectValue" placeholder="请选择" @change="selectMethod">
               <el-option v-for="item in projectArray" :key="item.id" :label="item.name" :value="item.name" />
             </el-select>
           </el-col>
@@ -132,15 +132,33 @@ export default {
       selectedDbName: '',
       selectedDsName: '',
       tableList: [],
-      columnList: []
+      columnList: [],
+      showInput: false
     };
   },
   watch: {
     'searchModel': function(val) {
       this.$refs.tree.filter(val);
+    },
+    '$store.state.project.currentItem': {
+      deep: true,
+      handler: function(newValue, oldValue) {
+        if (oldValue) {
+          this.arrQuery.projectId = newValue.split('/')[0]
+          this.getDataSourceList()
+        }
+      }
     }
   },
   created() {
+    if (sessionStorage.getItem('strParam')) {
+      this.arrQuery.projectId = sessionStorage.getItem('strParam').split('/')[0]
+    }
+    if (localStorage.getItem('userId') === '1') {
+      this.showInput = true
+    } else {
+      this.showInput = false
+    }
     this.getProJectList()
   },
   mounted() {
@@ -282,10 +300,11 @@ export default {
     },
     // 根据项目获取数据源
     getDataSourceList() {
-      // this.arrQuery.name = this.selectValue
-      for (let i = 0; i < this.projectArray.length; i++) {
-        if (this.projectArray[i].name === this.selectValue) {
-          this.arrQuery.projectId = this.projectArray[i].id;
+      if (localStorage.getItem('userId') === '1') {
+        for (let i = 0; i < this.projectArray.length; i++) {
+          if (this.projectArray[i].name === this.selectValue) {
+            this.arrQuery.projectId = this.projectArray[i].id;
+          }
         }
       }
       datasourceApi.getJobList(this.arrQuery).then((res) => {
@@ -361,8 +380,9 @@ export default {
     .aside {
         width: 330px;
         min-height: 500px;
-        max-height: 700px;
+        // max-height: 700px;
         overflow: scroll;
+        overflow-x: auto;
         padding: 10px;
 
         .top {
