@@ -413,7 +413,11 @@ export default {
         overflow: auto;
 
         .el-tabs__header {
-            margin: 0px;
+          margin: 0px;
+          .el-tabs__nav-wrap {
+            height: 32px;
+            line-height: 32px;
+          }
         }
     }
 }
@@ -425,6 +429,16 @@ export default {
 
 .header>>>.el-tabs__header {
     background-color: #ffffff;
+    .el-tabs__nav-wrap {
+      height: 32px;
+      line-height: 32px;
+    }
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item {
+  height: 32px;
+  line-height: 32px;
+  font-size: 13px;
 }
 
 .header>>>.el-tabs__new-tab {

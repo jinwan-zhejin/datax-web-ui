@@ -245,6 +245,7 @@ export default {
 }
 
 .border-card {
+    border: none;
     .el-tabs {
         .el-tab-pane {
             height: 400px;

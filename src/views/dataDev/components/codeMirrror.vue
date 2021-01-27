@@ -302,7 +302,9 @@ export default {
 }
 
 .btnContent {
-    padding: 15px 25px 15px;
+    padding-left: 15px;
+    height: 40px;
+    line-height: 40px;
     background-color: #fff;
     border-bottom: 1px solid #eee;
     font-size: 14px;

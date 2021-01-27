@@ -215,7 +215,7 @@ export default {
 
 .dataBase,
 .table {
-    padding: 0 0 20px;
+    padding: 0px;
     width: 100%;
     /* border-bottom: 1px solid rgb(245, 241, 241); */
 }
