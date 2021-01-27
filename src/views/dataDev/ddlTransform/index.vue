@@ -423,7 +423,8 @@ export default {
       listQuery: {
         pageNo: 1,
         pageSize: 10,
-        searchVal: ''
+        searchVal: '',
+        userId: ''
       },
       projectlist: [],
       datasourcelist: [],
@@ -563,6 +564,7 @@ export default {
      * @description: 获取项目列表
      */
     getProjectList() {
+      this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         this.projectlist = records;
