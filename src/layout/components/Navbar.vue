@@ -17,7 +17,14 @@
         <!--        </el-tooltip>-->
 
       </template>
-
+      <el-dropdown v-if="showCurrent" class="right-menu-item" trigger="click" @command="handleCommand">
+        <span style="font-size: 14px;cursor: pointer;">
+          {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
+        </span>
+        <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
+          <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../public/avatar.jpg" class="user-avatar">
@@ -80,6 +87,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import { updatePsw } from '@/api/user'
+import * as jobProjectApi from '@/api/datax-job-project';
 
 export default {
   components: {
@@ -104,6 +112,14 @@ export default {
         newPsw: '',
         VerifyPsw: ''
       },
+      options: [], // 项目数组
+      listQuery: {
+        pageNo: 1,
+        pageSize: 99999,
+        userId: ''
+      },
+      dropdownText: '请选择',
+      showCurrent: false,
       rules: {
         oldPsw: [
           { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
@@ -128,6 +144,17 @@ export default {
       'device'
     ])
   },
+  created() {
+    this.getProjectList()
+    const str = sessionStorage.getItem('strParam')
+    if (sessionStorage.getItem('level') === '2') {
+      if (str) {
+        this.dropdownText = str.split('/')[1]
+        this.$store.commit('changeCurrent', str)
+      }
+      this.showCurrent = true
+    }
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -137,6 +164,23 @@ export default {
       localStorage.clear()
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       sessionStorage.clear()
+    },
+    handleCommand(command) {
+      console.log(command)
+      const commandName = command.split('/')[1]
+      this.dropdownText = commandName
+      this.$store.commit('changeCurrent', command)
+      console.log(this.$store.state.project.currentItem, 'item')
+    },
+    // 获取项目列表
+    getProjectList() {
+      this.listQuery.userId = parseInt(localStorage.getItem('userId'))
+      jobProjectApi.list(this.listQuery).then((res) => {
+        console.log(res, 'zzzzzzzzzzc')
+        this.options = res.records
+      }).catch(error => {
+        console.log(error)
+      })
     },
     showPsw() {
       this.dialogPSWVisible = true

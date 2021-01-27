@@ -106,7 +106,8 @@ export default {
       searchModel: '',
       listQuery: {
         pageNo: 1,
-        pageSize: 10
+        pageSize: 100,
+        userId: ''
       },
       arrQuery: {
         current: 1,
@@ -259,6 +260,7 @@ export default {
     },
     // 获取项目数据
     async getProJectList() {
+      this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
         const {
           records
