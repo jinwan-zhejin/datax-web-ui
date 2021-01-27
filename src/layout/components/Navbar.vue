@@ -18,7 +18,7 @@
 
       </template>
       <el-dropdown v-if="showCurrent" class="right-menu-item" trigger="click" @command="handleCommand">
-        <span style="font-size: 16px;cursor: pointer;">
+        <span style="font-size: 14px;cursor: pointer;">
           {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
@@ -146,9 +146,11 @@ export default {
   },
   created() {
     this.getProjectList()
+    const str = sessionStorage.getItem('strParam')
     if (sessionStorage.getItem('level') === '2') {
-      if (this.$store.state.project.currentItem) {
-        this.dropdownText = this.$store.state.project.currentItem.split('/')[1]
+      if (str) {
+        this.dropdownText = str.split('/')[1]
+        this.$store.commit('changeCurrent', str)
       }
       this.showCurrent = true
     }

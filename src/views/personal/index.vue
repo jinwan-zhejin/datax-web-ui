@@ -84,9 +84,7 @@ export default {
       console.log(JSON.parse(localStorage.getItem('permission')))
       const myLeft = JSON.parse(localStorage.getItem('permission'))
       const strParam = item.id + '/' + item.name
-      console.log(strParam)
-      this.$store.commit('changeCurrent', strParam)
-      console.log(this.$store.state.project.currentItem, 'zzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxx')
+      sessionStorage.setItem('strParam', strParam)
       const arr = []
       for (let i = 0; i < myLeft.length; i++) {
         if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {

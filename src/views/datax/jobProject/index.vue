@@ -58,7 +58,7 @@
           :xl="6"
           style="margin-bottom: 20px;"
         >
-          <project-card :all-users="users" :content="item" style="cursor: pointer;" @click.native="handleLink">
+          <project-card :all-users="users" :content="item" style="cursor: pointer;" @click.native="handleLink(item)">
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>
                 <el-dropdown trigger="click" placement="bottom-end" @click.native.stop>
@@ -377,9 +377,11 @@ export default {
         }
       });
     },
-    handleLink() {
+    handleLink(item) {
       console.log(JSON.parse(localStorage.getItem('permission')))
       const myLeft = JSON.parse(localStorage.getItem('permission'))
+      const strParam = item.id + '/' + item.name
+      sessionStorage.setItem('strParam', strParam)
       const arr = []
       for (let i = 0; i < myLeft.length; i++) {
         if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {
