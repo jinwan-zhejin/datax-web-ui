@@ -419,7 +419,16 @@ export default {
             line-height: 32px;
           }
         }
+        .el-tabs--border-card {
+          box-shadow: none;
+          border-left: none;
+        }
     }
+}
+
+.header>>>.el-tabs--border-card {
+  box-shadow: none;
+  border: none;
 }
 
 .header>>>.el-tabs__new-tab {
@@ -439,10 +448,17 @@ export default {
   height: 32px;
   line-height: 32px;
   font-size: 13px;
+  box-shadow: none;
+  border-left: none;
 }
 
 .header>>>.el-tabs__new-tab {
     background-color: #ffffff;
+}
+
+.el-tabs .el-tabs--top .el-tabs--border-card {
+  box-shadow: none;
+  border-right: none;
 }
 
 .header>>>.is-active {
