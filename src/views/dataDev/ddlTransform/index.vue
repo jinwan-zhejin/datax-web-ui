@@ -521,39 +521,14 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('scroll', () => {
-      this.$set(this.pos, 'source', this.$refs.source.$el.getBoundingClientRect().top)
-      this.$set(this.pos, 'sql', this.$refs.sql.$el.getBoundingClientRect().top)
-      this.$set(this.pos, 'db', this.$refs.db.$el.getBoundingClientRect().top)
-      this.$set(this.pos, 'partition', this.$refs.partition.$el.getBoundingClientRect().top)
-      this.$set(this.pos, 'format', this.$refs.format.$el.getBoundingClientRect().top)
-      this.$set(this.pos, 'storage', this.$refs.storage.$el.getBoundingClientRect().top)
-      if (this.pos !== undefined && this.pos.storage <= 20) {
-        this.navActive = '5'
-      }
-      if (this.pos !== undefined && this.pos.format <= 20 && this.pos.storage > 20) {
-        this.navActive = '4'
-      }
-      if (this.pos !== undefined && this.pos.partition <= 20 && this.pos.format > 20) {
-        this.navActive = '3'
-      }
-      if (this.pos !== undefined && this.pos.db <= 20 && this.pos.partition > 20) {
-        this.navActive = '2'
-      }
-      if (this.pos !== undefined && this.pos.sql <= 20 && this.pos.db > 20) {
-        this.navActive = '1'
-      }
-      if (this.pos !== undefined && this.pos.source <= 20 && this.pos.sql > 20) {
-        this.navActive = '0'
-      }
-    })
+    window.addEventListener('scroll', this.getPos)
   },
   created() {
     this.formCopy = JSON.parse(JSON.stringify(this.form))
     this.getProjectList();
   },
   beforeDestroy() {
-    window.removeEventListener('scroll')
+    window.removeEventListener('scroll', this.getPos)
   },
   methods: {
     /**
@@ -760,6 +735,44 @@ export default {
       // inline 可选
       // 定义水平方向的对齐， "start", "center", "end", 或 "nearest"之一。默认为 "nearest"。
       this.$refs[nav].$el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+    },
+    getPos() {
+      if (this.$refs.source) {
+        this.$set(this.pos, 'source', this.$refs.source.$el.getBoundingClientRect().top)
+      }
+      if (this.$refs.sql) {
+        this.$set(this.pos, 'sql', this.$refs.sql.$el.getBoundingClientRect().top)
+      }
+      if (this.$refs.db) {
+        this.$set(this.pos, 'db', this.$refs.db.$el.getBoundingClientRect().top)
+      }
+      if (this.$refs.partition) {
+        this.$set(this.pos, 'partition', this.$refs.partition.$el.getBoundingClientRect().top)
+      }
+      if (this.$refs.format) {
+        this.$set(this.pos, 'format', this.$refs.format.$el.getBoundingClientRect().top)
+      }
+      if (this.$refs.storage) {
+        this.$set(this.pos, 'storage', this.$refs.storage.$el.getBoundingClientRect().top)
+      }
+      if (this.pos.storage !== undefined && this.pos.storage <= 20) {
+        this.navActive = '5'
+      }
+      if (this.pos.format !== undefined && this.pos.format <= 20 && this.pos.storage > 20) {
+        this.navActive = '4'
+      }
+      if (this.pos.partition !== undefined && this.pos.partition <= 20 && this.pos.format > 20) {
+        this.navActive = '3'
+      }
+      if (this.pos.db !== undefined && this.pos.db <= 20 && this.pos.partition > 20) {
+        this.navActive = '2'
+      }
+      if (this.pos.sql !== undefined && this.pos.sql <= 20 && this.pos.db > 20) {
+        this.navActive = '1'
+      }
+      if (this.pos.source !== undefined && this.pos.source <= 20 && this.pos.sql > 20) {
+        this.navActive = '0'
+      }
     }
   }
 };
