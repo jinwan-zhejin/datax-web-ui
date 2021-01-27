@@ -386,8 +386,8 @@ export default {
         padding: 10px;
 
         .top {
-            height: 74px;
-            line-height: 60px;
+            height: 42px;
+            line-height: 26px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0, 0, 0, .1);
         }
