@@ -17,7 +17,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane :label="'项目(' + total + ')'" name="first">
           <el-row :gutter="10">
-            <el-col v-for="i in item" :key="i.id" :span="12" @click.native="handleLink">
+            <el-col v-for="i in item" :key="i.id" :span="12" @click.native="handleLink(i)">
               <div class="box">
                 <div class="title">
                   <div class="radius">
@@ -80,9 +80,13 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
-    handleLink() {
+    handleLink(item) {
       console.log(JSON.parse(localStorage.getItem('permission')))
       const myLeft = JSON.parse(localStorage.getItem('permission'))
+      const strParam = item.id + '/' + item.name
+      console.log(strParam)
+      this.$store.commit('changeCurrent', strParam)
+      console.log(this.$store.state.project.currentItem, 'zzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxx')
       const arr = []
       for (let i = 0; i < myLeft.length; i++) {
         if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {
