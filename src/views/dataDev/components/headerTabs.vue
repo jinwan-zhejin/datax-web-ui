@@ -386,8 +386,8 @@ export default {
         padding: 10px;
 
         .top {
-            height: 74px;
-            line-height: 60px;
+            height: 42px;
+            line-height: 26px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0, 0, 0, .1);
         }
@@ -413,9 +413,22 @@ export default {
         overflow: auto;
 
         .el-tabs__header {
-            margin: 0px;
+          margin: 0px;
+          .el-tabs__nav-wrap {
+            height: 32px;
+            line-height: 32px;
+          }
+        }
+        .el-tabs--border-card {
+          box-shadow: none;
+          border-left: none;
         }
     }
+}
+
+.header>>>.el-tabs--border-card {
+  box-shadow: none;
+  border: none;
 }
 
 .header>>>.el-tabs__new-tab {
@@ -425,10 +438,27 @@ export default {
 
 .header>>>.el-tabs__header {
     background-color: #ffffff;
+    .el-tabs__nav-wrap {
+      height: 32px;
+      line-height: 32px;
+    }
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item {
+  height: 32px;
+  line-height: 32px;
+  font-size: 13px;
+  box-shadow: none;
+  border-left: none;
 }
 
 .header>>>.el-tabs__new-tab {
     background-color: #ffffff;
+}
+
+.el-tabs .el-tabs--top .el-tabs--border-card {
+  box-shadow: none;
+  border-right: none;
 }
 
 .header>>>.is-active {

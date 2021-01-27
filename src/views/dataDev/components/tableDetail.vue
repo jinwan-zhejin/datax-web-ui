@@ -245,10 +245,16 @@ export default {
 }
 
 .border-card {
+    border: none;
     .el-tabs {
+        border-right: none;
+        box-shadow: none;
         .el-tab-pane {
             height: 400px;
         }
+    }
+    >>>.el-tabs--border-card {
+        border-right: none;
     }
 }
 
