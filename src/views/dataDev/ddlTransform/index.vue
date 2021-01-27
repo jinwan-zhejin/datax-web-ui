@@ -553,7 +553,7 @@ export default {
     this.getProjectList();
   },
   beforeDestroy() {
-    document.removeEventListener('scroll')
+    window.removeEventListener('scroll')
   },
   methods: {
     /**
