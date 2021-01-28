@@ -249,9 +249,9 @@ export default {
     .el-tabs {
         border-right: none;
         box-shadow: none;
-        border-bottom: none;
+        // border-bottom: none;
         .el-tab-pane {
-            height: 400px;
+          height: 400px;
         }
     }
     >>>.el-tabs--border-card {

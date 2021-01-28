@@ -416,6 +416,8 @@ export default {
         flex: 1;
         overflow: auto;
         box-shadow: 0 0;
+        border-left: none;
+        border-top: 1px solid #F5F7FA;
         .el-tabs__header {
           margin: 0px;
           .el-tabs__nav-wrap {
@@ -445,6 +447,7 @@ export default {
 
 .header>>>.el-tabs__header {
     background-color: #ffffff;
+    border-top: 1px solid #F5F7FA;
     .el-tabs__nav-wrap {
       height: 32px;
       line-height: 32px;
@@ -460,8 +463,17 @@ export default {
   border-bottom: none;
 }
 
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+  border-right-color: #fff;
+}
+
 .header>>>.el-tabs__new-tab {
     background-color: #ffffff;
+}
+
+.header .tabs1 .el-tabs--border-card {
+  border-top: 1px solid #F5F7FA;
+  border-right: none;
 }
 
 .el-tabs .el-tabs--top .el-tabs--border-card {

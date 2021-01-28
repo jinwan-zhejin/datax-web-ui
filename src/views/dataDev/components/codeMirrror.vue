@@ -306,7 +306,7 @@ export default {
     height: 40px;
     line-height: 40px;
     background-color: #fff;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #F5F7FA;
     font-size: 13px;
     ul {
         overflow: hidden;
