@@ -851,7 +851,7 @@ export default {
 
 <style>
 .CodeMirror {
-  border: 1px solid #d9d9d9;
+  /* border: 1px solid #d9d9d9; */
   border-left: none;
 }
 .CodeMirror-linenumbers {

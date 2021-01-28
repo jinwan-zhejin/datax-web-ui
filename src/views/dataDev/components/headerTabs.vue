@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="16">
             <el-select v-if="showInput" v-model="selectValue" placeholder="请选择" @change="selectMethod">
-              <el-option v-for="item in projectArray" :key="item.id" :label="item.name" :value="item.name" />
+              <el-option v-for="item in projectArray" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-col>
           <el-col style="textAlign: right;" :span="4">
@@ -301,11 +301,12 @@ export default {
     // 根据项目获取数据源
     getDataSourceList() {
       if (localStorage.getItem('userId') === '1') {
-        for (let i = 0; i < this.projectArray.length; i++) {
-          if (this.projectArray[i].name === this.selectValue) {
-            this.arrQuery.projectId = this.projectArray[i].id;
-          }
-        }
+        // for (let i = 0; i < this.projectArray.length; i++) {
+        //   if (this.projectArray[i].name === this.selectValue) {
+        //     this.arrQuery.projectId = this.projectArray[i].id;
+        //   }
+        // }
+        this.arrQuery.projectId = this.selectValue;
       }
       datasourceApi.getJobList(this.arrQuery).then((res) => {
         console.log(res, '数据源接口返回信息');
@@ -407,9 +408,14 @@ export default {
         }
     }
 
+    .aside::-webkit-scrollbar {
+      display: none;
+    }
+
     .tabs1 {
         flex: 1;
         overflow: auto;
+        box-shadow: 0 0;
         .el-tabs__header {
           margin: 0px;
           .el-tabs__nav-wrap {
