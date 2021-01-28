@@ -17,7 +17,7 @@
                 :value="item.id"
               />
             </el-select> -->
-            <el-dropdown @command="handleCommand">
+            <el-dropdown v-show="showAdmin" @command="handleCommand">
               <span>
                 {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
@@ -323,7 +323,8 @@ export default {
       jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
-      projectIds: ''
+      projectIds: '',
+      showAdmin: false
     };
   },
   computed: {
@@ -375,10 +376,57 @@ export default {
 
     taskDetailID(val) {
       this.jobDetailIdx = val;
+    },
+
+    '$store.state.project.currentItem': {
+      deep: true,
+      handler: function(newValue, oldValue) {
+        if (oldValue) {
+          const commandId = newValue.split('/')[0]
+          const commandName = newValue.split('/')[1]
+          this.selectValue = commandName;
+          this.$store.commit('SET_PROJECT_ID', commandId);
+
+          // 获取任务列表
+          const listQuery = {
+            current: 1,
+            size: 10,
+            jobGroup: 0,
+            projectIds: commandId,
+            triggerStatus: -1,
+            jobDesc: '',
+            glueType: ''
+          };
+          this.projectIds = commandId;
+
+          job.getList(listQuery).then(response => {
+            const { content } = response;
+            this.List = content.data;
+          });
+
+          // 根据项目id获取数据源
+
+          const p = {
+            current: 1,
+            size: 200,
+            ascs: 'datasource_name',
+            projectId: commandId
+          };
+          jdbcDsList(p).then(response => {
+            const { records } = response;
+            this.$store.commit('SET_DATASOURCE', records);
+          });
+        }
+      }
     }
   },
 
   created() {
+    if (sessionStorage.getItem('level') === '2') {
+      this.showAdmin = false;
+    } else {
+      this.showAdmin = true;
+    }
     this.getItem();
     console.log(this.$store.state);
   },
