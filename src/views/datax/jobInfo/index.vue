@@ -40,6 +40,9 @@
               <el-dropdown-menu
                 style="max-height: calc(100vh - 200px); overflow: auto;"
               >
+                <el-dropdown-item command="wenjianjia">
+                  <svg-icon class="svg_icon" icon-class="wenjianjia" /> 新建文件夹
+                </el-dropdown-item>
                 <el-dropdown-item command="NORMAL">
                   <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                 </el-dropdown-item>
@@ -124,7 +127,7 @@
             clearable
           />
           <el-scrollbar>
-            <div class="list">
+            <!-- <div v-if="isFolder" class="list">
               <ul>
                 <li
                   v-for="(item, index) in filterList"
@@ -149,6 +152,60 @@
                 </li>
               </ul>
             </div>
+            <div v-else class="folder">
+              <p>
+                <svg-icon icon-class="wenjianjia" />
+                <a style="color: rgba(102, 102, 102, 1)" @click="singleClick(folderName)" @dblclick="resetName(folderName)">
+                  {{ folderName }}
+                </a>
+                <i class="el-icon-close" @click="delFolder" />
+                <ul v-show="showCurrentFolder">
+                  <li
+                    v-for="(item, index) in filterList"
+                    :key="index"
+                    :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
+                    style="padding-right: 12px;"
+                    @click="getJobDetail(item)"
+                  >
+                    <svg-icon :icon-class="item.jobType" />
+                    <a style="color: rgba(102, 102, 102, 1)">
+                      {{ item.jobDesc }}
+                    </a>
+                    <el-tag
+                      v-if="item.hasOwnProperty('triggerStatus')"
+                      :type="item.triggerStatus === 1 ? 'success' : item.triggerStatus === 0 ? 'warning' : 'info'"
+                      effect="plain"
+                      size="mini"
+                      style="float: right; margin-top: 6px; padding-right: 20px;"
+                    >
+                      {{ item.triggerStatus === 1 ? '运行中' : item.triggerStatus === 0 ? '未运行' : '未知' }}
+                    </el-tag>
+                  </li>
+                </ul>
+              </p>
+            </div> -->
+            <el-tree
+              :data="filterList"
+              highlight-current
+              accordion
+              :props="defaultProps"
+              @node-click="handleNodeClick"
+            >
+              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;" @dblclick="resetName(folderName)">
+                <span>
+                  <svg-icon :icon-class="data.jobType" style="margin-right:10px;" />{{ node.label }}
+                </span>
+                <el-tag
+                  v-if="data.hasOwnProperty('triggerStatus')"
+                  :type="data.triggerStatus === 1 ? 'success' : data.triggerStatus === 0 ? 'warning' : 'info'"
+                  effect="plain"
+                  size="mini"
+                  style="right: 20px; margin-top: 6px; position: absolute; padding-left: 20px;padding-right: 20px;"
+                >
+                  {{ data.triggerStatus === 1 ? '运行中' : data.triggerStatus === 0 ? '未运行' : '未知' }}
+                </el-tag>
+              </span>
+            </el-tree>
           </el-scrollbar>
         </div>
       </div>
@@ -258,6 +315,17 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
+      <span style="margin-left:20px;">文件夹名称：</span><el-input v-model="Rename" style="width: 60%;margin-left:20px;" />
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogRenameVisible = false">
+          取消
+        </el-button>
+        <el-button type="goon" size="small" @click="sureRe">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -279,6 +347,8 @@ import _ from 'lodash';
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 
 import { objList } from '@/utils/sortArr'
+
+var time;
 
 export default {
   name: '',
@@ -304,6 +374,9 @@ export default {
           name: '1'
         }
       ],
+      dialogRenameVisible: false,
+      showCurrentFolder: false,
+      Rename: '',
       tabIndex: 1,
       /** el-select选项 */
       options: [],
@@ -324,7 +397,14 @@ export default {
       jobDetailLoading: true,
       firstTime: true,
       projectIds: '',
-      showAdmin: false
+      showAdmin: false,
+      folderName: '新建文件夹',
+      FolderArray: [],
+      isFolder: true,
+      defaultProps: {
+        children: 'children',
+        label: 'jobDesc'
+      }
     };
   },
   computed: {
@@ -573,6 +653,55 @@ export default {
       }
     },
 
+    // 单击文件夹选中
+    singleClick(name) {
+      clearTimeout(time); // 首先清除计时器
+      time = setTimeout(() => {
+        console.log(name, this.showCurrentFolder, '11111ooooooooo')
+        if (this.showCurrentFolder) {
+          this.showCurrentFolder = false;
+        } else {
+          this.showCurrentFolder = true;
+        }
+      }, 300); // 大概时间300ms
+    },
+
+    // 文件夹重命名
+    resetName(name) {
+      clearTimeout(time);
+      this.dialogRenameVisible = true;
+    },
+
+    // 确认命名文件夹
+    sureRe() {
+      this.folderName = this.Rename
+      this.dialogRenameVisible = false
+    },
+
+    // 点击删除文件夹
+    delFolder() {
+      this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+
+    handleNodeClick(data) {
+      console.log(data)
+      this.getJobDetail(data)
+    },
+
     getJobDetail(data) {
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
@@ -760,6 +889,11 @@ export default {
     },
 
     createNewJob(command) {
+      if (command === 'wenjianjia') {
+        console.log(command);
+        this.isFolder = false;
+        return;
+      }
       this.$store.commit('SET_READER_ISEDIT', false)
       console.log(command);
       this.$store.commit('SET_TAB_TYPE', command);
@@ -887,6 +1021,56 @@ export default {
               }
             }
           }
+          .folder {
+            padding: 0px;
+            p {
+              min-height: 32px;
+              max-height: 100%;
+              font-size: 15px;
+              line-height: 32px;
+              // background-color: rgb(218, 243, 253);
+              text-align: left;
+              list-style: none;
+              text-indent: 1rem;
+              margin: 5px 0px;
+              ul {
+                padding: 0px;
+                margin-left: 30px;
+                li {
+                  height: 32px;
+                  font-size: 15px;
+                  line-height: 32px;
+                  // background-color: rgb(218, 243, 253);
+                  text-align: left;
+                  list-style: none;
+                  text-indent: 1rem;
+                  margin: 5px 0px;
+                  cursor: pointer;
+                }
+                li:hover {
+                  background-color: #DAF3FD;
+                }
+              }
+              i {
+                float: right;
+                margin-right:20px;
+                margin-top: 8px;
+                cursor: pointer;
+              }
+              i:hover {
+                color: red;
+              }
+              a {
+                cursor: pointer;
+              }
+              .svg-icon {
+                cursor: pointer;
+              }
+            }
+          }
+          .el-tree {
+            background-color: #f8f8fa;
+          }
         }
       }
     }
@@ -962,6 +1146,10 @@ export default {
   height: 660px;
   overflow: scroll;
   padding: 0;
+}
+
+.el-tree >>> .el-tree-node {
+  margin: 5px 0px;
 }
 
 .el-bar-tab {
