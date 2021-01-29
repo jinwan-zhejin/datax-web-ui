@@ -4,7 +4,7 @@
       <!-- {{jobDetailIdx}} -->
       <div class="top">
         <el-row>
-          <el-col :span="15">
+          <el-col :span="12">
             <!-- <el-select
               v-model="selectValue"
               placeholder="请选择"
@@ -32,9 +32,10 @@
               <el-dropdown-item v-for="item in options" :key="item.id" :command="item.name">{{ item.name }}</el-dropdown-item>
             </el-dropdown-menu> -->
           </el-col>
-          <el-col :span="9">
+          <el-col :span="12">
             <i class="el-icon-location-outline top-icon" />
             <i class="el-icon-coin top-icon" />
+            <i class="el-icon-folder-add top-icon" @click="showAllName" />
             <el-dropdown trigger="click" @command="createNewJob">
               <i class="el-icon-folder-add top-icon" />
               <el-dropdown-menu
@@ -185,7 +186,8 @@
               </p>
             </div> -->
             <el-tree
-              :data="filterList"
+              id="main_span"
+              :data="treeList"
               highlight-current
               accordion
               :props="defaultProps"
@@ -193,9 +195,9 @@
             >
               <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;" @dblclick="resetName(folderName)">
                 <span>
-                  <svg-icon :icon-class="data.jobType" style="margin-right:10px;" />{{ node.label }}
+                  <svg-icon v-if="data.jobType" :icon-class="data.jobType" style="margin-right:10px;" />{{ data.name }}
                 </span>
-                <el-tag
+                <!-- <el-tag
                   v-if="data.hasOwnProperty('triggerStatus')"
                   :type="data.triggerStatus === 1 ? 'success' : data.triggerStatus === 0 ? 'warning' : 'info'"
                   effect="plain"
@@ -203,9 +205,103 @@
                   style="right: 20px; margin-top: 6px; position: absolute; padding-left: 20px;padding-right: 20px;"
                 >
                   {{ data.triggerStatus === 1 ? '运行中' : data.triggerStatus === 0 ? '未运行' : '未知' }}
-                </el-tag>
+                </el-tag> -->
               </span>
             </el-tree>
+            <vue-context-menu
+              class="right-menu"
+              :target="contextMenuTarget"
+              :show="contextMenuVisible"
+              @update:show="(show) => contextMenuVisible = show"
+            >
+              <a href="javascript:" @click="createFolder">新建文件夹</a>
+              <a id="newFile" href="javascript:" @click="resetName">新建文件<i class="el-icon-arrow-right" />
+                <vue-context-menu
+                  class="right-menu1"
+                  :target="contextMenu1Target"
+                  :show.sync="contextMenu1Visible"
+                >
+                  <a href="javascript:" @click="createFolder">
+                    <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
+                  </a>
+                  <a href="javascript:" @click="resetName">
+                    <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务
+                  </a>
+                  <a href="javascript:" @click="resetName">
+                    <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
+                  </a>
+                  <a href="javascript:" @click="resetName">
+                    <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
+                  </a>
+                  <hr style="padding: 0;margin: 0;">
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="METACOLLECT"
+                    />元数据采集任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="METACOMPARE"
+                    />元数据比较任务
+                  </a>
+                  <hr style="padding: 0;margin: 0;">
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="POWERSHELL"
+                    />POWERSHELL任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
+                  </a>
+                  <hr style="padding: 0;margin: 0;">
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="JAVA" />Java任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="SCALA" />Scala任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="PYSPARK" />PySpark任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="R" />R任务
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon class="svg_icon" icon-class="BATCH" />任务批量构建
+                  </a>
+                  <a href="javascript:" @click="showScene">
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="TEMPLATE"
+                    />普通任务模板
+                  </a>
+                </vue-context-menu>
+              </a>
+              <a href="javascript:" @click="resetName">查看文件信息</a>
+              <a href="javascript:" @click="resetName">移动文件夹</a>
+              <hr style="padding: 0;margin: 0;">
+              <a href="javascript:" @click="resetName">复制(C)</a>
+              <a href="javascript:" @click="showScene">粘贴(P)</a>
+              <a href="javascript:" @click="showScene">删除(D)</a>
+            </vue-context-menu>
           </el-scrollbar>
         </div>
       </div>
@@ -326,6 +422,17 @@
         </el-button>
       </div>
     </el-dialog>
+    <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
+      <span style="margin-left:20px;">名称：</span><el-input v-model="allName" style="width: 60%;margin-left:20px;" />
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogNameVisible = false">
+          取消
+        </el-button>
+        <el-button type="goon" size="small" @click="createFolder">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -343,6 +450,7 @@ import JobTemplate from '@/views/datax/jobTemplate/index';
 import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
 import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
 import _ from 'lodash';
+import { component as VueContextMenu } from '@xunlei/vue-context-menu';
 
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 
@@ -362,7 +470,8 @@ export default {
     JobTemplate,
     SparkJob,
     SqlJob,
-    MetaCompare
+    MetaCompare,
+    'vue-context-menu': VueContextMenu
   },
   data() {
     return {
@@ -375,9 +484,17 @@ export default {
         }
       ],
       dialogRenameVisible: false,
+      dialogNameVisible: false,
       showCurrentFolder: false,
       Rename: '',
+      allName: '',
       tabIndex: 1,
+      treeList: [],
+      contextMenuVisible: false,
+      contextMenu1Visible: false,
+      contextMenuTarget: '',
+      contextMenu1Target: '',
+      selectedIndex: '',
       /** el-select选项 */
       options: [],
       /** el-select激活项 */
@@ -403,8 +520,9 @@ export default {
       isFolder: true,
       defaultProps: {
         children: 'children',
-        label: 'jobDesc'
-      }
+        label: 'name'
+      },
+      selectRow: {}
     };
   },
   computed: {
@@ -484,6 +602,8 @@ export default {
             this.List = content.data;
           });
 
+          this.getDataTree()
+
           // 根据项目id获取数据源
 
           const p = {
@@ -501,6 +621,39 @@ export default {
     }
   },
 
+  mounted() {
+    const myChartContainer = document.getElementById('main_span');
+    // 右击显示菜单 区域位置
+    this.contextMenuTarget = myChartContainer;
+    this.contextMenu1Target = myChartContainer;
+    // 关闭浏览器右击默认菜单
+    myChartContainer.oncontextmenu = function(e) {
+      console.log(e)
+      return false;
+    };
+
+    const a = document.getElementById('newFile');
+    const b = document.getElementsByClassName('right-menu1')
+
+    a.onmouseover = function() {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'block';
+      }
+    }
+
+    a.onmouseout = function() {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'none';
+      }
+    }
+
+    b.onmouseover = function() {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'block';
+      }
+    }
+  },
+
   created() {
     if (sessionStorage.getItem('level') === '2') {
       this.showAdmin = false;
@@ -508,6 +661,7 @@ export default {
       this.showAdmin = true;
     }
     this.getItem();
+    this.getDataTree()
     console.log(this.$store.state);
   },
   methods: {
@@ -541,6 +695,25 @@ export default {
           this.jobDetailIdx = '欢迎';
         }
       }
+    },
+
+    // 获取tree数据结构
+    getDataTree() {
+      console.log(this.$store.state.project.currentItem, 'currentItem')
+      const projectId = this.$store.state.project.currentItem.split('/')[0]
+      job.getTreeData(projectId).then((res) => {
+        if (res.code === 200) {
+          this.treeList = res.content
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+
+    showScene() {
+      console.log(this.selectedIndex)
     },
 
     JobTabClick(ele) {
@@ -678,6 +851,37 @@ export default {
       this.dialogRenameVisible = false
     },
 
+    // 新增命名文件夹
+    showAllName() {
+      this.dialogNameVisible = true
+    },
+
+    // 新建文件夹
+    createFolder() {
+      console.log('新建文件夹')
+      this.dialogNameVisible = true
+      const params = {
+        projectId: this.selectRow.projectId,
+        jobId: this.selectRow.jobId,
+        parentId: this.selectRow.parentId,
+        name: this.allName,
+        type: this.selectRow.type,
+        jobType: this.selectRow.jobType
+      }
+      job.createNewFile(params).then((res) => {
+        if (res.code === 200) {
+          this.getDataTree()
+          this.dialogNameVisible = false
+          this.$message.success(res.content)
+        } else {
+          this.$message.error(res.msg)
+        }
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+
     // 点击删除文件夹
     delFolder() {
       this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
@@ -699,6 +903,7 @@ export default {
 
     handleNodeClick(data) {
       console.log(data)
+      this.selectRow = data
       this.getJobDetail(data)
     },
 
@@ -1070,6 +1275,89 @@ export default {
           }
           .el-tree {
             background-color: #f8f8fa;
+          }
+          .right-menu {
+            border: 1px solid #eee;
+            box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
+            border-radius: 1px;
+            display: block;
+            font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-align: center;
+            color: #2c3e50;
+            position: fixed;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 3px;
+            z-index: 999;
+            display: none;
+            padding: 2px;
+            box-shadow:5px 5px 10px gray;
+            a {
+              padding: 2px 15px;
+              // width: 120px;
+              height: 28px;
+              line-height: 28px;
+              text-align: left;
+              display: block;
+              color: #1a1a1a;
+              text-decoration: none;
+              font-size: 13px;
+              i {margin-left: 20px;}
+            }
+            a:hover {
+              background: #42b983;
+              color: #fff;
+            }
+            hr {
+              color: #eee;
+            }
+            #newFile {
+              position: relative;
+              .right-menu1 {
+                border: 1px solid #eee;
+                box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
+                height: 400px;
+                overflow-y: auto;
+                border-radius: 1px;
+                display: block;
+                margin-left:116px;
+                margin-top: 28px;
+                font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-align: center;
+                color: #2c3e50;
+                position: fixed;
+                background: #fff;
+                border: 1px solid rgba(0,0,0,.2);
+                border-radius: 3px;
+                z-index: 999;
+                display: none;
+                padding: 2px;
+                box-shadow:5px 5px 10px gray;
+                a {
+                  padding: 2px 15px;
+                  // width: 120px;
+                  height: 28px;
+                  line-height: 28px;
+                  text-align: left;
+                  display: block;
+                  color: #1a1a1a;
+                  text-decoration: none;
+                  font-size: 13px;
+                  i {margin-left: 20px;}
+                }
+                a:hover {
+                  background: #42b983;
+                  color: #fff;
+                }
+                hr {
+                  color: #eee;
+                }
+              }
+            }
           }
         }
       }

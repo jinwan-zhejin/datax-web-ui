@@ -141,3 +141,27 @@ export function exportTaskResult(params) {
   })
 }
 
+// 获取tree数据结构建
+export function getTreeData(query) {
+  return request({
+    url: `/api/jobProjectGroup/tree?projectId=${query}`,
+    method: 'get'
+  })
+}
+
+// 新增文件或文件夹
+export function createNewFile(data) {
+  return request({
+    url: '/api/jobProjectGroup/save',
+    method: 'post',
+    data
+  })
+}
+
+// 删除文件或文件夹
+export function delFile(query) {
+  return request({
+    url: `/api/jobProjectGroup/delete?id=${query}`,
+    method: 'post'
+  })
+}
