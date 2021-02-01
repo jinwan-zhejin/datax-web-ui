@@ -409,7 +409,7 @@ export default {
     } else {
       this.userName = localStorage.getItem('roles')
     }
-    if (this.$route.query !== {}) {
+    if (JSON.stringify(this.$route.query) !== '{}') {
       this.obj = this.$route.query
       console.log(this.obj)
     }
