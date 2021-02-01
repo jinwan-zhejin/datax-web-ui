@@ -49,7 +49,7 @@
           </el-form-item>
         </el-col>-->
 
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="文件路径" prop="path">
             <el-input v-model="writerForm.path" placeholder="为与hive表关联，请填写hive表在hdfs上的存储路径" />
           </el-form-item>
@@ -82,14 +82,34 @@
           <el-form-item label="字段分隔符" prop="fieldDelimiter">
             <el-input v-model="writerForm.fieldDelimiter" placeholder="与创建表的分隔符一致" />
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col>
-          <el-form-item label="字段：">
+          <el-form-item label="表所有字段">
             <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;" />
             <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
               <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
             </el-checkbox-group>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'">
+          <el-form-item label="分区配置">
+            <el-radio-group v-model="writerForm.partition">
+              <el-radio :label="0">分区</el-radio>
+              <el-radio :label="1">非分区</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
+          <el-form-item label="分区字段">
+            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段">
+              <el-option
+                v-for="(item, index) in fromColumnList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -126,7 +146,9 @@ export default {
         path: '',
         fileName: '',
         writeMode: '',
-        fieldDelimiter: ''
+        fieldDelimiter: '',
+        partition: 0, // 分区配置
+        partitionText: '' // 分区字段
       },
       rules: {
         path: [{ required: true, message: 'this is required', trigger: 'blur' }],
@@ -167,6 +189,9 @@ export default {
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
       this.getTables('hiveWriter')
+    },
+    'writerForm.columns'(val) {
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
     }
   },
   created() {
