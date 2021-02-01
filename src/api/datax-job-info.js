@@ -165,3 +165,29 @@ export function delFile(query) {
     method: 'post'
   })
 }
+
+// 根据jobId查询一个任务信息
+export function getTaskInfo(query) {
+  return request({
+    url: `/api/job/info?jobId=${query}`,
+    method: 'get'
+  })
+}
+
+// 重命名和拖拽接口
+export function dragReName(data) {
+  return request({
+    url: '/api/jobProjectGroup/update',
+    method: 'post',
+    data
+  })
+}
+
+// 粘贴接口
+export function pasteObj(data) {
+  return request({
+    url: '/api/jobProjectGroup/update',
+    method: 'post',
+    data
+  })
+}

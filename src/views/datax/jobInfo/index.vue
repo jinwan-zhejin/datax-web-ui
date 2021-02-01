@@ -124,7 +124,7 @@
             v-model="search"
             class="input_serach"
             prefix-icon="el-icon-search"
-            placeholder="任务名称/ID/代码"
+            placeholder="文件夹或任务名称"
             clearable
           />
           <el-scrollbar>
@@ -187,10 +187,23 @@
             </div> -->
             <el-tree
               id="main_span"
+              ref="tree"
               :data="treeList"
               highlight-current
+              :filter-node-method="filterNode"
               accordion
               :props="defaultProps"
+              default-expand-all
+              :allow-drop="allowDrop"
+              :allow-drag="allowDrag"
+              draggable
+              node-key="id"
+              @node-drag-start="handleDragStart"
+              @node-drag-enter="handleDragEnter"
+              @node-drag-leave="handleDragLeave"
+              @node-drag-over="handleDragOver"
+              @node-drag-end="handleDragEnd"
+              @node-drop="handleDrop"
               @node-click="handleNodeClick"
             >
               <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;" @dblclick="resetName(folderName)">
@@ -214,80 +227,81 @@
               :show="contextMenuVisible"
               @update:show="(show) => contextMenuVisible = show"
             >
-              <a href="javascript:" @click="createFolder">新建文件夹</a>
-              <a id="newFile" href="javascript:" @click="resetName">新建文件<i class="el-icon-arrow-right" />
+              <a href="javascript:" @click="showAllName">新建文件夹</a>
+              <a id="newFile" href="javascript:">新建文件<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
                   :show.sync="contextMenu1Visible"
+                  style="display: none;"
                 >
-                  <a href="javascript:" @click="createFolder">
+                  <a href="javascript:" @click="showAllName('NORMAL')">
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                   </a>
-                  <a href="javascript:" @click="resetName">
+                  <a href="javascript:" @click="showAllName('IMPORT')">
                     <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务
                   </a>
-                  <a href="javascript:" @click="resetName">
+                  <a href="javascript:" @click="showAllName('EXPORT')">
                     <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
                   </a>
-                  <a href="javascript:" @click="resetName">
+                  <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('SQLJOB')">
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('SPARK')">
                     <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
                   <hr style="padding: 0;margin: 0;">
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
                       icon-class="METACOLLECT"
                     />元数据采集任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('METACOMPARE')">
                     <svg-icon
                       class="svg_icon"
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
                   <hr style="padding: 0;margin: 0;">
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('POWERSHELL')">
                     <svg-icon
                       class="svg_icon"
                       icon-class="POWERSHELL"
                     />POWERSHELL任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
                   <hr style="padding: 0;margin: 0;">
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('JAVA')">
                     <svg-icon class="svg_icon" icon-class="JAVA" />Java任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('SCALA')">
                     <svg-icon class="svg_icon" icon-class="SCALA" />Scala任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('PYSPARK')">
                     <svg-icon class="svg_icon" icon-class="PYSPARK" />PySpark任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('R')">
                     <svg-icon class="svg_icon" icon-class="R" />R任务
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('BATCH')">
                     <svg-icon class="svg_icon" icon-class="BATCH" />任务批量构建
                   </a>
-                  <a href="javascript:" @click="showScene">
+                  <a href="javascript:" @click="showAllName('TEMPLATE')">
                     <svg-icon
                       class="svg_icon"
                       icon-class="TEMPLATE"
@@ -298,9 +312,9 @@
               <a href="javascript:" @click="resetName">查看文件信息</a>
               <a href="javascript:" @click="resetName">移动文件夹</a>
               <hr style="padding: 0;margin: 0;">
-              <a href="javascript:" @click="resetName">复制(C)</a>
+              <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="showScene">粘贴(P)</a>
-              <a href="javascript:" @click="showScene">删除(D)</a>
+              <a href="javascript:" @click="delFolder">删除(D)</a>
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -412,9 +426,9 @@
       </el-tabs>
     </div>
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
-      <span style="margin-left:20px;">文件夹名称：</span><el-input v-model="Rename" style="width: 60%;margin-left:20px;" />
+      <span style="margin-left:20px;">名称：</span><el-input v-model="Rename" style="width: 60%;margin-left:20px;" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogRenameVisible = false">
+        <el-button size="small" @click="cancelDialog">
           取消
         </el-button>
         <el-button type="goon" size="small" @click="sureRe">
@@ -425,7 +439,7 @@
     <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
       <span style="margin-left:20px;">名称：</span><el-input v-model="allName" style="width: 60%;margin-left:20px;" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogNameVisible = false">
+        <el-button size="small" @click="cancelDialog">
           取消
         </el-button>
         <el-button type="goon" size="small" @click="createFolder">
@@ -522,7 +536,11 @@ export default {
         children: 'children',
         label: 'name'
       },
-      selectRow: {}
+      selectRow: {},
+      copyObj: {},
+      currentJob: '', // 当前任务
+      targetId: '', // 目标id
+      dropId: '' // 被拖拽id
     };
   },
   computed: {
@@ -618,6 +636,10 @@ export default {
           });
         }
       }
+    },
+
+    search: function(val) {
+      this.$refs.tree.filter(val)
     }
   },
 
@@ -634,6 +656,9 @@ export default {
 
     const a = document.getElementById('newFile');
     const b = document.getElementsByClassName('right-menu1')
+    for (var i = 0; i < b.length; i++) {
+      b[i].style.display = 'none';
+    }
 
     a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
@@ -826,6 +851,13 @@ export default {
       }
     },
 
+    // 快速检索关键字
+    filterNode(value, data) {
+      console.log(value, data)
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+
     // 单击文件夹选中
     singleClick(name) {
       clearTimeout(time); // 首先清除计时器
@@ -847,23 +879,144 @@ export default {
 
     // 确认命名文件夹
     sureRe() {
-      this.folderName = this.Rename
-      this.dialogRenameVisible = false
+      console.log(this.selectRow, '...........')
+      job.dragReName({
+        id: this.selectRow.id,
+        name: this.Rename
+      }).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getDataTree()
+          this.dialogRenameVisible = false
+        } else {
+          this.$message.err(res.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+
+    // 复制
+    copyFile() {
+      if (this.selectRow.parentId === 0) {
+        this.$notify({
+          message: '不能复制整个根目录数据',
+          type: 'warning',
+          duration: 1000
+        });
+        this.contextMenuVisible = false
+      } else {
+        this.selectRow = this.copyObja
+        this.contextMenuVisible = false
+        this.$notify({
+          message: '复制成功',
+          type: 'success',
+          duration: 1000
+        });
+      }
+    },
+
+    // 粘贴
+    pasteFile() {
+      const params = {
+        projectId: this.selectRow.projectId,
+        parentId: this.selectRow.id,
+        name: this.copyFile.name,
+        type: this.selectRow.type,
+        jobType: this.selectRow.jobType
+      }
+      job.createNewFile(params).then((res) => {
+        if (res.code === 200) {
+          this.getDataTree()
+          this.selectRow = {}
+          this.dialogNameVisible = false
+          if (this.currentJob) {
+            this.createNewJob(this.currentJob)
+            this.currentJob = ''
+          }
+          this.allName = ''
+          this.$message.success(res.content)
+        } else {
+          this.$message.error(res.msg)
+        }
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
 
     // 新增命名文件夹
-    showAllName() {
-      this.dialogNameVisible = true
+    showAllName(name) {
+      if (name) {
+        this.dialogNameVisible = true
+        this.currentJob = name
+        console.log(name, 'name')
+      } else {
+        this.dialogNameVisible = true
+      }
+    },
+
+    // 取消对话框
+    cancelDialog() {
+      this.dialogNameVisible = false
+      this.dialogRenameVisible = false
+      this.allName = ''
+      this.Rename = ''
+    },
+
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      this.dropId = node.data.id
+      console.log('节点开始拖拽时触发的事件', node);
+    },
+    handleDragEnter(draggingNode, dropNode, ev) {
+      this.targetId = dropNode.key
+      console.log('拖拽进入其他节点时触发的事件', this.targetId);
+    },
+    handleDragLeave(draggingNode, dropNode, ev) {
+      console.log('拖拽离开某个节点时触发的事件');
+    },
+    handleDragOver(draggingNode, dropNode, ev) {
+      console.log('拖拽结束时（可能未成功）触发的事件');
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成时触发的事件');
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      job.dragReName({
+        id: this.dropId,
+        parentId: this.targetId
+      }).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          console.log(res.msg)
+        } else {
+          this.$message.err(res.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+      console.log('tree drop: ', dropNode.label, dropType, draggingNode);
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      if (dropNode.data.name === '二级 3-1') {
+        return type !== 'inner';
+      } else {
+        return true;
+      }
+    },
+    allowDrag(draggingNode) {
+      console.log(draggingNode, 'draggingNode')
+      return draggingNode.data.name.indexOf('三级 3-2-2') === -1;
     },
 
     // 新建文件夹
     createFolder() {
-      console.log('新建文件夹')
-      this.dialogNameVisible = true
+      console.log(this.selectRow)
       const params = {
         projectId: this.selectRow.projectId,
-        jobId: this.selectRow.jobId,
-        parentId: this.selectRow.parentId,
+        parentId: this.selectRow.id,
         name: this.allName,
         type: this.selectRow.type,
         jobType: this.selectRow.jobType
@@ -871,7 +1024,13 @@ export default {
       job.createNewFile(params).then((res) => {
         if (res.code === 200) {
           this.getDataTree()
+          this.selectRow = {}
           this.dialogNameVisible = false
+          if (this.currentJob) {
+            this.createNewJob(this.currentJob)
+            this.currentJob = ''
+          }
+          this.allName = ''
           this.$message.success(res.content)
         } else {
           this.$message.error(res.msg)
@@ -889,6 +1048,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        job.delFile(this.selectRow.id).then((res) => {
+          console.log(res)
+          if (res.code === 200) {
+            this.getDataTree()
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -904,7 +1071,16 @@ export default {
     handleNodeClick(data) {
       console.log(data)
       this.selectRow = data
-      this.getJobDetail(data)
+      if (data.jobId) {
+        job.getTaskInfo(data.jobId).then((res) => {
+          console.log(res, 'content')
+          if (res.code === 200) {
+            this.getJobDetail(res.content)
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
 
     getJobDetail(data) {
@@ -1094,11 +1270,6 @@ export default {
     },
 
     createNewJob(command) {
-      if (command === 'wenjianjia') {
-        console.log(command);
-        this.isFolder = false;
-        return;
-      }
       this.$store.commit('SET_READER_ISEDIT', false)
       console.log(command);
       this.$store.commit('SET_TAB_TYPE', command);
@@ -1339,7 +1510,7 @@ export default {
                 box-shadow:5px 5px 10px gray;
                 a {
                   padding: 2px 15px;
-                  // width: 120px;
+                  width: 176px;
                   height: 28px;
                   line-height: 28px;
                   text-align: left;
