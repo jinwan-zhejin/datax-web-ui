@@ -5,7 +5,7 @@
         <div class="text item">
           <div class="left">数据探查</div>
           <el-col class="left-description">
-            数据探查。
+            为了帮助用户一眼看穿当前数据的质量、结构、分布、统计信息，它支持探查概览、支持探查详情、支持字段取值分布、数据预览等功能。
           </el-col>
         </div>
       </el-card>
@@ -35,7 +35,7 @@
           >重 置</el-button>
         </el-form-item>
       </el-form>
-      <el-row :gutter="20" style="margin-top: 20px;" :loading="listLoading">
+      <el-row v-loading="dataLoading" :gutter="20" style="margin-top: 20px;">
         <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" style="margin-bottom: 20px;">
           <el-card
             shadow="hover"
@@ -77,7 +77,7 @@
             </div>
             <el-form class="forms">
               <el-form-item>
-                <el-col :span="12">
+                <el-col :span="24">
                   <a>
                     <span class="texts">
                       <i class="el-icon-user-solid" />
@@ -123,137 +123,133 @@
     </div>
     <!-- 添加列表对话框 -->
     <el-dialog title="添加列表" :visible.sync="dialogAddVisible" width="50%">
-      <div class="dia_rg">
-        <i class="el-icon-close" @click="closeDialog" />
-        <div class="top">
-          <!-- <el-input v-model="dia_search" /> -->
-          <span style="fontSize: 24px;">添加数据</span>
-        </div>
-        <!-- link链接 -->
-        <div v-if="isLink" class="Link">
-          <el-form
-            ref="form"
-            label-position="right"
-            :model="form"
-            label-width="100px"
-          >
-            <el-form-item label="任务名:">
-              <el-input v-model="form.taskName" />
-            </el-form-item>
-            <el-form-item label="数据源:">
-              <el-select
-                v-model="form.sourceName"
-                placeholder="请选择数据源"
-                @change="schemaChange"
-              >
-                <el-option
-                  v-for="item in sourceList"
-                  :key="item.id"
-                  :label="item.datasourceName"
-                  :value="item.datasourceName"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="数据库表名:">
-              <el-select
-                v-model="form.tableName"
-                placeholder="请选择数据库表名"
-              >
-                <el-option
-                  v-for="item in tableList"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="简介:">
-              <el-input v-model="form.content" />
-            </el-form-item>
-            <el-form-item label="创建人名字:">
-              <el-input v-model="form.name" disabled />
-            </el-form-item>
-            <el-form-item label="描述:">
-              <el-input v-model="form.desc" type="textarea" autosize />
-            </el-form-item>
-          </el-form>
-        </div>
-        <!-- githubURL -->
-        <div v-if="isGitHub" class="Link">
-          <h2>Import GitHub repository</h2>
-          <p>
-            Create a dataset from a GitHub repository archive. Use the repo URL
-            or any deep link.
-          </p>
-          <span>GitHub URL</span><el-input
-            v-model="newURL"
-            placeholder="Enter a URL to add a new file"
-          />
-        </div>
-        <!-- List -->
-        <div v-if="isList" class="list">
-          <div class="form">
-            <el-input v-model="listSearch" placeholder="Search notebooks" />
-            <el-select v-model="selectValue" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
+      <el-row>
+        <el-col class="addLists" :span="18" :offset="3">
+          <!-- link链接 -->
+          <div class="Link">
+            <el-form
+              ref="form"
+              label-position="right"
+              :model="form"
+              :rules="rules"
+              label-width="100px"
+            >
+              <el-form-item label="探查任务名" prop="taskName">
+                <el-input v-model="form.taskName" placeholder="请输入探查任务名" />
+              </el-form-item>
+              <el-form-item label="数据源" prop="sourceName">
+                <el-select
+                  v-model="form.sourceName"
+                  placeholder="请选择数据源"
+                  style="width: 100%;"
+                  @change="schemaChange"
+                >
+                  <el-option
+                    v-for="item in sourceList"
+                    :key="item.id"
+                    :label="item.datasourceName"
+                    :value="item.datasourceName"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="数据库表名" prop="tableName">
+                <el-select
+                  v-model="form.tableName"
+                  style="width: 100%;"
+                  placeholder="请选择数据库表名"
+                  :loading="tableLoading"
+                >
+                  <el-option
+                    v-for="item in tableList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="简介" prop="content">
+                <el-input v-model="form.content" placeholder="简介" />
+              </el-form-item>
+              <el-form-item label="创建人名字" prop="name">
+                <el-input v-model="form.name" disabled />
+              </el-form-item>
+              <el-form-item label="描述" prop="desc">
+                <el-input v-model="form.desc" placeholder="描述" type="textarea" autosize />
+              </el-form-item>
+            </el-form>
           </div>
-          <ul>
-            <li>
-              <a>
-                <svg-icon icon-class="clipboard" />
-                <h3>EfficientNetB3 data Pipeline and Model</h3>
-                <p>123123</p>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <!-- Set设置 -->
-        <div v-if="isSet" class="set">
-          <el-form
-            ref="form"
-            label-position="left"
-            :model="form"
-            label-width="120px"
-          >
-            <el-form-item label="Privacy">
-              <el-select v-model="form.option" placeholder="Public">
-                <el-option label="Public" value="Public" />
-                <el-option label="Private" value="Private" />
+          <!-- githubURL -->
+          <div v-if="isGitHub" class="Link">
+            <h2>Import GitHub repository</h2>
+            <p>
+              Create a dataset from a GitHub repository archive. Use the repo URL
+              or any deep link.
+            </p>
+            <span>GitHub URL</span><el-input
+              v-model="newURL"
+              placeholder="Enter a URL to add a new file"
+            />
+          </div>
+          <!-- List -->
+          <div v-if="isList" class="list">
+            <div class="form">
+              <el-input v-model="listSearch" placeholder="Search notebooks" />
+              <el-select v-model="selectValue" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
-              <div class="p">
-                <span>Private Quota</span>
-              </div>
-            </el-form-item>
-            <el-form-item label="License">
-              <el-select v-model="form.option1" placeholder="Unknown">
-                <el-option label="Public" value="Public" />
-                <el-option label="Private" value="Private" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Owner">
-              <el-select v-model="form.option2" placeholder="wh_dev7295">
-                <el-option label="Public" value="Public" />
-                <el-option label="Private" value="Private" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="footer">
-          <el-button
-            style="border:none"
-            @click="dialogAddVisible = false"
-          >取消</el-button>
-          <el-button
-            @click="create"
-          ><i class="el-icon-success" />创建</el-button>
-        </div>
-      </div>
+            </div>
+            <ul>
+              <li>
+                <a>
+                  <svg-icon icon-class="clipboard" />
+                  <h3>EfficientNetB3 data Pipeline and Model</h3>
+                  <p>123123</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- Set设置 -->
+          <div v-if="isSet" class="set">
+            <el-form
+              ref="form"
+              label-position="left"
+              :model="form"
+              label-width="120px"
+            >
+              <el-form-item label="Privacy">
+                <el-select v-model="form.option" placeholder="Public">
+                  <el-option label="Public" value="Public" />
+                  <el-option label="Private" value="Private" />
+                </el-select>
+                <div class="p">
+                  <span>Private Quota</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="License">
+                <el-select v-model="form.option1" placeholder="Unknown">
+                  <el-option label="Public" value="Public" />
+                  <el-option label="Private" value="Private" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Owner">
+                <el-select v-model="form.option2" placeholder="wh_dev7295">
+                  <el-option label="Public" value="Public" />
+                  <el-option label="Private" value="Private" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddVisible = false">取消</el-button>
+        <el-button v-loading="confirmLoading" type="primary" @click="create">创建</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -284,7 +280,7 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true,
+      listLoading: false,
       sourceId: '', // 选中数据源ID
       userName: '',
       listQuery: {
@@ -314,6 +310,26 @@ export default {
         }
       ],
       form: {},
+      rules: {
+        taskName: [
+          { required: true, message: '请输入任务名', trigger: 'blur' }
+        ],
+        sourceName: [
+          { required: true, message: '请选择数据源', trigger: 'change' }
+        ],
+        tableName: [
+          { required: true, message: '请选择数据库表名', trigger: 'change' }
+        ],
+        content: [
+          { required: false, message: '请输入简介', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '请输入创建人名字', trigger: 'blur' }
+        ],
+        desc: [
+          { required: false, message: '请输入描述', trigger: 'blur' }
+        ]
+      },
       sourceList: [],
       tableList: [],
       isUpload: false,
@@ -323,7 +339,11 @@ export default {
       isSet: false,
       pageNum: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      /** 数据库表select loading */
+      tableLoading: false,
+      confirmLoading: false,
+      dataLoading: false
     };
   },
   created() {
@@ -344,6 +364,13 @@ export default {
     }
     console.log(document.getElementsByClassName('el-pagination__total'));
   },
+  watch: {
+    dialogAddVisible(val) {
+      if (!val) {
+        this.$refs.form.resetFields()
+      }
+    }
+  },
   methods: {
     fetchData() {
       this.listLoading = true;
@@ -355,10 +382,12 @@ export default {
         })
         .catch(err => {
           console.log(err);
+          this.listLoading = false
         });
     },
     // 获取全部数据
     getAllData() {
+      this.dataLoading = true
       const obj = {
         keyword: this.search,
         pageNum: this.pageNum,
@@ -370,10 +399,12 @@ export default {
           if (res.code === 200) {
             this.ObjList = res.content.reverse();
             this.total = res.content.length;
+            this.dataLoading = false
           }
         })
         .catch(err => {
           console.log(err);
+          this.dataLoading = false
         });
     },
     gotoDetail(item) {
@@ -386,10 +417,10 @@ export default {
     },
     AddList() {
       this.getJdbcDs();
-      this.form.name = localStorage
-        .getItem('roles')
-        .split('_')[1]
-        .split('"')[0];
+      this.form.name = JSON.parse(localStorage.getItem('roles'))[0]
+      // this.form.name = JSON.parse(localStorage.getItem('userName'))
+      // .split('_')[1]
+      // .split('"')[0];
       this.dialogAddVisible = true;
     },
     closeDialog() {
@@ -449,28 +480,36 @@ export default {
       // params.append('description', this.form.desc || '')
       // params.append('jdbcDatasourceId', this.sourceId)
       // params.append('intro', this.form.content)
-      const params = {
-        taskName: this.form.taskName,
-        tableName: this.form.tableName,
-        description: this.form.desc || '',
-        jdbcDatasourceId: this.sourceId,
-        intro: this.form.content
-      };
-      console.log(params);
-      addList(params)
-        .then(res => {
-          console.log(res);
-          if (res.code === 200) {
-            this.dialogAddVisible = false;
-            this.form = {};
-            this.getAllData();
-            this.$message.success('添加成功');
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$message.error('添加失败');
-        });
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.confirmLoading = true
+          const params = {
+            taskName: this.form.taskName,
+            tableName: this.form.tableName,
+            description: this.form.desc || '',
+            jdbcDatasourceId: this.sourceId,
+            intro: this.form.content
+          };
+          addList(params)
+            .then(res => {
+              console.log(res);
+              if (res.code === 200) {
+                this.dialogAddVisible = false;
+                this.form = {};
+                this.getAllData();
+                this.$message.success('添加成功');
+                this.confirmLoading = false
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              this.$message.error('添加失败');
+              this.confirmLoading = false
+            });
+        } else {
+          return false
+        }
+      })
     },
     // 获取数据源
     async getJdbcDs() {
@@ -490,7 +529,7 @@ export default {
     },
     // schema 切换
     schemaChange(e) {
-      this.form.sourceName = e;
+      this.$set(this.form, 'sourceName', e)
       console.log(e);
       // 获取可用表
       this.getTables('rdbmsReader');
@@ -529,12 +568,16 @@ export default {
           this.sourceId = obj.datasourceId;
         }
         // 组装
+        this.tableLoading = true
         dsQueryApi.getTables(obj).then(response => {
           if (response) {
             this.tableList = response;
             console.log(response);
+            this.tableLoading = false
           }
-        });
+        }).catch(_ => {
+          this.tableLoading = false
+        })
       }
     },
     // 只要文件上传成功, 都会调用这个函数
@@ -653,229 +696,14 @@ export default {
 
   .el-dialog {
     border-radius: 8px;
-    .el-dialog__header {
-      display: none;
-    }
-    .el-dialog__footer {
-      border-top: 1px solid #cccccc;
-      padding-bottom: 10px;
-    }
-    .el-dialog__body {
-      padding: 0px;
-      height: 100%;
-      overflow: hidden;
-      .dia_lt {
-        width: 10%;
-        height: 100%;
-        float: left;
-        position: relative;
-        border-right: 1px solid #ccc;
-        i {
-          font-size: 30px;
-          margin: 10px 0px;
-          margin-left: 50%;
-          transform: translateX(-50%);
-          cursor: pointer;
-        }
-        i:hover {
-          color: steelblue;
-        }
-        i:visited {
-          color: blue;
-        }
-        .svg-icon {
-          font-size: 30px;
-          margin: 10px 0px;
-          margin-left: 50%;
-          transform: translateX(-50%);
-          cursor: pointer;
-        }
-        .svg-icon:hover {
-          color: steelblue;
-        }
-      }
-      .dia_rg {
-        float: right;
-        width: 100%;
-        height: 100%;
-        position: relative;
-        padding-bottom: 60px;
-        .top {
-          padding: 23px;
-          .el-input {
-            width: 90%;
-          }
-        }
-        .el-icon-close {
-          border: 1px solid #ccc;
-          z-index: 999;
-          padding: 5px;
-          border-radius: 3px;
-          background-color: gray;
-          color: aliceblue;
-          font-weight: 700;
-          cursor: pointer;
-          position: absolute;
-          top: 10px;
-          right: 10px;
-        }
-        .action {
-          width: 100%;
-          height: 100%;
-          padding-bottom: 60px;
-          overflow: hidden;
-          .el-upload {
-            padding-bottom: 60px;
-            margin-left: 50%;
-            transform: translateX(-50%);
-          }
-          .help {
-            font-size: 20px;
-            text-align: center;
-            color: rgb(199, 199, 199);
-          }
-          p {
-            text-align: center;
-            font-size: 20px;
-          }
-          .box {
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            margin: 0px auto;
-            border-radius: 50%;
-            border: 1px solid #cccccc;
-            text-align: center;
-            box-shadow: 0px 0px 20px rgb(49, 139, 243);
-            .svg-icon {
-              font-size: 30px;
-            }
-          }
-        }
-        .Link {
-          width: 80%;
-          height: 100%;
-          padding: 0px 20px;
-          margin: 0px auto;
-          .el-form {
-            margin-top: 20px;
-            margin-right: 50px;
-            .el-select {
-              width: 100%;
-            }
-            .p {
-              width: 100%;
-              height: 30px;
-              line-height: 30px;
-              border: 1px solid #ccc;
-              border-radius: 2px;
-              margin-top: 10px;
-              span {
-                width: 20%;
-              }
-            }
-            .el-form-item {
-              .el-form-item__content {
-                .upload-demo {
-                  ul {
-                    border: none;
-                  }
-                }
-              }
-            }
-          }
-        }
-        .list {
-          width: 100%;
-          height: 100%;
-          padding: 0px 20px;
-          padding-bottom: 60px;
-          overflow: hidden;
-          .form {
-            overflow: hidden;
-            .el-input {
-              width: 60%;
-              margin: 10px;
-              float: left;
-            }
-            .el-select {
-              width: 30%;
-              float: left;
-            }
-          }
-          ul {
-            height: 200px;
-            border: none;
-            li {
-              height: 50px;
-              line-height: 50px;
-              border-bottom: none;
-              a {
-                overflow: hidden;
-                .svg-icon {
-                  font-size: 20px;
-                  display: block;
-                  float: left;
-                  margin: 15px;
-                }
-                h3 {
-                  height: 15px;
-                  padding: 0px;
-                  margin: 0px;
-                }
-                p {
-                  font-size: 14px;
-                  padding: 0px;
-                  margin: 0px;
-                }
-              }
-            }
-            li:hover {
-              background-color: rgb(235, 235, 235);
-              border-radius: 10px;
-            }
-          }
-        }
-        .set {
-          width: 100%;
-          height: 100%;
-          padding: 0px 20px;
-          padding-bottom: 60px;
-          overflow: hidden;
-          .el-form {
-            margin-top: 20px;
-            .el-select {
-              width: 100%;
-            }
-            .p {
-              width: 100%;
-              height: 30px;
-              line-height: 30px;
-              border: 1px solid #ccc;
-              border-radius: 2px;
-              margin-top: 10px;
-              span {
-                width: 20%;
-              }
-            }
-          }
-        }
-        .footer {
-          width: 100%;
-          position: absolute;
-          bottom: 0;
-          height: 60px;
-          padding: 10px;
-          border-top: 1px solid #f3f3f3;
-          text-align: right;
-          z-index: 999;
-          background-color: #fff;
-          border-radius: 0px 0px 8px 8px;
-        }
+    .addLists {
+      >>>.el-form-item__label {
+        font-size: 15px;
       }
     }
   }
 }
+
 text {
   font-size: 30px;
   line-height: 46px;
@@ -909,6 +737,10 @@ text {
   }
   .texts {
     color: #666666;
+    display:block;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
     i {
       margin-right: 7px;
     }
