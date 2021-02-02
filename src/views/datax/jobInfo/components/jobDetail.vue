@@ -275,7 +275,7 @@
       :before-close="handleClose"
     >
       <h3>
-        1.新建任务
+        基础信息
         <el-button
           v-if="dialogStatus !== 'create'"
           type="text"
@@ -2533,7 +2533,7 @@ export default {
   }
   .part-container {
     padding: 24px;
-    background: #f8f8fa;
+    background: #fff;
     margin: 0 24px;
   }
   .el-table {

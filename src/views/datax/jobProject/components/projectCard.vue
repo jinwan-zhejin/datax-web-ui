@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 15:04:59
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-29 18:37:47
+ * @LastEditTime: 2021-02-02 11:14:22
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\projectCard.vue
  * @Description: 项目卡片
 -->
@@ -11,10 +11,10 @@
     <div slot="header" class="clearfix">
       <!-- <span class="title">项目: </span> -->
       <el-avatar style="float: left;background-color: #3972e6">{{ content.name[0].toUpperCase() }}</el-avatar>
-      <div style="height: 40px; float: left; line-height: 40px; font-size: 18px; font-weight: bold; margin-left: 10px; color: #3d5eff;">{{ content.name }}</div>
-      <div style="line-height: 40px; float: right;">
+      <span class="content-name">{{ content.name }}</span>
+      <span style="line-height: 40px; float: right;">
         <slot name="top" />
-      </div>
+      </span>
     </div>
     <el-form class="forms">
       <el-form-item label="项目描述" :label-width="labelWidth" :label-position="'left'">
@@ -94,6 +94,20 @@ export default {
   }
   .texts {
     color: #333333;
+    display:block;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
   }
+}
+
+.content-name {
+  height: 40px;
+  float: left;
+  line-height: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #3d5eff;
 }
 </style>

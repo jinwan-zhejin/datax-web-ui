@@ -3,9 +3,9 @@
     <div class="head-container">
       <el-card class="box-card ">
         <div class="text item">
-          <div class="left">日志管理</div>
+          <div class="left">任务监控</div>
           <el-col class="left-description">
-            管理任务执行打印的日志。
+            任务监控查看执行操作日志。
           </el-col>
         </div>
       </el-card>

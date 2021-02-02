@@ -39,7 +39,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item v-show="dataSource === 'postgresql' || dataSource ==='greenplum' || dataSource ==='oracle' ||dataSource === 'sqlserver'" label="Schema" prop="tableSchema">
-            <el-select v-model="readerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
+            <el-select
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="readerForm.tableSchema"
+              allow-create
+              default-first-option
+              filterable
+              @change="schemaChange"
+            >
               <el-option
                 v-for="item in schemaList"
                 :key="item"
@@ -47,6 +54,7 @@
                 :value="item"
               />
             </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ $store.state.taskAdmin.readerSchema }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -314,6 +322,7 @@ export default {
     // schema 切换
     schemaChange(e) {
       this.readerForm.tableSchema = e;
+      this.$store.commit('SET_READER_SCHEMA', e)
       // 获取可用表
       this.getTables('rdbmsReader');
     },
