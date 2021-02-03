@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-03 17:35:45
+ * @LastEditTime: 2021-02-03 18:07:40
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -844,7 +844,7 @@ export default {
     this.getSchemaList();
     this.temp = this.jobInfo;
     this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
-    this.myId = this.guid()
+    this.myId = this.guid
   },
   mounted() {
     this.initGoJs()
@@ -1306,18 +1306,8 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { online() }
+          { click: (e, obj) => { this.online() }
           }),
-        $('ContextMenuButton',
-          $(go.TextBlock, '复制', {
-            alignment: go.Spot.Center,
-            margin: 5,
-            font: '12px sans-serif',
-            opacity: 0.75,
-            stroke: '#404040'
-          }),
-          { click: (e, obj) => { handleCopy(obj, '1'); } }
-        ),
         $('ContextMenuButton',
           $(go.TextBlock, '删除', {
             alignment: go.Spot.Center,
@@ -1326,16 +1316,35 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { handleDelete(obj, '2'); } }),
+          { click: (e, obj) => { this.deleteTask() } }
+        ),
         $('ContextMenuButton',
-          $(go.TextBlock, '变色', {
+          $(go.TextBlock, '查看任务操作日志', {
             alignment: go.Spot.Center,
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { handleColor(obj, '3'); } }));
+          { click: (e, obj) => { this.checkLog() } }),
+        $('ContextMenuButton',
+          $(go.TextBlock, '编辑任务属性', {
+            alignment: go.Spot.Center,
+            margin: 5,
+            font: '12px sans-serif',
+            opacity: 0.75,
+            stroke: '#404040'
+          }),
+          { click: (e, obj) => { this.editTask() } }),
+        $('ContextMenuButton',
+          $(go.TextBlock, '导出任务', {
+            alignment: go.Spot.Center,
+            margin: 5,
+            font: '12px sans-serif',
+            opacity: 0.75,
+            stroke: '#404040'
+          }),
+          { click: (e, obj) => { this.exportTask() } }));
       // define a simple Node template
       this.myDiagram.nodeTemplate =
         $(go.Node, 'Auto', // the Shape will go around the TextBlock
@@ -1349,23 +1358,52 @@ export default {
             new go.Binding('text', 'key'))
         );
       this.myDiagram.model = new go.GraphLinksModel(
-        [
-          { key: 'Alpha', color: 'lightblue' },
-          { key: 'Beta', color: 'orange' },
-          { key: 'Gamma', color: 'lightgreen' },
-          { key: 'Delta', color: 'pink' }
-        ],
-        [
-          { from: 'Alpha', to: 'Beta' },
-          { from: 'Alpha', to: 'Gamma' },
-          { from: 'Beta', to: 'Beta' },
-          { from: 'Gamma', to: 'Delta' },
-          { from: 'Delta', to: 'Alpha' }
-        ]);
+        // [
+        //   { key: 'Alpha', color: 'lightblue' },
+        //   { key: 'Beta', color: 'orange' },
+        //   { key: 'Gamma', color: 'lightgreen' },
+        //   { key: 'Delta', color: 'pink' }
+        // ],
+        // [
+        //   { from: 'Alpha', to: 'Beta' },
+        //   { from: 'Alpha', to: 'Gamma' },
+        //   { from: 'Beta', to: 'Beta' },
+        //   { from: 'Gamma', to: 'Delta' },
+        //   { from: 'Delta', to: 'Alpha' }
+        // ]
+        this.initTaskItem(), this.initTaskItemRelation()
+      );
     },
-    // 可以通过流程图数据刷新页面显示效果
-    load() {
-      this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
+    initTaskItem() {
+      var t = [
+        { key: this.temp.jobDesc, color: 'lightblue' }
+      ]
+      if (this.temp.childJobId !== null && this.temp.childJobId !== undefined && this.temp.childJobId !== '') {
+        t.push({ key: this.temp.childJobId + '', color: 'orange' })
+      }
+      return t
+    },
+    initTaskItemRelation() {
+      var t = []
+      if (this.temp.childJobId !== null && this.temp.childJobId !== undefined && this.temp.childJobId !== '') {
+        t.push({ from: this.temp.jobDesc, to: this.temp.childJobId + '' })
+      }
+      return t
+    },
+    online() {
+      console.log('上线')
+    },
+    deleteTask() {
+      console.log('删除任务')
+    },
+    checkLog() {
+      console.log('查看任务操作日志')
+    },
+    editTask() {
+      console.log('编辑任务属性')
+    },
+    exportTask() {
+      console.log('导出任务')
     }
   }
 };
