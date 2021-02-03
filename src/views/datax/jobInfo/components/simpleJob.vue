@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务类型" prop="glueType">
-            {{ this.jobTypeLabel }}
+            {{ jobTypeLabel }}
           </el-form-item>
         </el-col>
 
@@ -12,7 +12,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务名称" prop="jobDesc">
-            <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
+            <el-input v-model="temp.jobDesc" disabled size="medium" placeholder="请输入任务描述" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -384,6 +384,7 @@ export default {
     this.getDataSourceList()
     console.log(this.jobType)
     this.temp.glueType = this.jobType
+    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
 
   methods: {
@@ -479,11 +480,13 @@ export default {
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
+          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
 
           job.createJob(this.temp).then((res) => {
             this.fetchData()
             this.$store.commit('SET_TAB_TYPE', '');
             this.$store.commit('SET_TASKDETAIL_ID', res.content);
+            this.$store.commit('changeWatch', 1)
 
             this.dialogFormVisible = false
             this.$notify({

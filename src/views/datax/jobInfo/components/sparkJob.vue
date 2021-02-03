@@ -13,7 +13,7 @@
             </el-form-item> -->
 
       <el-form-item label="任务名称：" prop="jobDesc">
-        <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" style="width:300px;" />
+        <el-input v-model="temp.jobDesc" size="medium" disabled placeholder="请输入任务描述" style="width:300px;" />
       </el-form-item>
 
       <el-form-item label="执行器" prop="jobGroup">
@@ -299,9 +299,10 @@ export default {
     this.getExecutor()
     this.getJobIdList()
     this.getJobProject()
-    this.getDataSourceList(),
+    this.getDataSourceList()
     console.log(this.jobType)
     this.temp.glueType = this.jobType
+    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
 
   methods: {
@@ -379,9 +380,11 @@ export default {
           this.temp.jobJson = this.jobJson
           this.temp.glueSource = this.glueSource
           this.temp.executorHandler = this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
+          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
           if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
           job.createJob(this.temp).then(() => {
             this.fetchData()
+            this.$store.commit('changeWatch', 1)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
