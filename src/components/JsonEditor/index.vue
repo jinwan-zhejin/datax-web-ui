@@ -9,6 +9,8 @@ import CodeMirror from 'codemirror'
 import 'codemirror/addon/lint/lint.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/rubyblue.css'
+import 'codemirror/theme/idea.css'
+import 'codemirror/theme/neo.css'
 require('script-loader!jsonlint')
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/addon/lint/lint'
@@ -28,9 +30,7 @@ export default {
       const editorValue = this.jsonEditor.getValue()
       if (value !== editorValue) {
         this.jsonEditor.setValue(JSON.stringify(this.value, null, 2))
-        // this.jsonEditor.setValue(`${this.value}`)
-
-        this.jsonEditor.setValue(this.value)
+        // this.jsonEditor.setValue(this.value)
       }
     }
   },
@@ -39,13 +39,13 @@ export default {
       lineNumbers: true,
       mode: 'application/json',
       gutters: ['CodeMirror-lint-markers'],
-      theme: 'rubyblue',
+      theme: 'neo',
       lint: true,
-      // readOnly: 'nocursor'
       readOnly: this.caniEdit
     })
-    this.jsonEditor.setSize('auto', '200px')
-    this.jsonEditor.setValue(`${this.value}`)
+    // this.jsonEditor.setSize('auto', '200px')
+    this.jsonEditor.setValue(JSON.stringify(this.value, null, 2))
+    // this.jsonEditor.setValue(this.value)
     this.jsonEditor.on('change', cm => {
       this.$emit('changed', cm.getValue())
       this.$emit('input', cm.getValue())
@@ -54,30 +54,29 @@ export default {
   methods: {
     getValue() {
       return this.jsonEditor.getValue()
-    },
-
-    setEditorHeight(height) {
-      this.jsonEditor.setSize('auto', height)
     }
   }
 }
 </script>
 
-<style scoped>
-.json-editor{
+<style lang="scss" scoped>
+.json-editor {
   height: 100%;
   position: relative;
-}
-.json-editor >>> .CodeMirror {
-  height: auto;
-  min-height: 230px;
-}
-.json-editor >>> .CodeMirror-scroll{
-  min-height: 230px;
-}
-.json-editor >>> .cm-s-rubyblue span.cm-string {
-  color: #F08047;
-}
 
+  ::v-deep {
+    .CodeMirror {
+      height: auto;
+      min-height: 230px;
+    }
 
+    .CodeMirror-scroll {
+      min-height: 230px;
+    }
+
+    .cm-s-rubyblue span.cm-string {
+      color: #F08047;
+    }
+  }
+}
 </style>

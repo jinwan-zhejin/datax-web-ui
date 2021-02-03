@@ -131,7 +131,7 @@
         <el-button size="small" type="primary" @click="sureSave('virtualProjectInfo')">确 定</el-button>
       </span>
     </el-dialog>
-
+    <!-- 日志信息 -->
     <el-dialog width="75%" class="log_detail_window" title="日志信息" :visible.sync="logview">
       <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
