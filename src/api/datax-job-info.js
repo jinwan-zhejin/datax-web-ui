@@ -184,9 +184,9 @@ export function dragReName(data) {
 }
 
 // 粘贴接口
-export function pasteObj(data) {
+export function pasteObj(query, data) {
   return request({
-    url: '/api/jobProjectGroup/update',
+    url: `/api/jobProjectGroup/paste?pid=${query}`,
     method: 'post',
     data
   })

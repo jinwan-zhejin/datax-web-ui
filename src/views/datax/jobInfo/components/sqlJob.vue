@@ -19,6 +19,7 @@
         <el-form-item label="任务名称：" prop="jobDesc">
           <el-input
             v-model="temp.jobDesc"
+            disabled
             size="medium"
             placeholder="请输入任务描述"
           />
@@ -434,8 +435,9 @@ export default {
     this.getExecutor();
     this.getJobIdList();
     this.getJobProject();
-    this.getDataSourceList(),
+    this.getDataSourceList();
     this.fetchSourceData();
+    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
 
   mounted() {
@@ -547,8 +549,10 @@ export default {
               }
 
               this.temp.jobType = this.$store.state.taskAdmin.tabType;
+              this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
               job.createJob(this.temp).then((res) => {
                 this.fetchData()
+                this.$store.commit('changeWatch', 1)
                 this.$store.commit('SET_TAB_TYPE', '');
                 this.$store.commit('SET_TASKDETAIL_ID', res.content);
                 this.dialogFormVisible = false;

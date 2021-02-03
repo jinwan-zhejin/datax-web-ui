@@ -407,8 +407,10 @@ export default {
             this.temp.childJobId = childJobs.toString()
           }
           if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
+          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
           jobTemp.createJob(this.temp).then(() => {
             this.fetchData()
+            this.$store.commit('changeWatch', 1)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',

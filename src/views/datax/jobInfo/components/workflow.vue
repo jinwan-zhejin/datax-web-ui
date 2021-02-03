@@ -121,7 +121,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="虚任务名称" prop="virtualProjectName" :rules="[{ required: true, message: '请输入虚任务名称', trigger: 'blur' }]">
-              <el-input v-model="virtualProjectInfo.virtualProjectName" placeholder="虚任务名称" clearable />
+              <el-input v-model="virtualProjectInfo.virtualProjectName" disabled placeholder="虚任务名称" clearable />
             </el-form-item>
           </el-form>
         </el-col>
@@ -317,6 +317,7 @@ export default {
     // console.log(this.isSave)
     this.myId = this.guid()
     // console.log(this.taskList)
+    this.virtualProjectInfo.virtualProjectName = this.$store.state.taskAdmin.GroupName
   },
   mounted() {
     this.init()
@@ -777,11 +778,13 @@ export default {
               jobCron: this.jobCron,
               jobJson: this.myDiagram.model.toJson(),
               jobType: this.jobType,
-              triggerStatus: this.taskTrigger ? 1 : 0
+              triggerStatus: this.taskTrigger ? 1 : 0,
+              projectGroupId: this.$store.state.taskAdmin.GroupId
               // triggerNextTime: 0
             }
           ).then(response => {
             if (response.code === 200) {
+              this.$store.commit('changeWatch', 1)
               this.$notify.success({
                 title: '成功',
                 message: response.msg

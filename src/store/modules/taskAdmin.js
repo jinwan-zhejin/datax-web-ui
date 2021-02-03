@@ -76,12 +76,36 @@ const state = {
 
   jobInfo: {}, // 任务信息
 
-  readerIsEdit: true // true编辑，false更新
+  Group: {}, // 选中任务对象
+
+  GroupId: '', // 选中任务Id
+
+  GroupName: {}, // 选中任务对象名称
+
+  readerIsEdit: true, // true编辑，false更新
+
+  watchStr: 1 // 监视对象
 }
 
 const mutations = {
   SET_TAB_TYPE: (state, type) => {
     state.tabType = type
+  },
+
+  changeGroupId(state, payload) {
+    state.Group = payload
+  },
+
+  changeWatch(state, payload) {
+    state.watchStr += payload
+  },
+
+  changeJobId(state, payload) {
+    state.GroupId = payload
+  },
+
+  changeGroupName(state, payload) {
+    state.GroupName = payload
   },
 
   SET_TABLEDATA: (state, arr) => {

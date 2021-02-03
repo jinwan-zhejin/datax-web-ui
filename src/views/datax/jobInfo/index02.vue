@@ -2,6 +2,7 @@
   <div class="Management">
     <div class="lt">
       <!-- {{jobDetailIdx}} -->
+      {{ jobType }}
       <div class="top">
         <el-row>
           <el-col :span="12">
@@ -346,7 +347,7 @@
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetailPro
+          <JobDetail
             v-if="item.content.jobType !== 'VJOB'"
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
@@ -364,11 +365,14 @@
 
         <el-tab-pane
           v-if="$store.state.taskAdmin.tabType"
-          :name="$store.state.taskAdmin.tabType"
+          :name="currentJob"
           :label="
-            $store.state.taskAdmin.GroupName
+            currentJob
           "
         >
+          <!-- :label="
+            $store.state.taskAdmin.allTabType[$store.state.taskAdmin.tabType]
+          " -->
           <div
             v-if="
               jobType === 'NORMAL' ||
@@ -462,7 +466,6 @@ import Workflow from './components/workflow.vue';
 import SimpleJob from './components/simpleJob.vue';
 import SparkJob from './components/sparkJob.vue';
 import JobDetail from './components/jobDetail.vue';
-import JobDetailPro from './components/jobDetailPro.vue';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as job from '@/api/datax-job-info';
 import JsonBuild from '@/views/datax/json-build/index';
@@ -488,7 +491,6 @@ export default {
     JsonQuality,
     SimpleJob,
     JobDetail,
-    JobDetailPro,
     BatchBuild,
     JobTemplate,
     SparkJob,
@@ -508,8 +510,8 @@ export default {
       ],
       dialogRenameVisible: false,
       dialogNameVisible: false,
-      dialogViewVisible: false,
       showCurrentFolder: false,
+      dialogViewVisible: false,
       Rename: '',
       allName: '',
       tabIndex: 1,
@@ -548,8 +550,7 @@ export default {
       },
       selectRow: {},
       copyObj: '',
-      currentJob: '', // 当前任务类型
-      currentJobName: '', // 当前任务名
+      currentJob: '', // 当前任务
       targetId: '', // 目标id
       dropId: '' // 被拖拽id
     };
@@ -602,7 +603,6 @@ export default {
     },
 
     taskDetailID(val) {
-      console.log(val, 'jobDetailIdx')
       this.jobDetailIdx = val;
     },
 
@@ -650,15 +650,6 @@ export default {
       }
     },
 
-    '$store.state.taskAdmin.watchStr': {
-      deep: true,
-      handler: function(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.getDataTree()
-        }
-      }
-    },
-
     search: function(val) {
       this.$refs.tree.filter(val)
     }
@@ -671,6 +662,7 @@ export default {
     this.contextMenu1Target = myChartContainer;
     // 关闭浏览器右击默认菜单
     myChartContainer.oncontextmenu = function(e) {
+      console.log(e)
       return false;
     };
 
@@ -719,7 +711,7 @@ export default {
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         ele => ele.content.id === targetIdInt
       )
-      console.log(removeIndex, 'removeIndex')
+      console.log(removeIndex)
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
           (
@@ -762,7 +754,6 @@ export default {
     },
 
     JobTabClick(ele) {
-      console.log(ele)
       this.jobType = ele.name;
       const t = this.List.filter(item => item.id === parseInt(this.jobDetailIdx))
       this.$store.commit('SET_JOB_INFO', t[0])
@@ -978,11 +969,11 @@ export default {
     },
 
     // 新增命名文件夹
-    showAllName(type) {
-      if (typeof type === 'string') {
+    showAllName(name) {
+      if (name) {
         this.dialogNameVisible = true
-        this.currentJob = type
-        console.log(type, 'type')
+        this.currentJob = name
+        console.log(name, 'name')
       } else {
         this.dialogNameVisible = true
       }
@@ -1046,27 +1037,24 @@ export default {
     // 新建文件夹或任务
     createFolder() {
       console.log(this.selectRow)
-      console.log(this.currentJob + '')
       const params = {
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         name: this.allName,
-        type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob ? this.currentJob : 'wenjianjia'
+        type: this.selectRow.type,
+        jobType: this.currentJob ? this.currentJob : this.selectRow.jobType
       }
       job.createNewFile(params).then((res) => {
         if (res.code === 200) {
           this.getDataTree()
           this.selectRow = {}
-          this.$store.commit('changeGroupName', this.allName)
-          this.$store.commit('changeJobId', parseInt(res.content))
           this.dialogNameVisible = false
           if (this.currentJob) {
             this.createNewJob(this.currentJob)
             this.currentJob = ''
           }
           this.allName = ''
-          this.$message.success('新增成功')
+          this.$message.success(res.content)
         } else {
           this.$message.error(res.msg)
         }
@@ -1087,7 +1075,6 @@ export default {
           console.log(res)
           if (res.code === 200) {
             this.getDataTree()
-            this.removeJobTab()
           }
         }).catch((err) => {
           console.log(err)
@@ -1107,30 +1094,24 @@ export default {
     handleNodeClick(data) {
       console.log(data)
       this.selectRow = data
-      if (data.type === 2) {
-        this.$store.commit('changeGroupId', data)
-        this.$store.commit('changeGroupName', data.name)
-        this.currentJobName = data.name
-        job.getTaskInfo(data.jobId).then((res) => {
-          console.log(res, 'content')
-          if (res.code === 200) {
-            if (res.content) {
+      if (data.jobType !== 'wenjianjia') {
+        this.currentJob = data.name
+        if (data.jobId) {
+          job.getTaskInfo(data.jobId).then((res) => {
+            console.log(res, 'content')
+            if (res.code === 200) {
               this.getJobDetail(res.content)
-            } else {
-              this.createNewJob(data.jobType)
             }
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      } else {
-        this.currentJobName = ''
+          }).catch((err) => {
+            console.log(err)
+          })
+        } else {
+          this.createNewJob(data.jobType)
+        }
       }
-      console.log(this.currentJobName, '当前任务的名称')
     },
 
     getJobDetail(data) {
-      console.log(data, 'data')
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {};
@@ -1324,7 +1305,6 @@ export default {
       this.jobDetailIdx = command;
     },
 
-    // 切换项目
     handleCommand(command) {
       const commandId = command.split('/')[0]
       const commandName = command.split('/')[1]

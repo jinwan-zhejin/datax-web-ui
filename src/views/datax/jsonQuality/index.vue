@@ -33,6 +33,7 @@
               <el-input
                 v-model="temp.jobDesc"
                 size="medium"
+                disabled
                 placeholder="请输入任务描述"
               />
             </el-form-item>
@@ -556,6 +557,7 @@ export default {
     this.getExecutor();
     this.getJobProject();
     this.getJobIdList();
+    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
   methods: {
     noUse() {
@@ -677,6 +679,7 @@ export default {
 
           this.temp.childJobId = str;
           console.log('this.temp', this.temp);
+          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
           job.createJob(this.temp).then(response => {
             if (response.code === 200) {
               this.$notify({
@@ -685,6 +688,7 @@ export default {
                 type: 'success',
                 duration: 2000
               });
+              this.$store.commit('changeWatch', 1)
               this.$store.dispatch('getTaskList', true);
               this.$store.commit('SET_TAB_TYPE', '');
             } else {
