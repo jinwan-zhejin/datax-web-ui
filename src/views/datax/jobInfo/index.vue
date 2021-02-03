@@ -347,7 +347,7 @@
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <JobDetail
+          <JobDetailPro
             v-if="item.content.jobType !== 'VJOB'"
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
@@ -455,6 +455,7 @@ import Workflow from './components/workflow.vue';
 import SimpleJob from './components/simpleJob.vue';
 import SparkJob from './components/sparkJob.vue';
 import JobDetail from './components/jobDetail.vue';
+import JobDetailPro from './components/jobDetailPro.vue';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as job from '@/api/datax-job-info';
 import JsonBuild from '@/views/datax/json-build/index';
@@ -480,6 +481,7 @@ export default {
     JsonQuality,
     SimpleJob,
     JobDetail,
+    JobDetailPro,
     BatchBuild,
     JobTemplate,
     SparkJob,
