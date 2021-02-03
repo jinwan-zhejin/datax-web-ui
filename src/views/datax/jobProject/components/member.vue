@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 17:11:49
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2020-12-30 11:19:24
+ * @LastEditTime: 2021-02-02 11:03:26
  * @FilePath: \datax-web-ui\src\views\datax\jobProject\components\member.vue
  * @Description: 成员管理
 -->
@@ -15,7 +15,7 @@
         </el-input>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" style="margin-bottom: 15px;">
-        <el-button :disabled="!usersData" type="primary" size="small" icon="el-icon-s-custom" @click="addMember = true">管理成员组成</el-button>
+        <el-button :disabled="!usersData" type="primary" icon="el-icon-s-custom" @click="addMember = true">管理成员组成</el-button>
       </el-col>
     </el-row>
     <el-table

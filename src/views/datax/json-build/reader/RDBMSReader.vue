@@ -38,6 +38,26 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item v-show="dataSource === 'postgresql' || dataSource ==='greenplum' || dataSource ==='oracle' ||dataSource === 'sqlserver'" label="Schema" prop="tableSchema">
+            <el-select
+              v-show="$store.state.taskAdmin.readerAllowEdit"
+              v-model="readerForm.tableSchema"
+              allow-create
+              default-first-option
+              filterable
+              @change="schemaChange"
+            >
+              <el-option
+                v-for="item in schemaList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ $store.state.taskAdmin.readerSchema }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="数据库表名" prop="tableName">
             <el-select
               v-show="$store.state.taskAdmin.readerAllowEdit"
@@ -123,7 +143,14 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.incSetting === 0 && readerForm.syncType === 0" :span="24">
           <el-form-item label="根据日期字段">
-            <el-select v-model="readerForm.incExtract" placeholder="使用标志数据变更的时间字段，如gmt_midified" />
+            <el-select v-model="readerForm.incExtract" placeholder="使用标志数据变更的时间字段">
+              <el-option
+                v-for="(item, index) in rColumnList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.incSetting === 1 && readerForm.syncType === 0" :span="24">
@@ -196,7 +223,11 @@ export default {
         checkAll: false,
         isIndeterminate: true,
         splitPk: '',
-        tableSchema: ''
+        tableSchema: '',
+        syncType: 0, // 同步方式
+        incSetting: 0, // 增量配置模式
+        incExtract: '', // 根据日期字段
+        incExtractText: '' // 增量抽取条件
       },
       rules: {
         datasourceId: [
@@ -245,6 +276,11 @@ export default {
   mounted() {
     this.getTableColumns();
     this.getTables('rdbmsReader');
+    this.$store.state.taskAdmin.dataSourceList.find(item => {
+      if (item.id === this.$store.state.taskAdmin.readerDataSourceID) {
+        this.dataSource = item.datasource;
+      }
+    })
   },
 
   methods: {
@@ -286,6 +322,7 @@ export default {
     // schema 切换
     schemaChange(e) {
       this.readerForm.tableSchema = e;
+      this.$store.commit('SET_READER_SCHEMA', e)
       // 获取可用表
       this.getTables('rdbmsReader');
     },

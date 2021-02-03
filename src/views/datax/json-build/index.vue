@@ -405,13 +405,25 @@ export default {
         preSql: writeData.preSql,
         postSql: writeData.postSql
       }
+      const readerSync = {
+        syncType: readerData.syncType,
+        incSetting: readerData.incSetting,
+        incExtract: readerData.incExtract,
+        incExtractText: readerData.incExtractText
+      }
+      const writerPartition = {
+        partition: writeData.partition,
+        partitionText: writeData.partitionText
+      }
       const obj = {
         readerDatasourceId: readerData.datasourceId,
         readerTables: [readerData.tableName],
         readerColumns: readerColumns,
+        readerSync: readerSync,
         writerDatasourceId: writeData.datasourceId,
         writerTables: [writeData.tableName],
         writerColumns: writerColumns,
+        writerPartition: writerPartition,
         transformer: transformer,
         hiveReader: hiveReader,
         hiveWriter: hiveWriter,

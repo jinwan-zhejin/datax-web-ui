@@ -35,7 +35,7 @@
           >重 置</el-button>
         </el-form-item>
       </el-form>
-      <el-row :gutter="20" style="margin-top: 20px;">
+      <el-row v-loading="listLoading" :gutter="20" style="margin-top: 20px;">
         <el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6" style="margin-bottom: 20px;">
           <el-card
             shadow="hover"
@@ -271,7 +271,7 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true,
+      listLoading: false,
       total: 0,
       listQuery: {
         pageNo: 1,

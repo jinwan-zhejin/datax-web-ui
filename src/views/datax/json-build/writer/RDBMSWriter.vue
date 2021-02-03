@@ -89,7 +89,14 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
           <el-form-item label="分区字段">
-            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段" />
+            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段">
+              <el-option
+                v-for="(item, index) in fromColumnList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -128,7 +135,9 @@ export default {
         preSql: '',
         postSql: '',
         ifCreateTable: false,
-        tableSchema: ''
+        tableSchema: '',
+        partition: 0, // 分区配置
+        partitionText: '' // 分区字段
       },
       readerForm: {},
       rules: {

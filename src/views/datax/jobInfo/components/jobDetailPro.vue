@@ -1,3 +1,12 @@
+<!--
+ * @Date: 2021-02-02 17:38:54
+ * @Author: Anybody
+ * @LastEditors: Anybody
+ * @LastEditTime: 2021-02-02 18:18:34
+ * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
+ * @Description: jobDetail任务详情改版
+-->
+
 <template>
   <div class="job_detail">
     <!-- {{jobInfo}} -->
@@ -166,84 +175,7 @@
         </el-col>
       </el-row>
 
-      <!-- <div class="detail">
-        <div class="detail_target">
-          <span class="key">执行器：</span>
-          <span class="value">{{ jobGroupName }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">所属项目：</span>
-          <span class="value">{{ temp.projectName }}</span>
-        </div>
-        <div
-          v-if="
-            jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT' ||
-              jobType === 'SHELL' ||
-              jobType === 'POWERSHELL' ||
-              jobType === 'PYTHON'
-          "
-          class="detail_target"
-        >
-          <span class="key">路由策略：</span>
-          <span class="value">{{ temp.executorRouteStrategy }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">子任务：</span>
-          <span class="value">{{ temp.childJobId }}</span>
-        </div>
-        <div
-          v-if="
-            jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT' ||
-              jobType === 'SHELL' ||
-              jobType === 'POWERSHELL' ||
-              jobType === 'PYTHON'
-          "
-          class="detail_target"
-        >
-          <span class="key">阻塞处理：</span>
-          <span class="value">{{ temp.executorBlockStrategy }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">任务名称：</span>
-          <span class="value">{{ temp.jobDesc }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">任务类型：</span>
-          <span class="value">{{ temp.jobType }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">Corn：</span>
-          <span class="value">{{ temp.jobCron }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">报警邮件：</span>
-          <span class="value">{{ temp.alarmEmail }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">失败重试次数：</span>
-          <span class="value">{{ temp.executorFailRetryCount }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">超时时间：</span>
-          <span class="value">{{ temp.executorTimeout }}</span>
-        </div>
-        <div class="detail_target">
-          <span class="key">JVM启动参数：</span>
-          <span class="value">{{ temp.jvmParam }}</span>
-        </div>
-        <div v-if="jobType === 'SQLJOB'" class="detail_target">
-          <span class="key">schema：</span>
-          <span class="value">{{ temp.schema }}</span>
-        </div>
-      </div> -->
-
-      <div class="json_detail">
-        <p class="json_title" @click="viewJson">查看json：</p>
-      </div>
+      <el-button type="text" icon="el-icon-search" @click="viewJson">查看json</el-button>
       <div v-if="jsonshow" class="json_content">
         <json-editor
           ref="jsonEditor"
