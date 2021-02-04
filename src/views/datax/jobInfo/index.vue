@@ -48,7 +48,43 @@
                   <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                 </el-dropdown-item>
                 <el-dropdown-item command="IMPORT">
-                  <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务
+                  <!-- <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务 -->
+                  <svg
+                    id="Layer_1"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    enable-background="new 0 0 16 16"
+                    xml:space="preserve"
+                  >  <image
+                    id="image0"
+                    width="16"
+                    height="16"
+                    x="0"
+                    y="0"
+                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+                  />
+                  </svg>
+                  引入任务
                 </el-dropdown-item>
                 <el-dropdown-item command="EXPORT">
                   <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
@@ -206,9 +242,45 @@
               @node-drop="handleDrop"
               @node-click="handleNodeClick"
             >
-              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;" @dblclick="resetName(folderName)">
+              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;font-size: 15px;" @dblclick="resetName(folderName)">
                 <span>
-                  <svg-icon v-if="data.jobType" :icon-class="data.jobType" style="margin-right:10px;" />{{ data.name }}
+                  <svg-icon v-if="data.jobType && data.jobType !== 'IMPORT'" :icon-class="data.jobType" style="font-size: 15px;margin-right: 3px;" />
+                  <svg
+                    v-else
+                    id="Layer_1"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    enable-background="new 0 0 16 16"
+                    xml:space="preserve"
+                  >  <image
+                    id="image0"
+                    width="16"
+                    height="16"
+                    x="0"
+                    y="0"
+                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+                  />
+                  </svg>{{ data.name }}
                 </span>
                 <!-- <el-tag
                   v-if="data.hasOwnProperty('triggerStatus')"
@@ -239,7 +311,42 @@
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                   </a>
                   <a href="javascript:" @click="showAllName('IMPORT')">
-                    <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务
+                    <svg
+                      id="Layer_1"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      width="16px"
+                      height="16px"
+                      viewBox="0 0 16 16"
+                      enable-background="new 0 0 16 16"
+                      xml:space="preserve"
+                    >  <image
+                      id="image0"
+                      width="16"
+                      height="16"
+                      x="0"
+                      y="0"
+                      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+                    />
+                    </svg>
+                    引入任务
                   </a>
                   <a href="javascript:" @click="showAllName('EXPORT')">
                     <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
@@ -310,6 +417,7 @@
                 </vue-context-menu>
               </a>
               <a v-show="selectRow.jobType !== 'wenjianjia'" href="javascript:" @click="ViewFile">查看文件信息</a>
+              <a v-show="selectRow.jobType !== 'wenjianjia'" href="javascript:" @click="ViewVersion">查看文件版本</a>
               <a href="javascript:" @click="resetName">重命名</a>
               <hr style="padding: 0;margin: 0;">
               <a href="javascript:" @click="copyFile">复制(C)</a>
@@ -447,6 +555,54 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 查看文件版本 -->
+    <el-dialog width="40%" title="查看文件版本信息" :visible.sync="dialogVersionVisible">
+      <el-table
+        :data="versionList"
+        height="250"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="jobDesc"
+          label="任务名称"
+        />
+        <el-table-column
+          prop="jobType"
+          label="任务类型"
+        />
+        <el-table-column
+          prop="versionTime"
+          label="版本创建时间"
+        />
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="100"
+        >
+          <template v-slot:default="{ row }">
+            <el-popover
+              placement="bottom"
+              title="标题"
+              width="50%"
+              trigger="click"
+            >
+              <div class="code">
+                {{ row.jobJson }}
+              </div>
+              <el-button slot="reference" type="text" size="small" @click="showCode(row)">代码</el-button>
+            </el-popover>
+            <el-button type="text" size="small" @click="rollback(row)">回滚</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog">
+          取消
+        </el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看文件信息 -->
     <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
       <div class="box">
         <el-row :gutter="20">
@@ -538,6 +694,7 @@ export default {
       dialogNameVisible: false,
       dialogViewVisible: false,
       showCurrentFolder: false,
+      dialogVersionVisible: false,
       Rename: '',
       allName: '',
       tabIndex: 1,
@@ -576,6 +733,7 @@ export default {
       },
       selectRow: {},
       detailData: {},
+      versionList: [],
       copyObj: '',
       currentJob: '', // 当前任务类型
       currentJobName: '', // 当前任务名
@@ -1010,6 +1168,19 @@ export default {
       console.log(this.detailData, '详细信息')
     },
 
+    // 查看文件版本
+    ViewVersion() {
+      console.log(this.$store.state.taskAdmin.GroupId)
+      job.fileVersion(this.$store.state.taskAdmin.GroupId).then((res) => {
+        console.log(res, 'res')
+        this.versionList = res
+        this.dialogVersionVisible = true;
+      }).catch((err) => {
+        console.log(err)
+      })
+      console.log('查看文件版本')
+    },
+
     // 新增命名文件夹
     showAllName(type) {
       if (typeof type === 'string') {
@@ -1026,6 +1197,7 @@ export default {
       this.dialogNameVisible = false
       this.dialogRenameVisible = false
       this.dialogViewVisible = false
+      this.dialogVersionVisible = false
       this.allName = ''
       this.Rename = ''
     },
@@ -1142,6 +1314,7 @@ export default {
       this.selectRow = data
       if (data.type === 2) {
         this.$store.commit('changeGroupId', data)
+        this.$store.commit('changeJobId', data.jobId)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
         job.getTaskInfo(data.jobId).then((res) => {
@@ -1153,6 +1326,8 @@ export default {
             } else {
               this.createNewJob(data.jobType)
             }
+          } else {
+            this.createNewJob(data.jobType)
           }
         }).catch((err) => {
           console.log(err)
@@ -1161,6 +1336,16 @@ export default {
         this.currentJobName = ''
       }
       console.log(this.currentJobName, '当前任务的名称')
+    },
+
+    // 显示代码
+    showCode(row) {
+      console.log(row)
+    },
+
+    // 版本回滚
+    rollback(row) {
+      console.log(row)
     },
 
     getJobDetail(data) {
@@ -1690,6 +1875,9 @@ export default {
         }
       }
     }
+    .code {
+      background-color: #eee;
+    }
   }
 }
 </style>
@@ -1706,7 +1894,7 @@ export default {
 }
 
 .el-tree >>> .el-tree-node {
-  margin: 5px 0px;
+  margin: 0px 0px;
 }
 
 .el-bar-tab {
