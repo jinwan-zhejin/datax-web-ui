@@ -59,10 +59,10 @@
         </el-popover>
       </div>
 
-      <div class="header_action" @click="handlerDelete(temp)">
+      <!-- <div class="header_action" @click="handlerDelete(temp)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
-      </div>
+      </div> -->
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
           v-model="temp.triggerStatus"
@@ -862,6 +862,30 @@ export default {
         }
       });
     },
+    // 上线/下线
+    online(e, obj) {
+      console.log(e, obj.part.data)
+      obj.part.data.color = 'red'
+      console.log(this.temp.triggerStatus)
+      if (this.temp.triggerStatus === 0) {
+        this.temp.triggerStatus = 1
+      } else {
+        this.temp.triggerStatus = 0
+      }
+      console.log(this.temp.triggerStatus)
+    },
+
+    handleCopy(e, obj) {
+      console.log(e, obj)
+    },
+
+    handleDelete(e, obj) {
+      console.log(e, obj)
+    },
+
+    handleColor(e, obj) {
+      console.log(e, obj)
+    },
 
     getReaderData() {
       return this.$refs.reader.getData();
@@ -1306,7 +1330,7 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { online() }
+          { click: (e, obj) => { this.online(e, obj) }
           }),
         $('ContextMenuButton',
           $(go.TextBlock, '复制', {
@@ -1316,7 +1340,7 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { handleCopy(obj, '1'); } }
+          { click: (e, obj) => { this.handleCopy(obj, '1'); } }
         ),
         $('ContextMenuButton',
           $(go.TextBlock, '删除', {
@@ -1326,7 +1350,7 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { handleDelete(obj, '2'); } }),
+          { click: (e, obj) => { this.handleDelete(obj, '2'); } }),
         $('ContextMenuButton',
           $(go.TextBlock, '变色', {
             alignment: go.Spot.Center,
@@ -1335,7 +1359,7 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { handleColor(obj, '3'); } }));
+          { click: (e, obj) => { this.handleColor(obj, '3'); } }));
       // define a simple Node template
       this.myDiagram.nodeTemplate =
         $(go.Node, 'Auto', // the Shape will go around the TextBlock

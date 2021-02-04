@@ -310,6 +310,7 @@
                 </vue-context-menu>
               </a>
               <a v-show="selectRow.jobType !== 'wenjianjia'" href="javascript:" @click="ViewFile">查看文件信息</a>
+              <a href="javascript:" @click="resetName">重命名</a>
               <hr style="padding: 0;margin: 0;">
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
@@ -447,7 +448,34 @@
       </div>
     </el-dialog>
     <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
-      <span style="margin-left:20px;">名称：</span><el-input v-model="allName" style="width: 60%;margin-left:20px;" />
+      <div class="box">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <span>名称:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ detailData.jobDesc }}
+          </el-col>
+          <el-col :span="8">
+            <span>任务类型:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
+          </el-col>
+          <el-col :span="8">
+            <span>创建时间:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ detailData.addTime ? detailData.addTime.split('T')[0] + '&nbsp; ' + detailData.addTime.split('T')[1].split('.000')[0] : '暂无数据' }}
+          </el-col>
+          <el-col :span="8">
+            <span>最近修改时间:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ detailData.updateTime ? detailData.updateTime.split('T')[0] + '&nbsp; ' + detailData.updateTime.split('T')[1].split('.000')[0] : '暂无数据' }}
+          </el-col>
+        </el-row>
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog">
           取消
@@ -547,6 +575,7 @@ export default {
         label: 'name'
       },
       selectRow: {},
+      detailData: {},
       copyObj: '',
       currentJob: '', // 当前任务类型
       currentJobName: '', // 当前任务名
@@ -903,12 +932,15 @@ export default {
       console.log(this.selectRow, '...........')
       job.dragReName({
         id: this.selectRow.id,
+        jobId: this.selectRow.jobId,
         name: this.Rename
       }).then((res) => {
         console.log(res)
         if (res.code === 200) {
           this.$message.success(res.msg)
           this.getDataTree()
+          this.Rename = ''
+          this.getJobDetail(this.detailData)
           this.dialogRenameVisible = false
         } else {
           this.$message.err(res.msg)
@@ -975,6 +1007,7 @@ export default {
     // 查看任务信息
     ViewFile() {
       this.dialogViewVisible = true;
+      console.log(this.detailData, '详细信息')
     },
 
     // 新增命名文件夹
@@ -1115,6 +1148,7 @@ export default {
           console.log(res, 'content')
           if (res.code === 200) {
             if (res.content) {
+              this.detailData = res.content
               this.getJobDetail(res.content)
             } else {
               this.createNewJob(data.jobType)
@@ -1640,6 +1674,22 @@ export default {
 
   .input_serach > .el-input__prefix > .el-input__icon {
     line-height: 35px !important;
+  }
+
+  .el-dialog__body {
+    .box {
+      border: 1px solid #ccc;
+      height: 100%;
+      padding: 20px;
+      .el-row {
+        text-align: left;
+        .el-col {
+          margin-top: 20px;
+          overflow:hidden;
+          text-overflow:ellipsis;
+        }
+      }
+    }
   }
 }
 </style>
