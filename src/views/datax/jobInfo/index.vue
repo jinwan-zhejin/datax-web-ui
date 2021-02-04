@@ -96,7 +96,7 @@ rkJggg=="
                   <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                 </el-dropdown-item>
                 <el-dropdown-item command="SPARK">
-                  <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
+                  <svg-icon class="svg_icon" icon-class="spark" />SPARK任务
                 </el-dropdown-item>
                 <el-dropdown-item command="DQCJOB">
                   <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
@@ -358,7 +358,7 @@ rkJggg=="
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                   </a>
                   <a href="javascript:" @click="showAllName('SPARK')">
-                    <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
+                    <svg-icon class="svg_icon" icon-class="spark" />SPARK任务
                   </a>
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务

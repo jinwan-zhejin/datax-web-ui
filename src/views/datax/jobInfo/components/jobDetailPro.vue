@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-04 16:12:56
+ * @LastEditTime: 2021-02-04 18:30:34
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -898,18 +898,6 @@ export default {
         }
       });
     },
-    // 上线/下线
-    online(e, obj) {
-      console.log(e, obj.part.data)
-      obj.part.data.color = 'red'
-      console.log(this.temp.triggerStatus)
-      if (this.temp.triggerStatus === 0) {
-        this.temp.triggerStatus = 1
-      } else {
-        this.temp.triggerStatus = 0
-      }
-      console.log(this.temp.triggerStatus)
-    },
 
     handleCopy(e, obj) {
       console.log(e, obj)
@@ -1459,14 +1447,29 @@ export default {
       this.changeSwitch(this.temp)
       console.log('上线')
     },
+    // 上线/下线
+    // online(e, obj) {
+    //   console.log(e, obj.part.data)
+    //   obj.part.data.color = 'red'
+    //   console.log(this.temp.triggerStatus)
+    //   if (this.temp.triggerStatus === 0) {
+    //     this.temp.triggerStatus = 1
+    //   } else {
+    //     this.temp.triggerStatus = 0
+    //   }
+    //   console.log(this.temp.triggerStatus)
+    // },
     deleteTask() {
       console.log('删除任务')
+      this.handlerDelete(this.temp)
     },
     checkLog() {
       console.log('查看任务操作日志')
+      this.handlerViewLog(this.temp)
     },
     editTask() {
       console.log('编辑任务属性')
+      this.handlerUpdate(this.temp)
     },
     exportTask() {
       console.log('导出任务')
