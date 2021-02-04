@@ -59,10 +59,10 @@
         </el-popover>
       </div>
 
-      <div class="header_action" @click="handlerDelete(temp)">
+      <!-- <div class="header_action" @click="handlerDelete(temp)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
-      </div>
+      </div> -->
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
           v-model="temp.triggerStatus"
@@ -862,6 +862,30 @@ export default {
         }
       });
     },
+    // 上线/下线
+    online(e, obj) {
+      console.log(e, obj.part.data)
+      obj.part.data.color = 'red'
+      console.log(this.temp.triggerStatus)
+      if (this.temp.triggerStatus === 0) {
+        this.temp.triggerStatus = 1
+      } else {
+        this.temp.triggerStatus = 0
+      }
+      console.log(this.temp.triggerStatus)
+    },
+
+    handleCopy(e, obj) {
+      console.log(e, obj)
+    },
+
+    handleDelete(e, obj) {
+      console.log(e, obj)
+    },
+
+    handleColor(e, obj) {
+      console.log(e, obj)
+    },
 
     getReaderData() {
       return this.$refs.reader.getData();
@@ -1391,6 +1415,12 @@ export default {
       return t
     },
     online() {
+      if (this.temp.triggerStatus === 0) {
+        this.temp.triggerStatus = 1
+      } else {
+        this.temp.triggerStatus = 0
+      }
+      this.changeSwitch(this.temp)
       console.log('上线')
     },
     deleteTask() {

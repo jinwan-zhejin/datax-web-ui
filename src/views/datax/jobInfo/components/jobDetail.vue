@@ -50,10 +50,10 @@
         </el-popover>
       </div>
 
-      <div class="header_action" @click="handlerDelete(temp)">
+      <!-- <div class="header_action" @click="handlerDelete(temp)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
-      </div>
+      </div> -->
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
           v-model="temp.triggerStatus"
