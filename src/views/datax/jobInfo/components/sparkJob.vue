@@ -381,6 +381,7 @@ export default {
           this.temp.glueSource = this.glueSource
           this.temp.executorHandler = this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
           this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
+          this.temp.jobType = this.$store.state.taskAdmin.tabType;
           if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
           job.createJob(this.temp).then(() => {
             this.fetchData()

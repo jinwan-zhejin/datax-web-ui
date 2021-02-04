@@ -191,3 +191,11 @@ export function pasteObj(query, data) {
     data
   })
 }
+
+// 查看文件版本列表
+export function fileVersion(query) {
+  return request({
+    url: `/api/jobVersion/pageVersionList?jobId=${query}`,
+    method: 'get'
+  })
+}
