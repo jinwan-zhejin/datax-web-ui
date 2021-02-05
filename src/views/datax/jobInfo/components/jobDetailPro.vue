@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-05 17:36:28
+ * @LastEditTime: 2021-02-05 17:57:34
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -218,7 +218,7 @@ rkJggg=="
     </el-dialog>
 
     <job-detail-pro-edit
-      :title="'编辑' + currentTask.jobDesc"
+      :title="'编辑任务：' + currentTask.jobDesc + ' ( ' + projectName + ' )'"
       :show="editPanelShow"
       @close="editPanelShow = false"
     />
@@ -263,7 +263,7 @@ import { translaterMaster } from '@/utils/dictionary';
 import Description from '@/components/Description/index';
 import DescriptionItems from '@/components/Description/components/items';
 import go from 'gojs';
-import JobDetailProEdit from './jobDetailProEdit';
+import JobDetailProEdit from './editDialog/jobDetailProEdit';
 
 export default {
   name: 'SimpleJob',
@@ -656,23 +656,6 @@ export default {
       this.toColumnsList = val;
     },
 
-    editPanelShow(val) {
-      this.$store.commit('SET_READER_EDITABLE', !val);
-      if (!val) {
-        for (var i in this.editable) {
-          this.editable[i] = false;
-        }
-      } else {
-        this.$store.state.taskAdmin.dataSourceList.find(item => {
-          if (item.id === this.$store.state.taskAdmin.writerDataSourceID) {
-            this.dataSource = item.datasource;
-          }
-        });
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
-        this.getColumns();
-      }
-    },
-
     'writerFormQuality.writerSchema'(val) {
       this.getTables('rdbmsWriter');
     },
@@ -964,14 +947,6 @@ export default {
       });
     },
     incStartTimeFormat(vData) {},
-    handleCreate() {
-      this.resetCurrentTask();
-      this.dialogStatus = 'create';
-      this.editPanelShow = true;
-      // this.$nextTick(() => {
-      //   this.$refs["dataForm"].clearValidate();
-      // });
-    },
 
     updateData() {
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.rcolumns);
