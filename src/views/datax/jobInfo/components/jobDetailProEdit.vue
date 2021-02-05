@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 17:23:18
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-05 17:27:58
+ * @LastEditTime: 2021-02-05 17:30:35
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailProEdit.vue
  * @Description: edit
 -->
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'JobDetailEdit',
+  name: 'JobDetailProEdit',
   props: {
     title: { type: String, default: '' },
     show: { type: Boolean, default: false }
