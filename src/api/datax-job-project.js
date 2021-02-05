@@ -34,6 +34,11 @@ export function deleted(data) {
   })
 }
 
+/**
+ * @description: 获取项目列表
+ * @param {*} params
+ * @return {*}
+ */
 export function getJobProjectList(params) {
   return request({
     url: '/api/jobProject/list',

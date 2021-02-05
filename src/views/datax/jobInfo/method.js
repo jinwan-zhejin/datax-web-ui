@@ -89,7 +89,7 @@ export function nextTriggerTime(row) {
 
 // 编辑
 export function handlerUpdate(row) {
-  this.resetTemp()
+  this.resetCurrentTask()
   this.temp = Object.assign({}, row) // copy obj
   if (this.temp.jobJson) this.jobJson = JSON.parse(this.temp.jobJson)
   this.glueSource = this.temp.glueSource
