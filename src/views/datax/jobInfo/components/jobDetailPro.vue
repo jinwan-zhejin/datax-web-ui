@@ -94,18 +94,19 @@
               xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink"
               x="0px"
-              y="0px"
-              width="16px"
-              height="16px"
-              viewBox="0 0 16 16"
-              enable-background="new 0 0 16 16"
+              y="3px"
+              width="15px"
+              height="15px"
+              style="margin-right: 3px"
+              viewBox="0 3 15 15"
+              enable-background="new 0 3 15 15"
               xml:space="preserve"
             >  <image
               id="image0"
-              width="16"
-              height="16"
+              width="15"
+              height="15"
               x="0"
-              y="0"
+              y="6"
               href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/

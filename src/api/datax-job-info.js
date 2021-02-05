@@ -199,3 +199,12 @@ export function fileVersion(query) {
     method: 'get'
   })
 }
+
+// 版本回滚接口
+export function dataRollBack(data) {
+  return request({
+    url: '/api/jobVersion/rollBackVersion',
+    method: 'post',
+    data
+  })
+}

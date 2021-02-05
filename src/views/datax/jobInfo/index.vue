@@ -36,121 +36,6 @@
             <i class="el-icon-location-outline top-icon" />
             <i class="el-icon-coin top-icon" />
             <i class="el-icon-folder-add top-icon" @click="showAllName" />
-            <el-dropdown trigger="click" @command="createNewJob">
-              <i class="el-icon-folder-add top-icon" />
-              <el-dropdown-menu
-                style="max-height: calc(100vh - 200px); overflow: auto;"
-              >
-                <el-dropdown-item command="wenjianjia">
-                  <svg-icon class="svg_icon" icon-class="wenjianjia" /> 新建文件夹
-                </el-dropdown-item>
-                <el-dropdown-item command="NORMAL">
-                  <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
-                </el-dropdown-item>
-                <el-dropdown-item command="IMPORT">
-                  <!-- <svg-icon class="svg_icon" icon-class="IMPORT" />引入任务 -->
-                  <svg
-                    id="Layer_1"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    width="16px"
-                    height="16px"
-                    viewBox="0 0 16 16"
-                    enable-background="new 0 0 16 16"
-                    xml:space="preserve"
-                  >  <image
-                    id="image0"
-                    width="16"
-                    height="16"
-                    x="0"
-                    y="0"
-                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
-lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
-k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
-smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
-MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
-wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
-KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
-mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
-bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
-r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
-eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
-RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
-cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
-rkJggg=="
-                  />
-                  </svg>
-                  引入任务
-                </el-dropdown-item>
-                <el-dropdown-item command="EXPORT">
-                  <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
-                </el-dropdown-item>
-                <el-dropdown-item command="COMPUTE" disabled>
-                  <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
-                </el-dropdown-item>
-                <el-dropdown-item command="SQLJOB">
-                  <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
-                </el-dropdown-item>
-                <el-dropdown-item command="SPARK">
-                  <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
-                </el-dropdown-item>
-                <el-dropdown-item command="DQCJOB">
-                  <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
-                </el-dropdown-item>
-                <el-dropdown-item command="METACOLLECT" divided>
-                  <svg-icon
-                    class="svg_icon"
-                    icon-class="METACOLLECT"
-                  />元数据采集任务
-                </el-dropdown-item>
-                <el-dropdown-item command="METACOMPARE">
-                  <svg-icon
-                    class="svg_icon"
-                    icon-class="METACOMPARE"
-                  />元数据比较任务
-                </el-dropdown-item>
-                <el-dropdown-item command="SHELL" divided>
-                  <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
-                </el-dropdown-item>
-                <el-dropdown-item command="POWERSHELL">
-                  <svg-icon
-                    class="svg_icon"
-                    icon-class="POWERSHELL"
-                  />POWERSHELL任务
-                </el-dropdown-item>
-                <el-dropdown-item command="PYTHON">
-                  <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
-                </el-dropdown-item>
-                <el-dropdown-item command="VJOB" divided>
-                  <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
-                </el-dropdown-item>
-                <el-dropdown-item command="JAVA" divided disabled>
-                  <svg-icon class="svg_icon" icon-class="JAVA" />Java任务
-                </el-dropdown-item>
-                <el-dropdown-item command="SCALA" disabled>
-                  <svg-icon class="svg_icon" icon-class="SCALA" />Scala任务
-                </el-dropdown-item>
-                <el-dropdown-item command="PYSPARK" disabled>
-                  <svg-icon class="svg_icon" icon-class="PYSPARK" />PySpark任务
-                </el-dropdown-item>
-                <el-dropdown-item command="R" disabled>
-                  <svg-icon class="svg_icon" icon-class="R" />R任务
-                </el-dropdown-item>
-                <el-dropdown-item command="BATCH" divided>
-                  <svg-icon class="svg_icon" icon-class="BATCH" />任务批量构建
-                </el-dropdown-item>
-                <el-dropdown-item command="TEMPLATE">
-                  <svg-icon
-                    class="svg_icon"
-                    icon-class="TEMPLATE"
-                  />普通任务模板
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </el-col>
         </el-row>
       </div>
@@ -243,7 +128,7 @@ rkJggg=="
               @node-click="handleNodeClick"
             >
               <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;font-size: 15px;" @dblclick="resetName(folderName)">
-                <span>
+                <p style="height: 26px;line-height: 26px;">
                   <svg-icon v-if="data.jobType && data.jobType !== 'IMPORT'" :icon-class="data.jobType" style="font-size: 15px;margin-right: 3px;" />
                   <svg
                     v-else
@@ -252,18 +137,19 @@ rkJggg=="
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     x="0px"
-                    y="0px"
-                    width="16px"
-                    height="16px"
-                    viewBox="0 0 16 16"
-                    enable-background="new 0 0 16 16"
+                    y="3px"
+                    width="15px"
+                    height="15px"
+                    style="margin-right: 3px;"
+                    viewBox="0 3 15 15"
+                    enable-background="new 0 3 15 15"
                     xml:space="preserve"
                   >  <image
                     id="image0"
-                    width="16"
-                    height="16"
+                    width="15"
+                    height="15"
                     x="0"
-                    y="0"
+                    y="6"
                     href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
@@ -280,8 +166,9 @@ RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
 cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
                   />
-                  </svg>{{ data.name }}
-                </span>
+                  </svg>
+                  {{ data.name }}
+                </p>
                 <!-- <el-tag
                   v-if="data.hasOwnProperty('triggerStatus')"
                   :type="data.triggerStatus === 1 ? 'success' : data.triggerStatus === 0 ? 'warning' : 'info'"
@@ -317,18 +204,19 @@ rkJggg=="
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
                       x="0px"
-                      y="0px"
-                      width="16px"
-                      height="16px"
-                      viewBox="0 0 16 16"
-                      enable-background="new 0 0 16 16"
+                      y="3px"
+                      style="margin-right: 3px"
+                      width="15px"
+                      height="15px"
+                      viewBox="0 3 15 15"
+                      enable-background="new 0 3 15 15"
                       xml:space="preserve"
                     >  <image
                       id="image0"
-                      width="16"
-                      height="16"
+                      width="15"
+                      height="15"
                       x="0"
-                      y="0"
+                      y="6"
                       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
@@ -474,10 +362,48 @@ rkJggg=="
         <el-tab-pane
           v-if="$store.state.taskAdmin.tabType"
           :name="$store.state.taskAdmin.tabType"
-          :label="
-            $store.state.taskAdmin.GroupName
-          "
         >
+          <span slot="label">
+            <svg-icon v-if="jobType && jobType !== 'IMPORT'" :icon-class="jobType" style="font-size: 15px;margin-right: 3px;" />
+            <svg
+              v-else
+              id="Layer_1"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="3px"
+              width="15px"
+              height="15px"
+              style="margin-right: 3px;"
+              viewBox="0 3 15 15"
+              enable-background="new 0 3 15 15"
+              xml:space="preserve"
+            >  <image
+              id="image0"
+              width="15"
+              height="15"
+              x="0"
+              y="6"
+              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+            />
+            </svg>
+            {{ $store.state.taskAdmin.GroupName || jobType }}
+          </span>
           <div
             v-if="
               jobType === 'NORMAL' ||
@@ -556,7 +482,7 @@ rkJggg=="
       </div>
     </el-dialog>
     <!-- 查看文件版本 -->
-    <el-dialog width="40%" title="查看文件版本信息" :visible.sync="dialogVersionVisible">
+    <el-dialog width="60%" title="查看文件版本信息" :visible.sync="dialogVersionVisible">
       <el-table
         :data="versionList"
         height="250"
@@ -574,17 +500,17 @@ rkJggg=="
         <el-table-column
           prop="versionTime"
           label="版本创建时间"
+          width="200"
         />
         <el-table-column
-          fixed="right"
           label="操作"
           width="100"
         >
           <template v-slot:default="{ row }">
             <el-popover
-              placement="bottom"
-              title="标题"
-              width="50%"
+              placement="right"
+              title="代码"
+              width="400"
               trigger="click"
             >
               <div class="code">
@@ -619,16 +545,16 @@ rkJggg=="
             {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
           </el-col>
           <el-col :span="8">
-            <span>创建时间:</span>
+            <span>创建日期:</span>
           </el-col>
           <el-col :span="16">
-            {{ detailData.addTime ? detailData.addTime.split('T')[0] + '&nbsp; ' + detailData.addTime.split('T')[1].split('.000')[0] : '暂无数据' }}
+            {{ detailData.addTime }}
           </el-col>
           <el-col :span="8">
-            <span>最近修改时间:</span>
+            <span>最近修改日期:</span>
           </el-col>
           <el-col :span="16">
-            {{ detailData.updateTime ? detailData.updateTime.split('T')[0] + '&nbsp; ' + detailData.updateTime.split('T')[1].split('.000')[0] : '暂无数据' }}
+            {{ detailData.updateTime }}
           </el-col>
         </el-row>
       </div>
@@ -647,6 +573,7 @@ import SimpleJob from './components/simpleJob.vue';
 import SparkJob from './components/sparkJob.vue';
 import JobDetail from './components/jobDetail.vue';
 import JobDetailPro from './components/jobDetailPro.vue';
+import JsonEditor from '@/components/JsonEditor';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as job from '@/api/datax-job-info';
 import JsonBuild from '@/views/datax/json-build/index';
@@ -670,6 +597,7 @@ export default {
     Workflow,
     JsonBuild,
     JsonQuality,
+    JsonEditor,
     SimpleJob,
     JobDetail,
     JobDetailPro,
@@ -1099,6 +1027,8 @@ export default {
           this.getDataTree()
           this.Rename = ''
           this.getJobDetail(this.detailData)
+          this.removeJobTab(this.selectRow.id)
+          this.handleNodeClick(this.selectRow)
           this.dialogRenameVisible = false
         } else {
           this.$message.err(res.msg)
@@ -1292,7 +1222,7 @@ export default {
           console.log(res)
           if (res.code === 200) {
             this.getDataTree()
-            this.removeJobTab()
+            this.removeJobTab(this.selectRow.id)
           }
         }).catch((err) => {
           console.log(err)
@@ -1314,24 +1244,28 @@ export default {
       this.selectRow = data
       if (data.type === 2) {
         this.$store.commit('changeGroupId', data)
-        this.$store.commit('changeJobId', data.jobId)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
-        job.getTaskInfo(data.jobId).then((res) => {
-          console.log(res, 'content')
-          if (res.code === 200) {
-            if (res.content) {
-              this.detailData = res.content
-              this.getJobDetail(res.content)
+        if (data.jobId) {
+          this.$store.commit('changeJobId', data.jobId)
+          job.getTaskInfo(data.jobId).then((res) => {
+            console.log(res, 'content')
+            if (res.code === 200) {
+              if (res.content) {
+                this.detailData = res.content
+                this.getJobDetail(res.content)
+              } else {
+                this.createNewJob(data.jobType)
+              }
             } else {
               this.createNewJob(data.jobType)
             }
-          } else {
-            this.createNewJob(data.jobType)
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
+          }).catch((err) => {
+            console.log(err)
+          })
+        } else {
+          this.createNewJob(data.jobType)
+        }
       } else {
         this.currentJobName = ''
       }
@@ -1346,6 +1280,31 @@ export default {
     // 版本回滚
     rollback(row) {
       console.log(row)
+      this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        row.id = this.selectRow.jobId
+        row.projectGroupId = this.selectRow.id
+        job.dataRollBack(row).then((res) => {
+          console.log(res)
+          if (res.code === 200) {
+            this.$message.success(res.content)
+            this.getDataTree()
+            this.removeJobTab(this.selectRow.id)
+            this.handleNodeClick(this.selectRow)
+            this.dialogVersionVisible = false
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消回滚'
+        })
+      })
     },
 
     getJobDetail(data) {
@@ -1818,15 +1777,34 @@ export default {
       .el-tabs__header {
         height: 32px;
         line-height: 32px;
-        .el-tabs__item {
-          height: 32px;
-          line-height: 32px;
-        };
+        .el-tabs__nav {
+          width: 200px;
+          border-top: 1px solid #f8f8fa;
+          .el-tabs__item {
+            width: 100%;
+            border: none;
+            border-top: 1px solid #f8f8fa;
+            border-radius: 6px 6px 0px 0px;
+            height: 32px;
+            line-height: 32px;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            .el-icon-close {
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          };
+        }
       }
 
       .el-tabs__item.is-active {
         background-color: #ffffff;
-        border-bottom-color:  #3d5eff;
+        // border-bottom-color:  #3d5eff;
       }
       // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
       //   height: 50px;
