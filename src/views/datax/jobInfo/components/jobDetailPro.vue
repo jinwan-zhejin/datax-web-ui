@@ -2,33 +2,37 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-04 18:30:34
+ * @LastEditTime: 2021-02-05 17:24:26
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
 
 <template>
   <div class="job_detail">
-    <!-- {{jobInfo}} -->
+    <!-- action面板 -->
     <div class="header">
       <div
         class="header_action"
         style="margin-left:17px;"
-        @click="handlerExecute(temp)"
+        @click="handlerExecute(currentTask)"
       >
         <i class="el-icon-video-play" />
         <span style="font-size: 13px;">执行</span>
       </div>
-      <div v-if="jobType === 'DQCJOB'" class="header_action" @click="handlerViewResult(temp)">
+      <div
+        v-if="jobType('DQCJOB')"
+        class="header_action"
+        @click="handlerViewResult(currentTask)"
+      >
         <i class="el-icon-search" />
         <span style="font-size: 13px;">查看结果</span>
       </div>
-      <div class="header_action" @click="handlerViewLog(temp)">
+      <div class="header_action" @click="handlerViewLog(currentTask)">
         <i class="el-icon-s-order" />
         <span style="font-size: 13px;">日志</span>
       </div>
       <div class="header_action">
-        <el-popover placement="bottom" width="500" @show="loadById(temp)">
+        <el-popover placement="bottom" width="500" @show="loadById(currentTask)">
           <el-table :data="registerNode">
             <el-table-column width="150" property="title" label="执行器名称" />
             <el-table-column width="150" property="appName" label="appName" />
@@ -49,7 +53,7 @@
         <el-popover
           placement="bottom"
           width="300"
-          @show="nextTriggerTime(temp)"
+          @show="nextTriggerTime(currentTask)"
         >
           <h5 v-html="triggerNextTimes" />
           <div slot="reference" style="float: left">
@@ -59,26 +63,32 @@
         </el-popover>
       </div>
 
-      <!-- <div class="header_action" @click="handlerDelete(temp)">
+      <div class="header_action" @click="handlerDelete(currentTask)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
-      </div> -->
+      </div>
+
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
-          v-model="temp.triggerStatus"
+          v-model="currentTask.triggerStatus"
           active-color="#00A854"
           active-text="启动"
           :active-value="1"
           inactive-color="#F04134"
           inactive-text="停止"
           :inactive-value="0"
-          @change="changeSwitch(temp)"
+          @change="changeSwitch(currentTask)"
         />
       </div>
     </div>
-    <div style="width: 100%; display: flex; border: solid 1px lightgray;">
-      <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: calc(100vh - 537px);" />
+    <!-- gojs任务联系 -->
+    <div class="taskRelation">
+      <div
+        :id="'myDiagramDiv' + myId"
+        style="flex-grow: 1; height: calc(50vh);"
+      />
     </div>
+    <!-- 任务详情面板 -->
     <el-collapse v-model="collapseActiveName" accordion>
       <el-collapse-item name="result">
         <template slot="title">
@@ -86,7 +96,10 @@
         </template>
         <description>
           <template slot="title">
-            <svg-icon v-if="temp.jobType !== 'IMPORT'" :icon-class="temp.jobType" />
+            <svg-icon
+              v-if="currentTask.jobType !== 'IMPORT'"
+              :icon-class="currentTask.jobType"
+            />
             <svg
               v-else
               id="Layer_1"
@@ -124,25 +137,44 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
             />
             </svg>
-            <span class="jobDesc">{{ temp.jobDesc }}</span>
+            <span class="jobDesc">{{ currentTask.jobDesc }}</span>
           </template>
           <template slot="action">
-            <el-button type="text" icon="el-icon-edit" @click="handlerUpdate(temp)">编辑</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-edit"
+              @click="handlerUpdate(currentTask)"
+            >编辑</el-button>
           </template>
           <template slot="context">
             <description-items keys="执行器" :values="jobGroupName" />
-            <description-items keys="所属项目" :values="temp.projectName" />
-            <description-items v-if="showProjectName" keys="路由策略" :values="temp.executorRouteStrategy" />
-            <description-items keys="子任务" :values="temp.childJobId" />
-            <description-items v-if="showProjectName" keys="阻塞处理" :values="temp.executorBlockStrategy" />
-            <description-items keys="任务名称" :values="temp.jobDesc" />
-            <description-items keys="任务类型" :values="temp.jobType" />
-            <description-items keys="Corn" :values="temp.jobCron" />
-            <description-items keys="报警邮件" :values="temp.alarmEmail" />
-            <description-items keys="失败重试次数" :values="temp.executorFailRetryCount" />
-            <description-items keys="超时时间" :values="temp.executorTimeout" />
-            <description-items keys="JVM启动参数" :values="temp.jvmParam" />
-            <description-items v-if="jobType === 'SQLJOB'" keys="Schema" :values="temp.schema" />
+            <description-items keys="所属项目" :values="projectName" />
+            <description-items
+              v-if="showProjectName"
+              keys="路由策略"
+              :values="currentTask.executorRouteStrategy"
+            />
+            <description-items keys="子任务" :values="hasVal(childJob, 'jobDesc')" />
+            <description-items
+              v-if="showProjectName"
+              keys="阻塞处理"
+              :values="currentTask.executorBlockStrategy"
+            />
+            <description-items keys="任务名称" :values="currentTask.jobDesc" />
+            <description-items keys="任务类型" :values="currentTask.jobType" />
+            <description-items keys="Corn" :values="currentTask.jobCron" />
+            <description-items keys="报警邮件" :values="currentTask.alarmEmail" />
+            <description-items
+              keys="失败重试次数"
+              :values="currentTask.executorFailRetryCount"
+            />
+            <description-items keys="超时时间" :values="currentTask.executorTimeout" />
+            <description-items keys="JVM启动参数" :values="currentTask.jvmParam" />
+            <description-items
+              v-if="jobType('SQLJOB')"
+              keys="Schema"
+              :values="currentTask.schema"
+            />
           </template>
         </description>
       </el-collapse-item>
@@ -153,7 +185,7 @@ rkJggg=="
         <div class="json_content">
           <json-editor
             ref="jsonEditor"
-            :value="jsonString"
+            :value="jsons"
             cani-edit="nocursor"
           />
         </div>
@@ -177,11 +209,7 @@ rkJggg=="
       <jobLog :id="jobId" ref="jobLog" />
     </el-dialog>
 
-    <el-dialog
-      width="75%"
-      title="结果查看"
-      :visible.sync="resultView"
-    >
+    <el-dialog width="75%" title="结果查看" :visible.sync="resultView">
       <job-result :id="jobId" ref="jobResult" />
     </el-dialog>
   </div>
@@ -189,9 +217,9 @@ rkJggg=="
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query';
-import * as executor from '@/api/datax-executor';
-import * as job from '@/api/datax-job-info';
-import * as log from '@/api/datax-job-log';
+import * as infoApi from '@/api/datax-job-info';
+// logApi
+import { getList as logGetList, viewJobLog } from '@/api/datax-job-log';
 import waves from '@/directive/waves'; // waves directive
 import Cron from '@/components/Cron';
 import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
@@ -199,8 +227,8 @@ import JsonEditor from '@/components/JsonEditor';
 import ShellEditor from '@/components/ShellEditor';
 import PythonEditor from '@/components/PythonEditor';
 import PowershellEditor from '@/components/PowershellEditor';
-import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import * as jobProjectApi from '@/api/datax-job-project';
+import { getDataSourceList } from '@/api/datax-jdbcDatasource';
+import { getJobProjectList } from '@/api/datax-job-project';
 import reader from '@/views/datax/json-build/reader';
 import writer from '@/views/datax/json-build/writer';
 import qualityReader from '../../jsonQuality/reader';
@@ -208,7 +236,7 @@ import qualityWriter from '../../jsonQuality/writer';
 import mapper from '@/views/datax/json-build/mapper';
 import { isJSON } from '@/utils/validate';
 import jobLog from './jobLog';
-import jobResult from './jobResult'
+import jobResult from './jobResult';
 import { getTableSchema } from '@/api/metadata-query';
 
 import {
@@ -311,11 +339,11 @@ export default {
       switchVal: 1,
       showLog: false,
       projectIds: '',
-      list: null,
+      /** 任务列表 */
+      list: [],
       listLoading: true,
       total: 0,
       schemaList: [],
-      // jobTypeLabel: '',
       listQuery: {
         current: 1,
         size: 10000,
@@ -330,117 +358,57 @@ export default {
       pluginData: [],
       dialogFormVisible: false,
       dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
       rules: {
         jobGroup: [
-          {
-            required: true,
-            message: 'jobGroup is required',
-            trigger: 'change'
-          }
+          { required: true, message: 'jobGroup is required', trigger: 'change' }
         ],
         executorRouteStrategy: [
-          {
-            required: true,
-            message: 'executorRouteStrategy is required',
-            trigger: 'change'
-          }
+          { required: true, message: 'executorRouteStrategy is required', trigger: 'change' }
         ],
         executorBlockStrategy: [
-          {
-            required: true,
-            message: 'executorBlockStrategy is required',
-            trigger: 'change'
-          }
+          { required: true, message: 'executorBlockStrategy is required', trigger: 'change' }
         ],
         glueType: [
-          {
-            required: true,
-            message: 'jobType is required',
-            trigger: 'change'
-          }
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
-          {
-            required: true,
-            message: 'projectId is required',
-            trigger: 'change'
-          }
+          { required: true, message: 'projectId is required', trigger: 'change' }
         ],
         jobDesc: [
-          {
-            required: true,
-            message: 'jobDesc is required',
-            trigger: 'blur'
-          }
+          { required: true, message: 'jobDesc is required', trigger: 'blur' }
         ],
         jobProject: [
-          {
-            required: true,
-            message: 'jobProject is required',
-            trigger: 'blur'
-          }
+          { required: true, message: 'jobProject is required', trigger: 'blur' }
         ],
         jobCron: [
-          {
-            required: true,
-            message: 'jobCron is required',
-            trigger: 'blur'
-          }
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
         incStartId: [
-          {
-            trigger: 'blur',
-            validator: validateIncParam
-          }
+          { trigger: 'blur', validator: validateIncParam }
         ],
         replaceParam: [
-          {
-            trigger: 'blur',
-            validator: validateIncParam
-          }
+          { trigger: 'blur', validator: validateIncParam }
         ],
         primaryKey: [
-          {
-            trigger: 'blur',
-            validator: validateIncParam
-          }
+          { trigger: 'blur', validator: validateIncParam }
         ],
         incStartTime: [
-          {
-            trigger: 'change',
-            validator: validateIncParam
-          }
+          { trigger: 'change', validator: validateIncParam }
         ],
         replaceParamType: [
-          {
-            trigger: 'change',
-            validator: validateIncParam
-          }
+          { trigger: 'change', validator: validateIncParam }
         ],
         partitionField: [
-          {
-            trigger: 'blur',
-            validator: validatePartitionParam
-          }
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
         datasourceId: [
-          {
-            trigger: 'change',
-            validator: validateIncParam
-          }
+          { trigger: 'change', validator: validateIncParam }
         ],
         readerTable: [
-          {
-            trigger: 'blur',
-            validator: validateIncParam
-          }
+          { trigger: 'blur', validator: validateIncParam }
         ]
       },
-      temp: {
+      currentTask: {
         id: undefined,
         jobGroup: '',
         jobCron: '',
@@ -472,107 +440,10 @@ export default {
         readerTable: '',
         jobType: ''
       },
-      resetTemp() {
-        this.temp = this.$options.data().temp;
-        this.jobJson = '';
-        this.glueSource = '';
-        this.timeOffset = 0;
-        this.timeFormatType = 'yyyy-MM-dd';
-        this.partitionField = '';
-      },
       executorList: [],
       jobIdList: '',
       jobProjectList: '',
       dataSourceList: '',
-      blockStrategies: [
-        {
-          value: 'SERIAL_EXECUTION',
-          label: '单机串行'
-        },
-        {
-          value: 'DISCARD_LATER',
-          label: '丢弃后续调度'
-        },
-        {
-          value: 'COVER_EARLY',
-          label: '覆盖之前调度'
-        }
-      ],
-      routeStrategies: [
-        {
-          value: 'FIRST',
-          label: '第一个'
-        },
-        {
-          value: 'LAST',
-          label: '最后一个'
-        },
-        {
-          value: 'ROUND',
-          label: '轮询'
-        },
-        {
-          value: 'RANDOM',
-          label: '随机'
-        },
-        {
-          value: 'CONSISTENT_HASH',
-          label: '一致性HASH'
-        },
-        {
-          value: 'LEAST_FREQUENTLY_USED',
-          label: '最不经常使用'
-        },
-        {
-          value: 'LEAST_RECENTLY_USED',
-          label: '最近最久未使用'
-        },
-        {
-          value: 'FAILOVER',
-          label: '故障转移'
-        },
-        {
-          value: 'BUSYOVER',
-          label: '忙碌转移'
-        }
-        // { value: 'SHARDING_BROADCAST', label: '分片广播' }
-      ],
-      glueTypes: [
-        {
-          value: 'BEAN',
-          label: 'DataX任务'
-        },
-        {
-          value: 'GLUE_SHELL',
-          label: 'Shell任务'
-        },
-        {
-          value: 'GLUE_PYTHON',
-          label: 'Python任务'
-        },
-        {
-          value: 'GLUE_POWERSHELL',
-          label: 'PowerShell任务'
-        }
-      ],
-      incrementTypes: [
-        {
-          value: 0,
-          label: '无'
-        },
-        {
-          value: 1,
-          label: '主键自增'
-        },
-        {
-          value: 2,
-          label: '时间自增'
-        },
-        {
-          value: 3,
-          label: 'HIVE分区'
-        }
-      ],
       triggerNextTimes: '',
       registerNode: [],
       jobJson: '',
@@ -580,64 +451,6 @@ export default {
       timeOffset: 0,
       timeFormatType: 'yyyy-MM-dd',
       partitionField: '',
-      timeFormatTypes: [
-        {
-          value: 'yyyy-MM-dd',
-          label: 'yyyy-MM-dd'
-        },
-        {
-          value: 'yyyyMMdd',
-          label: 'yyyyMMdd'
-        },
-        {
-          value: 'yyyy/MM/dd',
-          label: 'yyyy/MM/dd'
-        }
-      ],
-      replaceFormatTypes: [
-        {
-          value: 'yyyy/MM/dd',
-          label: 'yyyy/MM/dd'
-        },
-        {
-          value: 'yyyy-MM-dd',
-          label: 'yyyy-MM-dd'
-        },
-        {
-          value: 'HH:mm:ss',
-          label: 'HH:mm:ss'
-        },
-        {
-          value: 'yyyy/MM/dd HH:mm:ss',
-          label: 'yyyy/MM/dd HH:mm:ss'
-        },
-        {
-          value: 'yyyy-MM-dd HH:mm:ss',
-          label: 'yyyy-MM-dd HH:mm:ss'
-        },
-        {
-          value: 'Timestamp',
-          label: '时间戳'
-        }
-      ],
-      statusList: [
-        {
-          value: 500,
-          label: '失败'
-        },
-        {
-          value: 502,
-          label: '失败(超时)'
-        },
-        {
-          value: 200,
-          label: '成功'
-        },
-        {
-          value: 0,
-          label: '无'
-        }
-      ],
       /** 可编辑 */
       editable: {
         /** 新建任务 */
@@ -650,35 +463,54 @@ export default {
         mapping: false
       },
       dataSource: '',
-      fileTypes: [
-        { value: 'text', label: 'text' },
-        { value: 'orc', label: 'orc' }
-      ],
-      writeModes: [
-        { value: 'append', label: 'append 写入前不做任何处理' },
-        {
-          value: 'nonConflict',
-          label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
-        }
-      ],
       resultView: false, // 结果查看
       /** 折叠面板激活项 */
       collapseActiveName: 'result',
+      /** gojs面板 */
       myDiagram: '',
       /** 任务Id */
-      myId: ''
-    }
+      myId: '',
+      jsons: ''
+    };
   },
 
   computed: {
+    /** 判断当前任务类型 */
     jobType() {
-      return this.jobInfo.jobType;
+      return type => {
+        return this.jobInfo.jobType === type;
+      };
     },
 
+    /** 执行器 */
     jobGroupName() {
       return this.executorList.find(
-        element => element.id === this.temp.jobGroup
+        element => element.id === this.currentTask.jobGroup
       )?.title;
+    },
+
+    /** 所属项目名称 */
+    projectName() {
+      const t = this.$store.state.project.currentItem;
+      const i = this.$store.state.project.currentItem.indexOf('/');
+      if (i > -1) {
+        return t.substring(i + 1, t.length);
+      }
+      return t;
+    },
+
+    /** 子任务对象 */
+    childJob() {
+      const t = typeof this.currentTask.childJobId === 'string'
+        ? parseInt(this.currentTask.childJobId) : this.currentTask.childJobId
+      return this.$store.state.taskAdmin.taskList.find(ele => ele.id === t)
+    },
+
+    /** 值不为空 */
+    isVal() {
+      return val => {
+        return val !== '' && val !== undefined && val !== null
+      }
     },
 
     jobParam() {
@@ -707,100 +539,73 @@ export default {
      */
     finder() {
       return (item, sets, attr, distAttr) => {
-        var temp = '';
+        let t = '';
         if (sets) {
-          temp = sets.find(ele => ele[attr] === item);
+          t = sets.find(ele => ele[attr] === item);
         }
-        if (!temp) {
+        if (!t) {
           return '';
         }
-        return temp[distAttr];
+        return t[distAttr];
       };
-    },
-    /** 提取子任务下拉列表数组jobDesc属性 */
-    reorganizeChildJob() {
-      var tmp = '-';
-      if (this.temp.childJobId) {
-        if (typeof this.temp.childJobId !== 'string') {
-          this.temp.childJobId.forEach(ele => {
-            if (tmp === '-') {
-              tmp = ele.jobDesc;
-            } else {
-              tmp += ', '.concat(ele.jobDesc);
-            }
-          })
-        }
-      }
-      return tmp;
-    },
-    /** 没有值显示短横线，有值显示值 */
-    dashOrValue() {
-      return val => {
-        if (val) {
-          return val;
-        } else {
-          return '-';
-        }
-      };
-    },
-    isEditable() {
-      var temp = null;
-      for (var i in this.editable) {
-        if (temp === null) {
-          temp = this.editable[i];
-        } else {
-          temp = temp || this.editable[i];
-        }
-      }
-      return temp;
     },
 
+    /** res中是否有属性item */
     hasVal() {
       return (res, item) => {
         if (res) {
           if (res.hasOwnProperty(item)) {
-            return res[item]
+            return res[item];
           } else {
-            return ''
+            return '';
           }
         } else {
-          return ''
+          return '';
         }
-      }
+      };
     },
 
     jsonString() {
-      return JSON.parse(this.temp.jobJson)
+      return JSON.parse(this.currentTask.jobJson);
     },
 
+    /** 是否为普通、引入、导出、SHELL、POWERSHELL、PYTHON任务 */
     showProjectName() {
-      return this.jobType === 'NORMAL' || this.jobType === 'IMPORT' ||
-              this.jobType === 'EXPORT' || this.jobType === 'SHELL' ||
-              this.jobType === 'POWERSHELL' || this.jobType === 'PYTHON'
+      return (
+        this.jobType === 'NORMAL' ||
+        this.jobType === 'IMPORT' ||
+        this.jobType === 'EXPORT' ||
+        this.jobType === 'SHELL' ||
+        this.jobType === 'POWERSHELL' ||
+        this.jobType === 'PYTHON'
+      );
     },
 
+    /** 唯一标识码 */
     guid() {
-      return ('xxxxxxxxxxxxxxxxxxx'.concat((new Date()).valueOf().toString())).replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0;
-        var v = c === 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16);
-      })
+      return 'xxxxxxxxxxxxxxxxxxx'
+        .concat(new Date().valueOf().toString())
+        .replace(/[xy]/g, function(c) {
+          var r = (Math.random() * 16) | 0;
+          var v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
     }
   },
   watch: {
     'writerFormQuality.writerDatasourceId': function(oldVal, newVal) {
-      this.$store.state.taskAdmin.dataSourceList.find((item) => {
+      this.$store.state.taskAdmin.dataSourceList.find(item => {
         if (item.id === this.writerFormQuality.writerDatasourceId) {
           this.dataSource = item.datasource;
         }
-      })
+      });
       if (
         this.dataSource === 'postgresql' ||
         this.dataSource === 'greenplum' ||
         this.dataSource === 'oracle' ||
         this.dataSource === 'sqlserver'
       ) {
-        this.getSchemaList()
+        this.getSchemaList();
       }
       this.getTables('rdbmsWriter');
     },
@@ -845,30 +650,32 @@ export default {
           this.editable[i] = false;
         }
       } else {
-        this.$store.state.taskAdmin.dataSourceList.find((item) => {
+        this.$store.state.taskAdmin.dataSourceList.find(item => {
           if (item.id === this.$store.state.taskAdmin.writerDataSourceID) {
             this.dataSource = item.datasource;
           }
-        })
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
-        this.getColumns()
+        });
+        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
+        this.getColumns();
       }
     },
 
     'writerFormQuality.writerSchema'(val) {
-      this.getTables('rdbmsWriter')
+      this.getTables('rdbmsWriter');
     },
 
     'editable.writer'(val) {
       if (!val) {
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
-        this.getColumns()
+        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
+        this.getColumns();
       }
     },
 
     collapseActiveName(val) {
       if (val === '' || val === undefined || val === null) {
-        this.collapseActiveName = 'result'
+        this.collapseActiveName = 'result';
+      } else if (val === 'json') {
+        this.jsons = this.jsonString
       }
     }
   },
@@ -879,12 +686,12 @@ export default {
     this.getJobProject();
     this.getDataSourceList();
     this.getSchemaList();
-    this.temp = this.jobInfo;
-    this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
-    this.myId = this.guid
+    this.currentTask = this.jobInfo;
+    this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
+    this.myId = this.guid;
   },
   mounted() {
-    this.initGoJs()
+    this.initGoJs();
   },
 
   methods: {
@@ -893,23 +700,11 @@ export default {
      */
     wDsChange(e) {
       this.$store.commit('SET_WRITER_DATASOURCE_ID', e);
-      this.$store.state.taskAdmin.dataSourceList.find((item) => {
+      this.$store.state.taskAdmin.dataSourceList.find(item => {
         if (item.id === e) {
           this.dataSource = item.datasource;
         }
       });
-    },
-
-    handleCopy(e, obj) {
-      console.log(e, obj)
-    },
-
-    handleDelete(e, obj) {
-      console.log(e, obj)
-    },
-
-    handleColor(e, obj) {
-      console.log(e, obj)
     },
 
     getReaderData() {
@@ -921,10 +716,12 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerFormQuality.writerColumns = val ? this.fromColumnList : [];
       this.writerForm.isIndeterminate = false;
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerFormQuality.writerColumns);
+      this.$store.commit(
+        'SET_SELECT_WRITERCOLUMN',
+        this.writerFormQuality.writerColumns
+      );
     },
     wHandleCheckedChange(value) {
-      console.log(value);
       const checkedCount = value.length;
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length;
       this.writerForm.isIndeterminate =
@@ -936,9 +733,12 @@ export default {
       this.$store.commit('SET_WRITER_TABLENAME', t);
     },
 
-    // 执行一次
-    handlerExecute(temp) {
-      handlerExecute.call(this, temp).then(() => {
+    /**
+     * @description: 执行一次
+     * @param {object} taskInfo
+     */
+    handlerExecute(taskInfo) {
+      handlerExecute.call(this, taskInfo).then(() => {
         this.newstlogContent = '';
         this.logList();
         this.showLog = true;
@@ -946,85 +746,93 @@ export default {
       });
     },
 
-    handlerViewResult(temp) {
-      // console.log(temp);
-      this.resultView = true
-      this.jobId = temp.id
-      this.$refs.jobResult?.fetchData()
+    /**
+     * @description: 查看结果
+     */
+    handlerViewResult(taskInfo) {
+      this.resultView = true;
+      this.jobId = taskInfo.id;
+      this.$refs.jobResult?.fetchData();
     },
 
-    // 查看日志
-    handlerViewLog(temp) {
-      // handlerViewLog.call(this, temp);
+    /**
+     * @description: 查看日志
+     */
+    handlerViewLog(taskInfo) {
+      // handlerViewLog.call(this, taskInfo);
       this.$store.commit('SET_LOGVIEW_TYPE', 0);
       this.logview = true;
-      this.jobId = temp.id;
-      this.$refs.jobLog?.fetchData()
+      // this.jobId = taskInfo.id;
+      this.$refs.jobLog?.fetchData();
     },
 
-    // 删除
-    handlerDelete(temp) {
+    /**
+     * @description: 删除
+     */
+    handlerDelete(taskInfo) {
       handlerDelete
-        .call(this, temp)
+        .call(this, taskInfo)
         .then(() => {
-          this.$emit('deleteDetailTab', temp.id);
+          this.$emit('deleteDetailTab', taskInfo.id);
           this.$emit('deleteJob', true);
         })
         .then(() => {});
     },
 
-    // 开关
-    changeSwitch(temp) {
-      temp.triggerStatus === 1
-        ? handlerStart.call(this, temp)
-        : handlerStop.call(this, temp);
+    /**
+     * @description: 启停
+     */
+    changeSwitch(taskInfo) {
+      taskInfo.triggerStatus === 1
+        ? handlerStart.call(this, taskInfo)
+        : handlerStop.call(this, taskInfo);
     },
 
-    // 注册节点
+    /**
+     * @description: 注册节点
+     */
     loadById(row) {
       loadById.call(this, row);
     },
 
-    // 下次触发时间
+    /**
+     * @description: 下次触发时间
+     */
     nextTriggerTime(row) {
       nextTriggerTime.call(this, row);
     },
 
     // 编辑
     handlerUpdate(row) {
-      this.$store.commit(
-        'SET_JOBINFO_TYPE',
-        this.jobInfo.jobType
-      )
-      this.$store.commit('SET_READER_ISEDIT', true)
+      this.$store.commit('SET_JOBINFO_TYPE', this.jobInfo.jobType);
+      this.$store.commit('SET_READER_ISEDIT', true);
 
       row.childJobId = row.childJobId?.join?.(',');
       handlerUpdate.call(this, row);
 
       const jobParam = JSON.parse(row.jobParam);
-      console.log('jobParam', jobParam);
       this.$store.commit(
         'SET_READER_DATASOURCE_ID',
         jobParam.readerDatasourceId
       );
 
       if (this.$store.state.taskAdmin.jobInfoType === 'DQCJOB') {
-        const jobParamRule = jobParam.rule
+        const jobParamRule = jobParam.rule;
         jobParamRule.forEach(ele => {
-          const codeArr = []
+          const codeArr = [];
           ele.ruleId.forEach(code => {
-            codeArr.push(code.code)
-          })
-          ele.ruleId = codeArr
-        })
-        this.$store.commit('SET_JOBRULE', jobParamRule)
+            codeArr.push(code.code);
+          });
+          ele.ruleId = codeArr;
+        });
+        this.$store.commit('SET_JOBRULE', jobParamRule);
       }
 
       this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0]);
 
-      this.$store.commit('SET_READER_SCHEMA', jobParam.readerSchema)
+      this.$store.commit('SET_READER_SCHEMA', jobParam.readerSchema);
 
-      this.$store.commit('SET_WRITER_SCHEMA', jobParam.writerSchema)
+      this.$store.commit('SET_WRITER_SCHEMA', jobParam.writerSchema);
 
       this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns);
 
@@ -1042,7 +850,9 @@ export default {
       this.getTables('rdbmsWriter');
     },
 
-    // 实时更新日志
+    /**
+     * @description: 实时更新日志
+     */
     logList() {
       const param = Object.assign(
         {},
@@ -1050,14 +860,14 @@ export default {
           current: 1,
           size: 10,
           jobGroup: 0,
-          jobId: this.temp.id,
+          jobId: this.currentTask?.id,
           logStatus: -1,
           filterTime: ''
         }
       );
       let status = 0;
 
-      log.getList(param).then(response => {
+      logGetList(param).then(response => {
         const { content } = response;
 
         const newestLog = content.data[0] || {};
@@ -1067,8 +877,7 @@ export default {
         }
         status = newestLog.handleCode;
         const triggerTime = Date.parse(newestLog?.triggerTime);
-        log
-          .viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
+        viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
           .then(response => {
             this.newstlogContent = response.content.logContent;
           })
@@ -1080,12 +889,15 @@ export default {
       });
     },
 
-    // schema列表
-    async getSchemaList() {
-      const schemaList = await getTableSchema({
+    /**
+     * @description: 获取schema列表
+     */
+    getSchemaList() {
+      getTableSchema({
         datasourceId: this.writerFormQuality.writerDatasourceId
-      });
-      this.schemaList = schemaList;
+      }).then(response => {
+        this.schemaList = response.data
+      })
     },
 
     handleClose(done) {
@@ -1095,47 +907,52 @@ export default {
         })
         .catch(_ => {});
     },
+    /**
+     * @description: 获取执行器列表
+     */
     getExecutor() {
-      job.getExecutorList().then(response => {
+      infoApi.getExecutorList().then(response => {
         const { content } = response;
         this.executorList = content;
-        console.log('this.executorList', content);
       });
     },
+    /**
+     * @description: 获取所有任务列表
+     */
     getJobIdList() {
-      job.getJobIdList().then(response => {
+      infoApi.getJobIdList().then(response => {
         const { content } = response;
         this.jobIdList = content;
       });
     },
     getJobProject() {
-      jobProjectApi.getJobProjectList().then(response => {
+      getJobProjectList().then(response => {
         this.jobProjectList = response;
       });
     },
     getDataSourceList() {
-      datasourceApi.getDataSourceList().then(response => {
+      getDataSourceList().then(response => {
         this.dataSourceList = response;
-        console.log('this.dataSourceList', this.dataSourceList);
       });
     },
     fetchData() {
       this.listLoading = true;
       this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
-      job.getList(this.listQuery).then(response => {
+      infoApi.getList(this.listQuery).then(response => {
         const { content } = response;
         this.total = content.recordsTotal;
         this.list = content.data;
         this.listLoading = false;
         this.$store.commit('SET_TASKLIST', this.list);
-        // console.log(this.list);
-        const t = this.list.filter(item => item.id === this.$store.state.taskAdmin.jobInfo.id)
-        this.$store.commit('SET_JOB_INFO', t[0])
+        const t = this.list.filter(
+          item => item.id === this.$store.state.taskAdmin.jobInfo.id
+        );
+        this.$store.commit('SET_JOB_INFO', t[0]);
       });
     },
     incStartTimeFormat(vData) {},
     handleCreate() {
-      this.resetTemp();
+      this.resetCurrentTask();
       this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       // this.$nextTick(() => {
@@ -1154,19 +971,29 @@ export default {
         readerColumns: this.$store.state.taskAdmin.selectReaderColumn, // 已选择的表项
         writerColumns: this.writerFormQuality.writerColumns,
         readerSchema: this.$store.state.taskAdmin.readerSchema,
-        writerSchema: (this.dataSource === 'postgresql' || this.dataSource === 'greenplum' || this.dataSource === 'oracle' || this.dataSource === 'sqlserver') ? this.writerFormQuality.writerSchema : '',
+        writerSchema:
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
+            ? this.writerFormQuality.writerSchema
+            : '',
         transformer: this.writerFormQuality.transformer,
         hiveReader: this.writerFormQuality.hiveReader,
-        hiveWriter: this.dataSource === 'hive' ? this.writerFormQuality.hiveWriter : {},
+        hiveWriter:
+          this.dataSource === 'hive' ? this.writerFormQuality.hiveWriter : {},
         rdbmsReader: this.writerFormQuality.rdbmsReader,
-        rdbmsWriter: this.dataSource !== 'hive' ? this.writerFormQuality.rdbmsWriter : { preSql: '', postSql: '' },
+        rdbmsWriter:
+          this.dataSource !== 'hive'
+            ? this.writerFormQuality.rdbmsWriter
+            : { preSql: '', postSql: '' },
         hbaseReader: this.writerFormQuality.hbaseReader,
         hbaseWriter: this.writerFormQuality.hbaseWriter,
         mongoDBReader: this.writerFormQuality.mongoDBReader,
         mongoDBWriter: this.writerFormQuality.mongoDBWriter
       };
 
-      if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
+      if (this.currentTask.glueType === 'BEAN' && !isJSON(this.currentTask.jobJson)) {
         this.$notify({
           title: 'Fail',
           message: 'json格式错误',
@@ -1176,40 +1003,42 @@ export default {
         return;
       }
       this.$refs['dataForm'].validate(valid => {
-        // const tabName = this.temp.id;
+        // const tabName = this.currentTask.id;
         if (valid) {
-          if (this.temp.childJobId) {
+          if (this.currentTask.childJobId) {
             const auth = [];
-            for (const i in this.temp.childJobId) {
-              auth.push(this.temp.childJobId[i].id);
+            for (const i in this.currentTask.childJobId) {
+              auth.push(this.currentTask.childJobId[i].id);
             }
-            this.temp.childJobIdArr = auth
-            this.temp.childJobId = auth.toString();
+            this.currentTask.childJobIdArr = auth;
+            this.currentTask.childJobId = auth.toString();
           }
-          // this.temp.executorHandler =
-          //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
-          this.temp.glueSource = this.glueSource;
+          // this.currentTask.executorHandler =
+          //   this.currentTask.glueType === "BEAN" ? "executorJobHandler" : "";
+          this.currentTask.glueSource = this.glueSource;
           if (this.partitionField) {
-            this.temp.partitionInfo =
+            this.currentTask.partitionInfo =
               this.partitionField +
               ',' +
               this.timeOffset +
               ',' +
               this.timeFormatType;
           }
-          if (this.temp.jobType === 'DQCJOB') {
-            const tempjobRule = JSON.parse(JSON.stringify(this.$store.state.taskAdmin.jobRule))
+          if (this.currentTask.jobType === 'DQCJOB') {
+            const tempjobRule = JSON.parse(
+              JSON.stringify(this.$store.state.taskAdmin.jobRule)
+            );
             tempjobRule.forEach(ele => {
-              const codeArr = []
+              const codeArr = [];
               ele.ruleId.forEach(code => {
-                codeArr.push({ code })
-              })
+                codeArr.push({ code });
+              });
               ele.ruleId = codeArr;
             });
-            jobParam.rule = tempjobRule
+            jobParam.rule = tempjobRule;
           }
-          this.temp.jobParam = JSON.stringify(jobParam);
-          job.updateJob(this.temp).then(() => {
+          this.currentTask.jobParam = JSON.stringify(jobParam);
+          infoApi.updateJob(this.currentTask).then(() => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
@@ -1218,8 +1047,6 @@ export default {
               type: 'success',
               duration: 2000
             });
-            // this.$emit("deleteDetailTab", tabName);
-            // this.$emit("deleteJob");
           });
         }
       });
@@ -1259,14 +1086,17 @@ export default {
           };
         }
         // 组装
-        dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response
-          this.$store.commit('SET_WRITER_TABLENAME', this.wTbList[0])
-        }).catch(error => {
-          console.log(error)
-          this.wTbList = []
-          this.$store.commit('SET_WRITER_TABLENAME', '')
-        })
+        dsQueryApi
+          .getTables(obj)
+          .then(response => {
+            this.wTbList = response;
+            this.$store.commit('SET_WRITER_TABLENAME', this.wTbList[0]);
+          })
+          .catch(error => {
+            console.log(error);
+            this.wTbList = [];
+            this.$store.commit('SET_WRITER_TABLENAME', '');
+          });
       }
     },
     // 获取表字段
@@ -1278,17 +1108,24 @@ export default {
       dsQueryApi.getColumns(obj).then(response => {
         this.fromColumnList = response;
 
-        if (this.writerFormQuality.writerDatasourceId === this.jobParam.writerDatasourceId && this.writerFormQuality.writerTables[0] === this.jobParam.writerTables[0]) {
-          this.writerFormQuality.writerColumns = this.jobParam.writerColumns
+        if (
+          this.writerFormQuality.writerDatasourceId ===
+            this.jobParam.writerDatasourceId &&
+          this.writerFormQuality.writerTables[0] ===
+            this.jobParam.writerTables[0]
+        ) {
+          this.writerFormQuality.writerColumns = this.jobParam.writerColumns;
         } else {
-          this.writerFormQuality.writerColumns = this.fromColumnList
+          this.writerFormQuality.writerColumns = this.fromColumnList;
         }
 
-        // this.writerForm.checkAll = true;
-        // this.writerForm.isIndeterminate = false;
-        this.writerForm.checkAll = this.writerFormQuality.writerColumns.length === this.fromColumnList.length;
+        this.writerForm.checkAll =
+          this.writerFormQuality.writerColumns.length ===
+          this.fromColumnList.length;
         this.writerForm.isIndeterminate =
-          this.writerFormQuality.writerColumns.length > 0 && this.writerFormQuality.writerColumns.length < this.fromColumnList.length
+          this.writerFormQuality.writerColumns.length > 0 &&
+          this.writerFormQuality.writerColumns.length <
+            this.fromColumnList.length;
 
         this.$store.commit('SET_WRITER_COLUMNS', response);
 
@@ -1323,7 +1160,7 @@ export default {
     },
     editReader() {
       this.editable.reader = !this.editable.reader;
-      this.$store.commit('SET_READER_ISEDIT', true)
+      this.$store.commit('SET_READER_ISEDIT', true);
       this.$store.commit('SET_READER_EDITABLE', this.editable.reader);
     },
     exStatus(param) {
@@ -1334,20 +1171,51 @@ export default {
      * @description: 点击Schema触发表改变
      */
     schemaChange() {
-      this.getTables('rdbmsWriter')
+      this.getTables('rdbmsWriter');
+    },
+    /**
+     * @description: 重置当前展示任务
+     */
+    resetCurrentTask() {
+      this.currentTask = this.$options.data().currentTask;
+      this.jobJson = '';
+      this.glueSource = '';
+      this.timeOffset = 0;
+      this.timeFormatType = 'yyyy-MM-dd';
+      this.partitionField = '';
     },
     /**
      * @description: 初始化gojs
      */
     initGoJs() {
-      var $ = go.GraphObject.make // 构建
-      this.myDiagram = $(go.Diagram, 'myDiagramDiv' + this.myId, // create a Diagram for the DIV HTML element
+      var $ = go.GraphObject.make; // 构建
+      this.myDiagram = $(
+        go.Diagram,
+        'myDiagramDiv' + this.myId, // create a Diagram for the DIV HTML element
         {
           'undoManager.isEnabled': true // enable undo & redo
-        });
+        }
+      );
       /** 右键面板 */
-      var myContextMenu = $('ContextMenu',
-        $('ContextMenuButton',
+      const myContextMenu = $(
+        'ContextMenu',
+        $(
+          'ContextMenuButton',
+          $(go.TextBlock, '查看详情', {
+            alignment: go.Spot.Center,
+            margin: 5,
+            font: '12px sans-serif',
+            opacity: 0.75,
+            stroke: '#404040'
+          }),
+          {
+            click: (e, obj) => {
+              this.checkInfo(obj);
+            }
+          }
+        ),
+        $(
+          'ContextMenuButton',
           $(go.TextBlock, '上线/下线', {
             alignment: go.Spot.Center,
             margin: 5,
@@ -1355,9 +1223,14 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { this.online() }
-          }),
-        $('ContextMenuButton',
+          {
+            click: (e, obj) => {
+              this.online(obj);
+            }
+          }
+        ),
+        $(
+          'ContextMenuButton',
           $(go.TextBlock, '删除', {
             alignment: go.Spot.Center,
             margin: 5,
@@ -1365,9 +1238,14 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { this.deleteTask() } }
+          {
+            click: (e, obj) => {
+              this.deleteTask();
+            }
+          }
         ),
-        $('ContextMenuButton',
+        $(
+          'ContextMenuButton',
           $(go.TextBlock, '查看任务操作日志', {
             alignment: go.Spot.Center,
             margin: 5,
@@ -1375,8 +1253,14 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { this.checkLog() } }),
-        $('ContextMenuButton',
+          {
+            click: (e, obj) => {
+              this.checkLog();
+            }
+          }
+        ),
+        $(
+          'ContextMenuButton',
           $(go.TextBlock, '编辑任务属性', {
             alignment: go.Spot.Center,
             margin: 5,
@@ -1384,8 +1268,14 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { this.editTask() } }),
-        $('ContextMenuButton',
+          {
+            click: (e, obj) => {
+              this.editTask();
+            }
+          }
+        ),
+        $(
+          'ContextMenuButton',
           $(go.TextBlock, '导出任务', {
             alignment: go.Spot.Center,
             margin: 5,
@@ -1393,87 +1283,82 @@ export default {
             opacity: 0.75,
             stroke: '#404040'
           }),
-          { click: (e, obj) => { this.exportTask() } }));
-      // define a simple Node template
-      this.myDiagram.nodeTemplate =
-        $(go.Node, 'Auto', // the Shape will go around the TextBlock
-          { contextMenu: myContextMenu },
-          $(go.Shape, 'RoundedRectangle',
-            // Shape.fill is bound to Node.data.color
-            new go.Binding('fill', 'color')),
-          $(go.TextBlock,
-            { margin: 3 }, // some room around the text
-            // TextBlock.text is bound to Node.data.key
-            new go.Binding('text', 'key'))
-        );
-      this.myDiagram.model = new go.GraphLinksModel(
-        // [
-        //   { key: 'Alpha', color: 'lightblue' },
-        //   { key: 'Beta', color: 'orange' },
-        //   { key: 'Gamma', color: 'lightgreen' },
-        //   { key: 'Delta', color: 'pink' }
-        // ],
-        // [
-        //   { from: 'Alpha', to: 'Beta' },
-        //   { from: 'Alpha', to: 'Gamma' },
-        //   { from: 'Beta', to: 'Beta' },
-        //   { from: 'Gamma', to: 'Delta' },
-        //   { from: 'Delta', to: 'Alpha' }
-        // ]
-        this.initTaskItem(), this.initTaskItemRelation()
+          {
+            click: (e, obj) => {
+              this.exportTask(obj);
+            }
+          }
+        )
       );
-    },
-    initTaskItem() {
-      var t = [
-        { key: this.temp.jobDesc, color: 'lightblue' }
-      ]
-      if (this.temp.childJobId !== null && this.temp.childJobId !== undefined && this.temp.childJobId !== '') {
-        t.push({ key: this.temp.childJobId + '', color: 'orange' })
+      // define a simple Node template
+      this.myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto', // the Shape will go around the TextBlock
+        { contextMenu: myContextMenu },
+        $(
+          go.Shape,
+          'RoundedRectangle',
+          // Shape.fill is bound to Node.data.color
+          new go.Binding('fill', 'color') // 在 model 的 nodes 中通过 color 属性来指定 Node 的 fill 属性
+        ),
+        $(
+          go.TextBlock,
+          { margin: 3 }, // some room around the text
+          // TextBlock.text is bound to Node.data.key
+          new go.Binding('text', 'text'),
+          new go.Binding('key', 'key')
+        )
+      );
+      const paramItem = [{ text: this.currentTask.jobDesc, key: this.currentTask.id, color: 'lightblue' }];
+      if (this.isVal(this.currentTask.childJobId)) {
+        paramItem.push({ text: this.hasVal(this.childJob, 'jobDesc'), key: parseInt(this.hasVal(this.childJob, 'id')), color: 'orange' });
       }
-      return t
-    },
-    initTaskItemRelation() {
-      var t = []
-      if (this.temp.childJobId !== null && this.temp.childJobId !== undefined && this.temp.childJobId !== '') {
-        t.push({ from: this.temp.jobDesc, to: this.temp.childJobId + '' })
+      const paramLine = [];
+      if (this.isVal(this.currentTask.childJobId)) {
+        paramLine.push({ from: this.currentTask.id, to: parseInt(this.hasVal(this.childJob, 'id')) });
       }
-      return t
+      this.$nextTick(_ => {
+        this.myDiagram.model = new go.GraphLinksModel(
+          paramItem, paramLine
+        )
+      })
     },
-    online() {
-      if (this.temp.triggerStatus === 0) {
-        this.temp.triggerStatus = 1
-      } else {
-        this.temp.triggerStatus = 0
-      }
-      this.changeSwitch(this.temp)
-      console.log('上线')
+    /**
+     * @description: 查看详情
+     */
+    checkInfo(obj) {
+      this.currentTask = this.$store.state.taskAdmin.taskList.find(ele => ele.id === obj.part.data.key)
     },
-    // 上线/下线
-    // online(e, obj) {
-    //   console.log(e, obj.part.data)
-    //   obj.part.data.color = 'red'
-    //   console.log(this.temp.triggerStatus)
-    //   if (this.temp.triggerStatus === 0) {
-    //     this.temp.triggerStatus = 1
-    //   } else {
-    //     this.temp.triggerStatus = 0
-    //   }
-    //   console.log(this.temp.triggerStatus)
-    // },
-    deleteTask() {
-      console.log('删除任务')
-      this.handlerDelete(this.temp)
+    /**
+     * @description: 上线、下线
+     */
+    online(obj) {
+      this.currentTask.triggerStatus = this.currentTask.triggerStatus === 0 ? 1 : 0
+      this.changeSwitch(this.$store.state.taskAdmin.taskList.find(ele => ele.id === obj.part.data.key))
     },
-    checkLog() {
-      console.log('查看任务操作日志')
-      this.handlerViewLog(this.temp)
+    /**
+     * @description: 删除任务
+     */
+    deleteTask(obj) {
+      this.handlerDelete(this.$store.state.taskAdmin.taskList.find(ele => ele.id === obj.part.data.key));
     },
-    editTask() {
-      console.log('编辑任务属性')
-      this.handlerUpdate(this.temp)
+    /**
+     * @description: 查看任务操作日志
+     */
+    checkLog(obj) {
+      this.handlerViewLog(this.$store.state.taskAdmin.taskList.find(ele => ele.id === obj?.part.data.key));
     },
-    exportTask() {
-      console.log('导出任务')
+    /**
+     * @description: 编辑任务属性
+     */
+    editTask(obj) {
+      this.handlerUpdate(this.$store.state.taskAdmin.taskList.find(ele => ele.id === obj.part.data.key));
+    },
+    /**
+     * @description: 导出任务
+     */
+    exportTask(obj) {
+      console.log(obj.part.data);
     }
   }
 };
@@ -1659,5 +1544,11 @@ export default {
 .json_content {
   height: 240px;
   overflow: auto;
+}
+
+.taskRelation {
+  width: 100%;
+  display: flex;
+  // border: solid 1px lightgray;
 }
 </style>

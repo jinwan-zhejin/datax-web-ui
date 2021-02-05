@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 14:13:21
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-03 15:36:58
+ * @LastEditTime: 2021-02-05 11:38:36
  * @FilePath: \datax-web-ui\src\components\Description\components\items.vue
  * @Description: descrition
 -->
@@ -10,7 +10,7 @@
 <template>
   <el-col class="detail_col" :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
     <span class="key">{{ keys }}：</span>
-    <span class="value">{{ values }}</span>
+    <span class="value">{{ myValue }}</span>
   </el-col>
 </template>
 
@@ -18,7 +18,16 @@
 export default {
   name: 'DescriptionItems',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['keys', 'values']
+  props: ['keys', 'values'],
+  computed: {
+    myValue() {
+      if (this.values === '' || this.values === undefined || this.values === null) {
+        return 'null'
+      } else {
+        return this.values
+      }
+    }
+  }
 }
 </script>
 

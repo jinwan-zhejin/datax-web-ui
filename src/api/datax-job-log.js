@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // datax插件api
 export function getList(params) {
   return request({
-    url: 'api/log/pageList',
+    url: '/api/log/pageList',
     method: 'get',
     params
   })

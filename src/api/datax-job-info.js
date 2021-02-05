@@ -2,6 +2,11 @@ import request from '@/utils/request'
 
 // datax插件api
 
+/**
+ * @description: 获取所有任务列表
+ * @param {*} params
+ * @return {*}
+ */
 export function getList(params) {
   return request({
     url: 'api/job/pageList',
@@ -32,9 +37,13 @@ export function stopJob(id) {
   })
 }
 
+/**
+ * @description: 获取执行器列表
+ * @return {*}
+ */
 export function getExecutorList() {
   return request({
-    url: 'api/jobGroup/list',
+    url: '/api/jobGroup/list',
     method: 'get'
   })
 }
@@ -83,6 +92,11 @@ export function getUsersList(params) {
   })
 }
 
+/**
+ * @description: 获取所有任务列表
+ * @param {*} params
+ * @return {*}
+ */
 export function getJobIdList(params) {
   return request({
     url: 'api/job/list',
