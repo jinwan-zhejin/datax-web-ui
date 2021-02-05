@@ -246,7 +246,7 @@ rkJggg=="
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                   </a>
                   <a href="javascript:" @click="showAllName('SPARK')">
-                    <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
+                    <svg-icon class="svg_icon" icon-class="spark" />SPARK任务
                   </a>
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
