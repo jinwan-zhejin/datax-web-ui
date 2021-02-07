@@ -127,7 +127,8 @@
               @node-drop="handleDrop"
               @node-click="handleNodeClick"
             >
-              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;font-size: 14px;" @dblclick="resetName(folderName)">
+              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 26px;line-height: 26px;position: relative;display: block;width: 100%;font-size: 14px;">
+                <!-- @dblclick="resetName(folderName)" -->
                 <p style="height: 26px;line-height: 26px;">
                   <svg-icon v-if="data.jobType && data.jobType !== 'IMPORT'" :icon-class="data.jobType" style="font-size: 15px;margin-right: 3px;" />
                   <svg
@@ -169,15 +170,6 @@ rkJggg=="
                   </svg>
                   {{ data.name }}
                 </p>
-                <!-- <el-tag
-                  v-if="data.hasOwnProperty('triggerStatus')"
-                  :type="data.triggerStatus === 1 ? 'success' : data.triggerStatus === 0 ? 'warning' : 'info'"
-                  effect="plain"
-                  size="mini"
-                  style="right: 20px; margin-top: 6px; position: absolute; padding-left: 20px;padding-right: 20px;"
-                >
-                  {{ data.triggerStatus === 1 ? '运行中' : data.triggerStatus === 0 ? '未运行' : '未知' }}
-                </el-tag> -->
               </span>
             </el-tree>
             <vue-context-menu
@@ -310,7 +302,7 @@ rkJggg=="
               <hr style="padding: 0;margin: 0;">
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
-              <a href="javascript:" @click="delFolder">删除(D)</a>
+              <a v-show="selectRow.parentId !== 0" href="javascript:" @click="delFolder">删除(D)</a>
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -343,6 +335,47 @@ rkJggg=="
           :label="item.title"
           :name="item.content.id + ''"
         >
+          <span slot="label">
+            <svg-icon v-if="item.content.jobType && item.content.jobType !== 'IMPORT'" :icon-class="item.content.jobType" style="font-size: 15px;margin-right: 3px;" />
+            <svg
+              v-else
+              id="Layer_1"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="3px"
+              width="15px"
+              height="15px"
+              style="margin-right: 3px;"
+              viewBox="0 3 15 15"
+              enable-background="new 0 3 15 15"
+              xml:space="preserve"
+            >  <image
+              id="image0"
+              width="15"
+              height="15"
+              x="0"
+              y="6"
+              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+            />
+            </svg>
+            {{ item.title }}
+          </span>
           <JobDetailPro
             v-if="item.content.jobType !== 'VJOB'"
             :job-info="$store.state.taskAdmin.jobInfo"
@@ -402,7 +435,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
             />
             </svg>
-            {{ $store.state.taskAdmin.GroupName || jobType }}
+            {{ $store.state.taskAdmin.GroupName }}
           </span>
           <div
             v-if="
@@ -487,6 +520,7 @@ rkJggg=="
         :data="versionList"
         height="250"
         border
+        :header-cell-style="{background:'#F5F7FA',color:'#606266'}"
         style="width: 100%"
       >
         <el-table-column
@@ -513,8 +547,8 @@ rkJggg=="
               width="400"
               trigger="click"
             >
-              <div class="code">
-                {{ row.jobJson }}
+              <div class="code" style="height: 300px;background-color: #eee;border-radius: 4px;">
+                <pre style="white-space: normal;">{{ row.jobJson }}</pre>
               </div>
               <el-button slot="reference" type="text" size="small" @click="showCode(row)">代码</el-button>
             </el-popover>
@@ -532,10 +566,10 @@ rkJggg=="
     <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
       <div class="box">
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="8" style="margin-top: 0;">
             <span>名称:</span>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="16" style="margin-top: 0;">
             {{ detailData.jobDesc }}
           </el-col>
           <el-col :span="8">
@@ -573,7 +607,6 @@ import SimpleJob from './components/simpleJob.vue';
 import SparkJob from './components/sparkJob.vue';
 import JobDetail from './components/jobDetail.vue';
 import JobDetailPro from './components/jobDetailPro.vue';
-import JsonEditor from '@/components/JsonEditor';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as job from '@/api/datax-job-info';
 import JsonBuild from '@/views/datax/json-build/index';
@@ -597,7 +630,6 @@ export default {
     Workflow,
     JsonBuild,
     JsonQuality,
-    JsonEditor,
     SimpleJob,
     JobDetail,
     JobDetailPro,
@@ -1016,11 +1048,20 @@ export default {
     // 确认命名文件夹
     sureRe() {
       console.log(this.selectRow, '...........')
-      job.dragReName({
-        id: this.selectRow.id,
-        jobId: this.selectRow.jobId,
-        name: this.Rename
-      }).then((res) => {
+      var reParams = {}
+      if (this.selectRow.type === 2) {
+        reParams = {
+          id: this.selectRow.id,
+          jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
+          name: this.Rename
+        }
+      } else {
+        reParams = {
+          id: this.selectRow.id,
+          name: this.Rename
+        }
+      }
+      job.dragReName(reParams).then((res) => {
         console.log(res)
         if (res.code === 200) {
           this.$message.success(res.msg)
@@ -1193,17 +1234,22 @@ export default {
         if (res.code === 200) {
           this.getDataTree()
           this.selectRow = {}
-          this.$store.commit('changeGroupName', this.allName)
-          this.$store.commit('changeJobId', parseInt(res.content))
-          this.dialogNameVisible = false
-          if (this.currentJob) {
-            this.createNewJob(this.currentJob)
-            this.currentJob = ''
+          if (res.content !== '请选择父级目录') {
+            this.$store.commit('changeGroupName', this.allName)
+            this.$store.commit('changeJobId', parseInt(res.content))
+            this.dialogNameVisible = false
+            if (this.currentJob) {
+              this.createNewJob(this.currentJob)
+              this.currentJob = ''
+            }
+            this.allName = ''
+            this.$message.success('新增成功')
+          } else {
+            this.$message.warning(res.content)
+            this.dialogNameVisible = false
           }
-          this.allName = ''
-          this.$message.success('新增成功')
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.content)
         }
         console.log(res)
       }).catch((err) => {
@@ -1223,14 +1269,15 @@ export default {
           if (res.code === 200) {
             this.getDataTree()
             this.removeJobTab(this.selectRow.id)
+            this.selectRow = {}
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           }
         }).catch((err) => {
           console.log(err)
         })
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -1853,8 +1900,12 @@ export default {
         }
       }
     }
+  }
+  .el-popover {
     .code {
       background-color: #eee;
+      width: 100%;
+      height: 300px;
     }
   }
 }

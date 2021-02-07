@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-07 19:15:32
+ * @LastEditTime: 2021-02-07 19:19:05
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -63,7 +63,7 @@
         </el-popover>
       </div>
 
-      <div class="header_action" @click="handlerDelete(currentTask)">
+      <!-- <div class="header_action" @click="handlerDelete(currentTask)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
       </div>
