@@ -534,10 +534,10 @@ rkJggg=="
     <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
       <div class="box">
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="8" style="margin-top: 0;">
             <span>名称:</span>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="16" style="margin-top: 0;">
             {{ detailData.jobDesc }}
           </el-col>
           <el-col :span="8">
