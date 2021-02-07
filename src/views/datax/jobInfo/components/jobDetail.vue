@@ -275,7 +275,7 @@
       :before-close="handleClose"
     >
       <h3>
-        基础信息
+        1.基础信息
         <el-button
           v-if="dialogStatus !== 'create'"
           type="text"
@@ -1126,7 +1126,7 @@
           }"
           style="width: 100%"
         >
-          <el-table-column label="数据源库(Reader)">
+          <el-table-column label="源表">
             <template slot-scope="scope">
               <el-select
                 v-model="readerForm.lcolumns[scope.row.index]"
@@ -1146,7 +1146,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="目标字段(Writer)">
+          <el-table-column label="目标表">
             <template slot-scope="scope">
               <el-select
                 v-model="readerForm.rcolumns[scope.row.index]"
@@ -2277,9 +2277,7 @@ export default {
 
     lHandleSelect(index, v) {},
     cHandleSelect(index, v) {},
-    rHandleSelect(index, v) {
-      console.log(index, v);
-    },
+    rHandleSelect(index, v) {},
 
     bHandleClick(index, v) {
       this.fromColumnsListChecked.splice(index, 1);

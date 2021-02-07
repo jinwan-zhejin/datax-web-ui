@@ -276,4 +276,7 @@ export default {
   background: white;
   padding: 20px;
 }
+::v-deep .el-select {
+  width: 100%;
+}
 </style>

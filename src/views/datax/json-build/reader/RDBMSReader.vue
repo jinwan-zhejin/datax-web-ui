@@ -5,15 +5,12 @@
       label-width="120px"
       :model="readerForm"
       :rules="rules"
-      :class="[
-        $store.state.taskAdmin.readerAllowEdit ? '' : 'form-label-class'
-      ]"
+      class="form-label-class"
     >
-      <el-row :gutter="30">
+      <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="数据源" prop="datasourceId">
             <el-select
-              v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="$store.state.taskAdmin.readerDataSourceID"
               filterable
               @change="rDsChange"
@@ -25,22 +22,11 @@
                 :value="item.id"
               />
             </el-select>
-            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-              dashOrValue(
-                finder(
-                  $store.state.taskAdmin.readerDataSourceID,
-                  dataSourceCompute,
-                  "id",
-                  "datasourceName"
-                )
-              )
-            }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-show="dataSource === 'postgresql' || dataSource ==='greenplum' || dataSource ==='oracle' ||dataSource === 'sqlserver'" label="Schema" prop="tableSchema">
+          <el-form-item v-show="hasSchema" label="Schema" prop="tableSchema">
             <el-select
-              v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="readerForm.tableSchema"
               allow-create
               default-first-option
@@ -54,13 +40,11 @@
                 :value="item"
               />
             </el-select>
-            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{ $store.state.taskAdmin.readerSchema }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="数据库表名" prop="tableName">
             <el-select
-              v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="$store.state.taskAdmin.readerTableName"
               allow-create
               default-first-option
@@ -74,36 +58,12 @@
                 :value="item"
               />
             </el-select>
-            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-              dashOrValue($store.state.taskAdmin.readerTableName)
-            }}</span>
           </el-form-item>
         </el-col>
-        <!-- <el-form-item label="SQL语句">
-        <el-input
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          v-model="readerForm.querySql"
-          :autosize="{ minRows: 3, maxRows: 20 }"
-          type="textarea"
-          placeholder="sql查询，一般用于多表关联查询时才用"
-          style="width: calc(100% - 85px)"
-        />
-        <el-button
-          v-show="$store.state.taskAdmin.readerAllowEdit"
-          size="small"
-          style="background:rgba(61, 95, 255, 1)"
-          type="primary"
-          @click.prevent="getColumns('reader')"
-        >解析字段</el-button>
-        <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-          dashOrValue(readerForm.querySql)
-        }}</span>
-      </el-form-item> -->
         <el-col>
           <el-form-item label="表所有字段">
             <el-checkbox
               v-model="readerForm.checkAll"
-              :disabled="!$store.state.taskAdmin.readerAllowEdit"
               :indeterminate="readerForm.isIndeterminate"
               @change="rHandleCheckAllChange"
             >全选
@@ -111,7 +71,6 @@
             <div style="margin: 15px 0;" />
             <el-checkbox-group
               v-model="$store.state.taskAdmin.selectReaderColumn"
-              :disabled="!$store.state.taskAdmin.readerAllowEdit"
               @change="rHandleCheckedChange"
             >
               <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
@@ -128,11 +87,6 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <!-- <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.syncType === 0" :span="12">
-          <el-form-item label="重跑属性">
-            <el-input v-model="readerForm.reRunProp" placeholder="重跑属性" />
-          </el-form-item>
-        </el-col> -->
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && readerForm.syncType === 0" :span="12">
           <el-form-item label="增量配置模式">
             <el-radio-group v-model="readerForm.incSetting">
@@ -161,25 +115,17 @@
         <el-col :span="$store.state.taskAdmin.tabType === 'IMPORT' ? 24 : 12">
           <el-form-item label="切分字段">
             <el-input
-              v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="readerForm.splitPk"
               placeholder="切分主键"
             />
-            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-              dashOrValue(readerForm.splitPk)
-            }}</span>
           </el-form-item>
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType !== 'IMPORT'" :span="$store.state.taskAdmin.tabType === 'IMPORT' ? 24 : 12">
           <el-form-item label="过滤条件" prop="where">
             <el-input
-              v-show="$store.state.taskAdmin.readerAllowEdit"
               v-model="readerForm.where"
               placeholder="过滤条件，不需要再加where"
             />
-            <span v-show="!$store.state.taskAdmin.readerAllowEdit">{{
-              dashOrValue(readerForm.where)
-            }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -231,13 +177,13 @@ export default {
       },
       rules: {
         datasourceId: [
-          { required: true, message: 'this is required', trigger: 'change' }
+          { required: true, message: '请选择数据源', trigger: 'change' }
         ],
         tableName: [
-          { required: true, message: 'this is required', trigger: 'change' }
+          { required: true, message: '请选择数据库表名', trigger: 'change' }
         ],
         tableSchema: [
-          { required: true, message: 'this is required', trigger: 'change' }
+          { required: true, message: '请选择Schema', trigger: 'change' }
         ]
       }
     };
@@ -255,16 +201,16 @@ export default {
           return item.datasource === 'impala' || item.datasource === 'hive';
         });
       }
+    },
+    /** 显示Schema */
+    hasSchema() {
+      return this.dataSource === 'postgresql' || this.dataSource === 'greenplum' ||
+              this.dataSource === 'oracle' || this.dataSource === 'sqlserver'
     }
   },
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
-      if (
-        this.dataSource === 'postgresql' ||
-        this.dataSource === 'greenplum' ||
-        this.dataSource === 'oracle' ||
-        this.dataSource === 'sqlserver'
-      ) {
+      if (this.hasSchema) {
         this.getSchema();
       }
       this.getTables('rdbmsReader');
@@ -288,12 +234,7 @@ export default {
     getTables(type) {
       if (type === 'rdbmsReader') {
         let obj = {};
-        if (
-          this.dataSource === 'postgresql' ||
-          this.dataSource === 'greenplum' ||
-          this.dataSource === 'oracle' ||
-          this.dataSource === 'sqlserver'
-        ) {
+        if (this.hasSchema) {
           obj = {
             datasourceId: this.readerForm.datasourceId,
             tableSchema: this.readerForm.tableSchema
@@ -406,12 +347,6 @@ export default {
         this.readerForm.datasourceId = Bus.dataSourceId;
       }
       return this.readerForm;
-    },
-    finder(item, sets, attr, distAttr) {
-      return finder(item, sets, attr, distAttr);
-    },
-    dashOrValue(val) {
-      return dashOrValue(val);
     }
   }
 };
@@ -433,5 +368,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+::v-deep .el-select {
+  width: 100%;
 }
 </style>

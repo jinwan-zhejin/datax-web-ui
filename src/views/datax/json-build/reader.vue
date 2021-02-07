@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <RDBMSReader v-show="dataSource!=='hive' && dataSource!=='hbase' && dataSource!=='mongodb'" ref="rdbmsreader" @selectDataSource="showDataSource" />
     <HiveReader v-show="dataSource==='hive'" ref="hivereader" @selectDataSource="showDataSource" />
     <HBaseReader v-show="dataSource==='hbase'" ref="hbasereader" @selectDataSource="showDataSource" />

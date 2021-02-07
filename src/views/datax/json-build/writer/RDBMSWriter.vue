@@ -29,7 +29,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema：" prop="tableSchema">
+          <el-form-item v-show="dataSource==='postgresql' || dataSource==='greenplum' || dataSource==='oracle' ||dataSource==='sqlserver'" label="Schema" prop="tableSchema">
             <el-select v-model="writerForm.tableSchema" allow-create default-first-option filterable @change="schemaChange">
               <el-option
                 v-for="item in schemaList"
@@ -306,5 +306,8 @@ export default {
 .el-form {
   background: white;
   padding: 20px;
+}
+::v-deep .el-select {
+  width: 100%;
 }
 </style>

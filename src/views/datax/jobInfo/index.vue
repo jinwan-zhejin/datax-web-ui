@@ -127,7 +127,7 @@
               @node-drop="handleDrop"
               @node-click="handleNodeClick"
             >
-              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;font-size: 15px;" @dblclick="resetName(folderName)">
+              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 32px;line-height: 32px;position: relative;display: block;width: 100%;font-size: 14px;" @dblclick="resetName(folderName)">
                 <p style="height: 26px;line-height: 26px;">
                   <svg-icon v-if="data.jobType && data.jobType !== 'IMPORT'" :icon-class="data.jobType" style="font-size: 15px;margin-right: 3px;" />
                   <svg
