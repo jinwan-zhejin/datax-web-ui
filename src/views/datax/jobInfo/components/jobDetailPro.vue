@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-05 17:24:26
+ * @LastEditTime: 2021-02-05 17:57:34
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -67,6 +67,10 @@
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
       </div> -->
+      <div class="header_action" @click="editPanelShow = true">
+        <i class="el-icon-delete-solid" />
+        <span style="font-size: 13px;">测试编辑</span>
+      </div>
 
       <div class="header_switch" style="margin-right:10px;">
         <el-switch
@@ -212,6 +216,12 @@ rkJggg=="
     <el-dialog width="75%" title="结果查看" :visible.sync="resultView">
       <job-result :id="jobId" ref="jobResult" />
     </el-dialog>
+
+    <job-detail-pro-edit
+      :title="'编辑任务：' + currentTask.jobDesc + ' ( ' + projectName + ' )'"
+      :show="editPanelShow"
+      @close="editPanelShow = false"
+    />
   </div>
 </template>
 
@@ -253,6 +263,7 @@ import { translaterMaster } from '@/utils/dictionary';
 import Description from '@/components/Description/index';
 import DescriptionItems from '@/components/Description/components/items';
 import go from 'gojs';
+import JobDetailProEdit from './editDialog/jobDetailProEdit';
 
 export default {
   name: 'SimpleJob',
@@ -271,7 +282,8 @@ export default {
     qualityWriter,
     mapper,
     Description,
-    DescriptionItems
+    DescriptionItems,
+    JobDetailProEdit
   },
   directives: {
     waves
@@ -356,7 +368,8 @@ export default {
       showCronBox: false,
       dialogPluginVisible: false,
       pluginData: [],
-      dialogFormVisible: false,
+      /** 编辑dialog显示 */
+      editPanelShow: false,
       dialogStatus: '',
       rules: {
         jobGroup: [
@@ -641,23 +654,6 @@ export default {
     writerColumns(val) {
       this.readerForm.rcolumns = JSON.parse(JSON.stringify(val));
       this.toColumnsList = val;
-    },
-
-    dialogFormVisible(val) {
-      this.$store.commit('SET_READER_EDITABLE', !val);
-      if (!val) {
-        for (var i in this.editable) {
-          this.editable[i] = false;
-        }
-      } else {
-        this.$store.state.taskAdmin.dataSourceList.find(item => {
-          if (item.id === this.$store.state.taskAdmin.writerDataSourceID) {
-            this.dataSource = item.datasource;
-          }
-        });
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
-        this.getColumns();
-      }
     },
 
     'writerFormQuality.writerSchema'(val) {
@@ -951,14 +947,6 @@ export default {
       });
     },
     incStartTimeFormat(vData) {},
-    handleCreate() {
-      this.resetCurrentTask();
-      this.dialogStatus = 'create';
-      this.dialogFormVisible = true;
-      // this.$nextTick(() => {
-      //   this.$refs["dataForm"].clearValidate();
-      // });
-    },
 
     updateData() {
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.rcolumns);
@@ -1040,7 +1028,7 @@ export default {
           this.currentTask.jobParam = JSON.stringify(jobParam);
           infoApi.updateJob(this.currentTask).then(() => {
             this.fetchData();
-            this.dialogFormVisible = false;
+            this.editPanelShow = false;
             this.$notify({
               title: 'Success',
               message: 'Update Successfully',
