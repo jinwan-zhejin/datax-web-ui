@@ -26,6 +26,8 @@ import store from './store'
 import router from './router'
 import axios from 'axios'
 import gojs from 'gojs'
+import JsonViewer from 'vue-json-viewer'
+Vue.use(JsonViewer)
 
 import './icons' // icon
 import './permission' // permission control
@@ -40,6 +42,7 @@ Vue.prototype.$echarts = echarts
 Vue.prototype.go = gojs
 
 Vue.use(VueClipboard)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
