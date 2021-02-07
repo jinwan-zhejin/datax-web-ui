@@ -170,15 +170,6 @@ rkJggg=="
                   </svg>
                   {{ data.name }}
                 </p>
-                <!-- <el-tag
-                  v-if="data.hasOwnProperty('triggerStatus')"
-                  :type="data.triggerStatus === 1 ? 'success' : data.triggerStatus === 0 ? 'warning' : 'info'"
-                  effect="plain"
-                  size="mini"
-                  style="right: 20px; margin-top: 6px; position: absolute; padding-left: 20px;padding-right: 20px;"
-                >
-                  {{ data.triggerStatus === 1 ? '运行中' : data.triggerStatus === 0 ? '未运行' : '未知' }}
-                </el-tag> -->
               </span>
             </el-tree>
             <vue-context-menu
@@ -344,6 +335,47 @@ rkJggg=="
           :label="item.title"
           :name="item.content.id + ''"
         >
+          <span slot="label">
+            <svg-icon v-if="item.content.jobType && item.content.jobType !== 'IMPORT'" :icon-class="item.content.jobType" style="font-size: 15px;margin-right: 3px;" />
+            <svg
+              v-else
+              id="Layer_1"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="3px"
+              width="15px"
+              height="15px"
+              style="margin-right: 3px;"
+              viewBox="0 3 15 15"
+              enable-background="new 0 3 15 15"
+              xml:space="preserve"
+            >  <image
+              id="image0"
+              width="15"
+              height="15"
+              x="0"
+              y="6"
+              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+            />
+            </svg>
+            {{ item.title }}
+          </span>
           <JobDetailPro
             v-if="item.content.jobType !== 'VJOB'"
             :job-info="$store.state.taskAdmin.jobInfo"
