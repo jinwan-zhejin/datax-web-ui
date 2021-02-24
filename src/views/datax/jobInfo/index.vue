@@ -522,7 +522,12 @@ rkJggg=="
         border
         :header-cell-style="{background:'#F5F7FA',color:'#606266'}"
         style="width: 100%"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
         <el-table-column
           prop="jobDesc"
           label="任务名称"
@@ -557,6 +562,9 @@ rkJggg=="
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="compare">
+          对比
+        </el-button>
         <el-button size="small" @click="cancelDialog">
           取消
         </el-button>
@@ -853,8 +861,10 @@ export default {
       this.showAdmin = true;
     }
     this.getItem();
-    this.getDataTree()
-    console.log(this.$store.state);
+    setTimeout(() => {
+      this.getDataTree()
+    }, 600)
+    console.log(this.$store.state)
   },
   methods: {
     /**
@@ -892,16 +902,29 @@ export default {
     // 获取tree数据结构
     getDataTree() {
       console.log(this.$store.state.project.currentItem, 'currentItem')
-      const projectId = this.$store.state.project.currentItem.split('/')[0]
-      job.getTreeData(projectId).then((res) => {
-        if (res.code === 200) {
-          this.treeList = res.content
-        } else {
-          this.$message.error(res.msg)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      if (this.$store.state.project.currentItem) {
+        const projectId = this.$store.state.project.currentItem.split('/')[0]
+        job.getTreeData(projectId).then((res) => {
+          if (res.code === 200) {
+            this.treeList = res.content
+          } else {
+            this.$message.error(res.msg)
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        const projectId = this.options[0].id
+        job.getTreeData(projectId).then((res) => {
+          if (res.code === 200) {
+            this.treeList = res.content
+          } else {
+            this.$message.error(res.msg)
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
 
     showScene() {
@@ -1141,15 +1164,19 @@ export default {
 
     // 查看文件版本
     ViewVersion() {
-      console.log(this.$store.state.taskAdmin.GroupId)
-      job.fileVersion(this.$store.state.taskAdmin.GroupId).then((res) => {
-        console.log(res, 'res')
-        this.versionList = res
-        this.dialogVersionVisible = true;
-      }).catch((err) => {
-        console.log(err)
-      })
-      console.log('查看文件版本')
+      if (this.selectRow.jobId) {
+        console.log(this.$store.state.taskAdmin.GroupId)
+        job.fileVersion(this.$store.state.taskAdmin.GroupId).then((res) => {
+          console.log(res, 'res')
+          this.versionList = res
+          this.dialogVersionVisible = true;
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        console.log('查看文件版本')
+        this.$message.warning('该任务暂无版本信息')
+      }
     },
 
     // 新增命名文件夹
@@ -1354,6 +1381,21 @@ export default {
       })
     },
 
+    // 版本对比
+    compare() {
+      console.log('对比')
+      this.dialogVersionVisible = false
+    },
+
+    // 选中的版本方法
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(val)
+      if (val.length > 2) {
+        this.$message.warning('目前仅支持两个版本的对比')
+      }
+    },
+
     getJobDetail(data) {
       console.log(data, 'data')
       this.$store.commit('SET_JOB_INFO', data)
@@ -1553,6 +1595,7 @@ export default {
     handleCommand(command) {
       const commandId = command.split('/')[0]
       const commandName = command.split('/')[1]
+      this.$store.commit('changeCurrent', command)
       this.selectValue = commandName;
       this.$store.commit('SET_PROJECT_ID', commandId);
 

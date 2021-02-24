@@ -455,6 +455,7 @@ export default {
       this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
       this.temp.jobParam = this.$store.state.taskAdmin.jobParam;
+      console.log(this.$store.state.taskAdmin.jobParam, 'jobParam')
       this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
       job.createJob(this.temp).then(response => {
         this.$notify({

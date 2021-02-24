@@ -2030,9 +2030,11 @@ export default {
           jobGroup: 0,
           jobId: this.temp.id,
           logStatus: -1,
-          filterTime: ''
+          filterTime: '',
+          userId: localStorage.getItem('userId')
         }
       );
+      console.log(param);
       let status = 0;
 
       log.getList(param).then(response => {
