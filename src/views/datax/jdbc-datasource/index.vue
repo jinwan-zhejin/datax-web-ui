@@ -2416,7 +2416,7 @@ export default {
         obj.jdbcPassword = this.OracleForm.password;
         obj.datasourceGroup = this.OracleForm.datasourceGroup;
         obj.comments = this.OracleForm.comments;
-        obj.jdbcDriverClass = '';
+        obj.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
       } else if (this.sqlName === 'MongoDB') {
         obj.datasourceName = this.MdbForm.datasourceName;
         obj.datasource = this.sqlName.toLowerCase();
