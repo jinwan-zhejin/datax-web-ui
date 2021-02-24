@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-24 14:43:57
+ * @LastEditTime: 2021-02-24 18:30:50
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -48,7 +48,6 @@
           </div>
         </el-popover>
       </div>
-
       <div class="header_action">
         <el-popover
           placement="bottom"
@@ -59,6 +58,89 @@
           <div slot="reference" style="float: left">
             <i class="el-icon-message-solid" />
             <span style="font-size: 13px;">下次触发</span>
+          </div>
+        </el-popover>
+      </div>
+      <div class="header_action">
+        <el-popover
+          v-model="scheduleShow"
+          placement="bottom"
+          width="500"
+          trigger="manual"
+        >
+          <div style="text-align: right;">
+            <el-button
+              type="text"
+              icon="el-icon-close"
+              style="font-weight: bold; font-size: 24px; padding-top: 0px;"
+              @click="closeScheduleForm('scheduleForm')"
+            />
+          </div>
+          <div style="padding: 0px 10px 20px 0px; height: calc(50vh - 1px); overflow-y: auto;">
+            <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleRules" label-width="150px">
+              <el-form-item label="执行器" prop="executor">
+                <el-select v-model="scheduleForm.executor" placeholder="选择执行器">
+                  <el-option label="1" value="1" />
+                  <el-option label="2" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="JobCron" prop="cron">
+                <el-input v-model="scheduleForm.cron" auto-complete="off" placeholder="请输入Cron表达式">
+                  <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+                  <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+                </el-input>
+                <el-dialog
+                  title="Cron"
+                  :visible.sync="showCronBox"
+                  width="60%"
+                  append-to-body
+                >
+                  <cron v-model="scheduleForm.cron" />
+                  <span slot="footer" class="dialog-footer">
+                    <el-button @click="showCronBox = false;">关闭</el-button>
+                    <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+                  </span>
+                </el-dialog>
+              </el-form-item>
+              <el-form-item label="阻塞处理" prop="blockStrategy">
+                <el-select v-model="scheduleForm.blockStrategy" placeholder="选择阻塞处理策略">
+                  <el-option label="1" value="1" />
+                  <el-option label="2" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="路由策略" prop="routeStrategy">
+                <el-select v-model="scheduleForm.routeStrategy" placeholder="选择路由策略">
+                  <el-option label="1" value="1" />
+                  <el-option label="2" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="子任务" prop="subTask">
+                <el-select v-model="scheduleForm.subTask" placeholder="选择子任务">
+                  <el-option label="1" value="1" />
+                  <el-option label="2" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="报警邮件" prop="alarmEmail">
+                <el-input v-model="scheduleForm.alarmEmail" placeholder="输入报警邮件" />
+              </el-form-item>
+              <el-form-item label="失败重试次数" prop="retry">
+                <el-input-number v-model="scheduleForm.retry" :min="0" />
+              </el-form-item>
+              <el-form-item label="超时时间（分钟）" prop="timeout">
+                <el-input-number v-model="scheduleForm.timeout" :min="0" />
+              </el-form-item>
+            </el-form>
+            <el-row>
+              <el-col style="text-align: center;">
+                <el-button size="small" @click="closeScheduleForm('scheduleForm')">取消</el-button>
+                <el-button size="small" @click="resetScheduleForm('scheduleForm')">重置</el-button>
+                <el-button type="primary" size="small" @click="submitScheduleForm('scheduleForm')">提交</el-button>
+              </el-col>
+            </el-row>
+          </div>
+          <div slot="reference" style="float: left" @click="scheduleShow = !scheduleShow">
+            <i class="el-icon-s-marketing" />
+            <span style="font-size: 13px;">任务调度</span>
           </div>
         </el-popover>
       </div>
@@ -76,10 +158,10 @@
         <el-switch
           v-model="currentTask.triggerStatus"
           active-color="#00A854"
-          active-text="启动"
+          active-text="上线"
           :active-value="1"
           inactive-color="#F04134"
-          inactive-text="停止"
+          inactive-text="下线"
           :inactive-value="0"
           @change="changeSwitch(currentTask)"
         />
@@ -93,12 +175,13 @@
       />
     </div>
     <!-- 任务详情面板 -->
-    <el-collapse v-model="collapseActiveName" accordion>
-      <el-collapse-item name="result" style="margin-bottom: 10px; border-top: 1px solid #e6ebf5; border-bottom: 1px solid #e6ebf5;">
-        <template slot="title">
-          <i class="el-icon-document" style="margin: 0 20px;" />任务详情
-        </template>
-        <description>
+    <el-tabs
+      v-model="detailActiveName"
+      type="border-card"
+      class="el-bar-tab"
+    >
+      <el-tab-pane label="任务详情" name="detail">
+        <description class="detail_container">
           <template slot="title">
             <svg-icon
               v-if="currentTask.jobType !== 'IMPORT'"
@@ -151,28 +234,28 @@ rkJggg=="
             >编辑</el-button>
           </template>
           <template slot="context">
-            <description-items keys="执行器" :values="jobGroupName" />
+            <!-- <description-items keys="执行器" :values="jobGroupName" /> -->
             <description-items keys="所属项目" :values="projectName" />
-            <description-items
+            <!-- <description-items
               v-if="showProjectName"
               keys="路由策略"
               :values="currentTask.executorRouteStrategy"
-            />
-            <description-items keys="子任务" :values="hasVal(childJob, 'jobDesc')" />
-            <description-items
+            /> -->
+            <!-- <description-items keys="子任务" :values="hasVal(childJob, 'jobDesc')" /> -->
+            <!-- <description-items
               v-if="showProjectName"
               keys="阻塞处理"
               :values="currentTask.executorBlockStrategy"
-            />
+            /> -->
             <description-items keys="任务名称" :values="currentTask.jobDesc" />
             <description-items keys="任务类型" :values="currentTask.jobType" />
-            <description-items keys="Corn" :values="currentTask.jobCron" />
-            <description-items keys="报警邮件" :values="currentTask.alarmEmail" />
-            <description-items
+            <!-- <description-items keys="Cron" :values="currentTask.jobCron" /> -->
+            <!-- <description-items keys="报警邮件" :values="currentTask.alarmEmail" /> -->
+            <!-- <description-items
               keys="失败重试次数"
               :values="currentTask.executorFailRetryCount"
-            />
-            <description-items keys="超时时间" :values="currentTask.executorTimeout" />
+            /> -->
+            <!-- <description-items keys="超时时间" :values="currentTask.executorTimeout" /> -->
             <description-items keys="JVM启动参数" :values="currentTask.jvmParam" />
             <description-items
               v-if="jobType('SQLJOB')"
@@ -181,11 +264,8 @@ rkJggg=="
             />
           </template>
         </description>
-      </el-collapse-item>
-      <el-collapse-item name="json" style="margin-bottom: 10px; border-top: 1px solid #e6ebf5; border-bottom: 1px solid #e6ebf5;">
-        <template slot="title">
-          <i class="el-icon-document" style="margin: 0 20px;" />查看JSON
-        </template>
+      </el-tab-pane>
+      <el-tab-pane label="查看JSON" name="json">
         <div class="json_content">
           <json-editor
             ref="jsonEditor"
@@ -193,16 +273,13 @@ rkJggg=="
             cani-edit="nocursor"
           />
         </div>
-      </el-collapse-item>
-      <el-collapse-item name="log" style="border-top: 1px solid #e6ebf5; border-bottom: 1px solid #e6ebf5;">
-        <template slot="title">
-          <i class="el-icon-document" style="margin: 0 20px;" />运行日志
-        </template>
+      </el-tab-pane>
+      <el-tab-pane label="任务日志" name="log">
         <div class="log_container">
           <pre v-text="newstlogContent" />
         </div>
-      </el-collapse-item>
-    </el-collapse>
+      </el-tab-pane>
+    </el-tabs>
 
     <el-dialog
       width="75%"
@@ -266,6 +343,8 @@ import Description from '@/components/Description/index';
 import DescriptionItems from '@/components/Description/components/items';
 import go from 'gojs';
 import JobDetailProEdit from './editDialog/jobDetailProEdit';
+
+let timer = null
 
 export default {
   name: 'SimpleJob',
@@ -474,7 +553,45 @@ export default {
       myDiagram: '',
       /** 任务Id */
       myId: '',
-      jsons: ''
+      jsons: '',
+      scheduleForm: {
+        cron: '',
+        blockStrategy: '',
+        alarmEmail: '',
+        executor: '',
+        retry: 0,
+        timeout: 0,
+        routeStrategy: '',
+        subTask: ''
+      },
+      scheduleRules: {
+        executor: [
+          { required: true, message: '请选择执行器', trigger: 'change' }
+        ],
+        cron: [
+          { required: true, message: '请输入Cron表达式', trigger: 'blur' }
+        ],
+        blockStrategy: [
+          { required: false, message: '请选择阻塞处理策略', trigger: 'change' }
+        ],
+        alarmEmail: [
+          { required: false, message: '请输入报警邮箱', trigger: 'blur' }
+        ],
+        retry: [
+          { required: true, message: '请输入失败重试次数', trigger: 'blur' }
+        ],
+        timeout: [
+          { required: true, message: '请输入超时时间', trigger: 'blur' }
+        ],
+        routeStrategy: [
+          { required: false, message: '请选择路由策略', trigger: 'change' }
+        ],
+        subTask: [
+          { required: false, message: '请选择子任务', trigger: 'change' }
+        ]
+      },
+      scheduleShow: false,
+      detailActiveName: 'detail'
     };
   },
 
@@ -638,12 +755,21 @@ export default {
       this.toColumnsList = val;
     },
 
-    collapseActiveName(val) {
+    detailActiveName(val) {
       if (val === '' || val === undefined || val === null) {
-        this.collapseActiveName = 'result';
+        this.detailActiveName = 'detail';
       } else if (val === 'json') {
         this.jsons = this.jsonString
       }
+    },
+
+    /**
+     * @description: 等待trigger执行完再获取log列表
+     */
+    '$store.state.taskAdmin.logWatch'(val) {
+      timer = setInterval(() => {
+        this.logList()
+      }, 1000)
     }
   },
   created() {
@@ -658,6 +784,10 @@ export default {
   mounted() {
     this.initGoJs();
   },
+  beforeDestroy() {
+    clearInterval(timer)
+    timer = null
+  },
 
   methods: {
     getReaderData() {
@@ -669,9 +799,8 @@ export default {
      * @param {object} taskInfo
      */
     handlerExecute(taskInfo) {
-      handlerExecute.call(this, taskInfo).then(() => {
+      handlerExecute.call(this, taskInfo).then(response => {
         this.newstlogContent = '';
-        this.logList();
         this.showLog = true;
         this.jsonshow = false;
       });
@@ -749,24 +878,22 @@ export default {
       let status = 0;
 
       logGetList(param).then(response => {
-        const { content } = response;
-        console.log(content);
-        const newestLog = content.data[0] || {};
+        const newestLog = response.content.data[0] || {};
         if (!newestLog?.executorAddress) {
-          this.logList();
           return;
         }
         status = newestLog.handleCode;
+        /** 触发时间 */
         const triggerTime = new Date().getTime(newestLog?.triggerTime);
+        /** 获取日志详情 */
         viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
           .then(response => {
             this.newstlogContent = response.content.logContent;
-          })
-          .then(() => {
-            if (status === 0) {
-              setTimeout(this.logList(), 1000);
+            if (status !== 0) {
+              clearInterval(timer)
+              timer = null
             }
-          });
+          })
       });
     },
 
@@ -1029,6 +1156,7 @@ export default {
      */
     checkInfo(obj) {
       this.currentTask = obj.part.data.data
+      this.detailActiveName = 'detail'
     },
     /**
      * @description: 上线、下线
@@ -1072,6 +1200,26 @@ export default {
     },
     closeEdit() {
       this.editPanelShow = false
+    },
+    /**
+     * @description: 提交调度参数修改
+     */
+    submitScheduleForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+          this.scheduleShow = false
+        } else {
+          return false;
+        }
+      })
+    },
+    resetScheduleForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    closeScheduleForm(formName) {
+      this.$refs[formName].resetFields();
+      this.scheduleShow = false
     }
   }
 };
@@ -1180,11 +1328,12 @@ export default {
 
 .job_detail {
   position: relative;
+  overflow: hidden;
 }
 
 .log_container {
   padding-left: 24px;
-  height: 240px;
+  height: calc(50vh - 157px);
   overflow: scroll;
   background: white;
   font-size: 13px;
@@ -1196,6 +1345,11 @@ export default {
 
 .log_detail_window >>> .el-dialog__body {
   padding: 20px 40px;
+}
+
+.detail_container {
+  height: calc(50vh - 157px);
+  overflow-y: auto;
 }
 </style>
 <style lang="scss" scoped>
@@ -1255,7 +1409,7 @@ export default {
 }
 
 .json_content {
-  height: 240px;
+  height: calc(50vh - 157px);
   overflow: auto;
 }
 
@@ -1266,5 +1420,10 @@ export default {
 }
 ::v-deep .el-collapse-item__header {
   border: 0;
+}
+::v-deep .el-form {
+  .el-select {
+    width: 100%;
+  }
 }
 </style>
