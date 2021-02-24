@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-24 11:33:18
+ * @LastEditTime: 2021-02-24 14:43:57
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -738,29 +738,26 @@ export default {
      * @description: 实时更新日志
      */
     logList() {
-      const param = Object.assign(
-        {},
-        {
-          current: 1,
-          size: 10,
-          jobGroup: 0,
-          jobId: this.currentTask?.id,
-          logStatus: -1,
-          filterTime: ''
-        }
-      );
+      const param = {
+        current: 1,
+        size: 10,
+        jobGroup: 0,
+        jobId: this.currentTask?.id,
+        logStatus: -1,
+        filterTime: ''
+      }
       let status = 0;
 
       logGetList(param).then(response => {
         const { content } = response;
-
+        console.log(content);
         const newestLog = content.data[0] || {};
         if (!newestLog?.executorAddress) {
           this.logList();
           return;
         }
         status = newestLog.handleCode;
-        const triggerTime = Date.parse(newestLog?.triggerTime);
+        const triggerTime = new Date().getTime(newestLog?.triggerTime);
         viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
           .then(response => {
             this.newstlogContent = response.content.logContent;
