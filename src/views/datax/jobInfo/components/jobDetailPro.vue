@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-07 19:19:05
+ * @LastEditTime: 2021-02-24 11:33:18
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -691,9 +691,10 @@ export default {
      */
     handlerViewLog(taskInfo) {
       // handlerViewLog.call(this, taskInfo);
+      this.jobId = taskInfo.id;
       this.$store.commit('SET_LOGVIEW_TYPE', 0);
       this.logview = true;
-      // this.jobId = taskInfo.id;
+      // console.log(taskInfo);
       this.$refs.jobLog?.fetchData();
     },
 
