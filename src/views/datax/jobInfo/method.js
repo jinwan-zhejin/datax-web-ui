@@ -51,7 +51,7 @@ export function handlerStart(row) {
   job.startJob(row.id).then(response => {
     this.$notify({
       title: '成功',
-      message: '启动成功',
+      message: '上线成功',
       type: 'success',
       duration: 2000
     });
@@ -63,7 +63,7 @@ export function handlerStop(row) {
   job.stopJob(row.id).then(response => {
     this.$notify({
       title: '成功',
-      message: '停止成功',
+      message: '下线成功',
       type: 'success',
       duration: 2000
     });

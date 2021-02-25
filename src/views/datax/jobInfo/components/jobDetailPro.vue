@@ -76,10 +76,10 @@
         <el-switch
           v-model="currentTask.triggerStatus"
           active-color="#00A854"
-          active-text="启动"
+          active-text="上线"
           :active-value="1"
           inactive-color="#F04134"
-          inactive-text="停止"
+          inactive-text="下线"
           :inactive-value="0"
           @change="changeSwitch(currentTask)"
         />
@@ -474,7 +474,8 @@ export default {
       myDiagram: '',
       /** 任务Id */
       myId: '',
-      jsons: ''
+      jsons: '',
+      stop_start_name: '上线'
     };
   },
 
@@ -638,6 +639,14 @@ export default {
       this.toColumnsList = val;
     },
 
+    'currentTask.triggerStatus'(val) {
+      if (val === 1) {
+        this.stop_start_name = '上线'
+      } else {
+        this.stop_start_name = '下线'
+      }
+    },
+
     collapseActiveName(val) {
       if (val === '' || val === undefined || val === null) {
         this.collapseActiveName = 'result';
@@ -714,6 +723,12 @@ export default {
      * @description: 启停
      */
     changeSwitch(taskInfo) {
+      console.log(this.currentTask.triggerStatus, 'currentTask.triggerStatus')
+      // if (this.currentTask.triggerStatus === 1) {
+      //   this.stop_start_name = '上线'
+      // } else {
+      //   this.stop_start_name = '下线'
+      // }
       taskInfo.triggerStatus === 1
         ? handlerStart.call(this, taskInfo)
         : handlerStop.call(this, taskInfo);
@@ -921,7 +936,7 @@ export default {
         ),
         $(
           'ContextMenuButton',
-          $(go.TextBlock, '上线/下线', {
+          $(go.TextBlock, this.stop_start_name, {
             alignment: go.Spot.Center,
             margin: 5,
             font: '12px sans-serif',

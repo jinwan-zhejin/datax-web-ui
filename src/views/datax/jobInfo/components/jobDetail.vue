@@ -58,10 +58,10 @@
         <el-switch
           v-model="temp.triggerStatus"
           active-color="#00A854"
-          active-text="启动"
+          active-text="上线"
           :active-value="1"
           inactive-color="#F04134"
-          inactive-text="停止"
+          inactive-text="下线"
           :inactive-value="0"
           @change="changeSwitch(temp)"
         />
