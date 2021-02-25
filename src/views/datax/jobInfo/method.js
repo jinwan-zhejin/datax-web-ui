@@ -13,6 +13,7 @@ export function handlerExecute(row) {
     param.executorParam = row.executorParam;
 
     job.triggerJob(param).then(response => {
+      this.$store.commit('SET_LOG_WATCH', !this.$store.state.taskAdmin.logWatch)
       this.$notify({
         title: '成功',
         message: '执行成功',

@@ -84,7 +84,9 @@ const state = {
 
   readerIsEdit: true, // true编辑，false更新
 
-  watchStr: 1 // 监视对象
+  watchStr: 1, // 监视对象
+
+  logWatch: false // 可以查看实时日志
 }
 
 const mutations = {
@@ -223,6 +225,10 @@ const mutations = {
 
   SET_READER_ISEDIT: (state, isEdit) => {
     state.readerIsEdit = isEdit
+  },
+
+  SET_LOG_WATCH: (state, logWatch) => {
+    state.logWatch = logWatch
   }
 }
 
