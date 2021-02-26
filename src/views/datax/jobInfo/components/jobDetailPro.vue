@@ -1061,7 +1061,7 @@ export default {
         ),
         $(
           'ContextMenuButton',
-          $(go.TextBlock, this.stop_start_name, {
+          $(go.TextBlock, this.stop_start_name + '/下线', {
             alignment: go.Spot.Center,
             margin: 5,
             font: '12px sans-serif',

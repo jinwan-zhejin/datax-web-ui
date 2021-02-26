@@ -1264,6 +1264,8 @@ export default {
           if (res.content !== '请选择父级目录') {
             this.$store.commit('changeGroupName', this.allName)
             this.$store.commit('changeJobId', parseInt(res.content))
+            console.log(res.content)
+            console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
             this.dialogNameVisible = false
             if (this.currentJob) {
               this.createNewJob(this.currentJob)

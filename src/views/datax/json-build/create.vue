@@ -382,6 +382,13 @@ export default {
     };
   },
 
+  watch: {
+    '$store.state.taskAdmin.GroupName'(val) {
+      console.log(val)
+      this.temp.jobDesc = val
+    }
+  },
+
   created() {
     this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
@@ -455,7 +462,7 @@ export default {
       this.temp.jobType = this.$store.state.taskAdmin.tabType;
 
       this.temp.jobParam = this.$store.state.taskAdmin.jobParam;
-      console.log(this.$store.state.taskAdmin.jobParam, 'jobParam')
+      console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
       this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
       job.createJob(this.temp).then(response => {
         this.$notify({
