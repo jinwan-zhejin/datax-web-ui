@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-24 18:30:50
+ * @LastEditTime: 2021-02-26 10:15:12
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -764,7 +764,7 @@ export default {
       }
     },
 
-    collapseActiveName(val) {
+    detailActiveName(val) {
       if (val === '' || val === undefined || val === null) {
         this.detailActiveName = 'detail';
       } else if (val === 'json') {
