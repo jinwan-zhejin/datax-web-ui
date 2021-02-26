@@ -463,8 +463,9 @@ export default {
         })
         return
       }
-
+      console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
       this.$refs['dataForm'].validate((valid) => {
+        console.log(valid)
         if (valid) {
           if (this.temp.childJobId) {
             const auth = []
@@ -480,6 +481,7 @@ export default {
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType;
+          console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
           this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
 
           job.createJob(this.temp).then((res) => {
