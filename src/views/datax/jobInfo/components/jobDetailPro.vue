@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 17:38:54
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-26 10:15:12
+ * @LastEditTime: 2021-03-01 14:49:47
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\jobDetailPro.vue
  * @Description: jobDetail任务详情改版
 -->
@@ -61,94 +61,18 @@
           </div>
         </el-popover>
       </div>
-      <div class="header_action">
-        <el-popover
-          v-model="scheduleShow"
-          placement="bottom"
-          width="500"
-          trigger="manual"
-        >
-          <div style="text-align: right;">
-            <el-button
-              type="text"
-              icon="el-icon-close"
-              style="font-weight: bold; font-size: 24px; padding-top: 0px;"
-              @click="closeScheduleForm('scheduleForm')"
-            />
-          </div>
-          <div style="padding: 0px 10px 20px 0px; height: calc(50vh - 1px); overflow-y: auto;">
-            <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleRules" label-width="150px">
-              <el-form-item label="执行器" prop="executor">
-                <el-select v-model="scheduleForm.executor" placeholder="选择执行器">
-                  <el-option label="1" value="1" />
-                  <el-option label="2" value="2" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="JobCron" prop="cron">
-                <el-input v-model="scheduleForm.cron" auto-complete="off" placeholder="请输入Cron表达式">
-                  <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
-                  <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
-                </el-input>
-                <el-dialog
-                  title="Cron"
-                  :visible.sync="showCronBox"
-                  width="60%"
-                  append-to-body
-                >
-                  <cron v-model="scheduleForm.cron" />
-                  <span slot="footer" class="dialog-footer">
-                    <el-button @click="showCronBox = false;">关闭</el-button>
-                    <el-button type="primary" @click="showCronBox = false">确 定</el-button>
-                  </span>
-                </el-dialog>
-              </el-form-item>
-              <el-form-item label="阻塞处理" prop="blockStrategy">
-                <el-select v-model="scheduleForm.blockStrategy" placeholder="选择阻塞处理策略">
-                  <el-option label="1" value="1" />
-                  <el-option label="2" value="2" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="路由策略" prop="routeStrategy">
-                <el-select v-model="scheduleForm.routeStrategy" placeholder="选择路由策略">
-                  <el-option label="1" value="1" />
-                  <el-option label="2" value="2" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="子任务" prop="subTask">
-                <el-select v-model="scheduleForm.subTask" placeholder="选择子任务">
-                  <el-option label="1" value="1" />
-                  <el-option label="2" value="2" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="报警邮件" prop="alarmEmail">
-                <el-input v-model="scheduleForm.alarmEmail" placeholder="输入报警邮件" />
-              </el-form-item>
-              <el-form-item label="失败重试次数" prop="retry">
-                <el-input-number v-model="scheduleForm.retry" :min="0" />
-              </el-form-item>
-              <el-form-item label="超时时间（分钟）" prop="timeout">
-                <el-input-number v-model="scheduleForm.timeout" :min="0" />
-              </el-form-item>
-            </el-form>
-            <el-row>
-              <el-col style="text-align: center;">
-                <el-button size="small" @click="closeScheduleForm('scheduleForm')">取消</el-button>
-                <el-button size="small" @click="resetScheduleForm('scheduleForm')">重置</el-button>
-                <el-button type="primary" size="small" @click="submitScheduleForm('scheduleForm')">提交</el-button>
-              </el-col>
-            </el-row>
-          </div>
-          <div slot="reference" style="float: left" @click="scheduleShow = !scheduleShow">
-            <i class="el-icon-s-marketing" />
-            <span style="font-size: 13px;">任务调度</span>
-          </div>
-        </el-popover>
+      <div
+        class="header_action"
+        @click="scheduleShow = true"
+      >
+        <i class="el-icon-s-marketing" />
+        <span style="font-size: 13px;">任务调度</span>
       </div>
 
       <!-- <div class="header_action" @click="handlerDelete(currentTask)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">删除</span>
-      </div>
+      </div> -->
       <!-- <div class="header_action" @click="showEdit(currentTask)">
         <i class="el-icon-delete-solid" />
         <span style="font-size: 13px;">测试编辑</span>
@@ -167,6 +91,75 @@
         />
       </div>
     </div>
+    <el-drawer
+      ref="drawer"
+      title="任务调度"
+      :visible.sync="scheduleShow"
+      direction="rtl"
+      custom-class="demo-drawer"
+    >
+      <div style="padding: 15px 15px 0 15px; height: calc(100vh - 180px); overflow-y: auto;">
+        <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleRules" label-width="120px">
+          <el-form-item label="执行器" prop="executor">
+            <el-select v-model="scheduleForm.executor" placeholder="选择执行器">
+              <el-option label="1" value="1" />
+              <el-option label="2" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="JobCron" prop="cron">
+            <el-input v-model="scheduleForm.cron" placeholder="请输入Cron表达式">
+              <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+              <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+            </el-input>
+            <el-dialog
+              title="JobCron"
+              :visible.sync="showCronBox"
+              width="60%"
+              append-to-body
+            >
+              <cron v-model="scheduleForm.cron" />
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="showCronBox = false;">关闭</el-button>
+                <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+              </span>
+            </el-dialog>
+          </el-form-item>
+          <el-form-item label="阻塞处理" prop="blockStrategy">
+            <el-select v-model="scheduleForm.blockStrategy" placeholder="选择阻塞处理策略">
+              <el-option label="1" value="1" />
+              <el-option label="2" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="路由策略" prop="routeStrategy">
+            <el-select v-model="scheduleForm.routeStrategy" placeholder="选择路由策略">
+              <el-option label="1" value="1" />
+              <el-option label="2" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="子任务" prop="subTask">
+            <el-select v-model="scheduleForm.subTask" placeholder="选择子任务" multiple collapse-tags>
+              <el-option label="1" value="1" />
+              <el-option label="2" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="报警邮件" prop="alarmEmail">
+            <el-input v-model="scheduleForm.alarmEmail" placeholder="输入报警邮件" />
+          </el-form-item>
+          <el-form-item label="失败重试次数" prop="retry">
+            <el-input-number v-model="scheduleForm.retry" :min="0" />
+          </el-form-item>
+          <el-form-item label="超时时间" prop="timeout">
+            <el-input-number v-model="scheduleForm.timeout" :min="0" />（分钟）
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-divider />
+      <div class="demo-drawer__footer" style="text-align: center;">
+        <el-button class="drawer-btn-temp" @click="closeScheduleForm('scheduleForm')">取消</el-button>
+        <el-button class="drawer-btn-temp" @click="resetScheduleForm('scheduleForm')">重置</el-button>
+        <el-button class="drawer-btn-temp" type="primary" @click="submitScheduleForm('scheduleForm')">提交</el-button>
+      </div>
+    </el-drawer>
     <!-- gojs任务联系 -->
     <div class="taskRelation">
       <div
@@ -563,7 +556,7 @@ export default {
         retry: 0,
         timeout: 0,
         routeStrategy: '',
-        subTask: ''
+        subTask: []
       },
       scheduleRules: {
         executor: [
@@ -624,8 +617,19 @@ export default {
     /** 子任务对象 */
     childJob() {
       const t = typeof this.currentTask.childJobId === 'string'
-        ? parseInt(this.currentTask.childJobId) : this.currentTask.childJobId
-      return this.$store.state.taskAdmin.taskList.find(ele => ele.id === t)
+      if (t) {
+        const a = this.currentTask.childJobId.split(',')
+        const b = []
+        for (const aa of a) {
+          const c = this.$store.state.taskAdmin.taskList.find(ele => ele.id === parseInt(aa))
+          if (c) {
+            b.push(c)
+          }
+        }
+        return b
+      } else {
+        return [this.$store.state.taskAdmin.taskList.find(ele => ele.id === this.currentTask.childJobId)]
+      }
     },
 
     /** 值不为空 */
@@ -1156,11 +1160,22 @@ export default {
       );
       const paramItem = [{ text: this.currentTask.jobDesc, key: this.currentTask.id, data: this.currentTask, color: 'lightblue' }];
       if (this.isVal(this.currentTask.childJobId)) {
-        paramItem.push({ text: this.hasVal(this.childJob, 'jobDesc'), key: parseInt(this.hasVal(this.childJob, 'id')), data: this.childJob, color: 'orange' });
+        for (const i of this.childJob) {
+          paramItem.push({
+            text: this.hasVal(i, 'jobDesc'),
+            key: parseInt(this.hasVal(i, 'id')),
+            data: i,
+            color: 'orange' });
+        }
       }
       const paramLine = [];
       if (this.isVal(this.currentTask.childJobId)) {
-        paramLine.push({ from: this.currentTask.id, to: parseInt(this.hasVal(this.childJob, 'id')) });
+        for (const i of this.childJob) {
+          paramLine.push({
+            from: this.currentTask.id,
+            to: parseInt(this.hasVal(i, 'id'))
+          })
+        }
       }
       this.myDiagram.model = new go.GraphLinksModel(
         paramItem, paramLine
@@ -1222,8 +1237,8 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
           this.scheduleShow = false
+          console.log(this.scheduleForm)
         } else {
           return false;
         }
@@ -1231,9 +1246,11 @@ export default {
     },
     resetScheduleForm(formName) {
       this.$refs[formName].resetFields();
+      this.scheduleForm.cron = ''
     },
     closeScheduleForm(formName) {
       this.$refs[formName].resetFields();
+      this.scheduleForm.cron = ''
       this.scheduleShow = false
     }
   }
@@ -1344,6 +1361,12 @@ export default {
 .job_detail {
   position: relative;
   overflow: hidden;
+  ::v-deep .el-drawer {
+    width: 450px !important;
+    .drawer-btn-temp {
+      width: 28%;
+    }
+  }
 }
 
 .log_container {
