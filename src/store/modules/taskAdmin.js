@@ -86,7 +86,9 @@ const state = {
 
   watchStr: 1, // 监视对象
 
-  logWatch: false // 可以查看实时日志
+  logWatch: false, // 可以查看实时日志
+
+  jobDataDetail: {} // 任务数据详情
 }
 
 const mutations = {
@@ -94,7 +96,11 @@ const mutations = {
     state.tabType = type
   },
 
-  changeGroupId(state, payload) {
+  getJobDetail: (state, payload) => {
+    state.jobDataDetail = payload
+  },
+
+  changeGroupData(state, payload) {
     state.Group = payload
   },
 

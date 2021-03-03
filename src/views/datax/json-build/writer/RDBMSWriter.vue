@@ -81,7 +81,7 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'">
           <el-form-item label="分区配置">
-            <el-radio-group v-model="writerForm.partition">
+            <el-radio-group v-model="writerForm.partition" @change="radioSelect">
               <el-radio :label="0">分区</el-radio>
               <el-radio :label="1">非分区</el-radio>
             </el-radio-group>
@@ -188,6 +188,9 @@ export default {
         this.loading = false
       })
     },
+    radioSelect(val) {
+      console.log(val, '分区')
+    },
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsWriter') {
@@ -244,6 +247,7 @@ export default {
       }
       dsQueryApi.getColumns(obj).then(response => {
         this.fromColumnList = response
+        console.log(this.fromColumnList, 'fromColumnList')
         this.writerForm.columns = response
         this.writerForm.checkAll = true
         this.writerForm.isIndeterminate = false

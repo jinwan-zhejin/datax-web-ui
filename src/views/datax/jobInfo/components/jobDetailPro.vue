@@ -63,7 +63,7 @@
       </div>
       <div
         class="header_action"
-        @click="scheduleShow = true"
+        @click="showJobSchedule"
       >
         <i class="el-icon-s-marketing" />
         <span style="font-size: 13px;">任务调度</span>
@@ -99,11 +99,10 @@
       custom-class="demo-drawer"
     >
       <div style="padding: 15px 15px 0 15px; height: calc(100vh - 180px); overflow-y: auto;">
-        <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleRules" label-width="120px">
+        <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleRules">
           <el-form-item label="执行器" prop="executor">
-            <el-select v-model="scheduleForm.executor" placeholder="选择执行器">
-              <el-option label="1" value="1" />
-              <el-option label="2" value="2" />
+            <el-select v-model="scheduleForm.executor" placeholder="请选择执行器">
+              <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="JobCron" prop="cron">
@@ -125,30 +124,29 @@
             </el-dialog>
           </el-form-item>
           <el-form-item label="阻塞处理" prop="blockStrategy">
-            <el-select v-model="scheduleForm.blockStrategy" placeholder="选择阻塞处理策略">
-              <el-option label="1" value="1" />
-              <el-option label="2" value="2" />
+            <el-select v-model="scheduleForm.blockStrategy" placeholder="请选择阻塞处理策略">
+              <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="路由策略" prop="routeStrategy">
-            <el-select v-model="scheduleForm.routeStrategy" placeholder="选择路由策略">
-              <el-option label="1" value="1" />
-              <el-option label="2" value="2" />
+            <el-select v-model="scheduleForm.routeStrategy" placeholder="请选择路由策略">
+              <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="子任务" prop="subTask">
-            <el-select v-model="scheduleForm.subTask" placeholder="选择子任务" multiple collapse-tags>
-              <el-option label="1" value="1" />
-              <el-option label="2" value="2" />
+            <el-select v-model="scheduleForm.subTask" multiple placeholder="子任务" @change="selectChange">
+              <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="报警邮件" prop="alarmEmail">
             <el-input v-model="scheduleForm.alarmEmail" placeholder="输入报警邮件" />
           </el-form-item>
           <el-form-item label="失败重试次数" prop="retry">
+            <br>
             <el-input-number v-model="scheduleForm.retry" :min="0" />
           </el-form-item>
           <el-form-item label="超时时间" prop="timeout">
+            <br>
             <el-input-number v-model="scheduleForm.timeout" :min="0" />（分钟）
           </el-form-item>
         </el-form>
@@ -311,6 +309,7 @@ import PythonEditor from '@/components/PythonEditor';
 import PowershellEditor from '@/components/PowershellEditor';
 import { getDataSourceList } from '@/api/datax-jdbcDatasource';
 import { getJobProjectList } from '@/api/datax-job-project';
+import { updateJob } from '@/api/datax-job-info';
 import reader from '@/views/datax/json-build/reader';
 import writer from '@/views/datax/json-build/writer';
 import qualityReader from '../../jsonQuality/reader';
@@ -396,6 +395,53 @@ export default {
       toColumnsList: [],
       toColumnsListChecked: [],
       ruleSettings: [],
+      temp: {
+        id: undefined,
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
+        userId: 0,
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
+        incrementType: 0,
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: ''
+      }, // 任务调度参数
+      blockStrategies: [
+        { value: 'SERIAL_EXECUTION', label: '单机串行' },
+        { value: 'DISCARD_LATER', label: '丢弃后续调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
+      ],
+      routeStrategies: [
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
+        // { value: 'SHARDING_BROADCAST', label: '分片广播' }
+      ],
       readerForm: {
         lcolumns: [],
         rcolumns: [],
@@ -725,6 +771,7 @@ export default {
           this.dataSource === 'sqlserver'
     }
   },
+
   watch: {
 
     fromColumnsListChecked(newval) {
@@ -785,6 +832,7 @@ export default {
       }, 1000)
     }
   },
+
   created() {
     this.fetchData();
     this.getExecutor();
@@ -805,6 +853,39 @@ export default {
   methods: {
     getReaderData() {
       return this.$refs.reader.getData();
+    },
+
+    showJobSchedule() {
+      this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron
+      this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
+      this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
+      this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
+      this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(',')
+      const childarr = []
+      for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
+        childarr.push(parseInt(this.scheduleForm.subTask[i]))
+      }
+      this.scheduleForm.subTask = childarr
+      console.log(childarr, 'childarr')
+      this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount
+      this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy // 路由
+      this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
+      this.scheduleShow = true
+    },
+
+    selectChange(val) {
+      console.log(val, 'val')
+      this.scheduleForm.subTask = val
+      this.temp.childJobId = ''
+      console.log(this.temp.childJobId, '1')
+      for (let i = 0; i < val.length; i++) {
+        if (i === 0) {
+          this.temp.childJobId = val[i]
+        } else {
+          this.temp.childJobId += ',' + val[i]
+        }
+      }
+      console.log(this.temp.childJobId, '2')
     },
 
     /**
@@ -923,6 +1004,7 @@ export default {
       infoApi.getExecutorList().then(response => {
         const { content } = response;
         this.executorList = content;
+        console.log(this.executorList, 'this.executorList')
       });
     },
     /**
@@ -932,6 +1014,7 @@ export default {
       infoApi.getJobIdList().then(response => {
         const { content } = response;
         this.jobIdList = content;
+        console.log(this.jobIdList, '子任务');
       });
     },
 
@@ -1237,8 +1320,30 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.scheduleShow = false
+          this.temp = this.$store.state.taskAdmin.jobDataDetail
+          this.temp.id = this.$store.state.taskAdmin.jobDataDetail.id
+          this.temp.jobCron = this.scheduleForm.cron
+          this.temp.executorTimeout = this.scheduleForm.timeout
+          this.temp.alarmEmail = this.scheduleForm.alarmEmail
+          this.temp.executorBlockStrategy = this.scheduleForm.blockStrategy
+          console.log(this.temp.childJobId, 'this.temp.childJobId')
+          this.temp.executorFailRetryCount = this.scheduleForm.retry
+          this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy
+          this.temp.jobGroup = this.scheduleForm.executor
+          updateJob(this.temp).then((res) => {
+            console.log(res, '任务调度。。。。')
+            this.scheduleShow = false
+            this.$notify({
+              title: '成功',
+              message: '任务调度成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch((err) => {
+            console.log(err)
+          })
           console.log(this.scheduleForm)
+          console.log(this.$store.state.taskAdmin.jobDataDetail, 'data')
         } else {
           return false;
         }

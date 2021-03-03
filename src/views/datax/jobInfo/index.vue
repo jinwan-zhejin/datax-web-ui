@@ -1319,7 +1319,7 @@ export default {
       console.log(data)
       this.selectRow = data
       if (data.type === 2) {
-        this.$store.commit('changeGroupId', data)
+        this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
         if (data.jobId) {
@@ -1401,6 +1401,7 @@ export default {
     getJobDetail(data) {
       console.log(data, 'data')
       this.$store.commit('SET_JOB_INFO', data)
+      this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {};
       a.title = data.jobDesc;
@@ -1764,6 +1765,7 @@ export default {
           }
           .el-tree {
             background-color: #f8f8fa;
+            margin-top: 6px;
           }
           .right-menu {
             border: 1px solid #eee;

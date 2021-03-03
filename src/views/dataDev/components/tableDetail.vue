@@ -49,6 +49,7 @@ export default {
       queryDsInfo.password = node.parent.parent.data.secretMap.p
       queryDsInfo.datasource = node.parent.parent.data.datasource.toLowerCase()
       var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName
+      console.log(queryDsInfo, 'queryDsInfo')
       this.queryData(queryDsInfo, sql)
     },
 
@@ -74,8 +75,9 @@ export default {
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
       sql = sql.replace(';', '')
       // console.log(sql, 'sql')
-      const host = queryDsInfo.jdbcUrl.split('://')[1].split('/')[0].split(':')[0];
-      const port = queryDsInfo.jdbcUrl.split('://')[1].split('/')[0].split(':')[1];
+      console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl')
+      const host = (queryDsInfo.jdbcUrl || '').split('://')[1].split('/')[0].split(':')[0];
+      const port = (queryDsInfo.jdbcUrl || '').split('://')[1].split('/')[0].split(':')[1];
       const databaseName = queryDsInfo.db
       const userName = queryDsInfo.username
       const password = queryDsInfo.password
