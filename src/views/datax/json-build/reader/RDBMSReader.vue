@@ -219,6 +219,9 @@ export default {
       this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
     }
   },
+  created() {
+    this.readerForm.tableSchema = this.$store.state.taskAdmin.readerIsEdit ? this.$store.state.taskAdmin.readerSchema : ''
+  },
   mounted() {
     this.getTableColumns();
     this.getTables('rdbmsReader');
