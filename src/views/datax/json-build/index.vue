@@ -296,6 +296,10 @@ export default {
       })
     },
 
+    '$store.state.taskAdmin.PartitionVal'(val) {
+      this.buildJson()
+    },
+
     '$store.state.taskAdmin.selectReaderColumn'(val) {
       this.goCreateMap()
     },
@@ -364,6 +368,7 @@ export default {
     buildJson() {
       const readerData = this.$refs.reader.getData()
       const writeData = this.$refs.writer.getData()
+      console.log(writeData, 'writeData')
       const readerColumns = this.$refs.mapper.getLColumns()
       const writerColumns = this.$refs.mapper.getRColumns()
       const transformer = this.$refs.mapper.getRules()
@@ -437,7 +442,7 @@ export default {
         mongoDBReader: mongoDBReader,
         mongoDBWriter: mongoDBWriter
       }
-
+      obj.writerPartition.partitionText = this.$store.state.taskAdmin.PartitionVal
       this.$store.commit('SET_JOBPARAM', JSON.stringify(obj));
       // 调api
       // dataxJsonApi.buildJobJson(obj).then(response => {
@@ -458,6 +463,7 @@ export default {
       }
     },
     getReaderData() {
+      console.log(this.$refs.reader.getData(), 'this.$refs.reader.getData()')
       return this.$refs.reader.getData()
     },
     fetchData() {

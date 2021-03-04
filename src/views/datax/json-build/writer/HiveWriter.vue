@@ -102,7 +102,7 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
           <el-form-item label="分区字段">
-            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段">
+            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段" @change="columnSelect">
               <el-option
                 v-for="(item, index) in fromColumnList"
                 :key="index"
@@ -208,6 +208,10 @@ export default {
         this.wDsList = records
         this.loading = false
       })
+    },
+
+    columnSelect(val) {
+      console.log(val, 'val')
     },
     // 获取表名
     getTables(type) {

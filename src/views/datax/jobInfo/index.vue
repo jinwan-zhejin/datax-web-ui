@@ -814,6 +814,15 @@ export default {
       }
     },
 
+    '$store.state.taskAdmin.scheduleId': {
+      deep: true,
+      handler: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.removeJobTab(newValue)
+        }
+      }
+    },
+
     search: function(val) {
       this.$refs.tree.filter(val)
     }

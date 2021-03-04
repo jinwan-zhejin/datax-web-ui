@@ -219,6 +219,7 @@ rkJggg=="
           </template>
           <template slot="action">
             <el-button
+              v-show="this.$store.state.taskAdmin.jobDataDetail.jobType === 'IMPORT' || this.$store.state.taskAdmin.jobDataDetail.jobType === 'NORMAL' || this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT'"
               type="text"
               icon="el-icon-edit"
               @click="showEdit(currentTask)"
@@ -286,8 +287,8 @@ rkJggg=="
     </el-dialog>
 
     <job-detail-pro-edit
-      :title="'编辑任务：' + currentTask.jobDesc + ' ( ' + projectName + ' )'"
       :show="editPanelShow"
+      :title="'编辑任务：' + currentTask.jobDesc + ' ( ' + projectName + ' )'"
       :job-id="editPanelId"
       @close="closeEdit"
       @fetchData="fetchData"
@@ -841,6 +842,7 @@ export default {
     this.getDataSourceList();
     this.currentTask = this.jobInfo;
     this.myId = this.guid;
+    this.temp = this.$store.state.taskAdmin.jobDataDetail
   },
   mounted() {
     this.initGoJs();
@@ -860,13 +862,15 @@ export default {
       this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
       this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
       this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
-      this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(',')
-      const childarr = []
-      for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
-        childarr.push(parseInt(this.scheduleForm.subTask[i]))
+      if (this.$store.state.taskAdmin.jobDataDetail.childJobId) {
+        this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(',')
+        const childarr = []
+        for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
+          childarr.push(parseInt(this.scheduleForm.subTask[i]))
+        }
+        this.scheduleForm.subTask = childarr
+        console.log(childarr, 'childarr')
       }
-      this.scheduleForm.subTask = childarr
-      console.log(childarr, 'childarr')
       this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount
       this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy // 路由
       this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
@@ -878,14 +882,19 @@ export default {
       this.scheduleForm.subTask = val
       this.temp.childJobId = ''
       console.log(this.temp.childJobId, '1')
-      for (let i = 0; i < val.length; i++) {
-        if (i === 0) {
-          this.temp.childJobId = val[i]
-        } else {
-          this.temp.childJobId += ',' + val[i]
+      if (val.length > 0) {
+        for (let i = 0; i < val.length; i++) {
+          if (i === 0) {
+            this.temp.childJobId = val[i]
+          } else {
+            this.temp.childJobId += ',' + val[i]
+          }
         }
+      } else {
+        this.temp.childJobId = ''
       }
       console.log(this.temp.childJobId, '2')
+      console.log(this.temp, 'console.log(this.temp)')
     },
 
     /**
@@ -1307,9 +1316,11 @@ export default {
      */
     showEdit(currentTask) {
       console.log(currentTask);
+      console.log(this.jobInfo.jobType, 'this.jobInfo.jobType')
       this.$store.commit('SET_JOBINFO_TYPE', this.jobInfo.jobType);
       this.editPanelId = currentTask.id
       this.editPanelShow = true
+      console.log(this.editPanelId, 'this.editPanelId')
     },
     closeEdit() {
       this.editPanelShow = false
@@ -1320,7 +1331,6 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.temp = this.$store.state.taskAdmin.jobDataDetail
           this.temp.id = this.$store.state.taskAdmin.jobDataDetail.id
           this.temp.jobCron = this.scheduleForm.cron
           this.temp.executorTimeout = this.scheduleForm.timeout
@@ -1330,9 +1340,11 @@ export default {
           this.temp.executorFailRetryCount = this.scheduleForm.retry
           this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy
           this.temp.jobGroup = this.scheduleForm.executor
+          console.log(this.temp)
           updateJob(this.temp).then((res) => {
             console.log(res, '任务调度。。。。')
             this.scheduleShow = false
+            this.$store.commit('setScheduleId', this.temp.id)
             this.$notify({
               title: '成功',
               message: '任务调度成功',
