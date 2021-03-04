@@ -8,7 +8,7 @@
 -->
 
 <template>
-  <el-dialog :title="title" :visible="show" @close="handleClose">
+  <el-dialog :title="title" :visible="show" @close="$emit('close')">
     <el-row>
       <el-col>
         <h1 class="tab-title">{{ tabTitle(1) }}</h1>
@@ -268,7 +268,7 @@
       </el-col>
     </el-row>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">
+      <el-button @click="$emit('close')">
         取消
       </el-button>
       <el-button

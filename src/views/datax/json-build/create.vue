@@ -464,6 +464,7 @@ export default {
       this.temp.jobParam = this.$store.state.taskAdmin.jobParam;
       console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
       this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
+      console.log(this.temp, 'temp')
       job.createJob(this.temp).then(response => {
         this.$notify({
           title: 'Success',

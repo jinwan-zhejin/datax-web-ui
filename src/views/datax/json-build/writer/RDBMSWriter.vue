@@ -89,7 +89,7 @@
         </el-col>
         <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
           <el-form-item label="分区字段">
-            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段">
+            <el-select v-model="writerForm.partitionText" placeholder="选择分区字段" @change="columnSelect">
               <el-option
                 v-for="(item, index) in fromColumnList"
                 :key="index"
@@ -191,6 +191,13 @@ export default {
     radioSelect(val) {
       console.log(val, '分区')
     },
+    columnSelect(val) {
+      this.writerForm.partitionText = val
+      this.$store.commit('changePartitionText', val)
+      console.log(this.writerForm, 'writerForm')
+      this.$store.state.taskAdmin.partitionVal
+      console.log(val, '分区字段')
+    },
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsWriter') {
@@ -276,6 +283,7 @@ export default {
       if (Bus.dataSourceId) {
         this.writerForm.datasourceId = Bus.dataSourceId
       }
+      console.log(this.writerForm, '123')
       return this.writerForm
     },
     getReaderData() {

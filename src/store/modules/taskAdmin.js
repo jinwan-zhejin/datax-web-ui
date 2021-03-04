@@ -88,7 +88,11 @@ const state = {
 
   logWatch: false, // 可以查看实时日志
 
-  jobDataDetail: {} // 任务数据详情
+  PartitionVal: '',
+
+  jobDataDetail: {}, // 任务数据详情
+
+  scheduleId: '' // 调度任务修改id
 }
 
 const mutations = {
@@ -96,8 +100,16 @@ const mutations = {
     state.tabType = type
   },
 
+  setScheduleId: (state, payload) => {
+    state.scheduleId = payload
+  },
+
   getJobDetail: (state, payload) => {
     state.jobDataDetail = payload
+  },
+
+  changePartitionText: (state, payload) => {
+    state.PartitionVal = payload
   },
 
   changeGroupData(state, payload) {
