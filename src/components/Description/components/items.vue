@@ -22,7 +22,19 @@ export default {
   computed: {
     myValue() {
       if (this.values === '' || this.values === undefined || this.values === null) {
-        return 'null'
+        return '无'
+      } else if (this.values === 'IMPORT') {
+        return '引入任务'
+      } else if (this.values === 'EXPORT') {
+        return '导出任务'
+      } else if (this.values === 'NORMAL') {
+        return '普通任务'
+      } else if (this.values === 'SQLJOB') {
+        return 'SQL任务'
+      } else if (this.values === 'DQCJOB') {
+        return '质量任务'
+      } else if (this.values === 'VJOB') {
+        return '虚任务'
       } else {
         return this.values
       }

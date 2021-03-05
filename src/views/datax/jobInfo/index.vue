@@ -179,7 +179,7 @@ rkJggg=="
               @update:show="(show) => contextMenuVisible = show"
             >
               <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a id="newFile" href="javascript:">新建文件<i class="el-icon-arrow-right" />
+              <a id="newFile" href="javascript:">新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
@@ -524,10 +524,10 @@ rkJggg=="
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column
+        <!-- <el-table-column
           type="selection"
           width="55"
-        />
+        /> -->
         <el-table-column
           prop="jobDesc"
           label="任务名称"
@@ -562,9 +562,9 @@ rkJggg=="
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="compare">
+        <!-- <el-button size="small" @click="compare">
           对比
-        </el-button>
+        </el-button> -->
         <el-button size="small" @click="cancelDialog">
           取消
         </el-button>

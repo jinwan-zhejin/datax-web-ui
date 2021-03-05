@@ -1347,7 +1347,7 @@ export default {
             this.$store.commit('setScheduleId', this.temp.id)
             this.$notify({
               title: '成功',
-              message: '任务调度成功',
+              message: '调度修改成功',
               type: 'success',
               duration: 2000
             })
