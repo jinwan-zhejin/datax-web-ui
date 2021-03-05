@@ -27,11 +27,11 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <!-- <el-col :span="12">
                 <el-form-item label="描述" prop="description">
                   <el-input v-model="currentTask.description" placeholder="描述" />
                 </el-form-item>
-              </el-col>
+              </el-col> -->
             </el-card>
           </el-row>
         </el-form>
