@@ -2,12 +2,12 @@
   <div class="table">
     <el-tabs type="border-card">
       <el-tab-pane label="运行日志">
-        <el-table v-show="firstShow" style="padding: 0px; margin-left: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip />
+        <el-table v-show="firstShow" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+          <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
-        <el-table v-show="secondShow" style="padding: 0px; margin-left: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column prop="name" label="name" width="200" />
-          <el-table-column prop="value" label="value" width="400" />
+        <el-table v-show="secondShow" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+          <el-table-column prop="name" label="name" width="200" align="center" />
+          <el-table-column prop="value" label="value" width="400" align="center" />
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -54,7 +54,7 @@ export default {
     },
 
     async queryData(queryDsInfo, sql) {
-      if (queryDsInfo.jdbcUrl == undefined || queryDsInfo.jdbcUrl == '') {
+      if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
           title: '错误',
           message: '未指定SQL查询数据源信息，请单击数据库以选中',
@@ -63,7 +63,7 @@ export default {
         });
         return
       }
-      if (sql.trim() == '') {
+      if (sql.trim() === '') {
         this.$notify({
           title: '警告',
           message: '请先选中需要执行的SQL！',

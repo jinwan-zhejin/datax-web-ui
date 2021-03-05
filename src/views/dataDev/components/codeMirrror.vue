@@ -136,12 +136,18 @@ export default {
     SelectSQL(instance) {
       console.log(instance, '.....................');
     },
+    /**
+     * @description: 运行查询
+     */
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.code
       })
     },
+    /**
+     * @description: 保存查询
+     */
     saveQuery() {
       console.log('保存查询')
     },
@@ -156,7 +162,7 @@ export default {
 
     mountCodeMirror(code) {
       const mime = 'text/x-sql';
-      const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
+      // const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
       const _this = this;
       const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
         mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
@@ -194,45 +200,45 @@ export default {
       // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
       editor.on('cursorActivity', function(ins) {
         _this.code = editor.getSelection();
-        if (_this.code.trim() != '') {
+        if (_this.code.trim() !== '') {
           return
         }
         var cursor = editor.getCursor()
         var curCh = cursor.ch
         var curLineNo = cursor.line
         var curLineContent = editor.getLine(curLineNo)
-        var sqlScript = ''
+        // var sqlScript = ''
         var endPos = {}
         var startPos = {}
 
         // 当前行
-        if (curLineContent.indexOf(';') == -1) {
+        if (curLineContent.indexOf(';') === -1) {
           // 当前行无分号
           // 往前找;
           let i = curLineNo - 1
           for (; i >= 0; i--) {
             var tempLine = editor.getLine(i)
-            if (tempLine.indexOf(';') != -1) {
+            if (tempLine.indexOf(';') !== -1) {
               startPos.line = i
               startPos.ch = tempLine.indexOf(';') + 1
               break;
             }
           }
-          if (i == -1) {
+          if (i === -1) {
             startPos.line = 0
             startPos.ch = 0
           }
           // 往后找;
           let j = curLineNo + 1
           for (; j <= editor.lastLine(); j++) {
-            var tempLine = editor.getLine(j)
-            if (tempLine.indexOf(';') != -1) {
+            tempLine = editor.getLine(j)
+            if (tempLine.indexOf(';') !== -1) {
               endPos.line = j
               endPos.ch = tempLine.indexOf(';')
               break;
             }
           }
-          if (j == editor.lastLine() + 1) {
+          if (j === editor.lastLine() + 1) {
             endPos.line = editor.lastLine() + 1
             endPos.ch = 0
           }
@@ -243,14 +249,14 @@ export default {
           // 往前找;
           let i = curLineNo - 1
           for (; i >= 0; i--) {
-            var tempLine = editor.getLine(i)
-            if (tempLine.indexOf(';') != -1) {
+            tempLine = editor.getLine(i)
+            if (tempLine.indexOf(';') !== -1) {
               startPos.line = i
               startPos.ch = tempLine.indexOf(';') + 1
               break;
             }
           }
-          if (i == -1) {
+          if (i === -1) {
             startPos.line = 0
             startPos.ch = 0
           }
@@ -261,14 +267,14 @@ export default {
           // 往后找;
           let j = curLineNo + 1
           for (; j <= editor.lastLine(); j++) {
-            var tempLine = editor.getLine(j)
-            if (tempLine.indexOf(';') != -1) {
+            tempLine = editor.getLine(j)
+            if (tempLine.indexOf(';') !== -1) {
               endPos.line = j
               endPos.ch = tempLine.indexOf(';')
               break;
             }
           }
-          if (j == (editor.lastLine() + 1)) {
+          if (j === (editor.lastLine() + 1)) {
             endPos.line = editor.lastLine() + 1
             endPos.ch = 0
           }
@@ -280,9 +286,9 @@ export default {
 
       editor.on('change', function(editor, change) { // 触发autocomplete
         console.log(change);
-        if (change.origin == '+input') {
+        if (change.origin === '+input') {
           var text = change.text;
-          if ((text != ' ') && (text != ';') && (text.length != 2) && (text != '*') && (text != '  ')) { // 不提示
+          if ((text !== ' ') && (text !== ';') && (text.length !== 2) && (text !== '*') && (text !== '  ')) { // 不提示
             editor.execCommand('autocomplete');
           }
         }

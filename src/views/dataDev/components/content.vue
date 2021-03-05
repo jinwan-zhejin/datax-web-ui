@@ -36,9 +36,9 @@ export default {
   name: 'DataDevContent',
   components: {
     CodeMirror,
-    TableDetail,
-    name: 'DataDevContent'
+    TableDetail
   },
+  // eslint-disable-next-line vue/require-prop-types
   props: ['dblparams', 'parentlist', 'clist', 'tlist'],
 
   data() {

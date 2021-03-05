@@ -41,10 +41,10 @@ module.exports = {
       [process.env.VUE_APP_API]: {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
-        // target: 'http://47.103.79.104:9090',
+        target: 'http://47.103.79.104:9090',
         // target: 'http://183.194.64.166:9527',
         // target: 'http://192.168.3.83:8080', // 曹海生
-        target: 'http://192.168.3.70:8083', // 刘向前
+        // target: 'http://192.168.3.70:8083', // 刘向前
         // target: 'http://192.168.3.39:8080', // 侯峰
         changeOrigin: true,
         pathRewrite: {
@@ -135,15 +135,16 @@ module.exports = {
       // },
       '/dbeaver/gql': {
         ws: false,
-        target: 'http://192.168.3.66:8978',
+        // target: 'http://192.168.3.66:8978',
         // target: 'http://47.103.79.104:8979',
+        target: 'http://183.194.64.166:9528', // 可用
         changeOrigin: true,
         // headers: {
         //   host: "http://192.168.3.74:8978",
         //   origin: "http://192.168.3.74:8978"
         // }
         pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/api/gql'
+          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
         }
       },
       // /api

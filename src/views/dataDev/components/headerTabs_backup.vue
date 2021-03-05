@@ -27,52 +27,44 @@
         </el-row>
       </div>
       <div class="tree">
-        <el-select
-          v-if="dataSourceList.length > 0"
-          v-model="datasourceSelectedId"
-          style="width: 100%; margin-bottom: 15px;"
-          filterable
-          clearable
-          placeholder="请选择数据源/输入关键字"
-          no-data-text="无数据源"
-          no-match-text="无匹配数据源"
-          @change="getSchemas"
-        >
-          <el-option
-            v-for="item in dataSourceList"
-            :key="item.id"
-            :value="item.id"
-            :label="item.name"
-          >
-            <svg-icon v-if="dataSourceIcon.hasOwnProperty(item.datasource)" :icon-class="dataSourceIcon[item.datasource]" />
-            {{ item.name }}
-          </el-option>
-        </el-select>
-        <!-- 数据源tree -->
-        <div v-if="schemaTreeData.length > 0" class="search">
-          <el-input v-model="searchTree" placeholder="请输入Schema关键字筛选" prefix-icon="el-icon-search" clearable />
+        <div class="search">
+          <el-input v-model="searchModel" placeholder="请输入关键字" prefix-icon="el-icon-search" />
         </div>
-        <div class="treeData">
-          <el-tree ref="schemaTree" v-loading="schemaTreeLoading" :data="schemaTreeData" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand" @node-click="handleNodeClick">
+        <!-- 数据源tree -->
+        <div class="dataTree">
+          <el-tree ref="tree" class="filter-tree" :data="dataTree" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand" @node-click="handleNodeClick">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span style="fontSize: 14px;">
-                <!-- <svg-icon v-if="node.level == 1" icon-class="database" /> -->
-                <svg-icon v-if="node.level == 1" icon-class="database" />
-                <svg-icon v-if="node.level == 2" icon-class="table1" />
-                <svg-icon v-if="node.level == 3 && typeIsText(data.type)" icon-class="text" />
-                <svg-icon v-if="node.level == 3 && typeIsNumber(data.type)" icon-class="Group" />
-                <i v-if="node.level == 3 && typeIsDate(data.type)" class="el-icon-date" />
-                <svg-icon v-if="node.level == 3 && data.type === 'enum'" icon-class="enumeratekeysini" />
-                <svg-icon v-if="node.level == 3 && data.type === 'set'" icon-class="main-set" />
-                <svg-icon v-if="node.level == 3 && data.type === 'blob' || data.type === 'longblob'" icon-class="Blobshangchuanwenjian" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'mysql'" icon-class="yunshujukuRDSMySQL" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'oracle'" icon-class="ORACLE" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'postgresql'" icon-class="postgresql" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'spark'" icon-class="spark" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'sqlserver'" icon-class="sqlserver1" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'impala'" icon-class="Impala" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'hive'" icon-class="Hive" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'hbase'" icon-class="HBASE" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'greenplum'" icon-class="Greenplum-x" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'db2'" icon-class="db" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'clickhouse'" icon-class="clickhouse" />
+                <svg-icon v-if="node.level == 1 && data.datasource === 'mongodb'" icon-class="ziyuan" />
+                <!-- <svg-icon v-if="node.level == 2" icon-class="database" /> -->
+                <svg-icon v-if="node.level == 2" icon-class="database" />
+                <svg-icon v-if="node.level == 3" icon-class="table1" />
+                <svg-icon v-if="node.level == 4 && data.type === 'varchar' || data.type === 'text' || data.type === 'mediumtext' || data.type === 'char' || data.type === 'longtext'" icon-class="text" />
+                <svg-icon v-if="node.level == 4 && data.type === 'number' || data.type === 'double' || data.type === 'int' || data.type === 'bigint' || data.type === 'tinyint' || data.type === 'float' || data.type === 'decimal' || data.type === 'smallint'" icon-class="Group" />
+                <i v-if="node.level == 4 && data.type === 'date' || data.type === 'timestamp' || data.type === 'datetime' || data.type === 'time'" class="el-icon-date" />
+                <svg-icon v-if="node.level == 4 && data.type === 'enum'" icon-class="enumeratekeysini" />
+                <svg-icon v-if="node.level == 4 && data.type === 'set'" icon-class="main-set" />
+                <svg-icon v-if="node.level == 4 && data.type === 'blob' || data.type === 'longblob'" icon-class="Blobshangchuanwenjian" />
                 {{ data.name }}
               </span>
             </span>
           </el-tree>
         </div>
+        <!-- 数据库tree -->
       </div>
     </div>
-    <!-- 右半部分Tabs -->
+
     <el-tabs v-model="editableTabsValue" class="tabs1" type="border-card" closable @tab-remove="removeTab">
       <!-- @tab-remove="removeTab" -->
       <!-- @edit="handleTabsEdit" -->
@@ -89,8 +81,11 @@ import DataDevContent from './content';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import {
+  getTables,
+  getColumns,
   getTableListWithComment,
   getTableSchema,
+  getTableList,
   getTableColumns
 } from '@/api/metadata-query';
 export default {
@@ -108,7 +103,7 @@ export default {
         label: '123'
       }],
       selectValue: '',
-      searchTree: '',
+      searchModel: '',
       listQuery: {
         pageNo: 1,
         pageSize: 100,
@@ -122,11 +117,12 @@ export default {
         children: 'children',
         label: 'name',
         isLeaf: (data, node) => {
-          if (node.level === 3) {
+          if (node.level == 4) {
             return true
           }
         }
       },
+      dataTree: [],
       firstId: '',
       treeClickCount: '',
       ByVal: {},
@@ -137,46 +133,12 @@ export default {
       selectedDsName: '',
       tableList: [],
       columnList: [],
-      showInput: false,
-      /** 数据源ICON */
-      dataSourceIcon: {
-        'mysql': 'yunshujukuRDSMySQL',
-        'oracle': 'ORACLE',
-        'postgresql': 'postgresql',
-        'spark': 'spark',
-        'sqlserver': 'sqlserver1',
-        'impala': 'Impala',
-        'hive': 'Hive',
-        'hbase': 'HBASE',
-        'greenplum': 'Greenplum-x',
-        'db2': 'db',
-        'clickhouse': 'clickhouse',
-        'mongodb': 'ziyuan'
-      },
-      /** 下拉框选中的datasource */
-      datasourceSelectedId: '',
-      datasourceSelected: {},
-      /** schema Tree */
-      schemaTreeData: [],
-      schemaTreeLoading: false,
-      /** 数据源列表 */
-      dataSourceList: []
+      showInput: false
     };
   },
-  computed: {
-    typeIsText() {
-      return type => type === 'varchar' || type === 'text' || type === 'mediumtext' || type === 'char' || type === 'longtext'
-    },
-    typeIsNumber() {
-      return type => type === 'number' || type === 'double' || type === 'int' || type === 'bigint' || type === 'tinyint' || type === 'float' || type === 'decimal' || type === 'smallint'
-    },
-    typeIsDate() {
-      return type => type === 'date' || type === 'timestamp' || type === 'datetime' || type === 'time'
-    }
-  },
   watch: {
-    searchTree(val) {
-      this.$refs.schemaTree.filter(val);
+    'searchModel': function(val) {
+      this.$refs.tree.filter(val);
     },
     '$store.state.project.currentItem': {
       deep: true,
@@ -205,21 +167,21 @@ export default {
   methods: {
     handleNodeClick(data, node, nodeComp) {
       console.log(node, 'node')
-      if (node.level === 1) {
+      if (node.level == 2) {
         this.selectedDbName = node.data.name
-        this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
-        this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl
+        this.selectedDsName = node.parent.data.name
+        this.selectedDatasource.jdbcUrl = node.parent.data.jdbcUrl
         this.selectedDatasource.db = node.data.name
-        this.selectedDatasource.username = this.datasourceSelected.secretMap?.u
-        this.selectedDatasource.password = this.datasourceSelected.secretMap?.p
-        this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase()
+        this.selectedDatasource.username = node.parent.data.secretMap.u
+        this.selectedDatasource.password = node.parent.data.secretMap.p
+        this.selectedDatasource.datasource = node.parent.data.datasource.toLowerCase()
         console.log(this.selectedDatasource)
         for (let i = 0; i < this.editableTabs.length; i++) {
           this.$refs.content[i].setQueryParams(this.selectedDatasource)
         }
       }
 
-      if (node.level === 2) {
+      if (node.level == 3) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === this.editableTabsValue) {
             this.$refs.content[i].previewData(node)
@@ -250,9 +212,26 @@ export default {
       }
     },
     handleNodeExpand(data, node) {
-      // console.log(data, 'data')
-      // console.log(node.level, 'level')
-      if (node.level === 1) {
+      console.log(data, 'data')
+      console.log(node.level, 'level')
+      if (node.level == 1) {
+        getTableSchema({
+          datasourceId: data.id
+        }).then((res) => {
+          console.log(res)
+          const arr = []
+          for (let j = 0; j < res.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res[j],
+              dsid: data.id
+            })
+          }
+          this.$refs.tree.updateKeyChildren(data.id, arr);
+        }).catch(err => {
+          console.log(err);
+        })
+      } else if (node.level == 2) {
         getTableListWithComment({
           id: data.dsid,
           schema: data.name
@@ -269,9 +248,9 @@ export default {
               tableName: res[j].name
             })
           }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
+          this.$refs.tree.updateKeyChildren(data.id, arr);
         })
-      } else if (node.level === 2) {
+      } else if (node.level == 3) {
         getTableColumns({
           datasourceId: data.dsid,
           tableName: data.tableName,
@@ -287,7 +266,7 @@ export default {
               type: res.datas[j].DATA_TYPE
             })
           }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
+          this.$refs.tree.updateKeyChildren(data.id, arr);
         });
       } else {
         console.log('最后一级')
@@ -335,7 +314,7 @@ export default {
         for (let i = 0; i < res.records.length; i++) {
           res.records[i].name = res.records[i].datasourceName + ' - ' + res.records[i].jdbcUrl.split('//')[1].split('/')[0]
         }
-        this.dataSourceList = res.records;
+        this.dataTree = res.records;
         this.sourceList = res.records; // 传给子组件的数据
       });
     },
@@ -387,30 +366,6 @@ export default {
         this.editableTabsValue = activeName;
         this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
       }
-    },
-    /**
-     * @description: 获取schema
-     */
-    getSchemas(id) {
-      this.datasourceSelected = this.dataSourceList.find(item => item.id === id)
-      this.schemaTreeLoading = true
-      getTableSchema({
-        datasourceId: id
-      }).then(response => {
-        const arr = []
-        for (let i = 0; i < response.length; i++) {
-          arr.push({
-            id: new Date().getTime() + i,
-            name: response[i], // schema名称
-            dsid: id // dataSource Id
-          })
-        }
-        this.schemaTreeData = arr
-        this.schemaTreeLoading = false
-      }).catch(err => {
-        console.log(err);
-        this.schemaTreeLoading = false
-      })
     }
   }
 }
@@ -442,7 +397,7 @@ export default {
                 margin-bottom: 15px;
             }
 
-            .treeData {
+            .dataTree {
                 // width: 400px;
                 background-color: #f6f9fb;
 
