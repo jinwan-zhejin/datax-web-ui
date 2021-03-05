@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 17:23:18
  * @Author: Anybody
  * @LastEditors: Anybody
- * @LastEditTime: 2021-02-07 18:54:08
+ * @LastEditTime: 2021-03-04 15:59:54
  * @FilePath: \datax-web-ui\src\views\datax\jobInfo\components\editDialog\jobDetailProEdit.vue
  * @Description: edit
 -->

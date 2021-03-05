@@ -350,6 +350,7 @@ export default {
       //   }
       //   if (this.active === 5) {
       this.$refs.create.createTask()
+      // console.log(this.$store.state.taskAdmin.jobParam);
       // } else {
       //   this.active++
       // }
@@ -425,10 +426,12 @@ export default {
         readerTables: [readerData.tableName],
         readerColumns: readerColumns,
         readerSync: readerSync,
+        readerSchema: readerData.tableSchema,
         writerDatasourceId: writeData.datasourceId,
         writerTables: [writeData.tableName],
         writerColumns: writerColumns,
         writerPartition: writerPartition,
+        writerSchema: writeData.tableSchema,
         transformer: transformer,
         hiveReader: hiveReader,
         hiveWriter: hiveWriter,
