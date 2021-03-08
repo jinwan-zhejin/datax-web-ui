@@ -1,26 +1,31 @@
 <template>
   <div class="table">
-    <el-tabs type="border-card">
+    <el-tabs v-model="tabsActive" type="border-card">
       <el-tab-pane label="当前查询结果" name="res">
-        <el-table v-show="firstShow" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+        <el-table v-show="firstShow" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
-        <el-table v-show="secondShow" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+        <el-table v-show="secondShow" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="name" label="name" width="200" align="center" />
           <el-table-column prop="value" label="value" width="400" align="center" />
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="历史结果" name="hisRes">
-        <el-select>
-          <el-option>1</el-option>
-          <el-option>12</el-option>
+        <el-select
+          v-model="hisResVal"
+          filterable
+          clearable
+          style="width: 100%; margin-top: 2px;"
+          placeholder="请选择查看执行结果"
+        >
+          <el-option v-for="item in hisResList" :key="item.name" :label="item.name" :value="item.value" />
         </el-select>
-        <el-table style="padding: 0px; margin-right: 10px" :data="resHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
+        <el-table v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="resHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+          <el-table-column v-for="item in hisResColumns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="SQL查询历史" name="hisSql">
-        <el-table :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+        <el-table v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="id" label="序号" width="80" align="center" />
           <el-table-column prop="sql" label="执行语句" width="200" align="center" />
           <el-table-column prop="datasource" label="数据源" width="150" align="center" />
@@ -44,6 +49,11 @@ import {
   getAsyncTaskInfo,
   getSqlExecuteTaskResults
 } from '@/graphQL/graphQL';
+import {
+  getResultHistoryList,
+  getResultHistory,
+  getSQLHistory
+} from '@/graphQL/graphQL-history'
 export default {
   name: 'TableDetail',
   data() {
@@ -54,31 +64,65 @@ export default {
       firstShow: true,
       secondShow: false,
       secondData: [],
+      tableLoading: false,
+      tabsActive: 'res',
       /** 执行结果历史 */
       resHistoryData: [],
+      /** 历史结果List */
+      hisResList: [],
+      /** 结果历史select值 */
+      hisResVal: '',
+      /** 历史结果表头 */
+      hisResColumns: [],
       /** SQL语句执行历史 */
       sqlHistoryData: []
     };
+  },
+  watch: {
+    tabsActive: {
+      handler(val) {
+        switch (val) {
+          case 'res':
+            break
+          case 'hisRes':
+            this.getResultHistoryList()
+            break
+          case 'hisSql':
+            this.getSQLHistory()
+            break
+          default:
+            break
+        }
+      }
+    },
+    hisResVal: {
+      handler(val) {
+        this.getResultHistory(val)
+      },
+      immediate: true
+    }
   },
   methods: {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
 
-    initData(node) {
-      console.log(node)
+    initData(dsInfo, node) {
+      console.log('dsInfo', dsInfo);
+      console.log('node', node)
       var queryDsInfo = {}
-      queryDsInfo.jdbcUrl = node.parent.parent.data.jdbcUrl
+      queryDsInfo.jdbcUrl = dsInfo.jdbcUrl
       queryDsInfo.db = node.data.schema
-      queryDsInfo.username = node.parent.parent.data.secretMap.u
-      queryDsInfo.password = node.parent.parent.data.secretMap.p
-      queryDsInfo.datasource = node.parent.parent.data.datasource.toLowerCase()
+      queryDsInfo.username = dsInfo.secretMap?.u
+      queryDsInfo.password = dsInfo.secretMap?.p
+      queryDsInfo.datasource = dsInfo.datasource.toLowerCase()
       var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName
       console.log(queryDsInfo, 'queryDsInfo')
       this.queryData(queryDsInfo, sql)
     },
 
     async queryData(queryDsInfo, sql) {
+      this.tableLoading = true
       if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
           title: '错误',
@@ -259,9 +303,53 @@ export default {
         });
         return obj;
       });
+      this.tableLoading = false
       this.firstShow = true;
       this.secondShow = false;
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+    },
+    /**
+     * @description: 获取历史结果列表
+     */
+    getResultHistoryList() {
+      this.hisResList = [
+        { name: '执行结果1', value: 1 },
+        { name: '执行结果2', value: 2 }
+      ]
+      this.tableLoading = true
+      getResultHistoryList().then(response => {
+        console.log(response)
+        this.tableLoading = false
+      }).catch(error => {
+        console.log(error)
+        this.tableLoading = false
+      })
+    },
+    /**
+     * @description: 获取历史结果
+     */
+    getResultHistory() {
+      this.tableLoading = true
+      getResultHistory().then(response => {
+        console.log(response)
+        this.tableLoading = false
+      }).catch(error => {
+        console.log(error)
+        this.tableLoading = false
+      })
+    },
+    /**
+     * @description: 获取SQL查询历史
+     */
+    getSQLHistory() {
+      this.tableLoading = true
+      getSQLHistory().then(response => {
+        console.log(response)
+        this.tableLoading = false
+      }).catch(error => {
+        console.log(error)
+        this.tableLoading = false
+      })
     }
   }
 };

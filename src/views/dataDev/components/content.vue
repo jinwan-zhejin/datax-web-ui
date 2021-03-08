@@ -186,8 +186,8 @@ export default {
       console.log(this.queryDsInfo)
       this.$refs.table.queryData(this.queryDsInfo, val.code, {})
     },
-    previewData(params) {
-      this.$refs.table.initData(params)
+    previewData(dsInfo, params) {
+      this.$refs.table.initData(dsInfo, params)
     }
   }
 }

@@ -53,7 +53,19 @@
           <el-input v-model="searchTree" placeholder="请输入Schema关键字筛选" prefix-icon="el-icon-search" clearable />
         </div>
         <div class="treeData">
-          <el-tree ref="schemaTree" v-loading="schemaTreeLoading" :data="schemaTreeData" :props="defaultProps" lazy highlight-current node-key="id" :filter-node-method="filterNode" @node-expand="handleNodeExpand" @node-click="handleNodeClick">
+          <el-tree
+            ref="schemaTree"
+            v-loading="schemaTreeLoading"
+            :data="schemaTreeData"
+            :props="defaultProps"
+            lazy
+            highlight-current
+            node-key="id"
+            :filter-node-method="filterNode"
+            accordion
+            @node-expand="handleNodeExpand"
+            @node-click="handleNodeClick"
+          >
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span style="fontSize: 14px;">
                 <!-- <svg-icon v-if="node.level == 1" icon-class="database" /> -->
@@ -222,7 +234,7 @@ export default {
       if (node.level === 2) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === this.editableTabsValue) {
-            this.$refs.content[i].previewData(node)
+            this.$refs.content[i].previewData(this.datasourceSelected, node)
             break
           }
         }
@@ -336,6 +348,11 @@ export default {
           res.records[i].name = res.records[i].datasourceName + ' - ' + res.records[i].jdbcUrl.split('//')[1].split('/')[0]
         }
         this.dataSourceList = res.records;
+        // 初始化数据库以及schema
+        this.datasourceSelectedId = ''
+        this.schemaTreeData = []
+        this.schemaTree = ''
+        this.schemaTreeLoading = false
         this.sourceList = res.records; // 传给子组件的数据
       });
     },
