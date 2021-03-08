@@ -448,6 +448,10 @@ export default {
 
                 .el-tree {
                     background: none;
+
+                    .el-loading-mask {
+                      background: transparent;
+                    }
                 }
             }
         }

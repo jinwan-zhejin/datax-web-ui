@@ -1,13 +1,34 @@
 <template>
   <div class="table">
     <el-tabs type="border-card">
-      <el-tab-pane label="运行日志">
+      <el-tab-pane label="当前查询结果" name="res">
         <el-table v-show="firstShow" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
         <el-table v-show="secondShow" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="name" label="name" width="200" align="center" />
           <el-table-column prop="value" label="value" width="400" align="center" />
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="历史结果" name="hisRes">
+        <el-select>
+          <el-option>1</el-option>
+          <el-option>12</el-option>
+        </el-select>
+        <el-table style="padding: 0px; margin-right: 10px" :data="resHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+          <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="SQL查询历史" name="hisSql">
+        <el-table :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+          <el-table-column prop="id" label="序号" width="80" align="center" />
+          <el-table-column prop="sql" label="执行语句" width="200" align="center" />
+          <el-table-column prop="datasource" label="数据源" width="150" align="center" />
+          <el-table-column prop="database" label="数据库" width="150" align="center" />
+          <el-table-column prop="status" label="执行状态" width="150" align="center" />
+          <el-table-column prop="createTime" label="创建时间" width="150" align="center" />
+          <el-table-column prop="runTime" label="执行时长" width="150" align="center" />
+          <el-table-column prop="result" label="结果信息" width="150" align="center" />
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -32,7 +53,11 @@ export default {
       connectionId: '',
       firstShow: true,
       secondShow: false,
-      secondData: []
+      secondData: [],
+      /** 执行结果历史 */
+      resHistoryData: [],
+      /** SQL语句执行历史 */
+      sqlHistoryData: []
     };
   },
   methods: {
@@ -271,4 +296,5 @@ export default {
 .el-tabs--border-card>.el-tabs__header {
     border-bottom: none;
 }
+
 </style>
