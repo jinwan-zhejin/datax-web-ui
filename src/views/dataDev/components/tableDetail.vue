@@ -148,13 +148,14 @@ export default {
           type: 'error',
           duration: 2000
         });
+        this.tableLoading = false
         return
       }
       if (sql.trim() === '') {
         this.$notify({
           title: '警告',
           message: '请先选中需要执行的SQL！',
-          type: 'warn',
+          type: 'warning',
           duration: 2000
         });
         return
@@ -330,6 +331,15 @@ export default {
      * @description: 上传历史结果
      */
     addResultHistory(sql) {
+      if (sql.trim() === '') {
+        this.$notify({
+          title: '警告',
+          message: '请先编辑需要执行的SQL！',
+          type: 'warning',
+          duration: 2000
+        });
+        return
+      }
       console.log(sql, this.tableData)
       addResultHistory().then(response => {
         console.log(response)
