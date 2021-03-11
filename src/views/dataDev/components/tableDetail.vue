@@ -1,11 +1,23 @@
 <template>
   <div class="table">
     <el-tabs v-model="tabsActive" type="border-card">
-      <el-tab-pane label="当前查询结果" name="res">
-        <el-table v-show="firstShow" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+      <el-tab-pane name="res">
+        <span slot="label">
+          {{ tabLabel[tabsActive] }}
+          <el-dropdown v-if="tabsActive === 'res' && tableData.length > 0" style="margin-left: 10px;" placement="top">
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native.stop="fileSaver('tableRes1', 'xlsx')">导出为Excel</el-dropdown-item>
+              <el-dropdown-item @click.native.stop="fileSaver('tableRes1', 'csv')">导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+        <el-table v-show="firstShow" ref="tableRes1" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
-        <el-table v-show="secondShow" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+        <el-table v-show="secondShow" ref="tableRes2" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="name" label="name" width="200" align="center" />
           <el-table-column prop="value" label="value" width="400" align="center" />
         </el-table>
@@ -24,8 +36,20 @@
           <el-table-column v-for="item in hisResColumns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
       </el-tab-pane> -->
-      <el-tab-pane label="SQL查询历史" name="hisSql">
-        <el-table v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+      <el-tab-pane name="hisSql">
+        <span slot="label">
+          {{ tabLabel[tabsActive] }}
+          <el-dropdown v-if="tabsActive === 'hisSql' && sqlHistoryData.length > 0" style="margin-left: 10px;" placement="top">
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native.stop="fileSaver('tableHisSql', 'xlsx')">导出为Excel</el-dropdown-item>
+              <el-dropdown-item @click.native.stop="fileSaver('tableHisSql', 'csv')">导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+        <el-table ref="tableHisSql" v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="id" label="序号" width="80" align="center" />
           <el-table-column prop="sql" label="执行语句" width="200" align="center">
             <template slot-scope="scope">
@@ -58,6 +82,9 @@ import {
   getResultHistory,
   getSQLHistory
 } from '@/graphQL/graphQL-history'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+
 export default {
   name: 'TableDetail',
   data() {
@@ -79,7 +106,11 @@ export default {
       /** 历史结果表头 */
       hisResColumns: [],
       /** SQL语句执行历史 */
-      sqlHistoryData: []
+      sqlHistoryData: [],
+      tabLabel: {
+        'res': '当前查询结果',
+        'hisSql': 'SQL查询历史'
+      }
     };
   },
   watch: {
@@ -353,6 +384,18 @@ export default {
       }).catch(error => {
         console.log(error)
         this.tableLoading = false
+      })
+    },
+    fileSaver(tableRef, exportType) {
+      this.$nextTick(() => {
+        const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
+        const wbout = XLSX.write(wb, { bookType: exportType, bookSST: true, type: 'array' })
+        try {
+          FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), this.tabLabel[this.tabsActive].concat('.').concat(exportType))
+        } catch (e) {
+          if (typeof console !== 'undefined') console.log(e, wbout)
+        }
+        return wbout
       })
     }
   }
