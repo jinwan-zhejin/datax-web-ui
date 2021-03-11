@@ -22,20 +22,6 @@
           <el-table-column prop="value" label="value" width="400" align="center" />
         </el-table>
       </el-tab-pane>
-      <!-- <el-tab-pane label="历史结果" name="hisRes">
-        <el-select
-          v-model="hisResVal"
-          filterable
-          clearable
-          style="width: 100%; margin-top: 2px;"
-          placeholder="请选择查看执行结果"
-        >
-          <el-option v-for="item in hisResList" :key="item.name" :label="item.name" :value="item.value" />
-        </el-select>
-        <el-table v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="resHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column v-for="item in hisResColumns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
-        </el-table>
-      </el-tab-pane> -->
       <el-tab-pane name="hisSql">
         <span slot="label">
           {{ tabLabel[tabsActive] }}
@@ -78,9 +64,9 @@ import {
   getSqlExecuteTaskResults
 } from '@/graphQL/graphQL';
 import {
-  getResultHistoryList,
   getResultHistory,
-  getSQLHistory
+  getSQLHistory,
+  addResultHistory
 } from '@/graphQL/graphQL-history'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
@@ -118,9 +104,6 @@ export default {
       handler(val) {
         switch (val) {
           case 'res':
-            break
-          case 'hisRes':
-            this.getResultHistoryList()
             break
           case 'hisSql':
             this.getSQLHistory()
@@ -344,20 +327,14 @@ export default {
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
     },
     /**
-     * @description: 获取历史结果列表
+     * @description: 上传历史结果
      */
-    getResultHistoryList() {
-      this.hisResList = [
-        { name: '执行结果1', value: 1 },
-        { name: '执行结果2', value: 2 }
-      ]
-      this.tableLoading = true
-      getResultHistoryList().then(response => {
+    addResultHistory(sql) {
+      console.log(sql, this.tableData)
+      addResultHistory().then(response => {
         console.log(response)
-        this.tableLoading = false
       }).catch(error => {
         console.log(error)
-        this.tableLoading = false
       })
     },
     /**
@@ -386,6 +363,9 @@ export default {
         this.tableLoading = false
       })
     },
+    /**
+     * @description: 文件导出
+     */
     fileSaver(tableRef, exportType) {
       this.$nextTick(() => {
         const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)

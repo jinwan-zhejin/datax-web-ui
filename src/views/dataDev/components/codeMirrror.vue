@@ -150,6 +150,7 @@ export default {
      */
     saveQuery() {
       console.log('保存查询')
+      this.$emit('saveQuery', this.code)
     },
     sqlJobBuild() {
       // this.$route.push('/datax/job/JobInfo')

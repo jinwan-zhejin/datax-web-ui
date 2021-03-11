@@ -11,7 +11,7 @@
             </el-select>
         </div>
         -->
-      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" @saveQuery="saveQuery" />
 
       <TableDetail ref="table" />
 
@@ -188,6 +188,12 @@ export default {
     },
     previewData(dsInfo, params) {
       this.$refs.table.initData(dsInfo, params)
+    },
+    /**
+     * @description: 保存查询
+     */
+    saveQuery(sql) {
+      this.$refs.table.addResultHistory(sql)
     }
   }
 }
