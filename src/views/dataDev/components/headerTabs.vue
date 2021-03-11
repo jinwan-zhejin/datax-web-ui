@@ -63,6 +63,7 @@
             node-key="id"
             :filter-node-method="filterNode"
             accordion
+            :expand-on-click-node="false"
             @node-expand="handleNodeExpand"
             @node-click="handleNodeClick"
           >
@@ -215,8 +216,74 @@ export default {
     this.handleTabsEdit('', 'add');
   },
   methods: {
+    addTab(targetName) {
+      const newTabName = ++this.tabIndex + '';
+      this.editableTabs.push({
+        title: '未命名的查询',
+        name: newTabName
+        // content: "New Tab content",
+      });
+      console.log(this.editableTabs);
+      this.editableTabsValue = newTabName;
+    },
+    handleDelete(name) {
+      console.log(name);
+      for (let i = 0; i < this.editableTabs.length; i++) {
+        if (this.editableTabs[i].name === name) {
+          this.editableTabs.splice(i, 1);
+          this.tabIndex = i + ''
+          console.log(this.tabIndex, 'index')
+          this.editableTabsValue = this.tabIndex;
+        }
+      }
+    },
+    /**
+     * @description: 展开节点
+     */
+    handleNodeExpand(data, node) {
+      if (node.level === 1) {
+        getTableListWithComment({
+          id: data.dsid,
+          schema: data.name
+        }).then(res => {
+          this.tableList = res;
+          const arr = []
+          for (let j = 0; j < res.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res[j].name + ' ' + res[j].comment,
+              dsid: data.dsid,
+              schema: data.name,
+              tableName: res[j].name
+            })
+          }
+          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
+        })
+      } else if (node.level === 2) {
+        getTableColumns({
+          datasourceId: data.dsid,
+          tableName: data.tableName,
+          schema: data.schema
+        }).then((res) => {
+          this.columnList = res.datas
+          const arr = []
+          for (let j = 0; j < res.datas.length; j++) {
+            arr.push({
+              id: new Date().getTime() + j,
+              name: res.datas[j].COLUMN_NAME + ' (' + res.datas[j].DATA_TYPE + ')' + ' - ' + res.datas[j].COLUMN_COMMENT,
+              type: res.datas[j].DATA_TYPE
+            })
+          }
+          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
+        });
+      } else {
+        console.log('最后一级')
+      }
+    },
+    /**
+     * @description: 点击节点
+     */
     handleNodeClick(data, node, nodeComp) {
-      console.log(node, 'node')
       if (node.level === 1) {
         this.selectedDbName = node.data.name
         this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
@@ -240,76 +307,16 @@ export default {
         }
       }
     },
-    addTab(targetName) {
-      const newTabName = ++this.tabIndex + '';
-      this.editableTabs.push({
-        title: '未命名的查询',
-        name: newTabName
-        // content: "New Tab content",
-      });
-      console.log(this.editableTabs);
-      this.editableTabsValue = newTabName;
-    },
-    handleDelete(name) {
-      console.log(name);
-      for (let i = 0; i < this.editableTabs.length; i++) {
-        if (this.editableTabs[i].name === name) {
-          this.editableTabs.splice(i, 1);
-          this.tabIndex = i + ''
-          console.log(this.tabIndex, 'index')
-          this.editableTabsValue = this.tabIndex;
-        }
-      }
-    },
-    handleNodeExpand(data, node) {
-      // console.log(data, 'data')
-      // console.log(node.level, 'level')
-      if (node.level === 1) {
-        getTableListWithComment({
-          id: data.dsid,
-          schema: data.name
-        }).then(res => {
-          console.log('res', res);
-          this.tableList = res;
-          const arr = []
-          for (let j = 0; j < res.length; j++) {
-            arr.push({
-              id: new Date().getTime() + j,
-              name: res[j].name + ' ' + res[j].comment,
-              dsid: data.dsid,
-              schema: data.name,
-              tableName: res[j].name
-            })
-          }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
-        })
-      } else if (node.level === 2) {
-        getTableColumns({
-          datasourceId: data.dsid,
-          tableName: data.tableName,
-          schema: data.schema
-        }).then((res) => {
-          console.log(res.datas)
-          this.columnList = res.datas
-          const arr = []
-          for (let j = 0; j < res.datas.length; j++) {
-            arr.push({
-              id: new Date().getTime() + j,
-              name: res.datas[j].COLUMN_NAME + ' (' + res.datas[j].DATA_TYPE + ')' + ' - ' + res.datas[j].COLUMN_COMMENT,
-              type: res.datas[j].DATA_TYPE
-            })
-          }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
-        });
-      } else {
-        console.log('最后一级')
-      }
-    },
+    /**
+     * @description: 筛选节点
+     */
     filterNode(value, data) {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },
-    // 获取项目数据
+    /**
+     * @description: 获取项目数据
+     */
     async getProJectList() {
       this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
@@ -331,7 +338,9 @@ export default {
     selectMethod() {
       this.getDataSourceList()
     },
-    // 根据项目获取数据源
+    /**
+     * @description: 根据项目获取数据源
+     */
     getDataSourceList() {
       if (localStorage.getItem('userId') === '1') {
         // for (let i = 0; i < this.projectArray.length; i++) {

@@ -10,7 +10,7 @@
           <el-table-column prop="value" label="value" width="400" align="center" />
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="历史结果" name="hisRes">
+      <!-- <el-tab-pane label="历史结果" name="hisRes">
         <el-select
           v-model="hisResVal"
           filterable
@@ -23,11 +23,15 @@
         <el-table v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="resHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column v-for="item in hisResColumns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
         </el-table>
-      </el-tab-pane>
+      </el-tab-pane> -->
       <el-tab-pane label="SQL查询历史" name="hisSql">
         <el-table v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="id" label="序号" width="80" align="center" />
-          <el-table-column prop="sql" label="执行语句" width="200" align="center" />
+          <el-table-column prop="sql" label="执行语句" width="200" align="center">
+            <template slot-scope="scope">
+              <a>{{ scope.row }}</a>
+            </template>
+          </el-table-column>
           <el-table-column prop="datasource" label="数据源" width="150" align="center" />
           <el-table-column prop="database" label="数据库" width="150" align="center" />
           <el-table-column prop="status" label="执行状态" width="150" align="center" />
