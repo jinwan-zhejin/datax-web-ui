@@ -11,9 +11,9 @@
             </el-select>
         </div>
         -->
-      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" @saveQuery="saveQuery" />
+      <CodeMirror ref="codemirror" :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" @saveQuery="saveQuery" />
 
-      <TableDetail ref="table" />
+      <TableDetail ref="table" @echoResult="echoResult" />
 
     </el-main>
   </el-container>
@@ -192,8 +192,14 @@ export default {
     /**
      * @description: 保存查询
      */
-    saveQuery(sql) {
-      this.$refs.table.addResultHistory(sql)
+    saveQuery(queryDsInfo, sql) {
+      this.$refs.table.saveSql(queryDsInfo, sql)
+    },
+    /**
+     * @description: 回显结果
+     */
+    echoResult(row) {
+      this.$refs.codemirror.setCode(row.sqlContent)
     }
   }
 }

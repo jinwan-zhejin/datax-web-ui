@@ -199,6 +199,19 @@ export default {
           this.getDataSourceList()
         }
       }
+    },
+    /** projectid存入vuex */
+    selectValue: {
+      handler(val) {
+        this.$store.commit('SET_SQLP_PROJECTID', val)
+      },
+      immediate: true
+    },
+    datasourceSelectedId: {
+      handler(val) {
+        this.$store.commit('SET_SQLP_DATASOURCEID', val)
+      },
+      immediate: true
     }
   },
   created() {
@@ -306,6 +319,8 @@ export default {
           }
         }
       }
+
+      this.$store.commit('SET_SQLP_SCHEMA', node.data.name)
     },
     /**
      * @description: 筛选节点

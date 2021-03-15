@@ -295,6 +295,12 @@ export default {
         }
         // _this.code = editor.getValue();
       });
+    },
+    /**
+     * @description: 回显sql
+     */
+    setCode(code) {
+      this.code = code
     }
   }
 };

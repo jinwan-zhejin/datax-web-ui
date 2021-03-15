@@ -3,7 +3,7 @@
     <el-tabs v-model="tabsActive" type="border-card">
       <el-tab-pane name="res">
         <span slot="label">
-          {{ tabLabel[tabsActive] }}
+          {{ tabLabel['res'] }}
           <el-dropdown v-if="tabsActive === 'res' && tableData.length > 0" style="margin-left: 10px;" placement="top">
             <span class="el-dropdown-link">
               <i class="el-icon-more" />
@@ -24,7 +24,7 @@
       </el-tab-pane>
       <el-tab-pane name="hisSql">
         <span slot="label">
-          {{ tabLabel[tabsActive] }}
+          {{ tabLabel['hisSql'] }}
           <el-dropdown v-if="tabsActive === 'hisSql' && sqlHistoryData.length > 0" style="margin-left: 10px;" placement="top">
             <span class="el-dropdown-link">
               <i class="el-icon-more" />
@@ -37,18 +37,52 @@
         </span>
         <el-table ref="tableHisSql" v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
           <el-table-column prop="id" label="序号" width="80" align="center" />
-          <el-table-column prop="sql" label="执行语句" width="200" align="center">
+          <el-table-column label="执行语句" width="200" align="center">
             <template slot-scope="scope">
-              <a>{{ scope.row }}</a>
+              <a @click="echoResult(scope.row)">{{ scope.row.sqlContent }}</a>
             </template>
           </el-table-column>
-          <el-table-column prop="datasource" label="数据源" width="150" align="center" />
-          <el-table-column prop="database" label="数据库" width="150" align="center" />
-          <el-table-column prop="status" label="执行状态" width="150" align="center" />
-          <el-table-column prop="createTime" label="创建时间" width="150" align="center" />
-          <el-table-column prop="runTime" label="执行时长" width="150" align="center" />
-          <el-table-column prop="result" label="结果信息" width="150" align="center" />
+          <el-table-column label="数据源" width="150" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.datasourceId }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="databaseSchema" label="数据库" width="150" align="center" />
+          <el-table-column prop="sqlStatus" label="执行状态" width="150" align="center" />
+          <el-table-column prop="submitTime" label="提交时间" width="150" align="center" />
+          <el-table-column width="150" align="center">
+            <template slot="header">
+              <el-select v-model="isSaveMode" @change="getSqlList">
+                <el-option :value="0" label="SQL临时查询" />
+                <el-option :value="1" label="已保存SQL查询" />
+              </el-select>
+            </template>
+            <template slot-scope="scope">
+              <span>{{ scope.row.isSaved === 0 ? 'SQL临时查询' : '已保存SQL查询' }}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
+          <el-table-column v-if="isSaveMode === 1" label="操作" width="150" align="center">
+            <template slot-scope="scope">
+              <el-button
+                type="text"
+                icon="el-icon-delete"
+                @click="deleteHis(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
+        <el-pagination
+          :current-page="pagination.current"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="pagination.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="pagination.total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -63,11 +97,7 @@ import {
   getAsyncTaskInfo,
   getSqlExecuteTaskResults
 } from '@/graphQL/graphQL';
-import {
-  getResultHistory,
-  getSQLHistory,
-  addResultHistory
-} from '@/graphQL/graphQL-history'
+import * as sqlhisApi from '@/graphQL/graphQL-history'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
@@ -83,21 +113,36 @@ export default {
       secondData: [],
       tableLoading: false,
       tabsActive: 'res',
-      /** 执行结果历史 */
-      resHistoryData: [],
-      /** 历史结果List */
-      hisResList: [],
-      /** 结果历史select值 */
-      hisResVal: '',
-      /** 历史结果表头 */
-      hisResColumns: [],
       /** SQL语句执行历史 */
       sqlHistoryData: [],
       tabLabel: {
         'res': '当前查询结果',
         'hisSql': 'SQL查询历史'
-      }
+      },
+      /** 分页 */
+      pagination: {
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      /** isSaved=0表示临时查询历史，isSaved=1表示保存了的历史 */
+      isSaveMode: 0
     };
+  },
+  computed: {
+    getPagination() {
+      return {
+        size: this.pagination.size,
+        current: this.pagination.current
+      }
+    },
+    getBasedInfo() {
+      return {
+        projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+        datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+        schema: this.$store.state.taskAdmin.sqlParams.schema
+      }
+    }
   },
   watch: {
     tabsActive: {
@@ -106,18 +151,12 @@ export default {
           case 'res':
             break
           case 'hisSql':
-            this.getSQLHistory()
+            this.getSqlList()
             break
           default:
             break
         }
       }
-    },
-    hisResVal: {
-      handler(val) {
-        this.getResultHistory(val)
-      },
-      immediate: true
     }
   },
   methods: {
@@ -322,15 +361,16 @@ export default {
         });
         return obj;
       });
+      this.autoSaveSql(sql)
       this.tableLoading = false
       this.firstShow = true;
       this.secondShow = false;
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
     },
     /**
-     * @description: 上传历史结果
+     * @description:保存时添加历史
      */
-    addResultHistory(sql) {
+    saveSql(sql) {
       if (sql.trim() === '') {
         this.$notify({
           title: '警告',
@@ -340,38 +380,133 @@ export default {
         });
         return
       }
-      console.log(sql, this.tableData)
-      addResultHistory().then(response => {
+      sqlhisApi.saveSql({
+        datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
+        projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
+        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
+        sqlResult: {
+          columns: this.columns,
+          tableData: this.tableData
+        }, // sql执行结果
+        sqlStatus: 1, // 1：成功  0：失败
+        sqlContent: sql, // sql语句
+        submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
+      }).then(response => {
         console.log(response)
-      }).catch(error => {
-        console.log(error)
+        if (response.code === 0) {
+          this.$notify({
+            title: '成功',
+            message: response.msg,
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '错误',
+            message: '保存失败',
+            type: 'error',
+            duration: 2000
+          })
+        }
+      }).catch(_ => {
+        this.$notify({
+          title: '错误',
+          message: '保存失败.',
+          type: 'error',
+          duration: 2000
+        })
       })
     },
     /**
-     * @description: 获取历史结果
+     * @description: 执行时添加历史
      */
-    getResultHistory() {
-      this.tableLoading = true
-      getResultHistory().then(response => {
-        console.log(response)
-        this.tableLoading = false
-      }).catch(error => {
-        console.log(error)
-        this.tableLoading = false
+    autoSaveSql(sql) {
+      sqlhisApi.autoSaveSql({
+        datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
+        projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
+        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
+        sqlResult: {
+          columns: this.columns,
+          tableData: this.tableData
+        }, // sql执行结果
+        sqlStatus: 1, // 1：成功  0：失败
+        sqlContent: sql, // sql语句
+        submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
       })
+        .then(response => {
+          if (response.code === 0) {
+            console.log(response)
+          }
+        }).catch(_ => {
+          this.$notify({
+            title: '错误',
+            message: '自动保存失败.',
+            type: 'error',
+            duration: 2000
+          })
+        })
     },
     /**
-     * @description: 获取SQL查询历史
+     * @description: 获取sql自动保存的历史记录
      */
-    getSQLHistory() {
+    getSqlList(val = null) {
       this.tableLoading = true
-      getSQLHistory().then(response => {
-        console.log(response)
-        this.tableLoading = false
-      }).catch(error => {
-        console.log(error)
-        this.tableLoading = false
-      })
+      const searchParams = Object.assign(Object.assign({}, this.getPagination), this.getBasedInfo)
+      if (this.isSaveMode === 0) {
+        sqlhisApi.getSqlListTemp(searchParams)
+          .then(response => {
+            if (response.code === 0) {
+              this.sqlHistoryData = response.content.records
+              this.pagination.total = response.content.total
+            }
+            this.tableLoading = false
+          }).catch(error => {
+            console.log(error)
+            this.tableLoading = false
+          })
+      } else {
+        sqlhisApi.getSqlListSaved(searchParams)
+          .then(response => {
+            if (response.code === 0) {
+              this.sqlHistoryData = response.content.records
+              this.pagination.total = response.content.total
+            }
+            this.tableLoading = false
+          }).catch(error => {
+            console.log(error)
+            this.tableLoading = false
+          })
+      }
+    },
+    /**
+     * @description: 删除手动保存
+     */
+    deleteHis(id) {
+      sqlhisApi.deleteSaved(id)
+        .then(response => {
+          if (response.code === 0) {
+            this.$notify({
+              title: '成功',
+              message: response.msg,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '错误',
+              message: '删除失败',
+              type: 'error',
+              duration: 2000
+            })
+          }
+        }).catch(_ => {
+          this.$notify({
+            title: '错误',
+            message: '删除失败.',
+            type: 'error',
+            duration: 2000
+          })
+        })
     },
     /**
      * @description: 文件导出
@@ -387,6 +522,30 @@ export default {
         }
         return wbout
       })
+    },
+    /**
+     * @description: 页面尺寸改变
+     */
+    handleSizeChange(size) {
+      this.pagination.size = size
+      this.pagination.current = 1
+      this.getSqlList()
+    },
+    /**
+     * @description: 当前页码改变
+     */
+    handleCurrentChange(current) {
+      this.pagination.current = current
+      this.getSqlList()
+    },
+    /**
+     * @description: 回显结果
+     */
+    echoResult(row) {
+      this.columns = row.sqlResult.columns
+      this.tableData = row.sqlResult.tableData
+      this.tabsActive = 'hisSql'
+      this.$emit('echoResult', row)
     }
   }
 };
