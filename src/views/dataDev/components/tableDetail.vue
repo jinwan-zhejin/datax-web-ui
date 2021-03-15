@@ -75,6 +75,7 @@
           </el-table-column>
         </el-table>
         <el-pagination
+          style="text-align: right; margin: 10px 0;"
           :current-page="pagination.current"
           :page-sizes="[10, 20, 50, 100]"
           :page-size="pagination.size"
@@ -551,8 +552,23 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .table {
+  .el-tabs {
+        .el-tab-pane {
+          .el-table {
+            .el-table-column {
+              .el-select {
+                height: 28px;
+                >>> .el-input__inner {
+                  height: 28px !important;
+                  line-height: 28px !important;
+                }
+              }
+            }
+          }
+        }
+    }
 }
 
 .border-card {
@@ -563,6 +579,18 @@ export default {
         // border-bottom: none;
         .el-tab-pane {
           height: 400px;
+
+          .el-table {
+            .el-table-column {
+              .el-select {
+                height: 28px;
+                >>> .el-input__inner {
+                  height: 28px !important;
+                  line-height: 28px !important;
+                }
+              }
+            }
+          }
         }
     }
     >>>.el-tabs--border-card {
