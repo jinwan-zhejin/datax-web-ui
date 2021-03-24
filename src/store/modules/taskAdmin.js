@@ -92,7 +92,13 @@ const state = {
 
   jobDataDetail: {}, // 任务数据详情
 
-  scheduleId: '' // 调度任务修改id
+  scheduleId: '', // 调度任务修改id
+
+  sqlParams: {
+    projectId: '', // 项目ID
+    datasourceId: '', // 数据源ID
+    schema: '' // 数据库名
+  }
 }
 
 const mutations = {
@@ -247,6 +253,16 @@ const mutations = {
 
   SET_LOG_WATCH: (state, logWatch) => {
     state.logWatch = logWatch
+  },
+
+  SET_SQLP_PROJECTID: (state, val) => {
+    state.sqlParams.projectId = val
+  },
+  SET_SQLP_DATASOURCEID: (state, val) => {
+    state.sqlParams.datasourceId = val
+  },
+  SET_SQLP_SCHEMA: (state, val) => {
+    state.sqlParams.schema = val
   }
 }
 

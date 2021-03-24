@@ -135,15 +135,16 @@ module.exports = {
       // },
       '/dbeaver/gql': {
         ws: false,
-        target: 'http://192.168.3.66:8978',
+        // target: 'http://192.168.3.66:8978',
         // target: 'http://47.103.79.104:8979',
+        target: 'http://183.194.64.166:9528', // 可用
         changeOrigin: true,
         // headers: {
         //   host: "http://192.168.3.74:8978",
         //   origin: "http://192.168.3.74:8978"
         // }
         pathRewrite: {
-          ['^' + '/dbeaver/gql']: '/api/gql'
+          ['^' + '/dbeaver/gql']: '/dbeaver/gql'
         }
       },
       // /api

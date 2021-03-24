@@ -11,9 +11,9 @@
             </el-select>
         </div>
         -->
-      <CodeMirror :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" />
+      <CodeMirror ref="codemirror" :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" @saveQuery="saveQuery" />
 
-      <TableDetail ref="table" />
+      <TableDetail ref="table" @echoResult="echoResult" />
 
     </el-main>
   </el-container>
@@ -36,9 +36,9 @@ export default {
   name: 'DataDevContent',
   components: {
     CodeMirror,
-    TableDetail,
-    name: 'DataDevContent'
+    TableDetail
   },
+  // eslint-disable-next-line vue/require-prop-types
   props: ['dblparams', 'parentlist', 'clist', 'tlist'],
 
   data() {
@@ -186,8 +186,20 @@ export default {
       console.log(this.queryDsInfo)
       this.$refs.table.queryData(this.queryDsInfo, val.code, {})
     },
-    previewData(params) {
-      this.$refs.table.initData(params)
+    previewData(dsInfo, params) {
+      this.$refs.table.initData(dsInfo, params)
+    },
+    /**
+     * @description: 保存查询
+     */
+    saveQuery(queryDsInfo, sql) {
+      this.$refs.table.saveSql(queryDsInfo, sql)
+    },
+    /**
+     * @description: 回显结果
+     */
+    echoResult(row) {
+      this.$refs.codemirror.setCode(row.sqlContent)
     }
   }
 }
