@@ -1166,7 +1166,7 @@ export default {
     },
     getObjectDistribute(query) {
       dashborad.getObjectDistribute(query).then((response) => {
-        // console.log("response___" + JSON.stringify(response.content));
+        console.log("response___" + JSON.stringify(response.content));
         this.dataObjectDistribute = response.content;
       });
     },
