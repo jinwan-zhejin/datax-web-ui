@@ -1,22 +1,21 @@
 <template>
-  <div style="min-height:500px;">
+  <div style="min-height: 500px">
     <HeaderTabs />
     <!-- <DataDevContent /> -->
   </div>
 </template>
 
 <script>
-import HeaderTabs from './components/headerTabs'
-import DataDevContent from './components/content'
+import HeaderTabs from "./components/headerTabs";
+import DataDevContent from "./components/content";
 export default {
-  name: 'DataDev',
+  name: "DataDev",
   components: {
     HeaderTabs,
-    DataDevContent
-  }
-}
+    DataDevContent,
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

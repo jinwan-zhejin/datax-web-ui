@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-main style="padding:0px;height:100%;">
+    <el-main style="padding: 0px; height: 100%">
       <!--
         <div class="selected">
             <el-select style="color: #f0f0f2" v-model="sourceName" clearable filterable placeholder="请选择" @change="handleChange">
@@ -11,35 +11,39 @@
             </el-select>
         </div>
         -->
-      <CodeMirror ref="codemirror" :sql-height="sqlHeight" :table-list="tableList" :column-list="columnList" @querysql="runQuery" @saveQuery="saveQuery" />
+      <CodeMirror
+        ref="codemirror"
+        :sql-height="sqlHeight"
+        :table-list="tableList"
+        :column-list="columnList"
+        @querysql="runQuery"
+        @saveQuery="saveQuery"
+      />
 
       <TableDetail ref="table" @echoResult="echoResult" />
-
     </el-main>
   </el-container>
 </template>
 
 <script>
-import {
-  list
-} from '@/api/datax-jdbcDatasource';
+import { list } from "@/api/datax-jdbcDatasource";
 import {
   getTables,
   getTableColumns,
   getTableSchema,
   getTableList,
-  getTableListWithComment
-} from '@/api/metadata-query';
-import CodeMirror from './codeMirrror';
-import TableDetail from './tableDetail';
+  getTableListWithComment,
+} from "@/api/metadata-query";
+import CodeMirror from "./codeMirrror";
+import TableDetail from "./tableDetail";
 export default {
-  name: 'DataDevContent',
+  name: "DataDevContent",
   components: {
     CodeMirror,
-    TableDetail
+    TableDetail,
   },
   // eslint-disable-next-line vue/require-prop-types
-  props: ['dblparams', 'parentlist', 'clist', 'tlist'],
+  props: ["dblparams", "parentlist", "clist", "tlist"],
 
   data() {
     return {
@@ -48,44 +52,43 @@ export default {
       tableList: [],
       SchemaList: [],
       columnList: [],
-      dataBaseid: '',
-      schemaId: '',
-      tableName: '',
+      dataBaseid: "",
+      schemaId: "",
+      tableName: "",
       dragging: false, // 是否拖拽,
       sqlHeight: 200,
       tableHeight: 300,
-      tableId: '',
-      tableNameWithComment: '',
-      sourceName: '', // 数据源名
-      sqlName: '', // 数据库名
+      tableId: "",
+      tableNameWithComment: "",
+      sourceName: "", // 数据源名
+      sqlName: "", // 数据库名
       options: [],
       options1: [],
       datasourceWidth: 100,
-      queryDsInfo: {}
+      queryDsInfo: {},
     };
   },
   watch: {
-
     dataBaseid() {
       this.getSchema();
     },
     parentlist(val) {
       if (val.length > 0) {
-        this.options = val
+        this.options = val;
       }
     },
     clist(val) {
-      console.log(val, 'clist')
-      this.columnList = val
+      console.log(val, "clist");
+      this.columnList = val;
     },
     tlist(val) {
-      console.log(val, 'tlist')
-      this.tableList = val
-    }
+      console.log(val, "tlist");
+      this.tableList = val;
+    },
   },
   created() {
     this.getDataBaseList();
-    console.log(this.parentlist)
+    console.log(this.parentlist);
   },
   methods: {
     setQueryParams(qp) {
@@ -93,27 +96,29 @@ export default {
     },
 
     handleChangeSQL(value) {
-      console.log(value)
-      this.datasourcewidth = value.length
+      console.log(value);
+      this.datasourcewidth = value.length;
     },
     handleChange(value) {
-      console.log(value)
+      console.log(value);
       getTableSchema({
-        datasourceId: value
-      }).then((res) => {
-        console.log(res)
-        this.options1 = res
-      }).catch(err => {
-        console.log(err);
-        this.options1 = []
-        this.sqlName = ''
+        datasourceId: value,
       })
+        .then((res) => {
+          console.log(res);
+          this.options1 = res;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.options1 = [];
+          this.sqlName = "";
+        });
     },
     // 获取数据库列表
     getDataBaseList() {
       list({
         current: 1,
-        size: 100000
+        size: 100000,
       }).then((res) => {
         this.dataBaseList = res.records;
         this.dataBaseid = res.records[0].id;
@@ -124,12 +129,14 @@ export default {
     // 获取schema
     getSchema() {
       getTableSchema({
-        datasourceId: this.dataBaseid
-      }).then((res) => {
-        this.SchemaList = res;
-      }).catch(err => {
-        console.log(err);
-      });
+        datasourceId: this.dataBaseid,
+      })
+        .then((res) => {
+          this.SchemaList = res;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     // getTableList
@@ -141,12 +148,11 @@ export default {
       //   })
       getTableListWithComment({
         id: this.dataBaseid,
-        schema: this.schemaId
-      })
-        .then(res => {
-          console.log('res', res);
-          this.tableList = res;
-        })
+        schema: this.schemaId,
+      }).then((res) => {
+        console.log("res", res);
+        this.tableList = res;
+      });
     },
     // 获取字段
     getClo() {
@@ -154,18 +160,18 @@ export default {
         // getColumns({
         datasourceId: this.dataBaseid,
         tableName: this.tableName,
-        schema: this.schemaId
+        schema: this.schemaId,
       }).then((res) => {
-        console.log(res)
+        console.log(res);
         this.columnList = res.datas;
       });
     },
     // 选择表
     selectTable(val) {
-      this.tableNameWithComment = val
-      this.tableName = val.split(' ')[0];
+      this.tableNameWithComment = val;
+      this.tableName = val.split(" ")[0];
       this.getClo();
-      this.activeNames = ['1']
+      this.activeNames = ["1"];
     },
     // 拖拽设置表格高度
     setTableHeight(e) {
@@ -182,81 +188,80 @@ export default {
     },
     // 执行sql
     runQuery(val) {
-      console.log(val, '子传父');
-      console.log(this.queryDsInfo)
-      this.$refs.table.queryData(this.queryDsInfo, val.code, {})
+      console.log(val, "子传父");
+      console.log(this.queryDsInfo);
+      this.$refs.table.queryData(this.queryDsInfo, val.code, {});
     },
     previewData(dsInfo, params) {
-      this.$refs.table.initData(dsInfo, params)
+      this.$refs.table.initData(dsInfo, params);
     },
     /**
      * @description: 保存查询
      */
     saveQuery(queryDsInfo, sql) {
-      this.$refs.table.saveSql(queryDsInfo, sql)
+      this.$refs.table.saveSql(queryDsInfo, sql);
     },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
-      this.$refs.codemirror.setCode(row.sqlContent)
-    }
-  }
-}
+      this.$refs.codemirror.setCode(row.sqlContent);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .contentLeft {
-    background: white;
-    padding: 0 15px 0 15px;
-    min-height: 630px;
-    border-right: 1px solid #F0EDED;
+  background: white;
+  padding: 0 15px 0 15px;
+  min-height: 630px;
+  border-right: 1px solid #f0eded;
 }
 
 .dataBase {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .selected {
-    width: 100%;
-    height: 32px;
-    // line-height: 8px;
-    background-color: #f0f0f2;
-
+  width: 100%;
+  height: 32px;
+  // line-height: 8px;
+  background-color: #f0f0f2;
 }
 
 .dataBase,
 .table {
-    padding: 0px;
-    width: 100%;
-    /* border-bottom: 1px solid rgb(245, 241, 241); */
+  padding: 0px;
+  width: 100%;
+  /* border-bottom: 1px solid rgb(245, 241, 241); */
 }
 
 .dragBar {
-    display: none;
-    color: #cfd8dc;
-    text-align: center;
+  display: none;
+  color: #cfd8dc;
+  text-align: center;
 }
 
 .dragBar span {
-    cursor: row-resize;
+  cursor: row-resize;
 }
 
 .tableName {
-    color: green;
-    font-weight: bolder;
-    font-size: 16px;
+  color: green;
+  font-weight: bolder;
+  font-size: 16px;
 }
 
 .P-tit {
-    padding: 10px 0px;
+  padding: 10px 0px;
 }
 
 .disnone::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .el-form .el-select {
-    width: 100%;
+  width: 100%;
 }
 </style>
